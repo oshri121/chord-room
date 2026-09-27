@@ -144,6 +144,45 @@ es:{navTool:'Herramienta',navDisc:'Descubrir',dTitle:'Descubrir canciones',dSub:
 dPreviewNote:'Se cargó un fragmento de 30 segundos. Tonalidad y tempo salen del fragmento, y los acordes cubren solo el fragmento.',mixTitle:'Mezcla bien con',mixH:'Canciones en tonalidad compatible en la rueda Camelot, con tempo dentro de ±6% (incluye mitad/doble).',mixNone:'Aún no hay coincidencias. Aparecerán más a medida que se analicen canciones.',relSame:'Misma tonalidad',relRel:'Relativa mayor/menor',relUp:'+1 energía',relDown:'−1 más calma',findMatches:'Buscar canciones compatibles',dNote:'La tonalidad y el BPM se calculan automáticamente con un fragmento de 30 segundos, así que puede haber errores. Datos de listas y fragmentos: Deezer.',dSignIn:'Los usuarios con sesión guardan los análisis en el catálogo compartido para todos.'}
 };
 for(const k in ID)Object.assign(I[k],ID[k]);
+const IX={
+he:{loudness:'עוצמה · LUFS',tagline:'קצב, סולם, אקורדים והפרדת ערוצים ב־AI לכל שיר',loaded:'בכלי עכשיו',bpmL:'קצב',camelot:'קאמלוט',peakL:'שיא',noAudio:'— אין קובץ שמע —',
+click:'מטרונום',wave:'תצוגה',wm3:'3 תדרים',wmMono:'מונו',wmStems:'ערוצים',muteT:'השתקה',soloT:'סולו',karaoke:'קריוקי: בלי שירה',
+stems:'הפרדת ערוצים',engGpu:'מאיץ גרפי',engCpu:'מעבד (איטי יותר)',aiSep:'הפרדה ב־AI',quickSep:'הפרדה מהירה',
+aiFirst:'בשימוש הראשון יורד מודל של כ־80MB ונשמר בדפדפן. במחשב עם מאיץ גרפי, שיר של 4 דקות מופרד בערך בדקה.',
+aiDone:'הערוצים מוכנים. הזיזו את הפיידרים, והגל למעלה ישתנה בהתאם.',quickDone:'ההפרדה המהירה מוכנה. האיכות נמוכה יותר מהפרדה ב־AI.',needAudio:'טענו שיר כדי להפריד אותו לערוצים.',
+dlDone:'הקובץ ירד ({s} MB).',bpmMin:'מ־',bpmMax:'עד',demoName:'שיר דוגמה · Am F C G · 120',
+gIsrael:'ישראלי',gPop:'פופ',gHiphop:'היפ־הופ',gDance:'דאנס',gElectro:'אלקטרוני',gLatin:'לטיני',gRnb:'R&B',gRock:'רוק',dAll:'הכול'},
+en:{loudness:'Loudness · LUFS',tagline:'Tempo, key, chords and AI stem separation for any song',loaded:'Now in the tool',bpmL:'BPM',camelot:'Camelot',peakL:'peak',noAudio:'— no audio file —',
+click:'Metronome',wave:'View',wm3:'3-band',wmMono:'Mono',wmStems:'Stems',muteT:'Mute',soloT:'Solo',karaoke:'Karaoke: no vocals',
+stems:'Stem separation',engGpu:'GPU',engCpu:'CPU (slower)',aiSep:'Separate with AI',quickSep:'Quick separation',
+aiFirst:'The first run downloads an 80 MB model and keeps it in your browser. With a GPU, a 4-minute song takes about a minute.',
+aiDone:'Stems are ready. Move the faders and the waveform above follows.',quickDone:'Quick separation is ready. Quality is lower than AI separation.',needAudio:'Load a song to split it into stems.',
+dlDone:'Downloaded ({s} MB).',bpmMin:'from',bpmMax:'to',demoName:'Demo song · Am F C G · 120',
+gIsrael:'Israeli',gPop:'Pop',gHiphop:'Hip-Hop',gDance:'Dance',gElectro:'Electronic',gLatin:'Latin',gRnb:'R&B',gRock:'Rock',dAll:'All'},
+ar:{loudness:'الشدة · LUFS',tagline:'الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية',loaded:'في الأداة الآن',bpmL:'الإيقاع',camelot:'كاميلوت',peakL:'الذروة',noAudio:'— لا يوجد ملف صوتي —',
+click:'مترونوم',wave:'العرض',wm3:'3 نطاقات',wmMono:'أحادي',wmStems:'المسارات',muteT:'كتم',soloT:'منفرد',karaoke:'كاريوكي: بلا غناء',
+stems:'فصل المسارات',engGpu:'معالج رسومي',engCpu:'معالج مركزي (أبطأ)',aiSep:'فصل بالذكاء الاصطناعي',quickSep:'فصل سريع',
+aiFirst:'في أول استخدام يُحمَّل نموذج بحجم 80MB ويُحفظ في المتصفح. مع معالج رسومي تُفصل أغنية من 4 دقائق في نحو دقيقة.',
+aiDone:'المسارات جاهزة. حرّك المنزلقات وستتغير الموجة في الأعلى.',quickDone:'الفصل السريع جاهز، وجودته أقل من الفصل بالذكاء الاصطناعي.',needAudio:'حمّل أغنية لفصلها إلى مسارات.',
+dlDone:'تم التنزيل ({s} MB).',bpmMin:'من',bpmMax:'إلى',demoName:'أغنية تجريبية · Am F C G · 120',
+gIsrael:'إسرائيلي',gPop:'بوب',gHiphop:'هيب هوب',gDance:'دانس',gElectro:'إلكتروني',gLatin:'لاتيني',gRnb:'R&B',gRock:'روك',dAll:'الكل'},
+ru:{loudness:'Громкость · LUFS',tagline:'Темп, тональность, аккорды и AI-разделение на стемы для любой песни',loaded:'Сейчас в инструменте',bpmL:'Темп',camelot:'Camelot',peakL:'пик',noAudio:'— нет аудиофайла —',
+click:'Метроном',wave:'Вид',wm3:'3 полосы',wmMono:'Моно',wmStems:'Стемы',muteT:'Заглушить',soloT:'Соло',karaoke:'Караоке: без вокала',
+stems:'Разделение на стемы',engGpu:'Видеокарта',engCpu:'Процессор (медленнее)',aiSep:'Разделить с AI',quickSep:'Быстрое разделение',
+aiFirst:'При первом запуске загружается модель на 80 МБ и сохраняется в браузере. С видеокартой 4-минутная песня делится примерно за минуту.',
+aiDone:'Стемы готовы. Двигайте фейдеры — волна выше изменится.',quickDone:'Быстрое разделение готово. Качество ниже, чем у AI.',needAudio:'Загрузите песню, чтобы разделить её на стемы.',
+dlDone:'Скачано ({s} МБ).',bpmMin:'от',bpmMax:'до',demoName:'Демо · Am F C G · 120',
+gIsrael:'Израиль',gPop:'Поп',gHiphop:'Хип-хоп',gDance:'Дэнс',gElectro:'Электроника',gLatin:'Латина',gRnb:'R&B',gRock:'Рок',dAll:'Все'},
+es:{loudness:'Sonoridad · LUFS',tagline:'Tempo, tonalidad, acordes y separación de pistas con IA para cualquier canción',loaded:'Ahora en la herramienta',bpmL:'BPM',camelot:'Camelot',peakL:'pico',noAudio:'— sin archivo de audio —',
+click:'Metrónomo',wave:'Vista',wm3:'3 bandas',wmMono:'Mono',wmStems:'Pistas',muteT:'Silenciar',soloT:'Solo',karaoke:'Karaoke: sin voz',
+stems:'Separación de pistas',engGpu:'GPU',engCpu:'CPU (más lento)',aiSep:'Separar con IA',quickSep:'Separación rápida',
+aiFirst:'La primera vez se descarga un modelo de 80 MB que queda en tu navegador. Con GPU, una canción de 4 minutos tarda cerca de un minuto.',
+aiDone:'Las pistas están listas. Mueve los faders y la onda de arriba cambia.',quickDone:'La separación rápida está lista. La calidad es menor que con IA.',needAudio:'Carga una canción para separarla en pistas.',
+dlDone:'Descargado ({s} MB).',bpmMin:'de',bpmMax:'a',demoName:'Canción demo · Am F C G · 120',
+gIsrael:'Israelí',gPop:'Pop',gHiphop:'Hip-hop',gDance:'Dance',gElectro:'Electrónica',gLatin:'Latina',gRnb:'R&B',gRock:'Rock',dAll:'Todo'}
+};
+for(const k in IX)Object.assign(I[k],IX[k]);
+
 
 let LANG='he';let LANG_CHOSEN=false;
 try{const s=localStorage.getItem('chordroom.lang');if(s&&I[s]){LANG=s;LANG_CHOSEN=true}}catch(e){}
@@ -155,6 +194,7 @@ function applyLang(){
   document.querySelectorAll('[data-ip]').forEach(el=>{el.placeholder=t(el.dataset.ip)});
   $('#lang').value=LANG;
   $('#play').setAttribute('aria-label',t('kPlay'));
+  const rk=$('#rack');if(rk)rk.dir=rtl?'rtl':'ltr';
   $('#keys').innerHTML='';
   [['Space','kPlay'],['← →','kBar'],['1 – 8','kCue'],['L','kLoop'],['M','kClick'],['+ −','kZoom']].forEach(([k,d])=>{const a=document.createElement('kbd');a.textContent=k;const b=document.createElement('span');b.textContent=t(d);$('#keys').append(a,b)});
 }
@@ -169,7 +209,12 @@ const SHAPES=[
  ['x32010','x46664','xx0232','x68886','022100','133211','244322','320003','466544','x02220','x13331','x24442'],
  ['x35543','x46654','xx0231','x68876','022000','133111','244222','355333','466444','x02210','x13321','x24432']];
 const HC_COL=['#2BD46A','#3D8BFF','#FFB020','#FF4D4D','#B66DFF','#22D3D3','#FF6FB5','#E8E24A'];
-const STEMS=[{id:'vocals',file:'Vocals',color:'#D6336C'},{id:'drums',file:'Drums',color:'#D99A0B'},{id:'bass',file:'Bass',color:'#1F6FEB'},{id:'other',file:'Other',color:'#169A57'}];
+const STEMS=[{id:'vocals',file:'Vocals',color:'#FF4FA3'},{id:'drums',file:'Drums',color:'#FFC53D'},{id:'bass',file:'Bass',color:'#3D8BFF'},{id:'other',file:'Other',color:'#2BD46A'}];
+const STEM_IC={
+vocals:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></svg>',
+drums:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="9" rx="8" ry="3"/><path d="M4 9v7c0 1.7 3.6 3 8 3s8-1.3 8-3V9M4 3l6 5M20 3l-6 5"/></svg>',
+bass:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 10l6-6M18 2l4 4M8.5 11.5a4 4 0 0 0-5.3 1.3c-1.7 2.4-.3 6 2.5 7.2s6.3-.2 7-3a4 4 0 0 0 1.8-5.2z"/><circle cx="8" cy="16" r="1.2"/></svg>',
+other:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M8 4v10M13 4v10M18 4v10M6.5 14v6M11.5 14v6M16.5 14v6"/></svg>'};
 let S={name:'',buffer:null,dur:0,wave:null,chroma:null,env:null,lowEnv:null,bpm:0,offset:0,beats:[],chords:null,down:0,key:null,
   transpose:0,capo:0,acc:0,win:8,demo:false,stems:null,stemKind:null,edited:new Set(),cues:new Array(8).fill(null),lufs:null,peak:null,
   wmode:'rgb',diag:'guitar',loopBars:4,loop:null,click:false,editing:false,notes:null};
@@ -499,8 +544,19 @@ function sizeCanvases(){
   for(const c of [ov,zm]){c.width=Math.max(1,Math.round(c.clientWidth*dpr));c.height=Math.max(1,Math.round(c.clientHeight*dpr))}
   buildOverview();dirty=true;
 }
-function sliceRange(w,i0,i1){let a=0,lo=0,mi=0,hi=0,bi=i0;for(let i=i0;i<i1;i++){if(w.amp[i]>a){a=w.amp[i];bi=i}if(w.low[i]>lo)lo=w.low[i];if(w.mid[i]>mi)mi=w.mid[i];if(w.high[i]>hi)hi=w.high[i]}return [a,lo,mi,hi,bi]}
+function sliceRange(w,i0,i1){let a=0,lo=0,mi=0,hi=0,bi=i0;for(let i=i0;i<i1;i++){if(w.amp[i]>a){a=w.amp[i];bi=i}if(w.low[i]>lo)lo=w.low[i];if(w.mid[i]>mi)mi=w.mid[i];if(w.high[i]>hi)hi=w.high[i]}return [a,lo,mi,hi,bi,i0,i1]}
 function drawWave(g,cols,cy,amp){
+  if(S.wmode==='stems'&&S.stemEnv){
+    // stacked stems: each part in its colour, scaled by its current volume (mute/solo included)
+    const E=S.stemEnv,gains=STEMS.map((_,i)=>Math.min(1.5,stemGain(i))),order=[1,2,3,0],v=[0,0,0,0];
+    for(const c of cols){
+      let tot=0;for(let i=0;i<4;i++){let m=0;const e=E.env[i];for(let k=c[6];k<c[7];k++)if(e[k]>m)m=e[k];v[i]=m*gains[i];tot+=v[i]}
+      if(tot<=0)continue;
+      const h=Math.min(1.08,Math.pow(tot/E.ref,0.8))*amp;let acc=0;
+      for(const i of order){if(!v[i])continue;const seg=h*v[i]/tot;g.fillStyle=STEMS[i].color;g.fillRect(c[0],cy-acc-seg,1,seg);g.fillRect(c[0],cy+acc,1,seg);acc+=seg}
+    }
+    return;
+  }
   if(S.wmode==='3band'){
     const band=(k,color,sc)=>{g.fillStyle=color;g.beginPath();for(const c of cols){const h=Math.max(.5,c[k]*amp*sc);g.rect(c[0],cy-h,1,2*h)}g.fill()};
     band(2,'#1E62D0',1);band(3,'#E08A1E',.85);band(4,'#F2EFE6',.7);return;
@@ -523,7 +579,7 @@ function buildOverview(){
     const w=S.wave,cols=[];
     for(let x=0;x<W;x++){const i0=Math.floor(x/W*w.len),i1=Math.max(i0+1,Math.floor((x+1)/W*w.len));cols.push([x,...sliceRange(w,i0,Math.min(i1,w.len))])}
     drawWave(g,cols,wh/2,wh/2*.95);
-  }else if(S.dur){g.fillStyle='#6d6d72';g.font=`${12*dpr}px IBM Plex Mono, monospace`;g.textAlign='center';g.fillText('— no audio —',W/2,wh/2+4*dpr)}
+  }else if(S.dur){g.fillStyle='#6d6d72';g.font=`${12*dpr}px IBM Plex Mono, monospace`;g.textAlign='center';g.fillText(t('noAudio'),W/2,wh/2+4*dpr)}
   if(S.chords&&S.dur){const T=60/S.bpm;S.beats.forEach((tb,b)=>{const c=S.chords[b];if(c<0)return;g.fillStyle=chordColor(sounding(c));const x0=tb/S.dur*W,x1=(tb+T)/S.dur*W;g.fillRect(x0,H-strip,Math.max(1,x1-x0+.5),strip)})}
   dirty=true;
 }
@@ -579,7 +635,9 @@ let actx=null;const P={srcs:[],gains:[],playing:false,startCtx:0,startPos:0,pos:
 const ac=()=>actx||(actx=new (window.AudioContext||window.webkitAudioContext)());
 const MIX=STEMS.map(()=>({vol:1,mute:false,solo:false}));
 function stemGain(i){const any=MIX.some(m=>m.solo),m=MIX[i];return any?(m.solo?m.vol:0):(m.mute?0:m.vol)}
-function applyGains(){P.gains.forEach((g,i)=>{if(g)g.gain.setTargetAtTime(stemGain(i),ac().currentTime,0.012)})}
+let ovPending=false;
+function applyGains(){P.gains.forEach((g,i)=>{if(g)g.gain.setTargetAtTime(stemGain(i),ac().currentTime,0.012)});
+  if(S.wmode==='stems'&&!ovPending){ovPending=true;requestAnimationFrame(()=>{ovPending=false;buildOverview()})}dirty=true}
 function now(){
   if(!P.playing)return P.pos;
   let tt=P.startPos+Math.max(0,ac().currentTime-P.startCtx);
@@ -637,12 +695,14 @@ function renderStats(){
   if(S.key){const pc=mod(S.key.pc+S.transpose,12);$('#sKey').textContent=keyName(pc,S.key.mode);$('#sKeyS').textContent=keyLong(pc,S.key.mode);$('#sCam').textContent=camelot(pc,S.key.mode)}
   else{$('#sKey').textContent='—';$('#sKeyS').textContent='';$('#sCam').textContent='—'}
   $('#sDur').textContent=S.dur?fmtS(S.dur):'—';
-  $('#sLufs').textContent=S.lufs!=null?S.lufs.toFixed(1):'—';$('#sPeak').textContent=S.lufs!=null?`LUFS · peak ${S.peak.toFixed(1)} dB`:'';
+  $('#sLufs').textContent=S.lufs!=null?S.lufs.toFixed(1):'—';$('#sPeak').textContent=S.lufs!=null?`${t('peakL')} \u2066${S.peak.toFixed(1)} dB\u2069`:'';
   $('#trV').textContent=(S.transpose>0?'+':'')+S.transpose;$('#cpV').textContent=S.capo;
   $('#capoH').textContent=S.capo?t('capoN',{n:S.capo}):t('capo0');
   document.querySelectorAll('[data-acc]').forEach(b=>b.classList.toggle('on',+b.dataset.acc===S.acc));
   document.querySelectorAll('[data-dg]').forEach(b=>b.classList.toggle('on',b.dataset.dg===S.diag));
+  if(S.wmode==='stems'&&!S.stemEnv)S.wmode='rgb';
   document.querySelectorAll('[data-wm]').forEach(b=>b.classList.toggle('on',b.dataset.wm===S.wmode));
+  $('[data-wm="stems"]').hidden=!S.stemEnv;
   const can=!!S.chroma;['#bpmD','#bpmH','#gL','#gR'].forEach(s=>$(s).disabled=!can);
   $('#play').disabled=!S.buffer;
   renderHarm();renderLoop();renderCues();
@@ -759,7 +819,7 @@ document.addEventListener('pointerdown',e=>{const p=$('#pop');if(!p.hidden&&!p.c
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
 async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -833,17 +893,19 @@ function renderStemsUI(){
 function renderMixer(){
   const box=$('#mixer');box.innerHTML='';
   STEMS.forEach((st,i)=>{
-    const m=MIX[i],on=!!S.stems;
-    const d=document.createElement('div');d.className='strip'+(on?'':' off');
-    d.innerHTML=`<div class="tp"><span class="nm"><span class="sw" style="background:${st.color}"></span>${t(st.id)}</span>
-      <span class="ms">${i===0?`<button type="button" class="k" title="${t('karaoke')}" ${on?'':'disabled'}>K</button>`:''}<button type="button" class="m${m.mute?' on':''}" ${on?'':'disabled'}>M</button><button type="button" class="s${m.solo?' on':''}" ${on?'':'disabled'}>S</button></span></div>
-      <canvas></canvas><input type="range" dir="ltr" id="vol-${st.id}" min="0" max="1.5" step="0.01" value="${m.vol}" aria-label="${t(st.id)}" ${on?'':'disabled'}>`;
-    d.querySelector('.m').onclick=()=>{m.mute=!m.mute;applyGains();renderMixer()};
-    d.querySelector('.s').onclick=()=>{m.solo=!m.solo;applyGains();renderMixer()};
-    const k=d.querySelector('.k');if(k)k.onclick=()=>{MIX.forEach(x=>{x.solo=false});MIX[0].mute=!MIX[0].mute;applyGains();renderMixer()};
-    d.querySelector('input').oninput=e=>{m.vol=+e.target.value;applyGains()};
+    const m=MIX[i],on=!!S.stems,pct=Math.round(m.vol*100);
+    const d=document.createElement('div');d.className='strip'+(on?'':' off')+(stemGain(i)===0&&on?' silent':'');d.style.setProperty('--sc',st.color);
+    d.innerHTML=`<div class="tp"><span class="nm">${STEM_IC[st.id]}<span>${esc(t(st.id))}</span></span>
+      <span class="ms">${i===0?`<button type="button" class="k${MIX[0].mute&&on?' on':''}" title="${esc(t('karaoke'))}" ${on?'':'disabled'}>K</button>`:''}<button type="button" class="m${m.mute?' on':''}" title="${esc(t('muteT'))}" ${on?'':'disabled'}>M</button><button type="button" class="s${m.solo?' on':''}" title="${esc(t('soloT'))}" ${on?'':'disabled'}>S</button></span></div>
+      <div class="fad"><input type="range" dir="ltr" id="vol-${st.id}" min="0" max="1.5" step="0.01" value="${m.vol}" aria-label="${esc(t(st.id))}" ${on?'':'disabled'}><output class="mono">${pct}%</output></div>`;
+    const redraw=()=>{applyGains();renderMixer()};
+    d.querySelector('.m').onclick=()=>{m.mute=!m.mute;redraw()};
+    d.querySelector('.s').onclick=()=>{m.solo=!m.solo;redraw()};
+    const k=d.querySelector('.k');if(k)k.onclick=()=>{MIX.forEach(x=>{x.solo=false});MIX[0].mute=!MIX[0].mute;redraw()};
+    const inp=d.querySelector('input'),out=d.querySelector('output');
+    inp.oninput=e=>{m.vol=+e.target.value;out.textContent=Math.round(m.vol*100)+'%';d.classList.toggle('silent',stemGain(i)===0);applyGains()};
+    inp.ondblclick=()=>{m.vol=1;redraw()};
     box.appendChild(d);
-    const cv=d.querySelector('canvas');requestAnimationFrame(()=>drawStem(cv,i,st.color));
   });
 }
 function drawStem(cv,i,color){
@@ -864,7 +926,19 @@ async function stereo44(){
 function setStems(res,len,kind){
   const c=ac(),was=P.playing;if(was)stop();
   S.stems=STEMS.map((st,i)=>{const b=c.createBuffer(2,len,44100);b.copyToChannel(res[i*2],0);b.copyToChannel(res[i*2+1],1);return b});
-  S.stemKind=kind;S.notes=null;if(was)play();
+  S.stemKind=kind;S.notes=null;
+  S.stemEnv=stemEnvelopes();S.wmode='stems';buildOverview();renderStats();
+  if(was)play();
+}
+function stemEnvelopes(){
+  const rate=S.wave?S.wave.rate:150,n=S.wave?S.wave.len:Math.floor(S.dur*rate),spp=44100/rate,env=[],sum=new Float32Array(n);
+  for(const b of S.stems){
+    const L=b.getChannelData(0),R=b.getChannelData(1),e=new Float32Array(n);
+    for(let j=0;j<n;j++){let m=0;const a=Math.floor(j*spp),z=Math.min(L.length,Math.floor((j+1)*spp));for(let k=a;k<z;k+=2){const x=Math.abs(L[k]+R[k])*0.5;if(x>m)m=x}e[j]=m;sum[j]+=m}
+    env.push(e);
+  }
+  let ref=1e-9;for(let j=0;j<n;j++)if(sum[j]>ref)ref=sum[j];
+  return {env,ref};
 }
 const fmtEta=s=>s>=90?Math.round(s/60)+' '+t('min_'):Math.max(5,Math.round(s/5)*5)+' '+t('sec_');
 async function aiSeparate(){
@@ -1341,7 +1415,8 @@ async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await B
 function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).catch(()=>{})}
 
 /* ---------- discover: trending songs, catalog, DJ mix matches ---------- */
-const DISC_GENRES=[[0,'All'],[132,'Pop'],[116,'Hip-Hop'],[113,'Dance'],[106,'Electro'],[197,'Latin'],[165,'R&B'],[152,'Rock']];
+const DISC_GENRES=[[0,'dAll'],[-1,'gIsrael'],[132,'gPop'],[116,'gHiphop'],[113,'gDance'],[106,'gElectro'],[197,'gLatin'],[165,'gRnb'],[152,'gRock']];
+const TOP_ISRAEL=1362507345;
 const DC={tab:'trend',genre:0,rows:{},lists:{},keyF:'',bpmMin:'',bpmMax:'',queue:[],working:false,audio:null,playing:null,loaded:false,mixFor:null,pool:null};
 const CACHE_K='chordroom.cat.v1';
 const cacheRead=()=>{try{return JSON.parse(localStorage.getItem(CACHE_K)||'{}')}catch(e){return {}}};
@@ -1374,7 +1449,7 @@ function rowFromTrack(t,album){
 }
 function rowFromCatalog(c){
   const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'};
-  Object.assign(r,{title:c.title,artist:c.artist,album:c.album,cover:c.cover||r.cover,link:c.link||r.link,release:c.release_date,dur:c.duration,plays:c.plays,inCat:true,
+  Object.assign(r,{title:c.title||r.title,artist:c.artist||r.artist,album:c.album||r.album,cover:c.cover||r.cover,link:c.link||r.link,release:c.release_date||r.release||null,dur:c.duration||r.dur,plays:c.plays,inCat:true,
     a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:c.chords||[]}:r.a,added:c.created_at});
   if(r.a)r.status='done';
   return DC.rows[c.id]=r;
@@ -1390,7 +1465,15 @@ async function loadTab(){
     $('#dList').innerHTML=`<li class="dempty">${esc(t('dLoading'))}</li>`;
     try{
       let rows=[];
-      if(tab==='trend'){const d=await dz(`chart/${DC.genre}/tracks`,{limit:50});rows=(d.data||[]).map(x=>rowFromTrack(x))}
+      if(tab==='trend'&&DC.genre===-1){const d=await dz(`playlist/${TOP_ISRAEL}/tracks`,{limit:60});rows=(d.data||[]).filter(x=>x.readable!==false).map(x=>rowFromTrack(x))}
+      else if(tab==='new'&&DC.genre===-1){
+        // newest songs in the Israeli chart, by album release date
+        const d=await dz(`playlist/${TOP_ISRAEL}/tracks`,{limit:100});const tr=(d.data||[]).filter(x=>x.album&&x.album.id);
+        const ids=[...new Set(tr.map(x=>x.album.id))],dates={};
+        await Promise.all(ids.map(id=>dz(`album/${id}`).then(a=>{dates[id]=a.release_date||''}).catch(()=>{})));
+        rows=tr.map(x=>rowFromTrack(x,{...x.album,release_date:dates[x.album.id]})).sort((p,q)=>String(q.release||'').localeCompare(String(p.release||''))).slice(0,40);
+      }
+      else if(tab==='trend'){const d=await dz(`chart/${DC.genre}/tracks`,{limit:50});rows=(d.data||[]).map(x=>rowFromTrack(x))}
       else if(tab==='new'){
         const d=await dz(`editorial/${DC.genre}/releases`,{limit:40});const albums=(d.data||[]).filter(a=>a.id);
         const firsts=await Promise.all(albums.map(a=>dz(`album/${a.id}/tracks`,{limit:1}).then(x=>x.data&&x.data[0]?rowFromTrack(x.data[0],a):null).catch(()=>null)));
@@ -1433,7 +1516,7 @@ function rowEl(r,n){
     <div class="da"><button type="button" class="ib pv" aria-label="${esc(t('dPreview'))}">${DC.playing===r.id?'❚❚':'▶'}</button>
     <button type="button" class="ib mx" ${a?'':'disabled'}>${esc(t('dMix'))}</button><button type="button" class="ib op">${esc(t('dOpen'))}</button></div>`;
   li.querySelector('.dc').src=r.cover||'assets/icon.svg';if(r.link&&/^https:\/\/www\.deezer\.com\//.test(r.link))li.querySelector('.dcl').href=r.link;
-  li.querySelector('.tt').textContent=r.title;li.querySelector('.ar').textContent=r.artist+(DC.tab==='played'&&r.plays?` · ${r.plays} ${t('dPlays')}`:'');
+  li.querySelector('.tt').textContent=r.title;li.querySelector('.ar').textContent=r.artist+(DC.tab==='played'&&r.plays?` · ${r.plays} ${t('dPlays')}`:'')+(DC.tab==='new'&&r.release?` · ${fmtDay(r.release)}`:'');
   li.querySelector('.dk').appendChild(keyBadge(a,r.status));
   li.querySelector('.pv').onclick=()=>togglePreview(r);
   li.querySelector('.mx').onclick=()=>openMix(r);
@@ -1441,6 +1524,7 @@ function rowEl(r,n){
   return li;
 }
 function refreshRow(r){const el=document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`);if(el){const n=el.querySelector('.dn').textContent;el.replaceWith(rowEl(r,n))}}
+function fmtDay(d){const x=new Date(d);return isNaN(x)?'':x.toLocaleDateString(LANG==='he'?'he-IL':LANG==='ar'?'ar':LANG,{day:'numeric',month:'short'})}
 function setDiscMsg(m){$('#dMsg').textContent=m||''}
 
 /* preview URLs expire; refresh from the track endpoint when needed */
@@ -1556,7 +1640,7 @@ function renderDiscControls(){
   const tabs=[['trend','dTrend'],['new','dNew'],['played','dPlayed'],['recent','dRecent']];
   $('#dTabs').innerHTML='';tabs.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=t(l);b.classList.toggle('on',DC.tab===k);b.onclick=()=>{DC.tab=k;renderDiscControls();loadTab()};$('#dTabs').appendChild(b)});
   const gOk=DC.tab==='trend'||DC.tab==='new';$('#dGenres').hidden=!gOk;$('#dGenres').innerHTML='';
-  DISC_GENRES.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=id?name:t('dAll');b.classList.toggle('on',DC.genre===id);b.onclick=()=>{DC.genre=id;renderDiscControls();loadTab()};$('#dGenres').appendChild(b)});
+  DISC_GENRES.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=t(name);if(id===-1)b.classList.add('il');b.classList.toggle('on',DC.genre===id);b.onclick=()=>{DC.genre=id;renderDiscControls();loadTab()};$('#dGenres').appendChild(b)});
   const sel=$('#dKey'),cur=DC.keyF;sel.innerHTML=`<option value="">${esc(t('dAllKeys'))}</option><option value="match">${esc(t('dMatchCur'))}</option>`;
   for(let n=1;n<=12;n++)for(const l of ['A','B']){const pc=l==='B'?CAM_MAJ.indexOf(n):mod(CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=n+l;o.textContent=`${n}${l} · ${keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
   sel.value=cur;
@@ -1640,5 +1724,5 @@ let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>
 /* ---------- boot ---------- */
 applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
 if(location.hash==='#discover')showView('discover');
-(async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,'Demo · Am F C G · 120',true)}catch(e){console.error(e);busy(null)}})();
+(async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

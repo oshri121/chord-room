@@ -1,7 +1,7 @@
 // Cloudflare Pages Function: a small read-only proxy to Deezer's public API.
 // The browser cannot call api.deezer.com directly (no CORS), so the Discover page goes through here.
 // Only a few read endpoints are allowed, and responses are cached at the edge for 15 minutes.
-const ALLOW = /^(chart\/\d+\/tracks|editorial\/\d+\/releases|album\/\d+\/tracks|track\/\d+|search)$/;
+const ALLOW = /^(chart\/\d+\/tracks|editorial\/\d+\/releases|album\/\d+(\/tracks)?|playlist\/\d+\/tracks|track\/\d+|search)$/;
 
 export async function onRequestGet({ params, request }) {
   const path = [].concat(params.path || []).join('/');

@@ -17,7 +17,10 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Function proxy, allow-listed read endpoints; falls back to JSONP when run locally). Each track's 30 s preview is
   analysed in the browser (`quickAnalyze`, swaps the global `S` only inside a synchronous block) and saved to the
   shared `catalog` table by signed-in users. DJ matches = Camelot same/relative/±1 and tempo within 6 %.
-  Keep the Deezer attribution (cover links to the Deezer track, note under the list).
+  Keep the Deezer attribution (cover links to the Deezer track, note under the list). The "Israeli" filter
+  (genre -1) uses Deezer's official "Top Israel" chart playlist (id 1362507345); its new tab sorts by album release date.
+- Stems live in the deck (`#rack`). After separation the waveform switches to the `stems` view: per-stem
+  envelopes (`S.stemEnv`) stacked in stem colours and scaled live by each fader/mute/solo (`stemGain`).
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.
   Tests can inject `window.__MOCK_BACKEND` before this script.
 - `assets/app.css` – light theme: white paper, black ink, black "deck". Fonts: IBM Plex Sans (+Hebrew/Arabic), Plex Mono.

@@ -375,3 +375,57 @@ table.ut{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
   .drow .db{grid-area:b;flex-direction:row;align-items:baseline;gap:4px;font-size:14px;align-self:center}.drow .dch{grid-area:ch}.drow .da{grid-area:a}
 }
 @media (max-width:640px){.vsw button{padding:0 10px}.dhead h1{font-size:26px}.mrow{grid-template-columns:40px minmax(0,1fr) auto 32px}.mrow .rel{display:none}}
+
+/* icons in the deck */
+.ic{width:15px;height:15px;flex:none;display:block}
+.grp>.ic{color:var(--deckmuted);margin-inline-start:6px}
+.grp .icb{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans)}
+.grp button[hidden]{display:none}
+
+/* stem rack inside the black deck */
+.rack{border-top:1px solid var(--deckline);margin-top:2px;padding-top:12px;display:flex;flex-direction:column;gap:10px;font-family:var(--sans)}
+.rhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rtitle{display:flex;align-items:center;gap:8px;color:var(--decktext)}
+.rtitle b{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+.rtitle .ic{color:var(--deckmuted)}
+.rack .engine{font-family:var(--mono);font-size:11px;color:var(--deckmuted);border:1px solid var(--deckline);border-radius:3px;padding:2px 7px}
+.ractions{display:flex;gap:6px;flex-wrap:wrap}
+.rbtn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:4px;border:1px solid var(--deckline);background:var(--deck2);color:var(--decktext);font-size:13px;font-weight:500}
+.rbtn:hover{border-color:var(--deckmuted)}
+.rbtn.solid{background:var(--decktext);color:var(--deck);border-color:var(--decktext)}
+.rbtn.solid:hover{background:#fff}
+.rbtn[disabled]{opacity:.35;cursor:not-allowed}
+.rack .sprog{display:flex;align-items:center;gap:12px}
+.rack .sprog .track2{flex:1;height:3px;background:var(--deckline);border-radius:2px;overflow:hidden}
+.rack .sprog .track2 i{display:block;height:100%;width:0;background:var(--decktext);transition:width .25s}
+.rack .sprog span{font-size:12px;color:var(--decktext);white-space:nowrap;font-variant-numeric:tabular-nums}
+.rnote{margin:0;font-size:12px;color:var(--deckmuted)}
+.rnote.err{color:#FF6B6B}
+.rack .mixer{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;border:0;margin:0}
+.rack .strip{background:var(--deck2);border:1px solid var(--deckline);border-top:3px solid var(--sc);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;border-inline-start:1px solid var(--deckline);min-width:0}
+.rack .strip.off{opacity:.45}
+.rack .strip.silent .nm{opacity:.45}
+.rack .strip .tp{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rack .strip .nm{display:flex;align-items:center;gap:7px;color:var(--decktext);font-size:13px;font-weight:600;min-width:0}
+.rack .strip .nm .ic{color:var(--sc);width:17px;height:17px}
+.rack .strip .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rack .ms{display:flex;gap:3px}
+.rack .ms button{width:24px;height:22px;border:1px solid var(--deckline);border-radius:3px;background:transparent;color:var(--deckmuted);font-family:var(--mono);font-size:10px;font-weight:700}
+.rack .ms button.on{background:var(--decktext);color:var(--deck);border-color:var(--decktext)}
+.rack .ms button.m.on{background:var(--signal);border-color:var(--signal);color:#fff}
+.rack .ms button.k.on{background:var(--sc);border-color:var(--sc);color:#000}
+.rack .ms button[disabled]{opacity:.35;cursor:not-allowed}
+.rack .fad{display:flex;align-items:center;gap:8px}
+.rack .fad input{flex:1;accent-color:var(--sc);min-width:0}
+.rack .fad output{font-size:11px;color:var(--deckmuted);min-width:38px;text-align:end}
+@media (max-width:900px){.rack .mixer{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.rack .mixer{grid-template-columns:1fr 1fr;gap:6px}.rack .strip{padding:8px}.rack .ms button{width:22px}}
+
+/* Israeli chip */
+.dgen button.il{border-color:#1F4FD8;color:#1F4FD8}
+.dgen button.il.on{background:#1F4FD8;color:#fff}
+
+
+/* Arabic letters must stay joined: no letter-spacing anywhere */
+html[lang="ar"] *{letter-spacing:0!important}
+html[lang="ar"] .lb,html[lang="ar"] .eyebrow,html[lang="ar"] .stat .k{text-transform:none}
