@@ -182,6 +182,30 @@ dlDone:'Descargado ({s} MB).',bpmMin:'de',bpmMax:'a',demoName:'Canción demo · 
 gIsrael:'Israelí',gPop:'Pop',gHiphop:'Hip-hop',gDance:'Dance',gElectro:'Electrónica',gLatin:'Latina',gRnb:'R&B',gRock:'Rock',dAll:'Todo'}
 };
 for(const k in IX)Object.assign(I[k],IX[k]);
+const IY={
+he:{fullPlay:'שיר מלא',fullPlayT:'השמעת השיר המלא בנגן של Deezer',fullBarNote:'מחוברים ל־Deezer בדפדפן הזה? השיר מתנגן במלואו. בלי חשבון מתנגן קטע.',fullTag:'ניתוח מלא',fullTagT:'נותח מהשיר המלא, לא רק מקטע',
+dPreviewNote:'נטען קטע של 30 שניות מהשיר. יש לכם את השיר המלא? העלו אותו לניתוח מלא, והקטלוג יתעדכן לכולם.',uploadFullBtn:'העלאת השיר המלא',
+matchQ:'זה נראה כמו "{t}" של {a} מהקטלוג. לעדכן את הקטלוג בניתוח של השיר המלא?',matchYes:'עדכון הקטלוג',matchNo:'לא עכשיו',matchDone:'תודה! הקטלוג עודכן בניתוח של השיר המלא.',matchAlready:'לשיר הזה כבר יש ניתוח מלא בקטלוג.',matchFail:'העדכון לא הצליח. נסו שוב מאוחר יותר.',
+engGpu:'מאיץ גרפי',engCpu:'מעבד',engGpuT:'ההפרדה תרוץ על כרטיס המסך — מהר.',engCpuT:'אין מאיץ גרפי זמין בדפדפן הזה, ולכן ההפרדה תרוץ על המעבד ותהיה איטית יותר.',themeDark:'מצב כהה',themeLight:'מצב בהיר'},
+en:{fullPlay:'Full song',fullPlayT:'Play the full song in the Deezer player',fullBarNote:'Signed in to Deezer in this browser? The whole song plays. Without an account you hear a preview.',fullTag:'Full analysis',fullTagT:'Analyzed from the full song, not just a preview',
+dPreviewNote:'Loaded a 30-second preview. Have the full song? Upload it for a full analysis, and the catalog updates for everyone.',uploadFullBtn:'Upload the full song',
+matchQ:'This looks like "{t}" by {a} from the catalog. Update the catalog with the full-song analysis?',matchYes:'Update catalog',matchNo:'Not now',matchDone:'Thanks! The catalog now has the full-song analysis.',matchAlready:'This song already has a full analysis in the catalog.',matchFail:'The update failed. Try again later.',
+engGpu:'GPU',engCpu:'CPU',engGpuT:'Separation runs on your graphics card, so it is fast.',engCpuT:'No GPU is available in this browser, so separation runs on the processor and is slower.',themeDark:'Dark mode',themeLight:'Light mode'},
+ar:{fullPlay:'الأغنية كاملة',fullPlayT:'تشغيل الأغنية كاملة في مشغّل Deezer',fullBarNote:'هل أنت مسجّل في Deezer على هذا المتصفح؟ تُشغَّل الأغنية كاملة. بدون حساب يُشغَّل مقطع.',fullTag:'تحليل كامل',fullTagT:'حُلّلت من الأغنية كاملة وليس من مقطع فقط',
+dPreviewNote:'تم تحميل مقطع مدته 30 ثانية. لديك الأغنية كاملة؟ ارفعها لتحليل كامل ويُحدَّث الكتالوج للجميع.',uploadFullBtn:'رفع الأغنية كاملة',
+matchQ:'يبدو أن هذه "{t}" لـ{a} من الكتالوج. تحديث الكتالوج بتحليل الأغنية كاملة؟',matchYes:'تحديث الكتالوج',matchNo:'ليس الآن',matchDone:'شكرًا! حُدِّث الكتالوج بتحليل الأغنية كاملة.',matchAlready:'لهذه الأغنية تحليل كامل في الكتالوج بالفعل.',matchFail:'تعذّر التحديث. حاول لاحقًا.',
+engGpu:'معالج رسومي',engCpu:'معالج مركزي',engGpuT:'يعمل الفصل على بطاقة الرسوميات فهو سريع.',engCpuT:'لا يتوفر معالج رسومي في هذا المتصفح، لذا يعمل الفصل على المعالج وهو أبطأ.',themeDark:'الوضع الداكن',themeLight:'الوضع الفاتح'},
+ru:{fullPlay:'Целиком',fullPlayT:'Слушать песню целиком в плеере Deezer',fullBarNote:'Вошли в Deezer в этом браузере? Песня играет целиком. Без аккаунта — превью.',fullTag:'Полный анализ',fullTagT:'Проанализирована вся песня, а не только превью',
+dPreviewNote:'Загружено 30-секундное превью. Есть песня целиком? Загрузите её для полного анализа — каталог обновится для всех.',uploadFullBtn:'Загрузить песню целиком',
+matchQ:'Похоже, это «{t}» ({a}) из каталога. Обновить каталог анализом всей песни?',matchYes:'Обновить каталог',matchNo:'Не сейчас',matchDone:'Спасибо! В каталоге теперь анализ всей песни.',matchAlready:'У этой песни уже есть полный анализ в каталоге.',matchFail:'Не удалось обновить. Попробуйте позже.',
+engGpu:'Видеокарта',engCpu:'Процессор',engGpuT:'Разделение работает на видеокарте — быстро.',engCpuT:'В этом браузере нет доступа к видеокарте, разделение пойдёт на процессоре и будет медленнее.',themeDark:'Тёмная тема',themeLight:'Светлая тема'},
+es:{fullPlay:'Completa',fullPlayT:'Escuchar la canción completa en el reproductor de Deezer',fullBarNote:'¿Tienes sesión de Deezer en este navegador? Suena la canción completa. Sin cuenta, un fragmento.',fullTag:'Análisis completo',fullTagT:'Analizada con la canción completa, no solo un fragmento',
+dPreviewNote:'Se cargó un fragmento de 30 segundos. ¿Tienes la canción completa? Súbela para un análisis completo y el catálogo se actualiza para todos.',uploadFullBtn:'Subir la canción completa',
+matchQ:'Parece "{t}" de {a} del catálogo. ¿Actualizar el catálogo con el análisis de la canción completa?',matchYes:'Actualizar catálogo',matchNo:'Ahora no',matchDone:'¡Gracias! El catálogo tiene ahora el análisis completo.',matchAlready:'Esta canción ya tiene análisis completo en el catálogo.',matchFail:'No se pudo actualizar. Inténtalo más tarde.',
+engGpu:'GPU',engCpu:'CPU',engGpuT:'La separación usa la tarjeta gráfica, así que es rápida.',engCpuT:'Este navegador no tiene GPU disponible, así que la separación usa el procesador y es más lenta.',themeDark:'Modo oscuro',themeLight:'Modo claro'}
+};
+for(const k in IY)Object.assign(I[k],IY[k]);
+
 
 
 let LANG='he';let LANG_CHOSEN=false;
@@ -509,18 +533,18 @@ function sounding(c){return c<0?c:mod(c%12+S.transpose,12)+12*Math.floor(c/12)}
 function chordName(c,ascii){if(c<0)return 'N.C.';const n=(ascii?(flats()?ASCII_F:ASCII_S):(flats()?FLAT:SHARP))[c%12];return n+(c>=12?'m':'')}
 function chordColor(c){if(c<0)return 'transparent';const h=(mod((c%12)*7,12))*30;return c>=12?`hsl(${h},45%,42%)`:`hsl(${h},62%,52%)`}
 function guitarSvg(c){
-  if(c<0)return '<svg viewBox="0 0 100 122"><text class="txt" x="50" y="66" text-anchor="middle" font-size="13" fill="#A3A3A8" font-family="IBM Plex Mono,monospace">N.C.</text></svg>';
+  if(c<0)return '<svg viewBox="0 0 100 122"><text class="txt" x="50" y="66" text-anchor="middle" font-size="13" fill="currentColor" opacity=".45" font-family="IBM Plex Mono,monospace">N.C.</text></svg>';
   const f=[...SHAPES[c>=12?1:0][c%12]].map(ch=>ch==='x'?-1:+ch);
   const fr=f.filter(v=>v>0),maxF=Math.max(0,...fr),minF=fr.length?Math.min(...fr):0,base=maxF>4?minF:1;
   const x0=20,x1=84,y0=30,fh=17,sx=i=>x0+i*(x1-x0)/5;
   let s=`<svg viewBox="0 0 100 122" role="img" aria-label="${chordName(c,true)}">`;
-  for(let i=0;i<6;i++)s+=`<line class="fg" x1="${sx(i)}" y1="${y0}" x2="${sx(i)}" y2="${y0+5*fh}" stroke="#0B0B0C" stroke-width="1.1"/>`;
-  for(let j=0;j<=5;j++)s+=`<line class="fg" x1="${x0}" y1="${y0+j*fh}" x2="${x1}" y2="${y0+j*fh}" stroke="#0B0B0C" stroke-width="${j===0&&base===1?4:1.1}"/>`;
-  if(base>1)s+=`<text class="txt" x="${x0-6}" y="${y0+fh*0.72}" text-anchor="end" font-size="11" font-family="IBM Plex Mono,monospace" fill="#0B0B0C">${base}</text>`;
-  f.forEach((v,i)=>{if(v<0)s+=`<text class="txt" x="${sx(i)}" y="${y0-8}" text-anchor="middle" font-size="12" fill="#6D6D72">×</text>`;else if(v===0)s+=`<circle class="fg" cx="${sx(i)}" cy="${y0-12}" r="4" fill="none" stroke="#0B0B0C" stroke-width="1.3"/>`});
+  for(let i=0;i<6;i++)s+=`<line class="fg" x1="${sx(i)}" y1="${y0}" x2="${sx(i)}" y2="${y0+5*fh}" stroke="currentColor" stroke-width="1.1"/>`;
+  for(let j=0;j<=5;j++)s+=`<line class="fg" x1="${x0}" y1="${y0+j*fh}" x2="${x1}" y2="${y0+j*fh}" stroke="currentColor" stroke-width="${j===0&&base===1?4:1.1}"/>`;
+  if(base>1)s+=`<text class="txt" x="${x0-6}" y="${y0+fh*0.72}" text-anchor="end" font-size="11" font-family="IBM Plex Mono,monospace" fill="currentColor">${base}</text>`;
+  f.forEach((v,i)=>{if(v<0)s+=`<text class="txt" x="${sx(i)}" y="${y0-8}" text-anchor="middle" font-size="12" fill="currentColor" opacity=".55">×</text>`;else if(v===0)s+=`<circle class="fg" cx="${sx(i)}" cy="${y0-12}" r="4" fill="none" stroke="currentColor" stroke-width="1.3"/>`});
   const fp=f.findIndex(v=>v>=0);let barre=false;
-  if(minF>0&&f[fp]===minF&&f[5]===minF){barre=true;const y=y0+(minF-base+.5)*fh;s+=`<rect class="dot" x="${sx(fp)-6}" y="${y-6}" width="${sx(5)-sx(fp)+12}" height="12" rx="6" fill="#0B0B0C"/>`}
-  f.forEach((v,i)=>{if(v>0&&!(barre&&v===minF)){const y=y0+(v-base+.5)*fh;s+=`<circle class="dot" cx="${sx(i)}" cy="${y}" r="6.3" fill="#0B0B0C"/>`}});
+  if(minF>0&&f[fp]===minF&&f[5]===minF){barre=true;const y=y0+(minF-base+.5)*fh;s+=`<rect class="dot" x="${sx(fp)-6}" y="${y-6}" width="${sx(5)-sx(fp)+12}" height="12" rx="6" fill="currentColor"/>`}
+  f.forEach((v,i)=>{if(v>0&&!(barre&&v===minF)){const y=y0+(v-base+.5)*fh;s+=`<circle class="dot" cx="${sx(i)}" cy="${y}" r="6.3" fill="currentColor"/>`}});
   return s+'</svg>';
 }
 function pianoSvg(c){
@@ -642,7 +666,7 @@ function now(){
   if(!P.playing)return P.pos;
   let tt=P.startPos+Math.max(0,ac().currentTime-P.startCtx);
   if(P.loop){const {ls,le}=P.loop;if(P.startPos<le&&tt>=le)tt=ls+mod(tt-ls,le-ls);return tt}
-  if(tt>=S.dur){stop();P.pos=S.dur;return S.dur}
+  if(tt>=S.dur){endPlayback();return S.dur}
   return tt;
 }
 function play(){
@@ -656,7 +680,10 @@ function play(){
   else{const r=mk(S.buffer,1);P.srcs=[r[0]];P.gains=[]}
   P.startCtx=when;P.startPos=P.pos;P.playing=true;lastClick=P.pos-0.001;setIcon();
 }
-function stop(){if(!P.playing)return;P.pos=now();P.playing=false;P.srcs.forEach(x=>{try{x.stop()}catch(e){}});P.srcs=[];P.gains=[];setIcon()}
+function killSources(){P.srcs.forEach(x=>{try{x.onended=null;x.stop()}catch(e){}});P.srcs=[];P.gains=[]}
+function stop(){if(!P.playing)return;const tt=now();if(!P.playing)return;P.playing=false;P.pos=tt;killSources();setIcon()}
+// reached the end of the song: stop cleanly (no re-entry into now()), next play starts from the top
+function endPlayback(){P.playing=false;P.pos=S.dur;killSources();setIcon();dirty=true}
 function restart(){if(P.playing){stop();play()}}
 function toggle(){P.playing?stop():play()}
 function seek(tm){
@@ -815,6 +842,37 @@ function applyPop(a){
 }
 document.addEventListener('pointerdown',e=>{const p=$('#pop');if(!p.hidden&&!p.contains(e.target)&&!e.target.closest('.cell'))p.hidden=true});
 
+/* ---------- full-song analysis → shared catalog ---------- */
+const normTok=x=>String(x||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)|\[.*?\]|feat\..*$|ft\..*$/g,' ').split(/[^a-z0-9\u0590-\u05ff\u0600-\u06ff\u0400-\u04ff]+/).filter(w=>w.length>1);
+async function catalogPool(){
+  if(!ACC.on)return Object.values(typeof DC!=='undefined'?DC.rows:{});
+  if(!DC.pool){try{(await Backend.catalogList('created_at',1000)).forEach(rowFromCatalog)}catch(e){}DC.pool=true}
+  return Object.values(DC.rows);
+}
+async function offerCatalogMatch(){
+  if(!ACC.on||!ACC.user)return;
+  const name=S.name,ft=new Set(normTok(name)),pool=await catalogPool();let best=null,bs=0;
+  for(const r of pool){
+    if(!r.inCat)continue;const tt=normTok(r.title);if(!tt.length||!tt.every(w=>ft.has(w)))continue;
+    let sc=2+tt.length*0.1;if(normTok(r.artist).some(w=>ft.has(w)))sc+=1;if(S.catRef&&S.catRef.id===r.id)sc+=2;
+    if(sc>bs){bs=sc;best=r}
+  }
+  if(S.catRef&&!best&&S.catRef.inCat)best=S.catRef;
+  if(!best||S.name!==name)return;
+  const r=best;
+  showNotice(t('matchQ',{t:r.title,a:r.artist}),[[t('matchYes'),async()=>{
+    const prog=[];for(let b=S.down;b<S.chords.length&&prog.length<8;b++){const c=S.chords[b];if(c>=0&&c!==prog[prog.length-1])prog.push(c)}
+    const a={bpm:Math.round(S.bpm*10)/10,pc:S.key.pc,mode:S.key.mode,chords:prog};
+    try{const ok=await Backend.catalogSetFull(r.id,a);if(ok){r.a=a;r.full=true;const c=cacheRead();c[r.id]=a;cacheWrite(c);showNotice(t('matchDone'))}else showNotice(t('matchAlready'))}
+    catch(e){console.warn(e);showNotice(t('matchFail'))}
+  }],[t('matchNo'),()=>{$('#notice').hidden=true}]]);
+}
+/* ---------- notice bar with actions ---------- */
+function showNotice(text,actions){
+  const n=$('#notice');n.hidden=false;n.innerHTML='';const p=document.createElement('span');p.textContent=text;n.appendChild(p);
+  if(actions&&actions.length){const w=document.createElement('span');w.className='nact';
+    for(const [label,fn,icon] of actions){const b=document.createElement('button');b.type='button';b.className='btn ghost';b.innerHTML=(icon||'')+'<span></span>';b.lastChild.textContent=label;b.onclick=fn;w.appendChild(b)}n.appendChild(w)}
+}
 /* ---------- analysis pipeline ---------- */
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
 async function analyze(buffer,name,demo,nosave){
@@ -835,7 +893,7 @@ async function analyze(buffer,name,demo,nosave){
   buildBeats();recompute();
   try{const L=await measureLoudness(buffer);S.lufs=L.lufs;S.peak=L.peak}catch(e){}
   renderStats();busy(null);
-  if(!demo&&!nosave)saveLib();
+  if(!demo&&!nosave){saveLib();if(buffer.duration>=60)offerCatalogMatch()}
 }
 function recompute(){S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
 function regrid(){buildBeats();S.chords=detectChords();detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
@@ -880,7 +938,8 @@ const AI={w:null,ready:false,ep:'',busy:false,job:0};
 let quickW=null;
 function renderStemsUI(){
   const gpu=!!navigator.gpu;
-  $('#engine').textContent=AI.ready?(AI.ep==='webgpu'?t('engGpu'):t('engCpu')):(gpu?t('engGpu'):t('engCpu'));
+  const isGpu=AI.ready?AI.ep==='webgpu':gpu,eg=$('#engine');eg.classList.toggle('gpu',isGpu);eg.classList.toggle('cpu',!isGpu);
+  eg.querySelector('span').textContent=isGpu?t('engGpu'):t('engCpu');eg.title=isGpu?t('engGpuT'):t('engCpuT');
   const running=AI.busy;
   const aiOk=typeof cfgOn!=='function'||cfgOn('ai');
   $('#aiBtn').disabled=!S.buffer||running||S.stemKind==='ai'||!aiOk;
@@ -1450,7 +1509,7 @@ function rowFromTrack(t,album){
 function rowFromCatalog(c){
   const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'};
   Object.assign(r,{title:c.title||r.title,artist:c.artist||r.artist,album:c.album||r.album,cover:c.cover||r.cover,link:c.link||r.link,release:c.release_date||r.release||null,dur:c.duration||r.dur,plays:c.plays,inCat:true,
-    a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:c.chords||[]}:r.a,added:c.created_at});
+    a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:c.chords||[]}:r.a,added:c.created_at,full:!!c.is_full});
   if(r.a)r.status='done';
   return DC.rows[c.id]=r;
 }
@@ -1513,11 +1572,13 @@ function rowEl(r,n){
   const a=r.a,chips=a&&a.chords?a.chords.slice(0,4).map(c=>`<span>${esc(chordText(c,a))}</span>`).join(''):'';
   li.innerHTML=`<span class="dn mono">${n}</span><a class="dcl" target="_blank" rel="noopener" title="Deezer"><img class="dc" alt="" loading="lazy"></a><div class="dt"><div class="tt"></div><div class="ar"></div></div>
     <div class="dk"></div><span class="db mono">${a?Math.round(a.bpm):'—'}<small>BPM</small></span><div class="dch" dir="ltr">${chips}</div>
-    <div class="da"><button type="button" class="ib pv" aria-label="${esc(t('dPreview'))}">${DC.playing===r.id?'❚❚':'▶'}</button>
+    <div class="da"><button type="button" class="ib pv" aria-label="${esc(t('dPreview'))}" title="${esc(t('dPreview'))}">${DC.playing===r.id?'❚❚':'▶'}</button>
+    <button type="button" class="ib fl" title="${esc(t('fullPlayT'))}">${FULL_IC}<span>${esc(t('fullPlay'))}</span></button>
     <button type="button" class="ib mx" ${a?'':'disabled'}>${esc(t('dMix'))}</button><button type="button" class="ib op">${esc(t('dOpen'))}</button></div>`;
   li.querySelector('.dc').src=r.cover||'assets/icon.svg';if(r.link&&/^https:\/\/www\.deezer\.com\//.test(r.link))li.querySelector('.dcl').href=r.link;
   li.querySelector('.tt').textContent=r.title;li.querySelector('.ar').textContent=r.artist+(DC.tab==='played'&&r.plays?` · ${r.plays} ${t('dPlays')}`:'')+(DC.tab==='new'&&r.release?` · ${fmtDay(r.release)}`:'');
-  li.querySelector('.dk').appendChild(keyBadge(a,r.status));
+  li.querySelector('.dk').appendChild(keyBadge(a,r.status));if(r.full){const f=document.createElement('span');f.className='fulltag';f.textContent=t('fullTag');f.title=t('fullTagT');li.querySelector('.dk').appendChild(f)}
+  li.querySelector('.fl').onclick=()=>openFull(r);
   li.querySelector('.pv').onclick=()=>togglePreview(r);
   li.querySelector('.mx').onclick=()=>openMix(r);
   li.querySelector('.op').onclick=()=>openInTool(r);
@@ -1587,12 +1648,24 @@ async function togglePreview(r){
   if(prev&&DC.rows[prev])refreshRow(DC.rows[prev]);refreshRow(r);
 }
 function stopPreview(){if(DC.audio){DC.audio.pause()}const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p])}
+const FULL_IC='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 12v5a2 2 0 0 0 2 2h1v-6H4"/></svg>';
+// Full songs play inside Deezer's official player: complete for listeners signed in to Deezer, 30 s otherwise.
+function openFull(r){
+  if(!r||!r.ext)return;stopPreview();if(P.playing)stop();
+  const bar=$('#fullbar'),dark=document.documentElement.dataset.themeResolved==='dark';
+  $('#fullFrame').src=`https://widget.deezer.com/widget/${dark?'dark':'light'}/track/${encodeURIComponent(r.ext)}?autoplay=true&tracklist=false`;
+  $('#fullTitle').textContent=`${r.title} — ${r.artist}`;bar.hidden=false;document.body.classList.add('hasbar');
+  if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{});
+  DC.fullFor=r;
+}
+function closeFull(){$('#fullFrame').src='about:blank';$('#fullbar').hidden=true;document.body.classList.remove('hasbar');DC.fullFor=null}
+$('#fullClose').onclick=closeFull;
 async function openInTool(r){
   stopPreview();setDiscMsg(t('dLoading'));
   try{
     const buf=await ac().decodeAudioData(await (await fetch(await freshPreview(r))).arrayBuffer());
     setDiscMsg('');showView('tool');await analyze(buf,`${r.artist} – ${r.title}`,false,true);
-    const n=$('#notice');n.hidden=false;n.textContent=t('dPreviewNote');
+    S.catRef=r;showNotice(t('dPreviewNote'),[[t('fullPlay'),()=>openFull(r),FULL_IC],[t('uploadFullBtn'),()=>$('#file').click()]]);
     if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{});
   }catch(e){console.warn(e);setDiscMsg(t('dNoPreview'))}
 }
@@ -1667,7 +1740,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -1721,8 +1794,14 @@ window.addEventListener('dragover',e=>e.preventDefault());
 window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{sizeCanvases();renderMixer()},120)});
 
+/* ---------- theme (light / dark) ---------- */
+const mqDark=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+function resolvedTheme(){const t=document.documentElement.dataset.theme;return t==='dark'||t==='light'?t:(mqDark&&mqDark.matches?'dark':'light')}
+function applyTheme(){const r=resolvedTheme();document.documentElement.dataset.themeResolved=r;$('#themeBtn').title=r==='dark'?t('themeLight'):t('themeDark');$('#themeBtn').setAttribute('aria-label',$('#themeBtn').title)}
+$('#themeBtn').onclick=()=>{const next=resolvedTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('chordroom.theme',next)}catch(e){}applyTheme();renderChips();lastBeat=-2;dirty=true};
+if(mqDark&&mqDark.addEventListener)mqDark.addEventListener('change',()=>{applyTheme();dirty=true});
 /* ---------- boot ---------- */
-applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
+applyTheme();applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
 if(location.hash==='#discover')showView('discover');
 (async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

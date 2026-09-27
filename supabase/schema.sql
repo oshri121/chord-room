@@ -211,3 +211,29 @@ language sql security definer set search_path = public as $$
   update public.catalog set plays = plays + 1 where id = cid;
 $$;
 grant execute on function public.catalog_play(text) to anon, authenticated;
+
+-- ───────────── full-song analyses: members who upload the full song improve the catalog entry ─────────────
+alter table public.catalog add column if not exists is_full boolean not null default false;
+alter table public.catalog add column if not exists full_by uuid references auth.users(id) on delete set null;
+alter table public.catalog add column if not exists full_at timestamptz;
+
+create or replace function public.catalog_set_full(cid text, p_bpm numeric, p_pc smallint, p_mode smallint, p_chords jsonb)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare n integer;
+begin
+  if auth.uid() is null or exists (select 1 from public.profiles where id = auth.uid() and blocked) then
+    raise exception 'not allowed';
+  end if;
+  if p_bpm is null or p_bpm < 30 or p_bpm > 300 or p_pc not between 0 and 11 or p_mode not in (0,1)
+     or jsonb_typeof(p_chords) <> 'array' or jsonb_array_length(p_chords) > 16 then
+    raise exception 'bad analysis';
+  end if;
+  -- the first full analysis wins; admins can always replace it
+  update public.catalog
+     set bpm = p_bpm, key_pc = p_pc, key_mode = p_mode, chords = p_chords,
+         is_full = true, full_by = auth.uid(), full_at = now()
+   where id = cid and (not is_full or public.is_admin());
+  get diagnostics n = row_count;
+  return n > 0;
+end $$;
+grant execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) to authenticated;

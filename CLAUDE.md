@@ -21,6 +21,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (genre -1) uses Deezer's official "Top Israel" chart playlist (id 1362507345); its new tab sorts by album release date.
 - Stems live in the deck (`#rack`). After separation the waveform switches to the `stems` view: per-stem
   envelopes (`S.stemEnv`) stacked in stem colours and scaled live by each fader/mute/solo (`stemGain`).
+- Full songs: we never fetch full audio (licensing). "Full song" opens Deezer's official widget in `#fullbar`
+  (complete for listeners signed in to Deezer, 30 s otherwise). Uploading a file ≥60 s that matches a catalog title
+  offers `catalog_set_full` (first full analysis wins, admins can replace), shown as a "Full analysis" tag.
+- Theme: `data-theme` on <html> (light/dark, saved in localStorage; no attribute = follow the system). Colours come
+  from CSS tokens; the dark block redefines them. Use `currentColor`/tokens, never hard-coded light colours.
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.
   Tests can inject `window.__MOCK_BACKEND` before this script.
 - `assets/app.css` – light theme: white paper, black ink, black "deck". Fonts: IBM Plex Sans (+Hebrew/Arabic), Plex Mono.

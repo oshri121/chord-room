@@ -148,6 +148,11 @@
       if (error && !/duplicate key/.test(error.message)) throw error;
     },
     async catalogPlay(id) { await sb.rpc('catalog_play', { cid: id }); },
+    async catalogSetFull(id, a) {
+      const { data, error } = await sb.rpc('catalog_set_full', { cid: id, p_bpm: a.bpm, p_pc: a.pc, p_mode: a.mode, p_chords: a.chords });
+      if (error) throw error;
+      return !!data;
+    },
 
     async adminUsers() {
       const { data, error } = await sb.from('profiles').select('*').order('last_seen', { ascending: false });
