@@ -131,6 +131,20 @@ siteTitle:'Nombre del sitio',defLang:'Idioma por defecto',announce:'Aviso para t
 blockedMsg:'El administrador bloqueó tu cuenta.',offByAdmin:'El administrador desactivó esta opción.',gateMsg:'Entra en tu cuenta para usar la herramienta.',libH:'Las canciones se guardan en tu cuenta y se sincronizan entre dispositivos. Sin cuenta, solo en este navegador.'}
 };
 for(const k in IA)Object.assign(I[k],IA[k]);
+const ID={
+he:{navTool:'הכלי',navDisc:'גלה שירים',dTitle:'גלה שירים',dSub:'השירים החמים והחדשים בעולם, עם סולם, BPM ואקורדים. בחר שיר ותראה עם אילו שירים הוא מתמקסס בדיוק.',dTrend:'טרנדים עכשיו',dNew:'יציאות חדשות',dPlayed:'הכי מנוגנים אצלנו',dRecent:'נוספו לאחרונה',dAll:'הכול',dAllKeys:'כל הסולמות',dMatchCur:'מתאים לשיר שבכלי',dBpm:'BPM',dLoading:'טוען…',dLoadFail:'לא הצלחנו לטעון את הרשימה. נסה שוב בעוד רגע.',dEmptyCat:'הקטלוג עוד ריק. שירים נכנסים אליו אוטומטית כשמשתמשים מחוברים גולשים בטרנדים.',dNoMatch:'אין שירים שמתאימים לסינון.',dAnalyzing:'מנתח…',dPreview:'השמעת קטע',dMix:'מיקס',dOpen:'פתח בכלי',dPlays:'השמעות',dNoPreview:'אין קטע השמעה לשיר הזה.',
+dPreviewNote:'נטען קטע של 30 שניות מהשיר. הסולם והקצב מחושבים מהקטע, והאקורדים הם של הקטע בלבד.',mixTitle:'מתמקסס טוב עם',mixH:'שירים בסולם תואם בגלגל קאמלוט, בקצב של עד ±6% (כולל חצי/כפול קצב).',mixNone:'עוד אין שירים מתאימים. ככל שינותחו יותר שירים, יופיעו כאן יותר המלצות.',relSame:'אותו סולם',relRel:'מז׳ור/מינור מקביל',relUp:'+1 אנרגיה',relDown:'−1 רגוע',findMatches:'מצא שירים מתאימים',dNote:'הסולם וה־BPM מחושבים אוטומטית מקטע של 30 שניות, ולכן ייתכנו טעויות. נתוני הטרנדים וקטעי ההשמעה: Deezer.',dSignIn:'משתמשים מחוברים שומרים את הניתוחים בקטלוג המשותף, כך שכולם נהנים מהם.'},
+en:{navTool:'Tool',navDisc:'Discover',dTitle:'Discover songs',dSub:'The hottest and newest songs in the world, with key, BPM and chords. Pick a song to see what it mixes into.',dTrend:'Trending now',dNew:'New releases',dPlayed:'Most played here',dRecent:'Recently added',dAll:'All',dAllKeys:'All keys',dMatchCur:'Matches the song in the tool',dBpm:'BPM',dLoading:'Loading…',dLoadFail:'Could not load the list. Try again in a moment.',dEmptyCat:'The catalog is still empty. Songs join it automatically when signed-in users browse the trends.',dNoMatch:'No songs match the filter.',dAnalyzing:'Analyzing…',dPreview:'Play preview',dMix:'Mix',dOpen:'Open in tool',dPlays:'plays',dNoPreview:'No preview for this song.',
+dPreviewNote:'Loaded a 30-second preview. Key and tempo come from the preview, and the chords cover the preview only.',mixTitle:'Mixes well with',mixH:'Songs in a compatible Camelot key, within ±6% tempo (half/double time included).',mixNone:'No matches yet. More recommendations appear as more songs are analyzed.',relSame:'Same key',relRel:'Relative major/minor',relUp:'+1 energy',relDown:'−1 calmer',findMatches:'Find matching songs',dNote:'Key and BPM are computed automatically from a 30-second preview, so mistakes are possible. Chart data and previews: Deezer.',dSignIn:'Signed-in users save analyses to the shared catalog, so everyone benefits.'},
+ar:{navTool:'الأداة',navDisc:'اكتشف',dTitle:'اكتشف الأغاني',dSub:'أشهر الأغاني وأحدثها في العالم مع المقام والإيقاع والكوردات. اختر أغنية لترى ما يمتزج معها.',dTrend:'الرائج الآن',dNew:'إصدارات جديدة',dPlayed:'الأكثر تشغيلًا هنا',dRecent:'أُضيفت مؤخرًا',dAll:'الكل',dAllKeys:'كل المقامات',dMatchCur:'متوافق مع أغنية الأداة',dBpm:'BPM',dLoading:'جارٍ التحميل…',dLoadFail:'تعذّر تحميل القائمة. حاول بعد قليل.',dEmptyCat:'الكتالوج فارغ حاليًا. تُضاف الأغاني تلقائيًا عندما يتصفح المستخدمون المسجلون الرائج.',dNoMatch:'لا توجد أغانٍ تطابق التصفية.',dAnalyzing:'تحليل…',dPreview:'تشغيل مقطع',dMix:'مزج',dOpen:'افتح في الأداة',dPlays:'تشغيل',dNoPreview:'لا يوجد مقطع لهذه الأغنية.',
+dPreviewNote:'تم تحميل مقطع مدته 30 ثانية. المقام والإيقاع من المقطع، والكوردات للمقطع فقط.',mixTitle:'يمتزج جيدًا مع',mixH:'أغانٍ بمقام متوافق في عجلة كاميلوت وبإيقاع ضمن ±6% (مع نصف/ضعف الإيقاع).',mixNone:'لا توجد توصيات بعد. تظهر المزيد كلما حُلّلت أغانٍ أكثر.',relSame:'المقام نفسه',relRel:'ماجور/مينور مقابل',relUp:'+1 طاقة',relDown:'−1 أهدأ',findMatches:'ابحث عن أغانٍ متوافقة',dNote:'يُحسب المقام والإيقاع تلقائيًا من مقطع 30 ثانية لذا قد تقع أخطاء. بيانات الرائج والمقاطع: Deezer.',dSignIn:'المستخدمون المسجلون يحفظون التحليلات في الكتالوج المشترك ليستفيد الجميع.'},
+ru:{navTool:'Инструмент',navDisc:'Обзор',dTitle:'Обзор песен',dSub:'Самые популярные и новые песни мира с тональностью, BPM и аккордами. Выберите песню, чтобы увидеть, с чем она сводится.',dTrend:'В тренде',dNew:'Новинки',dPlayed:'Популярное у нас',dRecent:'Недавно добавлено',dAll:'Все',dAllKeys:'Все тональности',dMatchCur:'Подходит к песне в инструменте',dBpm:'BPM',dLoading:'Загрузка…',dLoadFail:'Не удалось загрузить список. Попробуйте чуть позже.',dEmptyCat:'Каталог пока пуст. Песни попадают в него автоматически, когда вошедшие пользователи смотрят тренды.',dNoMatch:'Нет песен под фильтр.',dAnalyzing:'Анализ…',dPreview:'Прослушать',dMix:'Микс',dOpen:'Открыть',dPlays:'прослушиваний',dNoPreview:'Для этой песни нет превью.',
+dPreviewNote:'Загружено 30-секундное превью. Тональность и темп — по превью, аккорды — только для превью.',mixTitle:'Хорошо сводится с',mixH:'Песни в совместимой тональности по кругу Camelot, темп в пределах ±6% (включая половинный/двойной).',mixNone:'Совпадений пока нет. Рекомендаций станет больше по мере анализа песен.',relSame:'Та же тональность',relRel:'Параллельный мажор/минор',relUp:'+1 энергия',relDown:'−1 спокойнее',findMatches:'Найти подходящие песни',dNote:'Тональность и BPM вычисляются автоматически по 30-секундному превью, возможны ошибки. Данные чартов и превью: Deezer.',dSignIn:'Вошедшие пользователи сохраняют анализ в общий каталог, и он доступен всем.'},
+es:{navTool:'Herramienta',navDisc:'Descubrir',dTitle:'Descubrir canciones',dSub:'Las canciones más populares y nuevas del mundo, con tonalidad, BPM y acordes. Elige una para ver con cuáles mezcla.',dTrend:'Tendencias',dNew:'Novedades',dPlayed:'Lo más escuchado aquí',dRecent:'Añadidas recientemente',dAll:'Todo',dAllKeys:'Todas las tonalidades',dMatchCur:'Compatibles con la canción cargada',dBpm:'BPM',dLoading:'Cargando…',dLoadFail:'No se pudo cargar la lista. Inténtalo en un momento.',dEmptyCat:'El catálogo aún está vacío. Las canciones se añaden solas cuando usuarios con sesión navegan por las tendencias.',dNoMatch:'Ninguna canción coincide con el filtro.',dAnalyzing:'Analizando…',dPreview:'Escuchar fragmento',dMix:'Mezcla',dOpen:'Abrir',dPlays:'reproducciones',dNoPreview:'Esta canción no tiene fragmento.',
+dPreviewNote:'Se cargó un fragmento de 30 segundos. Tonalidad y tempo salen del fragmento, y los acordes cubren solo el fragmento.',mixTitle:'Mezcla bien con',mixH:'Canciones en tonalidad compatible en la rueda Camelot, con tempo dentro de ±6% (incluye mitad/doble).',mixNone:'Aún no hay coincidencias. Aparecerán más a medida que se analicen canciones.',relSame:'Misma tonalidad',relRel:'Relativa mayor/menor',relUp:'+1 energía',relDown:'−1 más calma',findMatches:'Buscar canciones compatibles',dNote:'La tonalidad y el BPM se calculan automáticamente con un fragmento de 30 segundos, así que puede haber errores. Datos de listas y fragmentos: Deezer.',dSignIn:'Los usuarios con sesión guardan los análisis en el catálogo compartido para todos.'}
+};
+for(const k in ID)Object.assign(I[k],ID[k]);
+
 let LANG='he';let LANG_CHOSEN=false;
 try{const s=localStorage.getItem('chordroom.lang');if(s&&I[s]){LANG=s;LANG_CHOSEN=true}}catch(e){}
 function t(k,v){let s=(I[LANG][k]??I.en[k]??k);if(v)for(const x in v)s=s.replace('{'+x+'}',v[x]);return s}
@@ -156,7 +170,7 @@ const SHAPES=[
  ['x35543','x46654','xx0231','x68876','022000','133111','244222','355333','466444','x02210','x13321','x24432']];
 const HC_COL=['#2BD46A','#3D8BFF','#FFB020','#FF4D4D','#B66DFF','#22D3D3','#FF6FB5','#E8E24A'];
 const STEMS=[{id:'vocals',file:'Vocals',color:'#D6336C'},{id:'drums',file:'Drums',color:'#D99A0B'},{id:'bass',file:'Bass',color:'#1F6FEB'},{id:'other',file:'Other',color:'#169A57'}];
-const S={name:'',buffer:null,dur:0,wave:null,chroma:null,env:null,lowEnv:null,bpm:0,offset:0,beats:[],chords:null,down:0,key:null,
+let S={name:'',buffer:null,dur:0,wave:null,chroma:null,env:null,lowEnv:null,bpm:0,offset:0,beats:[],chords:null,down:0,key:null,
   transpose:0,capo:0,acc:0,win:8,demo:false,stems:null,stemKind:null,edited:new Set(),cues:new Array(8).fill(null),lufs:null,peak:null,
   wmode:'rgb',diag:'guitar',loopBars:4,loop:null,click:false,editing:false,notes:null};
 let cells=[],bars=[];
@@ -743,7 +757,7 @@ document.addEventListener('pointerdown',e=>{const p=$('#pop');if(!p.hidden&&!p.c
 
 /* ---------- analysis pipeline ---------- */
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
-async function analyze(buffer,name,demo){
+async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
   Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
@@ -761,7 +775,7 @@ async function analyze(buffer,name,demo){
   buildBeats();recompute();
   try{const L=await measureLoudness(buffer);S.lufs=L.lufs;S.peak=L.peak}catch(e){}
   renderStats();busy(null);
-  if(!demo)saveLib();
+  if(!demo&&!nosave)saveLib();
 }
 function recompute(){S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
 function regrid(){buildBeats();S.chords=detectChords();detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
@@ -1326,6 +1340,235 @@ async function cloudSave(item){if(!ACC.user||ACC.lib===null)return;try{await Bac
 async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await Backend.deleteSong(name);ACC.lib=ACC.lib.filter(x=>x.name!==name);loadProfile(false)}catch(e){console.warn(e)}}
 function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).catch(()=>{})}
 
+/* ---------- discover: trending songs, catalog, DJ mix matches ---------- */
+const DISC_GENRES=[[0,'All'],[132,'Pop'],[116,'Hip-Hop'],[113,'Dance'],[106,'Electro'],[197,'Latin'],[165,'R&B'],[152,'Rock']];
+const DC={tab:'trend',genre:0,rows:{},lists:{},keyF:'',bpmMin:'',bpmMax:'',queue:[],working:false,audio:null,playing:null,loaded:false,mixFor:null,pool:null};
+const CACHE_K='chordroom.cat.v1';
+const cacheRead=()=>{try{return JSON.parse(localStorage.getItem(CACHE_K)||'{}')}catch(e){return {}}};
+const cacheWrite=c=>{try{localStorage.setItem(CACHE_K,JSON.stringify(c))}catch(e){}};
+const camNum=(pc,mode)=>mode?CAM_MAJ[mod(pc+3,12)]:CAM_MAJ[pc];
+const camOf=a=>a?{n:camNum(a.pc,a.mode),l:a.mode?'A':'B'}:null;
+function camColor(n,l){const h=mod((n-1)*30+170,360);return l==='A'?`hsl(${h},55%,42%)`:`hsl(${h},62%,34%)`}
+function keyText(a){const fl=FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[a.pc]+(a.mode?'m':'')}
+function chordText(c,a){if(c<0)return '';const fl=a&&FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[c%12]+(c>=12?'m':'')}
+
+/* Deezer through our proxy (production) or JSONP (local dev, no proxy) */
+let dzMode=null;
+async function dz(path,params){
+  const q=new URLSearchParams(params||{}).toString();
+  if(dzMode!=='jsonp'){
+    try{const r=await fetch(`api/deezer/${path}${q?'?'+q:''}`);if(r.ok&&/json/.test(r.headers.get('content-type')||'')){dzMode='proxy';return await r.json()}}catch(e){}
+    if(dzMode==='proxy')throw new Error('deezer');
+    dzMode='jsonp';
+  }
+  return new Promise((ok,no)=>{const cb='__dz'+Math.random().toString(36).slice(2);const s=document.createElement('script');
+    const done=()=>{delete window[cb];s.remove()};window[cb]=d=>{done();ok(d)};s.onerror=()=>{done();no(new Error('deezer'))};
+    s.src=`https://api.deezer.com/${path}?${q}${q?'&':''}output=jsonp&callback=${cb}`;document.head.appendChild(s)});
+}
+function rowFromTrack(t,album){
+  const id='dz:'+t.id;const r=DC.rows[id]||{id,ext:t.id,a:null,status:'idle',plays:0};
+  Object.assign(r,{title:t.title_short||t.title,artist:(t.artist&&t.artist.name)||'',album:(album&&album.title)||(t.album&&t.album.title)||'',
+    cover:(album&&album.cover_medium)||(t.album&&t.album.cover_medium)||r.cover||'',preview:t.preview||r.preview||'',link:t.link||r.link||'',
+    release:(album&&album.release_date)||r.release||null,dur:t.duration||r.dur||0});
+  return DC.rows[id]=r;
+}
+function rowFromCatalog(c){
+  const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'};
+  Object.assign(r,{title:c.title,artist:c.artist,album:c.album,cover:c.cover||r.cover,link:c.link||r.link,release:c.release_date,dur:c.duration,plays:c.plays,inCat:true,
+    a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:c.chords||[]}:r.a,added:c.created_at});
+  if(r.a)r.status='done';
+  return DC.rows[c.id]=r;
+}
+async function mergeKnown(rows){
+  const cache=cacheRead();
+  for(const r of rows)if(!r.a&&cache[r.id]){r.a=cache[r.id];r.status='done'}
+  if(ACC.on){try{(await Backend.catalogGet(rows.map(r=>r.id))).forEach(rowFromCatalog)}catch(e){}}
+}
+async function loadTab(){
+  const tab=DC.tab,key=tab+':'+DC.genre;setDiscMsg('');
+  if(!DC.lists[key]){
+    $('#dList').innerHTML=`<li class="dempty">${esc(t('dLoading'))}</li>`;
+    try{
+      let rows=[];
+      if(tab==='trend'){const d=await dz(`chart/${DC.genre}/tracks`,{limit:50});rows=(d.data||[]).map(x=>rowFromTrack(x))}
+      else if(tab==='new'){
+        const d=await dz(`editorial/${DC.genre}/releases`,{limit:40});const albums=(d.data||[]).filter(a=>a.id);
+        const firsts=await Promise.all(albums.map(a=>dz(`album/${a.id}/tracks`,{limit:1}).then(x=>x.data&&x.data[0]?rowFromTrack(x.data[0],a):null).catch(()=>null)));
+        rows=firsts.filter(Boolean);
+      }else{
+        if(!ACC.on){rows=[]}else{const d=await Backend.catalogList(tab==='played'?'plays':'created_at',100);rows=d.map(rowFromCatalog)}
+      }
+      if(tab==='trend'||tab==='new')await mergeKnown(rows);
+      DC.lists[key]=rows.map(r=>r.id);
+    }catch(e){console.warn(e);DC.lists[key]=null;$('#dList').innerHTML=`<li class="dempty">${esc(t('dLoadFail'))}</li>`;return}
+  }
+  renderList();queueVisible();
+}
+function passesFilter(r){
+  const a=r.a,kf=DC.keyF;
+  if(kf){if(!a)return false;const c=camOf(a);
+    if(kf==='match'){if(!S.key)return true;const ref={pc:mod(S.key.pc+S.transpose,12),mode:S.key.mode};if(camRel(camOf(ref),c)<0)return false;if(S.bpm&&bpmFit(S.bpm,a.bpm)>0.06)return false}
+    else if(c.n+c.l!==kf)return false}
+  if(DC.bpmMin&&(!a||a.bpm<+DC.bpmMin))return false;
+  if(DC.bpmMax&&(!a||a.bpm>+DC.bpmMax))return false;
+  return true;
+}
+function renderList(){
+  const ids=DC.lists[DC.tab+':'+DC.genre]||[],ul=$('#dList');ul.innerHTML='';
+  const rows=ids.map(id=>DC.rows[id]).filter(passesFilter);
+  if(!rows.length){ul.innerHTML=`<li class="dempty">${esc((DC.tab==='played'||DC.tab==='recent')&&!ids.length?t('dEmptyCat'):t('dNoMatch'))}</li>`;return}
+  rows.forEach((r,i)=>ul.appendChild(rowEl(r,i+1)));
+}
+function keyBadge(a,status){
+  const s=document.createElement('span');s.className='kb';
+  if(a){const c=camOf(a);s.style.background=camColor(c.n,c.l);s.innerHTML=`<b>${c.n}${c.l}</b><i>${esc(keyText(a))}</i>`}
+  else{s.classList.add('pending');s.textContent=status==='err'?'—':status==='busy'?t('dAnalyzing'):'···'}
+  return s;
+}
+function rowEl(r,n){
+  const li=document.createElement('li');li.className='drow';li.dataset.id=r.id;
+  const a=r.a,chips=a&&a.chords?a.chords.slice(0,4).map(c=>`<span>${esc(chordText(c,a))}</span>`).join(''):'';
+  li.innerHTML=`<span class="dn mono">${n}</span><a class="dcl" target="_blank" rel="noopener" title="Deezer"><img class="dc" alt="" loading="lazy"></a><div class="dt"><div class="tt"></div><div class="ar"></div></div>
+    <div class="dk"></div><span class="db mono">${a?Math.round(a.bpm):'—'}<small>BPM</small></span><div class="dch" dir="ltr">${chips}</div>
+    <div class="da"><button type="button" class="ib pv" aria-label="${esc(t('dPreview'))}">${DC.playing===r.id?'❚❚':'▶'}</button>
+    <button type="button" class="ib mx" ${a?'':'disabled'}>${esc(t('dMix'))}</button><button type="button" class="ib op">${esc(t('dOpen'))}</button></div>`;
+  li.querySelector('.dc').src=r.cover||'assets/icon.svg';if(r.link&&/^https:\/\/www\.deezer\.com\//.test(r.link))li.querySelector('.dcl').href=r.link;
+  li.querySelector('.tt').textContent=r.title;li.querySelector('.ar').textContent=r.artist+(DC.tab==='played'&&r.plays?` · ${r.plays} ${t('dPlays')}`:'');
+  li.querySelector('.dk').appendChild(keyBadge(a,r.status));
+  li.querySelector('.pv').onclick=()=>togglePreview(r);
+  li.querySelector('.mx').onclick=()=>openMix(r);
+  li.querySelector('.op').onclick=()=>openInTool(r);
+  return li;
+}
+function refreshRow(r){const el=document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`);if(el){const n=el.querySelector('.dn').textContent;el.replaceWith(rowEl(r,n))}}
+function setDiscMsg(m){$('#dMsg').textContent=m||''}
+
+/* preview URLs expire; refresh from the track endpoint when needed */
+async function freshPreview(r){
+  if(r.preview&&!/exp=(\d+)/.test(r.preview))return r.preview;
+  const exp=+(r.preview.match(/exp=(\d+)/)||[])[1]||0;
+  if(r.preview&&exp*1000>Date.now()+60e3)return r.preview;
+  const d=await dz(`track/${r.ext}`);r.preview=d.preview||'';return r.preview;
+}
+
+/* analysis of the 30 s preview: key, BPM and the opening chords */
+async function quickAnalyze(buffer){
+  const x=await toMono(buffer);
+  const on=await computeOnset(x,()=>{});
+  const chroma=await computeChroma(x,()=>{});
+  const genv=new Float32Array(on.env.length);for(let i=0;i<genv.length;i++)genv[i]=on.env[i]+2*on.low[i];
+  const g=fitGrid(genv,estimateTempo(on.env));
+  const saved=S;let out;
+  S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0};
+  try{
+    buildBeats();S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();
+    const prog=[];for(let b=S.down;b<S.chords.length&&prog.length<8;b++){const c=S.chords[b];if(c>=0&&c!==prog[prog.length-1])prog.push(c)}
+    out={bpm:Math.round(S.bpm*10)/10,pc:S.key.pc,mode:S.key.mode,chords:prog};
+  }finally{S=saved}
+  return out;
+}
+function queueVisible(){
+  const ids=DC.lists[DC.tab+':'+DC.genre]||[];
+  for(const id of ids){const r=DC.rows[id];if(r&&!r.a&&r.status==='idle'&&r.ext){r.status='queued';DC.queue.push(r)}}
+  pump();
+}
+async function pump(){
+  if(DC.working)return;DC.working=true;
+  try{
+    while(DC.queue.length){
+      if($('#discover').hidden){break}
+      const r=DC.queue.shift();if(r.a){continue}
+      r.status='busy';refreshRow(r);
+      try{
+        const url=await freshPreview(r);if(!url)throw new Error('no preview');
+        const buf=await ac().decodeAudioData(await (await fetch(url)).arrayBuffer());
+        r.a=await quickAnalyze(buf);r.status='done';
+        const c=cacheRead();c[r.id]=r.a;cacheWrite(c);
+        if(ACC.on&&ACC.user&&!r.inCat){Backend.catalogAdd({id:r.id,ext_id:r.ext,title:r.title.slice(0,300),artist:r.artist.slice(0,300),album:(r.album||'').slice(0,300),cover:r.cover||'',link:r.link||'',
+          release_date:r.release||null,duration:r.dur||null,bpm:Math.min(300,Math.max(30,r.a.bpm)),key_pc:r.a.pc,key_mode:r.a.mode,chords:r.a.chords}).then(()=>{r.inCat=true}).catch(e=>console.warn(e))}
+      }catch(e){console.warn(e);r.status='err'}
+      refreshRow(r);if(DC.mixFor)renderMix();
+      await tick();
+    }
+  }finally{DC.working=false}
+}
+
+/* preview player */
+async function togglePreview(r){
+  if(!DC.audio){DC.audio=new Audio();DC.audio.onended=()=>{const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p])}}
+  const prev=DC.playing;
+  if(prev===r.id){DC.audio.pause();DC.playing=null;refreshRow(r);return}
+  if(P.playing)stop();
+  try{DC.audio.src=await freshPreview(r);await DC.audio.play();DC.playing=r.id;if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{})}catch(e){setDiscMsg(t('dNoPreview'))}
+  if(prev&&DC.rows[prev])refreshRow(DC.rows[prev]);refreshRow(r);
+}
+function stopPreview(){if(DC.audio){DC.audio.pause()}const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p])}
+async function openInTool(r){
+  stopPreview();setDiscMsg(t('dLoading'));
+  try{
+    const buf=await ac().decodeAudioData(await (await fetch(await freshPreview(r))).arrayBuffer());
+    setDiscMsg('');showView('tool');await analyze(buf,`${r.artist} – ${r.title}`,false,true);
+    const n=$('#notice');n.hidden=false;n.textContent=t('dPreviewNote');
+    if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{});
+  }catch(e){console.warn(e);setDiscMsg(t('dNoPreview'))}
+}
+
+/* DJ mix matches: Camelot neighbours + tempo within 6 % (half/double time counts) */
+function camRel(a,b){if(!a||!b)return -1;if(a.n===b.n&&a.l===b.l)return 0;if(a.n===b.n)return 1;if(a.l===b.l){const d=mod(b.n-a.n,12);if(d===1)return 2;if(d===11)return 3}return -1}
+function bpmFit(a,b){if(!a||!b)return 1;return Math.min(...[b,b*2,b/2].map(x=>Math.abs(x-a)/a))}
+async function openMix(r){
+  DC.mixFor=r;$('#mix').hidden=false;
+  if(!DC.pool&&ACC.on){try{(await Backend.catalogList('plays',1000)).forEach(rowFromCatalog)}catch(e){}DC.pool=true}
+  renderMix();
+}
+function renderMix(){
+  const r=DC.mixFor;if(!r||!r.a)return;const c=camOf(r.a);
+  $('#mixHead').innerHTML='';const h=$('#mixHead');
+  const b=keyBadge(r.a);h.append(b);const tt=document.createElement('div');tt.innerHTML=`<div class="tt"></div><div class="ar"></div>`;
+  tt.querySelector('.tt').textContent=r.title;tt.querySelector('.ar').textContent=`${r.artist} · ${Math.round(r.a.bpm)} BPM`;h.append(tt);
+  const relName=[t('relSame'),t('relRel'),t('relUp'),t('relDown')];
+  const cands=Object.values(DC.rows).filter(x=>x!==r&&x.a).map(x=>({x,rel:camRel(c,camOf(x.a)),fit:bpmFit(r.a.bpm,x.a.bpm)}))
+    .filter(o=>o.rel>=0&&o.fit<=0.06).sort((p,q)=>p.rel-q.rel||p.fit-q.fit).slice(0,40);
+  const ul=$('#mixList');ul.innerHTML='';
+  if(!cands.length){ul.innerHTML=`<li class="dempty">${esc(t('mixNone'))}</li>`;return}
+  for(const o of cands){
+    const li=document.createElement('li');li.className='mrow';
+    li.innerHTML=`<img alt="" loading="lazy"><div class="dt"><div class="tt"></div><div class="ar"></div></div><span class="rel"></span><button type="button" class="ib pv">▶</button>`;
+    li.querySelector('img').src=o.x.cover||'assets/icon.svg';li.querySelector('.tt').textContent=o.x.title;
+    li.querySelector('.ar').textContent=`${o.x.artist} · ${Math.round(o.x.a.bpm)} BPM`+(o.fit>0.005?` · ±${Math.max(1,Math.round(o.fit*100))}%`:'');
+    li.insertBefore(keyBadge(o.x.a),li.querySelector('.rel'));li.querySelector('.rel').textContent=relName[o.rel];
+    li.querySelector('.pv').onclick=()=>togglePreview(o.x);
+    ul.appendChild(li);
+  }
+}
+$('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
+
+/* views */
+function showView(v){
+  const d=v==='discover';$('#discover').hidden=!d;$('#toolView').hidden=d;
+  $('#navDisc').classList.toggle('on',d);$('#navTool').classList.toggle('on',!d);
+  if(d){if(P.playing)stop();if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
+  else{stopPreview();requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  try{history.replaceState(null,'',d?'#discover':location.pathname+location.search)}catch(e){}
+  window.scrollTo(0,0);
+}
+function renderDiscControls(){
+  const tabs=[['trend','dTrend'],['new','dNew'],['played','dPlayed'],['recent','dRecent']];
+  $('#dTabs').innerHTML='';tabs.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=t(l);b.classList.toggle('on',DC.tab===k);b.onclick=()=>{DC.tab=k;renderDiscControls();loadTab()};$('#dTabs').appendChild(b)});
+  const gOk=DC.tab==='trend'||DC.tab==='new';$('#dGenres').hidden=!gOk;$('#dGenres').innerHTML='';
+  DISC_GENRES.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=id?name:t('dAll');b.classList.toggle('on',DC.genre===id);b.onclick=()=>{DC.genre=id;renderDiscControls();loadTab()};$('#dGenres').appendChild(b)});
+  const sel=$('#dKey'),cur=DC.keyF;sel.innerHTML=`<option value="">${esc(t('dAllKeys'))}</option><option value="match">${esc(t('dMatchCur'))}</option>`;
+  for(let n=1;n<=12;n++)for(const l of ['A','B']){const pc=l==='B'?CAM_MAJ.indexOf(n):mod(CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=n+l;o.textContent=`${n}${l} · ${keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
+  sel.value=cur;
+}
+$('#dKey').onchange=e=>{DC.keyF=e.target.value;renderList()};
+$('#dBpmMin').oninput=e=>{DC.bpmMin=e.target.value;renderList()};
+$('#dBpmMax').oninput=e=>{DC.bpmMax=e.target.value;renderList()};
+$('#navDisc').onclick=()=>showView('discover');
+$('#navTool').onclick=()=>showView('tool');
+$('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
+window.addEventListener('hashchange',()=>showView(location.hash==='#discover'?'discover':'tool'));
+
 /* ---------- events ---------- */
 async function loadFile(file){
   if(!file)return;
@@ -1340,7 +1583,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin()}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -1369,7 +1612,7 @@ $('#editBtn').onclick=()=>{S.editing=!S.editing;$('#pop').hidden=true;renderShee
 $('#libBtn').onclick=()=>{renderLib();$('#lib').hidden=false};$('#libClose').onclick=()=>$('#lib').hidden=true;
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
-  if(e.key!=='Escape'&&(!$('#authDlg').hidden||!$('#acc').hidden||!$('#admin').hidden))return;
+  if(e.key!=='Escape'&&(!$('#authDlg').hidden||!$('#acc').hidden||!$('#admin').hidden||!$('#discover').hidden))return;
   const onBtn=e.target.closest('button,label');
   if(e.code==='Space'){if(onBtn)return;e.preventDefault();toggle()}
   else if(e.key==='ArrowRight'){e.preventDefault();seek(now()+60/(S.bpm||120)*4)}
@@ -1378,7 +1621,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='l'||e.key==='L'){loopToggle()}
   else if(e.key==='m'||e.key==='M'){S.click=!S.click;$('#clickBtn').classList.toggle('on',S.click)}
   else if(e.key==='+'||e.key==='='){zoom(-1)}else if(e.key==='-'){zoom(1)}
-  else if(e.key==='Escape'){$('#pop').hidden=true;$('#lib').hidden=true;$('#acc').hidden=true;$('#admin').hidden=true;$('#authDlg').hidden=true}
+  else if(e.key==='Escape'){$('#pop').hidden=true;$('#mix').hidden=true;$('#lib').hidden=true;$('#acc').hidden=true;$('#admin').hidden=true;$('#authDlg').hidden=true}
 });
 ov.addEventListener('pointerdown',e=>{if(!S.dur)return;const r=ov.getBoundingClientRect();seek((e.clientX-r.left)/r.width*S.dur)});
 let drag=null;
@@ -1396,5 +1639,6 @@ let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>
 
 /* ---------- boot ---------- */
 applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
+if(location.hash==='#discover')showView('discover');
 (async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,'Demo · Am F C G · 120',true)}catch(e){console.error(e);busy(null)}})();
 })();

@@ -131,6 +131,24 @@
       return sb.channel('site_config').on('postgres_changes', { event: '*', schema: 'public', table: 'site_config' }, p => cb(p.new || {})).subscribe();
     },
 
+    // shared catalog of analysed songs (Discover page)
+    async catalogGet(ids) {
+      if (!ids.length) return [];
+      const { data, error } = await sb.from('catalog').select('*').in('id', ids);
+      if (error) throw error;
+      return data;
+    },
+    async catalogList(order, limit) {
+      const { data, error } = await sb.from('catalog').select('*').not('bpm', 'is', null).order(order, { ascending: false }).limit(limit || 50);
+      if (error) throw error;
+      return data;
+    },
+    async catalogAdd(row) {
+      const { error } = await sb.from('catalog').insert(row);
+      if (error && !/duplicate key/.test(error.message)) throw error;
+    },
+    async catalogPlay(id) { await sb.rpc('catalog_play', { cid: id }); },
+
     async adminUsers() {
       const { data, error } = await sb.from('profiles').select('*').order('last_seen', { ascending: false });
       if (error) throw error;

@@ -56,6 +56,7 @@
 | `assets/backend.js` | החיבור ל־Supabase (הרשמה, פרופיל, שירים, ניהול) |
 | `config.js` | כתובת Supabase והמפתח הציבורי |
 | `supabase/schema.sql` | טבלאות, הרשאות ואבטחה |
+| `functions/api/deezer/` | פונקציה של Cloudflare שמביאה טרנדים ויציאות חדשות מ־Deezer לעמוד "גלה שירים" |
 | `ai/worker.js` | מריץ את מודל ה־AI בדפדפן (ONNX Runtime Web) |
 | `ai/model/*` | משקלות Demucs (fp16, דחוסים ומפוצלים) |
 | `vendor/supabase.js` | ספריית Supabase (גרסה 2.117.2) |

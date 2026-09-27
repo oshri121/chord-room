@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=1">
+<link rel="stylesheet" href="assets/app.css?v=2">
 </head>
 <body>
 <header class="top">
@@ -21,6 +21,7 @@
     <span class="tl" data-i="tagline"></span>
   </div>
   <nav class="nav">
+    <div class="vsw" role="tablist"><button type="button" id="navTool" class="on" data-i="navTool"></button><button type="button" id="navDisc" data-i="navDisc"></button></div>
     <select class="sel" id="lang" aria-label="Language">
       <option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option><option value="ru">Русский</option><option value="es">Español</option>
     </select>
@@ -34,7 +35,7 @@
 </header>
 <div class="banner" id="banner" hidden><b data-i="notice"></b><span id="bannerT"></span></div>
 
-<main class="wrap">
+<main class="wrap" id="toolView">
   <section class="track" aria-live="polite">
     <div>
       <div class="eyebrow" data-i="loaded"></div>
@@ -94,7 +95,7 @@
       <div class="crow"><div class="n" data-i="names"></div>
         <div class="seg"><button type="button" data-acc="0" data-i="auto"></button><button type="button" data-acc="1">♯</button><button type="button" data-acc="2">♭</button></div></div>
       <div class="crow"><div><div class="n" data-i="harmonic"></div><div class="h" data-i="harmonicH"></div></div>
-        <div class="harm" id="harm" dir="ltr"></div></div>
+        <div class="hcol"><div class="harm" id="harm" dir="ltr"></div><button class="lnk" type="button" id="findMatches" data-i="findMatches"></button></div></div>
     </section>
   </div>
 
@@ -133,6 +134,22 @@
     <div><h3 data-i="keys"></h3><div class="keys" id="keys"></div></div>
   </footer>
 </main>
+<section class="wrap disc" id="discover" hidden>
+  <div class="dhead">
+    <div><h1 data-i="dTitle"></h1><p data-i="dSub"></p></div>
+  </div>
+  <div class="dtabs" id="dTabs" role="tablist"></div>
+  <div class="dfilters">
+    <div class="dgen" id="dGenres"></div>
+    <div class="dsel">
+      <select class="sel" id="dKey" aria-label="Key"></select>
+      <label class="bpmr"><span data-i="dBpm"></span><input type="number" id="dBpmMin" min="40" max="220" inputmode="numeric" placeholder="min"><span>–</span><input type="number" id="dBpmMax" min="40" max="220" inputmode="numeric" placeholder="max"></label>
+    </div>
+  </div>
+  <p class="snote" id="dMsg"></p>
+  <ol class="dlist" id="dList"></ol>
+  <p class="snote dnote"><span data-i="dNote"></span> <span data-i="dSignIn"></span></p>
+</section>
 
 <aside class="lib" id="lib" hidden>
   <div class="hd"><h3 data-i="library"></h3><button class="btn ghost" id="libClose" type="button" data-i="close"></button></div>
@@ -140,6 +157,12 @@
   <ul id="libList"></ul>
 </aside>
 <div class="pop" id="pop" hidden></div>
+<aside class="mix" id="mix" hidden>
+  <div class="hd"><h3 data-i="mixTitle"></h3><button class="btn ghost" id="mixClose" type="button" data-i="close"></button></div>
+  <div class="mhead" id="mixHead"></div>
+  <p class="snote" data-i="mixH"></p>
+  <ul class="mlist" id="mixList"></ul>
+</aside>
 
 <aside class="acc" id="acc" hidden>
   <div class="hd"><h3 data-i="account"></h3><button class="btn ghost" id="accClose" type="button" data-i="close"></button></div>
@@ -230,7 +253,7 @@
 
 <script src="config.js?v=1"></script>
 <script src="vendor/supabase.js"></script>
-<script src="assets/backend.js?v=1"></script>
-<script src="assets/app.js?v=1"></script>
+<script src="assets/backend.js?v=2"></script>
+<script src="assets/app.js?v=2"></script>
 </body>
 </html>

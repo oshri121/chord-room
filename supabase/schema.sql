@@ -169,3 +169,45 @@ create policy "avatars: own delete" on storage.objects
 
 -- ───────────── make someone admin by hand (optional) ─────────────
 -- update public.profiles set role = 'admin' where email = 'you@example.com';
+
+-- ───────────── catalog: shared song analyses (key, BPM, chords) for the Discover page ─────────────
+-- Only metadata is stored, never audio. Rows come from analysing Deezer's 30-second previews.
+create table if not exists public.catalog (
+  id          text primary key check (id ~ '^dz:[0-9]{1,15}$'),
+  source      text not null default 'deezer',
+  ext_id      bigint not null,
+  title       text not null check (char_length(title) <= 300),
+  artist      text not null check (char_length(artist) <= 300),
+  album       text default '' check (char_length(album) <= 300),
+  cover       text default '' check (char_length(cover) <= 500),
+  link        text default '' check (char_length(link) <= 500),
+  release_date date,
+  duration    integer,
+  bpm         numeric(6,2) check (bpm between 30 and 300),
+  key_pc      smallint check (key_pc between 0 and 11),
+  key_mode    smallint check (key_mode in (0,1)),
+  chords      jsonb not null default '[]'::jsonb,
+  plays       integer not null default 0,
+  analyzed_by uuid references auth.users(id) on delete set null default auth.uid(),
+  created_at  timestamptz not null default now()
+);
+create index if not exists catalog_plays_idx on public.catalog (plays desc);
+create index if not exists catalog_created_idx on public.catalog (created_at desc);
+alter table public.catalog enable row level security;
+
+drop policy if exists "catalog: everyone reads" on public.catalog;
+create policy "catalog: everyone reads" on public.catalog for select using (true);
+drop policy if exists "catalog: members add" on public.catalog;
+create policy "catalog: members add" on public.catalog for insert to authenticated
+  with check (analyzed_by = auth.uid() and not exists (select 1 from public.profiles where id = auth.uid() and blocked));
+drop policy if exists "catalog: admins edit" on public.catalog;
+create policy "catalog: admins edit" on public.catalog for update using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "catalog: admins delete" on public.catalog;
+create policy "catalog: admins delete" on public.catalog for delete using (public.is_admin());
+revoke update on public.catalog from anon;
+
+create or replace function public.catalog_play(cid text) returns void
+language sql security definer set search_path = public as $$
+  update public.catalog set plays = plays + 1 where id = cid;
+$$;
+grant execute on function public.catalog_play(text) to anon, authenticated;

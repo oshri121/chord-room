@@ -12,11 +12,16 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   i18n (`I` + `IA`, languages he/en/ar/ru/es — **every new string needs all five**), DSP & analysis
   (onset/tempo/grid, chroma, key, Viterbi chords), waveform (`computeWave`, RGB = red lows/green mids/blue highs),
   canvases, audio engine (stems, loops, metronome), rendering, chord editing, stems (AI + quick DSP fallback),
-  YIN note transcription, MIDI/WAV/ZIP export, library, accounts/admin, events, boot.
+  YIN note transcription, MIDI/WAV/ZIP export, library, accounts/admin, discover, events, boot.
+- Discover view (`#discover`): Deezer charts/new releases via `functions/api/deezer/[[path]].js` (Cloudflare Pages
+  Function proxy, allow-listed read endpoints; falls back to JSONP when run locally). Each track's 30 s preview is
+  analysed in the browser (`quickAnalyze`, swaps the global `S` only inside a synchronous block) and saved to the
+  shared `catalog` table by signed-in users. DJ matches = Camelot same/relative/±1 and tempo within 6 %.
+  Keep the Deezer attribution (cover links to the Deezer track, note under the list).
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.
   Tests can inject `window.__MOCK_BACKEND` before this script.
 - `assets/app.css` – light theme: white paper, black ink, black "deck". Fonts: IBM Plex Sans (+Hebrew/Arabic), Plex Mono.
-- `supabase/schema.sql` – tables `profiles`, `songs`, `site_config`, bucket `avatars`, RLS, admin RPCs.
+- `supabase/schema.sql` – tables `profiles`, `songs`, `site_config`, `catalog`, bucket `avatars`, RLS, admin RPCs.
   Users can only update the columns granted in the schema; role/blocked change only through `admin_set_role` /
   `admin_set_blocked`. First account to sign up becomes admin. Schema changes must be re-run in the Supabase SQL editor
   (tell the owner; there is no migration runner).
