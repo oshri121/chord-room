@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script>try{var t=localStorage.getItem("chordroom.theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
-<link rel="stylesheet" href="assets/app.css?v=7">
+<link rel="stylesheet" href="assets/app.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -44,8 +44,8 @@
       <h1 id="tname">—</h1>
     </div>
     <div class="stats">
-      <div class="stat"><span class="k" data-i="bpmL"></span><span class="v" id="sBpm">—</span><span class="s" id="sBpmS"></span></div>
-      <div class="stat"><span class="k" data-i="key"></span><span class="v" id="sKey">—</span><span class="s" id="sKeyS"></span></div>
+      <div class="stat adj" id="stBpm"><span class="k" data-i="bpmL"></span><span class="v vrow"><button type="button" class="nud" id="tmM" data-it="tempoDown">−</button><input class="vin" id="sBpm" value="—" inputmode="decimal" autocomplete="off" spellcheck="false" data-it="bpmEdit"><button type="button" class="nud" id="tmP" data-it="tempoUp">+</button></span><span class="s" id="sBpmS"></span></div>
+      <div class="stat adj" id="stKey"><span class="k" data-i="key"></span><span class="v vrow"><button type="button" class="nud" id="kyM" data-it="keyDown">−</button><span class="vk" id="sKey">—</span><button type="button" class="nud" id="kyP" data-it="keyUp">+</button></span><span class="s" id="sKeyS"></span></div>
       <div class="stat"><span class="k" data-i="camelot"></span><span class="v"><span class="cam" id="sCam">—</span></span><span class="s"></span></div>
       <div class="stat"><span class="k" data-i="length"></span><span class="v" id="sDur">—</span><span class="s"></span></div>
       <div class="stat"><span class="k" data-i="loudness"></span><span class="v" id="sLufs">—</span><span class="s" id="sPeak"></span></div>
@@ -272,6 +272,6 @@
 <script src="config.js?v=1"></script>
 <script src="vendor/supabase.js"></script>
 <script src="assets/backend.js?v=4"></script>
-<script src="assets/app.js?v=8"></script>
+<script src="assets/app.js?v=9"></script>
 </body>
 </html>

@@ -233,6 +233,19 @@ libH:'Tus canciones: tempo, tonalidad, acordes y cues. Con sesión iniciada tamb
 aboutT:'El análisis ocurre en tu navegador. Con sesión iniciada, las canciones que subes se guardan en tu cuenta para abrirlas de nuevo, y los administradores del sitio pueden acceder a ellas. La detección es automática; puedes corregir la rejilla y los acordes a mano.'}
 };
 for(const k in IZ)Object.assign(I[k],IZ[k]);
+// tempo & key change
+const IT={
+he:{tempoDown:'האטה (Shift: 0.1)',tempoUp:'האצה (Shift: 0.1)',bpmEdit:'אפשר להקליד BPM חדש, השיר יתנגן בקצב הזה',keyDown:'הורדת הסולם בחצי טון',keyUp:'העלאת הסולם בחצי טון',origL:'מקור',resetL:'חזרה למקור',
+  fxFail:'לא הצלחנו לטעון את מנוע שינוי הקצב והסולם בדפדפן הזה.',fxRender:'מעבד קצב וסולם לקובץ {n} מתוך {m}…',transposeH:'משנה את הסולם של השיר, גם בשמע וגם באקורדים'},
+en:{tempoDown:'Slower (Shift: 0.1)',tempoUp:'Faster (Shift: 0.1)',bpmEdit:'Type a new BPM and the song plays at that tempo',keyDown:'Key down a semitone',keyUp:'Key up a semitone',origL:'Original',resetL:'Back to original',
+  fxFail:'Couldn\'t load the tempo and key engine in this browser.',fxRender:'Rendering tempo and key, file {n} of {m}…',transposeH:'Changes the song\'s key, both the audio and the chords'},
+ar:{tempoDown:'أبطأ (Shift: 0.1)',tempoUp:'أسرع (Shift: 0.1)',bpmEdit:'اكتب BPM جديدًا وستُعزف الأغنية بهذا الإيقاع',keyDown:'خفض المقام نصف درجة',keyUp:'رفع المقام نصف درجة',origL:'الأصل',resetL:'العودة إلى الأصل',
+  fxFail:'تعذّر تحميل محرك تغيير الإيقاع والمقام في هذا المتصفح.',fxRender:'معالجة الإيقاع والمقام، الملف {n} من {m}…',transposeH:'يغيّر مقام الأغنية، في الصوت والكوردات معًا'},
+ru:{tempoDown:'Медленнее (Shift: 0.1)',tempoUp:'Быстрее (Shift: 0.1)',bpmEdit:'Введите новый BPM, и трек зазвучит в этом темпе',keyDown:'Тональность на полутон ниже',keyUp:'Тональность на полутон выше',origL:'Оригинал',resetL:'Вернуть оригинал',
+  fxFail:'Не удалось загрузить движок темпа и тональности в этом браузере.',fxRender:'Обработка темпа и тональности, файл {n} из {m}…',transposeH:'Меняет тональность трека: и звук, и аккорды'},
+es:{tempoDown:'Más lento (Shift: 0.1)',tempoUp:'Más rápido (Shift: 0.1)',bpmEdit:'Escribe un BPM nuevo y la canción sonará a ese tempo',keyDown:'Bajar la tonalidad un semitono',keyUp:'Subir la tonalidad un semitono',origL:'Original',resetL:'Volver al original',
+  fxFail:'No se pudo cargar el motor de tempo y tonalidad en este navegador.',fxRender:'Procesando tempo y tonalidad, archivo {n} de {m}…',transposeH:'Cambia la tonalidad de la canción, tanto el audio como los acordes'}};
+for(const k in IT)Object.assign(I[k],IT[k]);
 
 
 
@@ -270,7 +283,7 @@ drums:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 bass:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 10l6-6M18 2l4 4M8.5 11.5a4 4 0 0 0-5.3 1.3c-1.7 2.4-.3 6 2.5 7.2s6.3-.2 7-3a4 4 0 0 0 1.8-5.2z"/><circle cx="8" cy="16" r="1.2"/></svg>',
 other:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M8 4v10M13 4v10M18 4v10M6.5 14v6M11.5 14v6M16.5 14v6"/></svg>'};
 let S={name:'',buffer:null,dur:0,wave:null,chroma:null,env:null,lowEnv:null,bpm:0,offset:0,beats:[],chords:null,down:0,key:null,
-  transpose:0,capo:0,acc:0,win:8,demo:false,stems:null,stemKind:null,edited:new Set(),cues:new Array(8).fill(null),lufs:null,peak:null,
+  transpose:0,rate:1,capo:0,acc:0,win:8,demo:false,stems:null,stemKind:null,edited:new Set(),cues:new Array(8).fill(null),lufs:null,peak:null,
   wmode:'rgb',diag:'guitar',loopBars:4,loop:null,click:false,editing:false,notes:null};
 let cells=[],bars=[];
 
@@ -685,32 +698,68 @@ function drawZoom(tm){
 }
 
 /* ---------- audio engine ---------- */
-let actx=null;const P={srcs:[],gains:[],playing:false,startCtx:0,startPos:0,pos:0,loop:null};
+let actx=null;const P={srcs:[],gains:[],playing:false,startCtx:0,startPos:0,pos:0,loop:null,rate:1,fx:false};
 const ac=()=>actx||(actx=new (window.AudioContext||window.webkitAudioContext)());
 const MIX=STEMS.map(()=>({vol:1,mute:false,solo:false}));
 function stemGain(i){const any=MIX.some(m=>m.solo),m=MIX[i];return any?(m.solo?m.vol:0):(m.mute?0:m.vol)}
 let ovPending=false;
 function applyGains(){P.gains.forEach((g,i)=>{if(g)g.gain.setTargetAtTime(stemGain(i),ac().currentTime,0.012)});
   if(S.wmode==='stems'&&!ovPending){ovPending=true;requestAnimationFrame(()=>{ovPending=false;buildOverview()})}dirty=true}
+/* tempo & key change: sources play at S.rate (speed), then Signalsmith Stretch (MIT, vendor/) on the master bus
+   shifts the pitch back so only the tempo changes, plus S.transpose semitones. Bypassed entirely at 100 % / 0.
+   The node adds ~120 ms latency, folded into P.startCtx so the playhead matches what you hear. */
+const FX={node:null,ctx:null,lat:0,p:null};
+const SS_SRC='vendor/signalsmith-stretch-1.3.2.js';
+const ebpm=()=>S.bpm*S.rate;
+const fxOn=()=>Math.abs(S.rate-1)>1e-4||S.transpose!==0;
+const fxSemis=()=>S.transpose-12*Math.log2(S.rate);
+function loadScript(src){return new Promise((res,rej)=>{if(window.SignalsmithStretch)return res();const s=document.createElement('script');s.src=src;s.onload=()=>res();s.onerror=()=>rej(new Error('load '+src));document.head.appendChild(s)})}
+async function stretchNode(c){await loadScript(SS_SRC);const n=await window.SignalsmithStretch(c);const lat=await n.latency();return {n,lat:+lat||0}}
+function ensureFx(){
+  const c=ac();if(FX.node&&FX.ctx===c)return Promise.resolve(FX);
+  if(!FX.p)FX.p=stretchNode(c).then(({n,lat})=>{n.connect(c.destination);FX.node=n;FX.ctx=c;FX.lat=lat;return FX}).catch(e=>{FX.p=null;throw e});
+  return FX.p;
+}
+// apply a tempo/key change: live while playing (no gap), or restart when the audio route has to change
+function applyFx(){
+  dirty=true;
+  if(!fxOn()){if(P.playing&&(P.fx||P.rate!==1))restart();return}
+  ensureFx().then(()=>{
+    if(!P.playing)return;
+    if(!P.fx){restart();return}
+    const c=ac(),tt=now();if(!P.playing)return;
+    P.srcs.forEach(x=>x.playbackRate.setTargetAtTime(S.rate,c.currentTime,0.01));
+    FX.node.schedule({semitones:fxSemis(),output:c.currentTime});
+    P.startPos=tt;P.startCtx=c.currentTime;P.rate=S.rate;
+  }).catch(e=>{console.warn(e);showNotice(t('fxFail'))});
+}
 function now(){
   if(!P.playing)return P.pos;
-  let tt=P.startPos+Math.max(0,ac().currentTime-P.startCtx);
+  let tt=P.startPos+Math.max(0,ac().currentTime-P.startCtx)*P.rate;
   if(P.loop){const {ls,le}=P.loop;if(P.startPos<le&&tt>=le)tt=ls+mod(tt-ls,le-ls);return tt}
   if(tt>=S.dur){endPlayback();return S.dur}
   return tt;
 }
 function play(){
   if(!S.buffer)return;const c=ac();c.resume();
+  if(fxOn()&&!(FX.node&&FX.ctx===c)){ // first use: load the pitch/tempo engine, then start
+    if(P.waitFx)return;P.waitFx=true;
+    ensureFx().catch(e=>{console.warn(e);showNotice(t('fxFail'))}).finally(()=>{P.waitFx=false;if(!P.playing&&(!fxOn()||FX.node))play()});return;
+  }
   if(P.pos>=S.dur-0.05)P.pos=0;
   const when=c.currentTime+0.03;P.loop=S.loop?{...S.loop}:null;
-  const mk=(buf,gv)=>{const s=c.createBufferSource();s.buffer=buf;const g=c.createGain();g.gain.value=gv;s.connect(g).connect(c.destination);
+  const fx=fxOn()&&!!FX.node,out=fx?FX.node:c.destination;
+  if(fx)FX.node.schedule({active:true,semitones:fxSemis(),output:when});
+  const mk=(buf,gv)=>{const s=c.createBufferSource();s.buffer=buf;s.playbackRate.value=fx?S.rate:1;const g=c.createGain();g.gain.value=gv;s.connect(g).connect(out);
     if(P.loop){s.loop=true;s.loopStart=P.loop.ls;s.loopEnd=Math.min(P.loop.le,buf.duration)}
     s.start(when,Math.min(P.pos,buf.duration-0.001));return [s,g]};
   if(S.stems){const r=S.stems.map((b,i)=>mk(b,stemGain(i)));P.srcs=r.map(x=>x[0]);P.gains=r.map(x=>x[1])}
   else{const r=mk(S.buffer,1);P.srcs=[r[0]];P.gains=[]}
-  P.startCtx=when;P.startPos=P.pos;P.playing=true;lastClick=P.pos-0.001;setIcon();
+  P.startCtx=when+(fx?FX.lat:0);P.startPos=P.pos;P.rate=fx?S.rate:1;P.fx=fx;P.playing=true;lastClick=P.pos-0.001;setIcon();
 }
-function killSources(){P.srcs.forEach(x=>{try{x.onended=null;x.stop()}catch(e){}});P.srcs=[];P.gains=[]}
+function killSources(){P.srcs.forEach(x=>{try{x.onended=null;x.stop()}catch(e){}});P.srcs=[];P.gains=[];
+  // let the stretch tail ring out, then idle the node (a quick restart cancels this)
+  if(P.fx&&FX.node){FX.node.schedule({active:false,output:ac().currentTime+FX.lat+0.05});P.fx=false}}
 function stop(){if(!P.playing)return;const tt=now();if(!P.playing)return;P.playing=false;P.pos=tt;killSources();setIcon()}
 // reached the end of the song: stop cleanly (no re-entry into now()), next play starts from the top
 function endPlayback(){P.playing=false;P.pos=S.dur;killSources();setIcon();dirty=true}
@@ -729,9 +778,9 @@ setInterval(()=>{
   const c=ac(),tt=now(),T=60/S.bpm;
   if(tt<lastClick)lastClick=tt-0.001;
   const b0=Math.max(0,Math.ceil((lastClick-S.beats[0])/T+1e-6));
-  for(let b=b0;b<S.beats.length&&S.beats[b]<=tt+0.12;b++){
+  for(let b=b0;b<S.beats.length&&S.beats[b]<=tt+0.12*P.rate;b++){
     if(S.beats[b]<=lastClick)continue;
-    const at=c.currentTime+(S.beats[b]-tt);if(at<c.currentTime-0.01)continue;
+    const at=c.currentTime+(S.beats[b]-tt)/P.rate;if(at<c.currentTime-0.01)continue;
     const o=c.createOscillator(),g=c.createGain(),bar=mod(b-S.down,4)===0;
     o.frequency.value=bar?1760:1175;g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(bar?0.5:0.3,at+0.002);g.gain.exponentialRampToValueAtTime(0.0001,at+0.05);
     o.connect(g).connect(c.destination);o.start(at);o.stop(at+0.06);lastClick=S.beats[b];
@@ -748,10 +797,17 @@ function camelot(pc,mode){return mode?CAM_MAJ[mod(pc+3,12)]+'A':CAM_MAJ[pc]+'B'}
 function renderStats(){
   const h=$('#tname');h.textContent=S.name||'—';
   if(S.demo){const s=document.createElement('span');s.className='tag';s.textContent=t('demo');h.appendChild(s)}
-  $('#sBpm').textContent=S.bpm?fmtBpm(S.bpm):'—';$('#sBpmS').textContent=S.bpm?'4/4':'';
-  if(S.key){const pc=mod(S.key.pc+S.transpose,12);$('#sKey').textContent=keyName(pc,S.key.mode);$('#sKeyS').textContent=keyLong(pc,S.key.mode);$('#sCam').textContent=camelot(pc,S.key.mode)}
+  // tempo: the value is an input you can type into; − / + nudge by 1 BPM (Shift: 0.1)
+  const bi=$('#sBpm'),rch=S.rate!==1,canT=!!(S.buffer&&S.bpm);
+  if(document.activeElement!==bi)bi.value=S.bpm?fmtBpm(Math.round(ebpm()*100)/100):'—';
+  bi.readOnly=!canT;['#tmM','#tmP'].forEach(x=>$(x).disabled=!canT);$('#stBpm').classList.toggle('chg',rch);
+  const bs=$('#sBpmS');bs.innerHTML='';
+  if(S.bpm){if(rch){const pct=(S.rate-1)*100;bs.append(rstBtn('rate'),`${t('origL')} `,ltrNode(`${fmtBpm(S.bpm)} · ${pct>0?'+':''}${pct.toFixed(1)}%`))}else bs.textContent='4/4'}
+  const kch=!!S.transpose;$('#stKey').classList.toggle('chg',kch);['#kyM','#kyP'].forEach(x=>$(x).disabled=!S.key);
+  if(S.key){const pc=mod(S.key.pc+S.transpose,12),ks=$('#sKeyS');$('#sKey').textContent=keyName(pc,S.key.mode);$('#sCam').textContent=camelot(pc,S.key.mode);
+    if(kch){ks.innerHTML='';ks.append(rstBtn('key'),`${t('origL')} `,ltrNode(`${keyName(S.key.pc,S.key.mode)} · ${S.transpose>0?'+':''}${S.transpose}`))}else ks.textContent=keyLong(pc,S.key.mode)}
   else{$('#sKey').textContent='—';$('#sKeyS').textContent='';$('#sCam').textContent='—'}
-  $('#sDur').textContent=S.dur?fmtS(S.dur):'—';
+  $('#sDur').textContent=S.dur?fmtS(S.dur/S.rate):'—';
   $('#sLufs').textContent=S.lufs!=null?S.lufs.toFixed(1):'—';$('#sPeak').textContent=S.lufs!=null?`${t('peakL')} \u2066${S.peak.toFixed(1)} dB\u2069`:'';
   $('#trV').textContent=(S.transpose>0?'+':'')+S.transpose;$('#cpV').textContent=S.capo;
   $('#capoH').textContent=S.capo?t('capoN',{n:S.capo}):t('capo0');
@@ -765,6 +821,10 @@ function renderStats(){
   renderHarm();renderLoop();renderCues();
   $('#clickBtn').classList.toggle('on',S.click);
 }
+function ltrNode(x){const e=document.createElement('span');e.dir='ltr';e.className='ltr';e.textContent=x;return e}
+function rstBtn(kind){const b=document.createElement('button');b.type='button';b.className='rst';b.title=t('resetL');b.setAttribute('aria-label',t('resetL'));
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5M4 3.5v5h5"/></svg>';
+  b.onclick=()=>kind==='rate'?setRate(1):setT(0);return b}
 function renderHarm(){
   const box=$('#harm');box.innerHTML='';if(!S.key)return;
   const pc=mod(S.key.pc+S.transpose,12),m=S.key.mode;
@@ -838,7 +898,7 @@ function updateNow(tm){
 let lastT=-1;
 function loop(){
   const tm=now();
-  if(tm!==lastT||dirty){drawZoom(tm);drawOverview(tm);$('#time').innerHTML=`${fmt(tm)} <span>/ ${fmtS(S.dur)}</span>`;updateNow(tm);lastT=tm;dirty=false}
+  if(tm!==lastT||dirty){drawZoom(tm);drawOverview(tm);$('#time').innerHTML=`${fmt(tm/S.rate)} <span>/ ${fmtS(S.dur/S.rate)}</span>`;updateNow(tm);lastT=tm;dirty=false}
   requestAnimationFrame(loop);
 }
 
@@ -907,7 +967,7 @@ function showNotice(text,actions){
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
 async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -1130,7 +1190,7 @@ const txt=(type,str)=>{const b=[...new TextEncoder().encode(str)];return [0xFF,t
 const PPQ=480;const tk=x=>Math.max(0,Math.round(x/(60/S.bpm)*PPQ));
 function midiFile(trackName,noteEvs,markers){
   const t0=[{t:0,o:0,b:txt(3,S.name||'Song')}];
-  const us=Math.round(60e6/S.bpm);t0.push({t:0,o:0,b:[0xFF,0x51,3,(us>>16)&255,(us>>8)&255,us&255]},{t:0,o:0,b:[0xFF,0x58,4,4,2,24,8]});
+  const us=Math.round(60e6/ebpm());t0.push({t:0,o:0,b:[0xFF,0x51,3,(us>>16)&255,(us>>8)&255,us&255]},{t:0,o:0,b:[0xFF,0x58,4,4,2,24,8]});
   if(S.key){const pc=mod(S.key.pc+S.transpose,12),maj=S.key.mode?mod(pc+3,12):pc;const SF=[0,-5,2,-3,4,-1,6,1,-4,3,-2,5];let sf=SF[maj];if(sf===6&&flats())sf=-6;t0.push({t:0,o:0,b:[0xFF,0x59,2,sf&255,S.key.mode]})}
   (markers||[]).forEach(m=>t0.push({t:m.t,o:1,b:txt(6,m.s)}));
   const tr=[{t:0,o:0,b:txt(3,trackName)},{t:0,o:0,b:[0xC0,0]},...noteEvs];
@@ -1149,6 +1209,17 @@ function chordMidi(){
 function notesMidi(name,list,oct){const ev=[];for(const n of list){let p=n.n+S.transpose;ev.push(...note(tk(n.t),tk(n.t+n.d),Math.max(0,Math.min(127,p)),n.v))}return midiFile(name,ev)}
 
 /* ---------- WAV + ZIP ---------- */
+// render one stereo track through the same tempo/key chain as playback (offline, faster than real time)
+async function fxRender(L,R,sr){
+  await loadScript(SS_SRC);
+  const n=L.length,m=Math.round(n/S.rate),pad=Math.ceil(sr*0.6);
+  const oc=new OfflineAudioContext(2,m+pad,sr),st=await window.SignalsmithStretch(oc),lat=+(await st.latency())||0;
+  const b=oc.createBuffer(2,n,sr);b.copyToChannel(L,0);b.copyToChannel(R,1);
+  const src=oc.createBufferSource();src.buffer=b;src.playbackRate.value=S.rate;src.connect(st);st.connect(oc.destination);
+  await st.schedule({active:true,semitones:fxSemis(),output:0});src.start(0);
+  const out=await oc.startRendering(),o=Math.round(lat*sr);
+  return [out.getChannelData(0).slice(o,o+m),out.getChannelData(1).slice(o,o+m)];
+}
 function wav(L,R,sr){
   const n=L.length,buf=new ArrayBuffer(44+n*4),v=new DataView(buf);
   const w4=(o,s)=>{for(let i=0;i<4;i++)v.setUint8(o+i,s.charCodeAt(i))};
@@ -1183,12 +1254,12 @@ function zip(files){
 
 function infoText(){
   const pc=S.key?mod(S.key.pc+S.transpose,12):0;
-  const L=[`Song: ${S.name}`,`BPM: ${fmtBpm(S.bpm)}`,S.key?`Key: ${keyName(pc,S.key.mode,true)} (${camelot(pc,S.key.mode)})`:'',S.lufs!=null?`Loudness: ${S.lufs.toFixed(1)} LUFS, peak ${S.peak.toFixed(1)} dBFS`:'',
-    `First beat at: ${S.beats[0]?S.beats[0].toFixed(3):0} s`,`Transpose: ${S.transpose}`,S.stemKind?`Stems: ${S.stemKind==='ai'?'Demucs v4 (AI)':'quick DSP'}`:'','',
+  const L=[`Song: ${S.name}`,`BPM: ${fmtBpm(Math.round(ebpm()*100)/100)}`+(S.rate!==1?` (original ${fmtBpm(S.bpm)}, tempo ${S.rate>1?'+':''}${((S.rate-1)*100).toFixed(1)}%)`:''),S.key?`Key: ${keyName(pc,S.key.mode,true)} (${camelot(pc,S.key.mode)})`:'',S.lufs!=null?`Loudness: ${S.lufs.toFixed(1)} LUFS, peak ${S.peak.toFixed(1)} dBFS`:'',
+    `First beat at: ${S.beats[0]?(S.beats[0]/S.rate).toFixed(3):0} s`,`Transpose: ${S.transpose>0?'+':''}${S.transpose} semitones`+(S.transpose&&S.key?` (original key ${keyName(S.key.pc,S.key.mode,true)})`:''),fxOn()?'Audio files are rendered at this tempo and key.':'',S.stemKind?`Stems: ${S.stemKind==='ai'?'Demucs v4 (AI)':'quick DSP'}`:'','',
     'FL Studio: set the project tempo to the BPM above and drop every WAV and MIDI file at bar 1 (time 0). They line up.','','Chords by bar:'];
   let row=[];for(let b=0;b<S.beats.length;b++){if(mod(b-S.down,4)===0&&row.length){L.push(row.join(' '));row=[]}row.push(chordName(sounding(S.chords[b]),true).padEnd(4))}
   if(row.length)L.push(row.join(' '));
-  return new TextEncoder().encode(L.filter((x,i)=>x!==''||i>6).join('\n'));
+  return new TextEncoder().encode(L.filter((x,i)=>x!==''||i>7).join('\n'));
 }
 const EXP=[{id:'vocals',st:0},{id:'drums',st:1},{id:'bass',st:2},{id:'other',st:3},{id:'xInst',st:'inst'},{id:'xOrig',st:'orig'},{id:'xChords',st:'mchords',midi:1},{id:'xBassM',st:'mbass',midi:1},{id:'xMel',st:'mmel',midi:1}];
 const expSel={vocals:1,drums:1,bass:1,other:1,xInst:0,xOrig:0,xChords:1,xBassM:1,xMel:1};
@@ -1208,13 +1279,16 @@ async function download(){
   if(!pick.length){msg.textContent=t('dlNone');msg.classList.add('err');return}
   btn.disabled=true;msg.textContent=t('packing');await tick();
   try{
-    const safe=(S.name||'song').replace(/[\\/:*?"<>|]/g,'_').slice(0,80),files=[];
+    const fx=fxOn(),tag=fx?` (${fmtBpm(Math.round(ebpm()*100)/100)} BPM${S.key?' '+keyName(mod(S.key.pc+S.transpose,12),S.key.mode,true):''})`:'';
+    const safe=((S.name||'song').replace(/[\\/:*?"<>|]/g,'_').slice(0,80)+tag).replace(/[\\/:*?"<>|]/g,'_'),files=[];
+    const wavs=pick.filter(e=>!e.midi).length;let wi=0;
+    const W=async(L,R,sr)=>{if(!fx)return wav(L,R,sr);msg.textContent=t('fxRender',{n:++wi,m:wavs});await tick();const [a,b]=await fxRender(L,R,sr);return wav(a,b,sr)};
     if(pick.some(e=>e.st==='mbass'||e.st==='mmel'))await transcribe(p=>{msg.textContent=t('transcribing',{p:Math.round(p*100)})});
     msg.textContent=t('packing');await tick();
     for(const e of pick){
-      if(typeof e.st==='number'){const b=S.stems[e.st];files.push({name:`${safe} - ${STEMS[e.st].file}.wav`,data:wav(b.getChannelData(0),b.getChannelData(1),44100)})}
-      else if(e.st==='inst'){const n=S.stems[1].length,L=new Float32Array(n),R=new Float32Array(n);for(const i of [1,2,3]){const a=S.stems[i].getChannelData(0),b=S.stems[i].getChannelData(1);for(let k=0;k<n;k++){L[k]+=a[k];R[k]+=b[k]}}files.push({name:`${safe} - Instrumental.wav`,data:wav(L,R,44100)})}
-      else if(e.st==='orig'){const b=S.buffer,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;files.push({name:`${safe}.wav`,data:wav(L,R,b.sampleRate)})}
+      if(typeof e.st==='number'){const b=S.stems[e.st];files.push({name:`${safe} - ${STEMS[e.st].file}.wav`,data:await W(b.getChannelData(0),b.getChannelData(1),b.sampleRate)})}
+      else if(e.st==='inst'){const n=S.stems[1].length,L=new Float32Array(n),R=new Float32Array(n);for(const i of [1,2,3]){const a=S.stems[i].getChannelData(0),b=S.stems[i].getChannelData(1);for(let k=0;k<n;k++){L[k]+=a[k];R[k]+=b[k]}}files.push({name:`${safe} - Instrumental.wav`,data:await W(L,R,S.stems[1].sampleRate)})}
+      else if(e.st==='orig'){const b=S.buffer,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;files.push({name:`${safe}.wav`,data:await W(L,R,b.sampleRate)})}
       else if(e.st==='mchords')files.push({name:`${safe} - Chords (Piano).mid`,data:chordMidi()});
       else if(e.st==='mbass')files.push({name:`${safe} - Bass line (Piano).mid`,data:notesMidi('Bass line',S.notes.bass)});
       else if(e.st==='mmel')files.push({name:`${safe} - Vocal melody (Piano).mid`,data:notesMidi('Vocal melody',S.notes.mel)});
@@ -1236,7 +1310,7 @@ function readLib(){return (typeof ACC!=='undefined'&&ACC.lib)?ACC.lib:readLocal(
 function writeLib(l){try{localStorage.setItem(LK,JSON.stringify(l))}catch(e){}}
 function saveLib(){
   if(!S.chords||S.demo)return;
-  const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,lufs:S.lufs,peak:S.peak,saved:Date.now(),
+  const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,rate:S.rate,transpose:S.transpose,lufs:S.lufs,peak:S.peak,saved:Date.now(),
     ...(S.fileMeta||{}),genre:S.genre||(S.fileMeta&&S.fileMeta.genre)||''};
   const loc=readLocal().filter(x=>x.name!==S.name);loc.unshift(item);writeLib(loc.slice(0,80));cloudSave(item);
 }
@@ -1257,7 +1331,8 @@ function renderLib(){
 }
 function restoreSaved(saved){
   S.bpm=saved.bpm;S.offset=saved.offset;buildBeats();S.chords=Int8Array.from(saved.chords);S.down=saved.down;
-  S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key)S.key=saved.key;renderAll();
+  S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key)S.key=saved.key;
+  S.rate=saved.rate||1;S.transpose=saved.transpose||0;if(fxOn())ensureFx().catch(()=>{});renderAll();
 }
 async function openLib(it){
   stop();P.pos=0;cancelSep(true);$('#lib').hidden=true;
@@ -1272,7 +1347,7 @@ async function openLib(it){
       $('#notice').hidden=true;return;
     }catch(e){console.warn(e);busy(null)}
   }
-  Object.assign(S,{name:it.name,buffer:null,dur:it.dur,wave:null,chroma:null,env:null,lowEnv:null,bpm:it.bpm,offset:it.offset,down:it.down,key:it.key,transpose:0,capo:0,demo:false,
+  Object.assign(S,{name:it.name,buffer:null,dur:it.dur,wave:null,chroma:null,env:null,lowEnv:null,bpm:it.bpm,offset:it.offset,down:it.down,key:it.key,transpose:it.transpose||0,rate:it.rate||1,capo:0,demo:false,
     stems:null,stemEnv:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null,fileMeta:null,genre:it.genre||''});
   buildBeats();S.chords=Int8Array.from(it.chords);renderAll();setSaveState('');
   showNotice(t('fromLib'),[[t('upload'),()=>$('#file').click()]]);
@@ -1601,7 +1676,7 @@ async function loadTab(){
 function passesFilter(r){
   const a=r.a,kf=DC.keyF;
   if(kf){if(!a)return false;const c=camOf(a);
-    if(kf==='match'){if(!S.key)return true;const ref={pc:mod(S.key.pc+S.transpose,12),mode:S.key.mode};if(camRel(camOf(ref),c)<0)return false;if(S.bpm&&bpmFit(S.bpm,a.bpm)>0.06)return false}
+    if(kf==='match'){if(!S.key)return true;const ref={pc:mod(S.key.pc+S.transpose,12),mode:S.key.mode};if(camRel(camOf(ref),c)<0)return false;if(S.bpm&&bpmFit(ebpm(),a.bpm)>0.06)return false}
     else if(c.n+c.l!==kf)return false}
   if(DC.bpmMin&&(!a||a.bpm<+DC.bpmMin))return false;
   if(DC.bpmMax&&(!a||a.bpm>+DC.bpmMax))return false;
@@ -1837,8 +1912,23 @@ $('#gBar').onclick=()=>{S.down=(S.down+1)%4;renderSheet();saveLibSoon();dirty=tr
 document.querySelectorAll('[data-wm]').forEach(b=>b.onclick=()=>{S.wmode=b.dataset.wm;buildOverview();renderStats()});
 document.querySelectorAll('[data-dg]').forEach(b=>b.onclick=()=>{S.diag=b.dataset.dg;renderStats();renderChips();lastBeat=-2;dirty=true});
 document.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{S.acc=+b.dataset.acc;renderAll()});
-const setT=d=>{S.transpose=Math.max(-11,Math.min(11,S.transpose+d));renderAll()};
+const setT=d=>{const v=d===0?0:Math.max(-12,Math.min(12,S.transpose+d));if(v===S.transpose)return;S.transpose=v;renderAll();applyFx();saveLibSoon()};
+const setRate=r=>{if(!S.bpm)return;r=Math.max(0.5,Math.min(2,r));if(Math.abs(r-1)<1e-4)r=1;if(r===S.rate)return;S.rate=r;renderStats();applyFx();saveLibSoon()};
+const nudgeBpm=d=>{if(!S.bpm)return;const cur=ebpm(),step=Math.abs(d)<1?Math.round(cur*10)/10:Math.round(cur);setRate((Math.abs(cur-step)>1e-3&&Math.sign(step-cur)===Math.sign(d)?step:step+d)/S.bpm)};
 $('#trM').onclick=()=>setT(-1);$('#trP').onclick=()=>setT(1);
+$('#kyM').onclick=()=>setT(-1);$('#kyP').onclick=()=>setT(1);
+$('#tmM').onclick=e=>nudgeBpm(e.shiftKey?-0.1:-1);$('#tmP').onclick=e=>nudgeBpm(e.shiftKey?0.1:1);
+{const bi=$('#sBpm');
+  const commit=()=>{const v=parseFloat(String(bi.value).replace(',','.'));if(S.bpm&&isFinite(v)&&v/S.bpm>=0.25&&v/S.bpm<=4)setRate(v/S.bpm);renderStats()};
+  let fresh=false; // select everything on focus so typing replaces the number (mouseup would drop the selection)
+  bi.addEventListener('focus',()=>{if(bi.readOnly)return;bi.select();fresh=true});
+  bi.addEventListener('mouseup',e=>{if(fresh){e.preventDefault();fresh=false}});
+  bi.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();bi.blur()}
+    else if(e.key==='Escape'){bi.value='';bi.blur()}
+    else if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();nudgeBpm((e.key==='ArrowUp'?1:-1)*(e.shiftKey?0.1:1));bi.value=fmtBpm(Math.round(ebpm()*100)/100);bi.select()}});
+  bi.addEventListener('blur',()=>{if(!bi.readOnly&&bi.value!=='')commit();else renderStats()});
+}
 const setC=d=>{S.capo=Math.max(0,Math.min(9,S.capo+d));renderAll()};
 $('#cpM').onclick=()=>setC(-1);$('#cpP').onclick=()=>setC(1);
 function loopToggle(){

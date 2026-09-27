@@ -542,3 +542,23 @@ html[dir="rtl"] .eyebrow,html[dir="rtl"] .stat .k,html[dir="rtl"] h2,html[dir="r
 .udfacts b{font-size:16px}
 #udBack{margin-top:18px}
 #bpmH,#bpmD{direction:ltr;unicode-bidi:isolate}
+
+/* tempo & key: − value + in the stats bar */
+.stat.adj{padding-inline:12px}
+.stat .vrow{display:flex;align-items:center;gap:6px;direction:ltr}
+.stat .vin{font:inherit;color:inherit;background:transparent;border:0;border-bottom:1.5px dashed var(--line2);border-radius:0;width:4.6ch;min-width:0;padding:0;margin:0;text-align:center;outline:none;cursor:text}
+.stat .vin[readonly]{border-bottom-color:transparent;cursor:default}
+.stat .vin:hover:not([readonly]){border-bottom-color:var(--muted)}
+.stat .vin:focus{border-bottom:1.5px solid var(--ink);background:var(--soft)}
+.stat .vk{min-width:2.4ch;text-align:center}
+.nud{flex:none;width:26px;height:26px;padding:0;border:1px solid var(--line2);border-radius:4px;background:transparent;color:var(--ink);font:500 16px/1 var(--mono);display:grid;place-items:center;transition:border-color .12s,background .12s}
+.nud:hover:not(:disabled){border-color:var(--ink);background:var(--soft)}
+.nud:active:not(:disabled){background:var(--ink);color:var(--paper)}
+.nud:disabled{opacity:.28;cursor:default}
+.stat.chg .vin,.stat.chg .vk{color:var(--il)}
+.stat .s .rst{width:18px;height:18px;padding:0;margin-inline-end:4px;border:0;border-radius:3px;background:transparent;color:var(--il);vertical-align:-4px;display:inline-grid;place-items:center}
+.stat .s .rst svg{width:13px;height:13px}
+.stat .s .rst:hover{background:var(--soft2)}
+.stat.chg .s{color:var(--il)}
+@media (pointer:coarse){.nud{width:32px;height:32px}}
+@media (max-width:640px){.stat.adj{padding-inline:8px}.stat .vrow{gap:4px;justify-content:space-between}}

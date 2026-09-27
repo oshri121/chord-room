@@ -24,6 +24,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Full songs: we never fetch full audio (licensing). "Full song" opens Deezer's official widget in `#fullbar`
   (complete for listeners signed in to Deezer, 30 s otherwise). Uploading a file ≥60 s that matches a catalog title
   offers `catalog_set_full` (first full analysis wins, admins can replace), shown as a "Full analysis" tag.
+- Tempo & key: `S.rate` (speed, BPM shown = `S.bpm*S.rate`, analysis stays in original song time) and `S.transpose`
+  (semitones, moves audio + chords). Sources play at `S.rate`; `vendor/signalsmith-stretch-1.3.2.js` (MIT, AudioWorklet,
+  loaded on first use) sits on the master bus and shifts pitch by `transpose - 12*log2(rate)`; bypassed when unchanged.
+  Its ~120 ms latency is folded into `P.startCtx`. WAV export renders through the same chain offline (`fxRender`);
+  MIDI keeps its ticks and only writes the new tempo. Controls: − / value / + in the stats bar (BPM value is typeable).
 - Theme: `data-theme` on <html> (light/dark, saved in localStorage; no attribute = follow the system). Colours come
   from CSS tokens; the dark block redefines them. Use `currentColor`/tokens, never hard-coded light colours.
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.
