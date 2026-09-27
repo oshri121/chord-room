@@ -33,6 +33,10 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Users can only update the columns granted in the schema; role/blocked change only through `admin_set_role` /
   `admin_set_blocked`. First account to sign up becomes admin. Schema changes must be re-run in the Supabase SQL editor
   (tell the owner; there is no migration runner).
+  Uploaded audio: private bucket `uploads` at `{uid}/{songKey}.{ext}` (50 MB limit), path saved in `songs.file_path`
+  together with bpm/key/genre/duration columns; owner or admin can read. Reopening from the library downloads it
+  via a signed URL. Exports are logged in `downloads`. Admin panel: users tab (per-user "details" view with their
+  songs + downloads, ZIP of all their files) and an all-songs tab.
 - `ai/worker.js` – built bundle (do not hand-edit). Source: `tools/ai-worker/worker.js` + `tools/ai-worker/lib/`
   (demucs-js apply/dsp with our fixes: correct istft length, faster FFT). Rebuild: see `tools/README.md`.
 - `ai/model/` – runtime wasm (gz), graph (gz) and fp16 weights (byte-shuffled, gz, split <25 MB for Cloudflare's per-file limit).
@@ -40,5 +44,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 ## Rules of thumb
 - Keep it build-free: plain scripts, no bundler for the app itself.
 - Cache busting: bump the `?v=` query on the `<script>`/`<link>` tags in `index.html` when changing `assets/*`.
+- RTL: the page flips for he/ar, but the timeline (canvases, times, BPM, keys, sizes, emails) stays LTR —
+  wrap such values with `ltr()` / `dir="ltr"` and check Hebrew + Arabic after UI changes.
 - Never commit secrets. `config.js` holds only the public publishable key.
 - Test locally: `python3 -m http.server 8000`. The page opens with a generated demo song, so analysis can be checked without files.

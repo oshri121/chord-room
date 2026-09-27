@@ -105,17 +105,54 @@
     async bumpSeps() { await sb.rpc('bump_seps'); },
 
     async listSongs() {
-      const { data, error } = await sb.from('songs').select('name,data,updated_at').eq('user_id', B.user.id).order('updated_at', { ascending: false });
+      const { data, error } = await sb.from('songs').select('name,data,updated_at,file_path,file_size,file_type,genre').eq('user_id', B.user.id).order('updated_at', { ascending: false });
       if (error) throw error;
-      return data.map(r => r.data);
+      return data.map(r => ({ ...r.data, file_path: r.file_path || r.data.file_path || null, file_size: r.file_size, file_type: r.file_type, genre: r.genre || r.data.genre || '' }));
     },
     async saveSong(item) {
-      const { error } = await sb.from('songs').upsert({ user_id: B.user.id, name: item.name, data: item, updated_at: new Date().toISOString() }, { onConflict: 'user_id,name' });
+      const row = { user_id: B.user.id, name: item.name, data: item, updated_at: new Date().toISOString(),
+        bpm: item.bpm ? Math.round(item.bpm * 100) / 100 : null, key_pc: item.key ? item.key.pc : null, key_mode: item.key ? item.key.mode : null,
+        duration: item.dur ? Math.round(item.dur * 100) / 100 : null };
+      if (item.file_path) { row.file_path = item.file_path; row.file_size = item.file_size || null; row.file_type = item.file_type || null; }
+      if (item.genre !== undefined) row.genre = item.genre || '';
+      const { error } = await sb.from('songs').upsert(row, { onConflict: 'user_id,name' });
       if (error) throw error;
     },
     async deleteSong(name) {
+      const { data } = await sb.from('songs').select('file_path').eq('user_id', B.user.id).eq('name', name).maybeSingle();
       const { error } = await sb.from('songs').delete().eq('user_id', B.user.id).eq('name', name);
       if (error) throw error;
+      if (data && data.file_path) await sb.storage.from('uploads').remove([data.file_path]);
+    },
+    // the original audio file of an uploaded song, kept in the user's private folder
+    async uploadSongFile(file, key) {
+      const ext = (String(file.name || '').match(/\.([a-z0-9]{1,5})$/i) || [, 'mp3'])[1].toLowerCase();
+      const path = `${B.user.id}/${key}.${ext}`;
+      const { error } = await sb.storage.from('uploads').upload(path, file, { upsert: true, contentType: file.type || 'audio/mpeg' });
+      if (error) throw error;
+      return { file_path: path, file_size: file.size, file_type: file.type || 'audio/mpeg' };
+    },
+    async songFileUrl(path) {
+      const { data, error } = await sb.storage.from('uploads').createSignedUrl(path, 3600);
+      if (error) throw error;
+      return data.signedUrl;
+    },
+    async logDownload(entry) {
+      await sb.from('downloads').insert({ user_id: B.user.id, song_name: String(entry.song_name || '').slice(0, 300), files: entry.files || [], size: entry.size || null });
+    },
+    async adminSongs(userId) {
+      let q = sb.from('songs').select('user_id,name,genre,bpm,key_pc,key_mode,duration,file_path,file_size,file_type,created_at,updated_at').order('updated_at', { ascending: false }).limit(2000);
+      if (userId) q = q.eq('user_id', userId);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    },
+    async adminDownloads(userId) {
+      let q = sb.from('downloads').select('user_id,song_name,files,size,created_at').order('created_at', { ascending: false }).limit(2000);
+      if (userId) q = q.eq('user_id', userId);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data;
     },
 
     async getConfig() {

@@ -486,3 +486,59 @@ body.hasbar{padding-bottom:230px}
 .fulltag{display:inline-block;margin-inline-start:6px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--ok);color:var(--ok);border-radius:3px;padding:1px 5px;vertical-align:middle;font-weight:600}
 .drow .dk{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
 @media (max-width:640px){.fullbar .fbh .snote{display:none}.ib.fl span{display:none}}
+
+/* ---------- RTL & mixed-direction text ---------- */
+/* the timeline (waveform, grid, chord sheet) stays left→right; controls follow the page language */
+.deck canvas{direction:ltr}
+.time{direction:ltr;unicode-bidi:isolate}
+.hc{direction:ltr}
+/* song titles, names and user text keep their own direction inside any page */
+#tname,.dt .tt,.dt .ar,.lib .op .t,.ut .t,.ut .sn,.ut .sn2,.mhead .tt,.mhead .ar,#fullTitle,#udName{unicode-bidi:plaintext}
+html[dir="rtl"] #tname,html[dir="rtl"] .dt .tt,html[dir="rtl"] .dt .ar,html[dir="rtl"] .lib .op .t,html[dir="rtl"] .ut .t,html[dir="rtl"] .ut .sn,html[dir="rtl"] .mhead .tt,html[dir="rtl"] .mhead .ar,html[dir="rtl"] #udName{text-align:right}
+.ltr{unicode-bidi:isolate}
+/* Hebrew/Arabic: no wide letter-spacing, no monospace fallbacks for words */
+html[dir="rtl"] .eyebrow,html[dir="rtl"] .stat .k,html[dir="rtl"] h2,html[dir="rtl"] h3,html[dir="rtl"] .lb,html[dir="rtl"] .rtitle b,html[dir="rtl"] .bhead h2,html[dir="rtl"] .cols h2{letter-spacing:.01em}
+.grp .lb{font-family:var(--sans)}
+.grp button{font-family:var(--sans)}
+.grp button[data-lb],#bpmH,#bpmD,#gBar,.hc button{font-family:var(--mono)}
+
+/* library rows */
+.lib .op .m{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lib .op .m .lt{unicode-bidi:isolate}
+.lib .op .m .g{font-family:var(--sans);border:1px solid var(--line2);border-radius:3px;padding:0 6px;font-size:11px}
+.lib .op .m .cl{display:inline-flex;color:var(--ok)}
+.lib .op .m .cl .ic{width:14px;height:14px}
+
+/* save-to-account indicator */
+.eyebrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sst{display:inline-flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-size:12px;border-radius:999px;padding:1px 9px;border:1px solid var(--line2);color:var(--muted)}
+.sst .ic{width:13px;height:13px}
+.sst.saved{color:var(--ok);border-color:var(--ok)}
+.sst.fail{color:var(--signal);border-color:var(--signal)}
+.sst.saving .ic{animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:.3}to{opacity:1}}
+
+/* waveform view: icon buttons */
+.grp .wmb{width:32px;padding:0;display:grid;place-items:center}
+.grp .wmb svg{width:18px;height:18px;display:block}
+.grp .wmb.on{background:var(--deck3);box-shadow:inset 0 0 0 1.5px var(--decktext)}
+.grp .wmb:hover{background:var(--deck3)}
+
+/* admin */
+.admtabs{display:flex;border-bottom:1px solid var(--ink);margin-top:24px;overflow-x:auto}
+.admtabs button{border:0;background:none;padding:12px 16px;font-size:15px;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.admtabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.ut.st{min-width:960px}
+.ut .sn{font-weight:500;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ut .usr{font-size:13px;color:var(--muted)}
+.ut .kb{font-size:11px}
+.udh{display:flex;gap:16px;align-items:center;margin:14px 0}
+.udh img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:1px solid var(--ink)}
+.udh h3{margin:0;font-size:22px}
+.udh p{margin:6px 0 0}
+.udfacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));border:1px solid var(--ink);border-radius:4px;margin-bottom:22px}
+.udfacts div{padding:12px 14px;border-inline-start:1px solid var(--line2);display:flex;flex-direction:column;gap:2px}
+.udfacts span{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.udfacts b{font-size:16px}
+#udBack{margin-top:18px}
+#bpmH,#bpmD{direction:ltr;unicode-bidi:isolate}

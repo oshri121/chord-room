@@ -237,3 +237,52 @@ begin
   return n > 0;
 end $$;
 grant execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) to authenticated;
+
+-- ───────────── uploaded song files: stored per user, readable by the owner and by admins ─────────────
+alter table public.songs add column if not exists file_path text;
+alter table public.songs add column if not exists file_size bigint;
+alter table public.songs add column if not exists file_type text;
+alter table public.songs add column if not exists genre text default '';
+alter table public.songs add column if not exists bpm numeric(6,2);
+alter table public.songs add column if not exists key_pc smallint;
+alter table public.songs add column if not exists key_mode smallint;
+alter table public.songs add column if not exists duration numeric(8,2);
+alter table public.songs add column if not exists created_at timestamptz not null default now();
+
+drop policy if exists "songs: admins read" on public.songs;
+create policy "songs: admins read" on public.songs for select using (public.is_admin());
+
+insert into storage.buckets (id, name, public, file_size_limit)
+  values ('uploads', 'uploads', false, 52428800)
+  on conflict (id) do update set public = false, file_size_limit = 52428800;
+
+drop policy if exists "uploads: own read" on storage.objects;
+create policy "uploads: own read" on storage.objects for select to authenticated
+  using (bucket_id = 'uploads' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
+drop policy if exists "uploads: own write" on storage.objects;
+create policy "uploads: own write" on storage.objects for insert to authenticated
+  with check (bucket_id = 'uploads' and (storage.foldername(name))[1] = auth.uid()::text
+              and not exists (select 1 from public.profiles where id = auth.uid() and blocked));
+drop policy if exists "uploads: own update" on storage.objects;
+create policy "uploads: own update" on storage.objects for update to authenticated
+  using (bucket_id = 'uploads' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "uploads: own delete" on storage.objects;
+create policy "uploads: own delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'uploads' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
+
+-- ───────────── download log: what each user exported ─────────────
+create table if not exists public.downloads (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users(id) on delete cascade default auth.uid(),
+  song_name  text not null check (char_length(song_name) <= 300),
+  files      jsonb not null default '[]'::jsonb,
+  size       bigint,
+  created_at timestamptz not null default now()
+);
+create index if not exists downloads_user_idx on public.downloads (user_id, created_at desc);
+alter table public.downloads enable row level security;
+drop policy if exists "downloads: own insert" on public.downloads;
+create policy "downloads: own insert" on public.downloads for insert to authenticated
+  with check (user_id = auth.uid());
+drop policy if exists "downloads: own or admin read" on public.downloads;
+create policy "downloads: own or admin read" on public.downloads for select using (user_id = auth.uid() or public.is_admin());

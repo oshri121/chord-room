@@ -205,6 +205,35 @@ matchQ:'Parece "{t}" de {a} del catálogo. ¿Actualizar el catálogo con el aná
 engGpu:'GPU',engCpu:'CPU',engGpuT:'La separación usa la tarjeta gráfica, así que es rápida.',engCpuT:'Este navegador no tiene GPU disponible, así que la separación usa el procesador y es más lenta.',themeDark:'Modo oscuro',themeLight:'Modo claro'}
 };
 for(const k in IY)Object.assign(I[k],IY[k]);
+const IZ={
+he:{stemsTitle:'ערוצים',aiSep:'הפרדת ערוצים',aiErr:'לא הצלחנו להפעיל את הפרדת הערוצים במכשיר הזה ({m}). נסו דפדפן Chrome או Edge עדכני.',wmRgb:'צבעי תדרים (RGB)',wm3:'שלושה תדרים',wmMono:'מונו',wmStems:'לפי ערוצים',
+cloudTag:'הקובץ שמור בחשבון',savingCloud:'שומר בחשבון…',savedCloud:'שמור בחשבון',saveCloudFail:'השמירה בחשבון נכשלה',bCloud:'טוען את השיר מהחשבון…',
+genre:'סגנון',uploads:'העלאות',downloadsL:'הורדות',details:'פרטים',userSongs:'שירים שהעלה',userDownloads:'הורדות',allSongs:'כל השירים',dlAll:'הורדת כל השירים (ZIP)',dlUserAll:'הורדת כל השירים שלו (ZIP)',dlFile:'הורדה',noFile:'אין קובץ',size:'גודל',date:'תאריך',files:'קבצים',back:'→ חזרה למשתמשים',noSongs:'אין שירים.',noDownloads:'אין הורדות.',zipping:'אורז {n} מתוך {t}…',searchSongs:'חיפוש שיר או סגנון',songCol:'שיר',joinedSong:'הועלה',adminOpened:'השיר של המשתמש נפתח בכלי. השינויים לא נשמרים אצלו.',
+libH:'השירים שלך: קצב, סולם, אקורדים ונקודות קיו. כשמחוברים, גם הקובץ עצמו נשמר בחשבון ונפתח מכל מכשיר.',fromLib:'השיר נשמר לפני ששמירת קבצים הופעלה, ולכן אין לו קובץ בחשבון. העלו אותו שוב כדי לנגן ולשמור.',
+aboutT:'הניתוח רץ בדפדפן. כשמחוברים, השירים שמעלים נשמרים בחשבון שלכם כדי שתוכלו לפתוח אותם שוב, ומנהלי האתר יכולים לגשת אליהם. הזיהוי אוטומטי, ואפשר לתקן גריד ואקורדים ידנית.'},
+en:{stemsTitle:'Stems',aiSep:'Separate stems',aiErr:'Stem separation could not start on this device ({m}). Try an up-to-date Chrome or Edge.',wmRgb:'Frequency colours (RGB)',wm3:'Three bands',wmMono:'Mono',wmStems:'By stem',
+cloudTag:'File saved in your account',savingCloud:'Saving to your account…',savedCloud:'Saved in your account',saveCloudFail:'Saving to your account failed',bCloud:'Loading the song from your account…',
+genre:'Genre',uploads:'Uploads',downloadsL:'Downloads',details:'Details',userSongs:'Uploaded songs',userDownloads:'Downloads',allSongs:'All songs',dlAll:'Download all songs (ZIP)',dlUserAll:'Download all their songs (ZIP)',dlFile:'Download',noFile:'No file',size:'Size',date:'Date',files:'Files',back:'← Back to users',noSongs:'No songs.',noDownloads:'No downloads.',zipping:'Packing {n} of {t}…',searchSongs:'Search song or genre',songCol:'Song',joinedSong:'Uploaded',adminOpened:'The user\'s song is open in the tool. Changes are not saved to their account.',
+libH:'Your songs: tempo, key, chords and cue points. When signed in, the audio file is saved too and opens on any device.',fromLib:'This song was saved before file storage was on, so there is no file in your account. Upload it again to play and save it.',
+aboutT:'Analysis runs in your browser. When you are signed in, the songs you upload are saved to your account so you can open them again, and site admins can access them. Detection is automatic; you can fix the grid and chords by hand.'},
+ar:{stemsTitle:'المسارات',aiSep:'فصل المسارات',aiErr:'تعذّر تشغيل فصل المسارات على هذا الجهاز ({m}). جرّب Chrome أو Edge محدّثًا.',wmRgb:'ألوان الترددات (RGB)',wm3:'ثلاثة نطاقات',wmMono:'أحادي',wmStems:'حسب المسار',
+cloudTag:'الملف محفوظ في حسابك',savingCloud:'جارٍ الحفظ في الحساب…',savedCloud:'محفوظ في الحساب',saveCloudFail:'فشل الحفظ في الحساب',bCloud:'تحميل الأغنية من الحساب…',
+genre:'النوع',uploads:'الرفع',downloadsL:'التنزيلات',details:'التفاصيل',userSongs:'الأغاني المرفوعة',userDownloads:'التنزيلات',allSongs:'كل الأغاني',dlAll:'تنزيل كل الأغاني (ZIP)',dlUserAll:'تنزيل كل أغانيه (ZIP)',dlFile:'تنزيل',noFile:'لا ملف',size:'الحجم',date:'التاريخ',files:'الملفات',back:'→ العودة إلى المستخدمين',noSongs:'لا توجد أغانٍ.',noDownloads:'لا توجد تنزيلات.',zipping:'تجميع {n} من {t}…',searchSongs:'بحث عن أغنية أو نوع',songCol:'الأغنية',joinedSong:'تاريخ الرفع',adminOpened:'فُتحت أغنية المستخدم في الأداة. لا تُحفظ التغييرات في حسابه.',
+libH:'أغانيك: الإيقاع والمقام والكوردات ونقاط التعليم. عند تسجيل الدخول يُحفظ الملف الصوتي أيضًا ويُفتح من أي جهاز.',fromLib:'حُفظت هذه الأغنية قبل تفعيل حفظ الملفات، لذا لا يوجد ملف في حسابك. ارفعها مجددًا لتشغيلها وحفظها.',
+aboutT:'يجري التحليل في متصفحك. عند تسجيل الدخول تُحفظ الأغاني التي ترفعها في حسابك لتفتحها مجددًا، ويمكن لمديري الموقع الوصول إليها. الاكتشاف تلقائي ويمكن تصحيح الشبكة والكوردات يدويًا.'},
+ru:{stemsTitle:'Стемы',aiSep:'Разделить на стемы',aiErr:'Не удалось запустить разделение на этом устройстве ({m}). Попробуйте свежий Chrome или Edge.',wmRgb:'Цвета частот (RGB)',wm3:'Три полосы',wmMono:'Моно',wmStems:'По стемам',
+cloudTag:'Файл сохранён в аккаунте',savingCloud:'Сохраняю в аккаунт…',savedCloud:'Сохранено в аккаунте',saveCloudFail:'Не удалось сохранить в аккаунт',bCloud:'Загружаю песню из аккаунта…',
+genre:'Жанр',uploads:'Загрузки',downloadsL:'Скачивания',details:'Подробнее',userSongs:'Загруженные песни',userDownloads:'Скачивания',allSongs:'Все песни',dlAll:'Скачать все песни (ZIP)',dlUserAll:'Скачать все его песни (ZIP)',dlFile:'Скачать',noFile:'Нет файла',size:'Размер',date:'Дата',files:'Файлы',back:'← К пользователям',noSongs:'Песен нет.',noDownloads:'Скачиваний нет.',zipping:'Упаковка {n} из {t}…',searchSongs:'Поиск песни или жанра',songCol:'Песня',joinedSong:'Загружена',adminOpened:'Песня пользователя открыта в инструменте. Изменения в его аккаунт не сохраняются.',
+libH:'Ваши песни: темп, тональность, аккорды и метки. Если вы вошли, сохраняется и сам аудиофайл — он откроется на любом устройстве.',fromLib:'Песня сохранена до включения хранения файлов, поэтому файла в аккаунте нет. Загрузите её снова, чтобы слушать и сохранить.',
+aboutT:'Анализ идёт в браузере. Если вы вошли, загруженные песни сохраняются в вашем аккаунте, чтобы открыть их снова; администраторы сайта имеют к ним доступ. Распознавание автоматическое, сетку и аккорды можно поправить вручную.'},
+es:{stemsTitle:'Pistas',aiSep:'Separar pistas',aiErr:'No se pudo iniciar la separación en este equipo ({m}). Prueba con Chrome o Edge actualizados.',wmRgb:'Colores por frecuencia (RGB)',wm3:'Tres bandas',wmMono:'Mono',wmStems:'Por pista',
+cloudTag:'Archivo guardado en tu cuenta',savingCloud:'Guardando en tu cuenta…',savedCloud:'Guardado en tu cuenta',saveCloudFail:'No se pudo guardar en tu cuenta',bCloud:'Cargando la canción desde tu cuenta…',
+genre:'Género',uploads:'Subidas',downloadsL:'Descargas',details:'Detalles',userSongs:'Canciones subidas',userDownloads:'Descargas',allSongs:'Todas las canciones',dlAll:'Descargar todas (ZIP)',dlUserAll:'Descargar todas sus canciones (ZIP)',dlFile:'Descargar',noFile:'Sin archivo',size:'Tamaño',date:'Fecha',files:'Archivos',back:'← Volver a usuarios',noSongs:'No hay canciones.',noDownloads:'No hay descargas.',zipping:'Empaquetando {n} de {t}…',searchSongs:'Buscar canción o género',songCol:'Canción',joinedSong:'Subida',adminOpened:'La canción del usuario está abierta en la herramienta. Los cambios no se guardan en su cuenta.',
+libH:'Tus canciones: tempo, tonalidad, acordes y cues. Con sesión iniciada también se guarda el archivo de audio y se abre en cualquier equipo.',fromLib:'Esta canción se guardó antes de activar el almacenamiento de archivos, así que no hay archivo en tu cuenta. Súbela de nuevo para escucharla y guardarla.',
+aboutT:'El análisis ocurre en tu navegador. Con sesión iniciada, las canciones que subes se guardan en tu cuenta para abrirlas de nuevo, y los administradores del sitio pueden acceder a ellas. La detección es automática; puedes corregir la rejilla y los acordes a mano.'}
+};
+for(const k in IZ)Object.assign(I[k],IZ[k]);
+
 
 
 
@@ -216,6 +245,7 @@ function applyLang(){
   document.documentElement.lang=LANG;document.documentElement.dir=rtl?'rtl':'ltr';
   document.querySelectorAll('[data-i]').forEach(el=>{el.textContent=t(el.dataset.i)});
   document.querySelectorAll('[data-ip]').forEach(el=>{el.placeholder=t(el.dataset.ip)});
+  document.querySelectorAll('[data-it]').forEach(el=>{el.title=t(el.dataset.it);el.setAttribute('aria-label',el.title)});
   $('#lang').value=LANG;
   $('#play').setAttribute('aria-label',t('kPlay'));
   const rk=$('#rack');if(rk)rk.dir=rtl?'rtl':'ltr';
@@ -877,7 +907,7 @@ function showNotice(text,actions){
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
 async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -943,7 +973,6 @@ function renderStemsUI(){
   const running=AI.busy;
   const aiOk=typeof cfgOn!=='function'||cfgOn('ai');
   $('#aiBtn').disabled=!S.buffer||running||S.stemKind==='ai'||!aiOk;
-  $('#quickBtn').disabled=!S.buffer||running||!!S.stems;
   $('#cancelBtn').hidden=!running;
   if(!running){const n=$('#snote');n.classList.remove('err');n.textContent=!S.buffer?t('needAudio'):S.stemKind==='ai'?t('aiDone'):S.stemKind==='quick'?t('quickDone'):t('aiFirst')}
   if(!aiOk&&!running){$('#snote').textContent=t('offByAdmin')}
@@ -1039,82 +1068,10 @@ async function aiSeparate(){
   }
 }
 const AI_BYTES=78767446;
-const QUICK_SRC=`
-function makeFFT(n){const cos=new Float64Array(n/2),sin=new Float64Array(n/2),rev=new Uint32Array(n);
-for(let i=0;i<n/2;i++){cos[i]=Math.cos(2*Math.PI*i/n);sin[i]=Math.sin(2*Math.PI*i/n)}
-const bits=Math.log2(n);for(let i=0;i<n;i++){let r=0,x=i;for(let b=0;b<bits;b++){r=(r<<1)|(x&1);x>>=1}rev[i]=r}
-return (re,im)=>{for(let i=0;i<n;i++){const j=rev[i];if(j>i){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
-for(let size=2;size<=n;size<<=1){const half=size>>1,step=n/size;for(let i=0;i<n;i+=size){for(let j=i,k=0;j<i+half;j++,k+=step){
-const l=j+half,tr=re[l]*cos[k]+im[l]*sin[k],ti=-re[l]*sin[k]+im[l]*cos[k];re[l]=re[j]-tr;im[l]=im[j]-ti;re[j]+=tr;im[j]+=ti}}}}}
-function med(a,n){for(let i=1;i<n;i++){const v=a[i];let j=i-1;while(j>=0&&a[j]>v){a[j+1]=a[j];j--}a[j+1]=v}return a[n>>1]}
-self.onmessage=e=>{
- const L=e.data.L,R=e.data.R,sr=e.data.sr,N=4096,HOP=1024,B=N/2+1,D=6,K=2*D+1,FK=6,FW=2*FK+1;
- const len=L.length,pad=N,frames=Math.ceil((len+pad)/HOP)+1,total=frames*HOP+N;
- const w=new Float64Array(N);for(let i=0;i<N;i++)w[i]=Math.sqrt(0.5-0.5*Math.cos(2*Math.PI*i/N));
- const fft=makeFFT(N),out=[0,1,2].map(()=>[new Float32Array(total),new Float32Array(total)]);
- const rZr=[],rZi=[],rS=[],rC=[];for(let j=0;j<K;j++){rZr.push(new Float64Array(N));rZi.push(new Float64Array(N));rS.push(new Float32Array(B));rC.push(new Float32Array(B))}
- const re=new Float64Array(N),im=new Float64Array(N),yr=new Float64Array(N),yi=new Float64Array(N),tmp=new Float32Array(K),tf=new Float32Array(FW);
- const wb=new Float32Array(B),wv=new Float32Array(B);
- for(let k=0;k<B;k++){const f=k*sr/N;
-  wb[k]=f<=150?1:f>=300?0:0.5+0.5*Math.cos(Math.PI*(f-150)/150);
-  wv[k]=f<=120?0:f<220?(f-120)/100:f<=9000?1:f>=13000?0:1-(f-9000)/4000;}
- const M=[new Float32Array(B),new Float32Array(B),new Float32Array(B)];
- for(let f=0;f<frames+D;f++){
-  const slot=f%K;
-  if(f<frames){
-   const off=f*HOP-pad;
-   for(let i=0;i<N;i++){const s=off+i;const inb=s>=0&&s<len;re[i]=inb?L[s]*w[i]:0;im[i]=inb?R[s]*w[i]:0}
-   fft(re,im);rZr[slot].set(re);rZi[slot].set(im);
-   const S=rS[slot],C=rC[slot];
-   for(let k=0;k<B;k++){const kn=(N-k)%N,a=re[k],b=im[k],c=re[kn],d=im[kn];
-    const xlr=(a+c)/2,xli=(b-d)/2,xrr=(b+d)/2,xri=(c-a)/2,mr=(xlr+xrr)/2,mi=(xli+xri)/2,mm=mr*mr+mi*mi;
-    S[k]=Math.sqrt(mm);C[k]=4*mm/(2*(xlr*xlr+xli*xli+xrr*xrr+xri*xri)+1e-12)}
-  }else{rS[slot].fill(0)}
-  const t=f-D;if(t<0)continue;if(t>=frames)break;
-  const ts=t%K,St=rS[ts],Ct=rC[ts];
-  for(let k=0;k<B;k++){
-   for(let j=0;j<K;j++)tmp[j]=rS[j][k];const H=med(tmp,K);
-   for(let j=0;j<FW;j++){const q=k-FK+j;tf[j]=q>=0&&q<B?St[q]:0}const P=med(tf,FW);
-   const h2=H*H,p2=P*P,mp=p2/(h2+p2+1e-12),mh=1-mp;
-   const c=Math.min(1,Ct[k]),c6=c*c*c*c*c*c;
-   M[1][k]=mp;M[2][k]=mh*wb[k];M[0][k]=mh*(1-wb[k])*wv[k]*c6;
-  }
-  const Zr=rZr[ts],Zi=rZi[ts],pos=t*HOP;
-  for(let s=0;s<3;s++){
-   const m=M[s];
-   for(let k=0;k<N;k++){const mk=m[k<B?k:N-k];yr[k]=Zr[k]*mk;yi[k]=-Zi[k]*mk}
-   fft(yr,yi);
-   const oL=out[s][0],oR=out[s][1],g=0.5/N;
-   for(let i=0;i<N;i++){oL[pos+i]+=yr[i]*w[i]*g;oR[pos+i]-=yi[i]*w[i]*g}
-  }
-  if(t%150===0)postMessage({type:'p',p:t/frames});
- }
- const res=[];for(let s=0;s<3;s++)for(let ch=0;ch<2;ch++)res.push(out[s][ch].slice(pad,pad+len));
- const oL=new Float32Array(len),oR=new Float32Array(len);
- for(let i=0;i<len;i++){oL[i]=L[i]-res[0][i]-res[2][i]-res[4][i];oR[i]=R[i]-res[1][i]-res[3][i]-res[5][i]}
- res.push(oL,oR);
- postMessage({type:'done',res},res.map(a=>a.buffer));
-};`;
-async function quickSeparate(){
-  if(!S.buffer||AI.busy)return;
-  AI.busy=true;const job=++AI.job;renderStemsUI();const token=S.buffer;
-  try{
-    sepProgress(0.02,t('quickRun',{p:0}));
-    const [L,R,len]=await stereo44();
-    if(!quickW)quickW=new Worker(URL.createObjectURL(new Blob([QUICK_SRC],{type:'text/javascript'})));
-    const res=await new Promise((ok,fail)=>{
-      quickW.onmessage=e=>{if(job!==AI.job)return;if(e.data.type==='p')sepProgress(e.data.p,t('quickRun',{p:Math.round(e.data.p*100)}));else ok(e.data.res)};
-      quickW.onerror=err=>fail(err);quickW.postMessage({L,R,sr:44100},[L.buffer,R.buffer]);
-    });
-    if(job!==AI.job||S.buffer!==token)return;
-    setStems(res,len,'quick');sepEnd(null);
-  }catch(e){console.error(e);sepEnd(t('aiErr',{m:'quick'}),true)}
-}
 function cancelSep(silent){
   if(!AI.busy)return;AI.job++;
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
   else if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
-  if(quickW){quickW.terminate();quickW=null}
   sepEnd(silent?null:t('canceled'));
 }
 
@@ -1266,6 +1223,7 @@ async function download(){
     if(S.chords)files.push({name:`${safe} - info.txt`,data:infoText()});
     const blob=zip(files);
     saveBlob(blob,`${safe} - Chord Room.zip`);
+    if(ACC.on&&ACC.user)Backend.logDownload({song_name:S.name,files:pick.map(e=>e.id),size:blob.size}).catch(()=>{});
     msg.textContent=t('dlDone',{s:(blob.size/1048576).toFixed(1)});
   }catch(err){const c=err&&err.code;msg.textContent=c==='declined'?t('dlDeclined'):c==='rate_limited'?t('dlBusy'):t('dlFail');msg.classList.add('err');console.error(err)}
   finally{btn.disabled=false}
@@ -1278,7 +1236,8 @@ function readLib(){return (typeof ACC!=='undefined'&&ACC.lib)?ACC.lib:readLocal(
 function writeLib(l){try{localStorage.setItem(LK,JSON.stringify(l))}catch(e){}}
 function saveLib(){
   if(!S.chords||S.demo)return;
-  const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,lufs:S.lufs,peak:S.peak,saved:Date.now()};
+  const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,lufs:S.lufs,peak:S.peak,saved:Date.now(),
+    ...(S.fileMeta||{}),genre:S.genre||(S.fileMeta&&S.fileMeta.genre)||''};
   const loc=readLocal().filter(x=>x.name!==S.name);loc.unshift(item);writeLib(loc.slice(0,80));cloudSave(item);
 }
 let saveT=0;function saveLibSoon(){clearTimeout(saveT);saveT=setTimeout(saveLib,400)}
@@ -1288,19 +1247,35 @@ function renderLib(){
   l.forEach((it,i)=>{
     const li=document.createElement('li'),o=document.createElement('button');o.type='button';o.className='op';
     const kn=(FLAT_MAJ.has(it.key.mode?mod(it.key.pc+3,12):it.key.pc)?FLAT:SHARP)[it.key.pc]+(it.key.mode?'m':'');
-    o.innerHTML=`<span class="t"></span><span class="m">${fmtBpm(it.bpm)} BPM · ${kn} · ${camelot(it.key.pc,it.key.mode)} · ${fmtS(it.dur)}</span>`;
+    o.innerHTML=`<span class="t"></span><span class="m"><span class="lt" dir="ltr">${fmtBpm(it.bpm)} BPM · ${kn} · ${camelot(it.key.pc,it.key.mode)} · ${fmtS(it.dur)}</span>${it.genre?`<span class="g"></span>`:''}${it.file_path?`<span class="cl" title="${esc(t('cloudTag'))}">${CLOUD_IC}</span>`:''}</span>`;
+    if(it.genre)o.querySelector('.g').textContent=it.genre;
     o.querySelector('.t').textContent=it.name;o.onclick=()=>openLib(it);
     const d=document.createElement('button');d.type='button';d.className='del';d.textContent=t('del');
     d.onclick=()=>{if(!d.classList.contains('arm')){d.classList.add('arm');d.textContent=t('sure');setTimeout(()=>{d.classList.remove('arm');d.textContent=t('del')},3000);return}writeLib(readLocal().filter(x=>x.name!==it.name));cloudDelete(it.name).then(renderLib);renderLib()};
     li.append(o,d);ul.appendChild(li);
   });
 }
-function openLib(it){
-  stop();P.pos=0;cancelSep(true);
+function restoreSaved(saved){
+  S.bpm=saved.bpm;S.offset=saved.offset;buildBeats();S.chords=Int8Array.from(saved.chords);S.down=saved.down;
+  S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key)S.key=saved.key;renderAll();
+}
+async function openLib(it){
+  stop();P.pos=0;cancelSep(true);$('#lib').hidden=true;
+  if(it.file_path&&ACC.on&&ACC.user){
+    try{
+      busy(t('bCloud'),0.05);
+      const url=await Backend.songFileUrl(it.file_path);
+      const ab=await (await fetch(url)).arrayBuffer();busy(t('bCloud'),0.3);
+      const buf=await ac().decodeAudioData(ab);
+      await analyze(buf,it.name,false,true);restoreSaved(it);
+      S.fileMeta={file_path:it.file_path,file_size:it.file_size,file_type:it.file_type};S.genre=it.genre||'';setSaveState('saved');
+      $('#notice').hidden=true;return;
+    }catch(e){console.warn(e);busy(null)}
+  }
   Object.assign(S,{name:it.name,buffer:null,dur:it.dur,wave:null,chroma:null,env:null,lowEnv:null,bpm:it.bpm,offset:it.offset,down:it.down,key:it.key,transpose:0,capo:0,demo:false,
-    stems:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null});
-  buildBeats();S.chords=Int8Array.from(it.chords);renderAll();$('#lib').hidden=true;
-  const n=$('#notice');n.hidden=false;n.textContent=t('fromLib');
+    stems:null,stemEnv:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null,fileMeta:null,genre:it.genre||''});
+  buildBeats();S.chords=Int8Array.from(it.chords);renderAll();setSaveState('');
+  showNotice(t('fromLib'),[[t('upload'),()=>$('#file').click()]]);
 }
 
 
@@ -1424,31 +1399,44 @@ function applyConfig(){
   renderStemsUI();
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
-$('#adminBtn').onclick=()=>{fillSettings();$('#admin').hidden=false;loadUsers()};
+$('#adminBtn').onclick=()=>{fillSettings();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadUsers()};
 $('#adminClose').onclick=()=>$('#admin').hidden=true;
 function fillSettings(){const c=ACC.config||{};$('#cTitle').value=c.title||'';$('#cAnn').value=c.announce||'';$('#cLang').value=c.lang||'he';$('#cAi').checked=c.ai!==false;$('#cDl').checked=c.dl!==false;$('#cReq').checked=!!c.require_login;$('#cSign').checked=c.allow_signup!==false;setMsg($('#cMsg'),'')}
 $('#cSave').onclick=()=>busyBtn($('#cSave'),async()=>{
   const c={...ACC.config,title:$('#cTitle').value.trim(),announce:$('#cAnn').value.trim(),lang:$('#cLang').value,ai:$('#cAi').checked,dl:$('#cDl').checked,require_login:$('#cReq').checked,allow_signup:$('#cSign').checked};
   try{await Backend.saveConfig(c);ACC.config=c;applyConfig();setMsg($('#cMsg'),t('saved'))}catch(e){setMsg($('#cMsg'),t('saveFail'),true)}});
-async function loadUsers(){try{ACC.users=await Backend.adminUsers()}catch(e){ACC.users=[]}renderAdmin()}
+async function loadUsers(){try{ACC.users=await Backend.adminUsers()}catch(e){ACC.users=[]}try{ACC.dlAll=await Backend.adminDownloads()}catch(e){ACC.dlAll=[]}renderAdmin()}
 $('#uSearch').addEventListener('input',()=>renderAdmin());
+const CLOUD_IC='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/></svg>';
+const fmtMB=b=>b?(b/1048576).toFixed(1)+' MB':'—';
+const mbCell=b=>`<span dir="ltr" class="ltr">${fmtMB(b)}</span>`;
+const ltr=x=>`<span dir="ltr" class="ltr">${esc(x)}</span>`;
+function keyCell(pc,mode){if(pc==null)return '—';const a={pc,mode},c=camOf(a);return `<span class="kb" style="background:${camColor(c.n,c.l)}"><b>${c.n}${c.l}</b><i>${esc(keyText(a))}</i></span>`}
+ACC.admView='users';
 function renderAdmin(){
   if(!ACC.admin||$('#admin').hidden)return;
-  const M=ACC.users||[],wk=Date.now()-7*864e5;
-  const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('statSeps'),M.reduce((a,m)=>a+(m.seps||0),0)],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
+  const M=ACC.users||[],wk=Date.now()-7*864e5,dl=ACC.dlAll||[];
+  const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('downloadsL'),dl.length],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
   $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
+  document.querySelectorAll('#admTabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ACC.admView&&!ACC.admUser));
+  $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;
+  const setSec=$('#cTitle').closest('.asec');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView==='songs';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  if(ACC.admUser){renderAdminUser();return}
+  if(ACC.admView==='songs'){renderAdminSongs();return}
+  const dlc={};for(const d of dl)dlc[d.user_id]=(dlc[d.user_id]||0)+1;
   const q=$('#uSearch').value.trim().toLowerCase();
   const rows=M.filter(m=>!q||[m.username,m.display_name,m.email].some(x=>String(x||'').toLowerCase().includes(q)));
   const body=$('#uBody');body.innerHTML='';
-  if(!rows.length){body.innerHTML=`<tr><td colspan="8" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
+  if(!rows.length){body.innerHTML=`<tr><td colspan="9" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
   rows.forEach(m=>{
     const tr=document.createElement('tr'),isMe=ACC.user&&m.id===ACC.user.id,adm=m.role==='admin';
-    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${adm?'adm':''}">${esc(adm?t('roleAdmin'):t('roleUser'))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${m.seps||0}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
+    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${adm?'adm':''}">${esc(adm?t('roleAdmin'):t('roleUser'))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
     tr.querySelector('img').src=avatarFor(m);
     tr.querySelector('.t').textContent=(m.display_name||m.username||'—')+(isMe?` (${t('you')})`:'');
-    tr.querySelector('.e').textContent=[m.username?'@'+m.username:'',m.email||''].filter(Boolean).join(' · ');
+    tr.querySelector('.e').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
+    const acts=tr.querySelector('.acts');
+    const b0=document.createElement('button');b0.type='button';b0.className='btn solid';b0.textContent=t('details');b0.onclick=()=>{ACC.admUser=m;renderAdmin();loadAdminUser(m)};acts.append(b0);
     if(!isMe){
-      const acts=tr.querySelector('.acts');
       const b1=document.createElement('button');b1.type='button';b1.className='btn ghost';b1.textContent=adm?t('removeAdmin'):t('makeAdmin');
       b1.onclick=()=>busyBtn(b1,async()=>{try{await Backend.adminSetRole(m.id,adm?'user':'admin');await loadUsers()}catch(e){console.warn(e)}});
       const b2=document.createElement('button');b2.type='button';b2.className='btn '+(m.blocked?'solid':'ghost');b2.textContent=m.blocked?t('unblock'):t('block');
@@ -1458,7 +1446,71 @@ function renderAdmin(){
     body.appendChild(tr);
   });
 }
-
+function songRows(list,withUser){
+  const users={};for(const m of ACC.users||[])users[m.id]=m;
+  if(!list.length)return `<tr><td colspan="9" class="snote">${esc(t('noSongs'))}</td></tr>`;
+  return list.map((r,i)=>{const u=users[r.user_id]||{};return `<tr>
+    <td><div class="sn"></div></td>${withUser?`<td class="usr">${ltr(u.username?'@'+u.username:(u.email||'—'))}</td>`:''}
+    <td class="gen"></td><td class="mono">${r.bpm!=null?Math.round(r.bpm):'—'}</td><td>${keyCell(r.key_pc,r.key_mode)}</td>
+    <td class="mono">${r.duration?fmtS(+r.duration):'—'}</td><td class="mono">${mbCell(r.file_size)}</td><td>${esc(fmtDate(r.created_at||r.updated_at))}</td>
+    <td class="acts">${r.file_path?`<button type="button" class="btn ghost" data-dl="${i}">${esc(t('dlFile'))}</button><button type="button" class="btn ghost" data-op="${i}">${esc(t('dOpen'))}</button>`:`<span class="snote">${esc(t('noFile'))}</span>`}</td></tr>`}).join('');
+}
+function wireSongRows(tbody,list){
+  tbody.querySelectorAll('tr').forEach((tr,i)=>{const r=list[i];if(!r)return;tr.querySelector('.sn').textContent=r.name;tr.querySelector('.gen').textContent=r.genre||'—'});
+  tbody.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminDownloadFile(list[+b.dataset.dl])));
+  tbody.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminOpen(list[+b.dataset.op])));
+}
+async function loadAdminSongs(){try{ACC.songsAll=await Backend.adminSongs()}catch(e){ACC.songsAll=[]}renderAdmin()}
+function renderAdminSongs(){
+  const list=ACC.songsAll||[],q=$('#sSearch').value.trim().toLowerCase();
+  const f=list.filter(r=>!q||[r.name,r.genre].some(x=>String(x||'').toLowerCase().includes(q)));
+  const tot=list.reduce((a,r)=>a+(r.file_size||0),0);
+  $('#sInfo').textContent=`${list.length} · ${fmtMB(tot)}`;
+  const tb=$('#sBody');tb.innerHTML=songRows(f,true);wireSongRows(tb,f);
+}
+async function loadAdminUser(m){
+  $('#udSongs').innerHTML=`<tr><td colspan="8" class="snote">${esc(t('dLoading'))}</td></tr>`;
+  try{const [songs,dls]=await Promise.all([Backend.adminSongs(m.id),Backend.adminDownloads(m.id)]);if(ACC.admUser!==m)return;ACC.admUserSongs=songs;ACC.admUserDls=dls}catch(e){ACC.admUserSongs=[];ACC.admUserDls=[]}
+  renderAdminUser();
+}
+function renderAdminUser(){
+  const m=ACC.admUser,songs=ACC.admUserSongs||[],dls=ACC.admUserDls||[];
+  $('#udImg').src=avatarFor(m);$('#udName').textContent=m.display_name||m.username||'—';
+  $('#udMeta').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
+  const facts=[[t('role'),m.role==='admin'?t('roleAdmin'):t('roleUser')],[t('joined'),fmtDate(m.created_at)],[t('lastSeen'),fmtDate(m.last_seen)],[t('uploads'),String(songs.length)],[t('downloadsL'),String(dls.length)],[t('seps'),String(m.seps||0)],[t('colStatus'),m.blocked?t('blockedS'):t('active')]];
+  $('#udFacts').innerHTML=facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
+  $('#udBio').textContent=m.bio||'';$('#udBio').hidden=!m.bio;
+  const tb=$('#udSongs');tb.innerHTML=songRows(songs,false);wireSongRows(tb,songs);
+  $('#udDls').innerHTML=dls.length?dls.map(d=>`<tr><td class="sn2"></td><td class="mono">${Array.isArray(d.files)?d.files.length:0}</td><td class="mono">${mbCell(d.size)}</td><td>${esc(fmtDate(d.created_at))}</td></tr>`).join(''):`<tr><td colspan="4" class="snote">${esc(t('noDownloads'))}</td></tr>`;
+  $('#udDls').querySelectorAll('tr').forEach((tr,i)=>{const c=tr.querySelector('.sn2');if(c&&dls[i])c.textContent=dls[i].song_name});
+  $('#udAll').disabled=!songs.some(r=>r.file_path);
+}
+async function fetchSongFile(r){const url=await Backend.songFileUrl(r.file_path);return new Uint8Array(await (await fetch(url)).arrayBuffer())}
+const fileNameOf=r=>`${String(r.name).replace(/[\\/:*?"<>|]/g,'_').slice(0,100)}.${(r.file_path.match(/\.([a-z0-9]+)$/i)||[,'mp3'])[1]}`;
+async function adminDownloadFile(r){try{const d=await fetchSongFile(r);saveBlob(new Blob([d],{type:r.file_type||'audio/mpeg'}),fileNameOf(r))}catch(e){console.warn(e)}}
+async function adminZip(list,label,msgEl){
+  const withFile=list.filter(r=>r.file_path),files=[],used=new Set();
+  for(let i=0;i<withFile.length;i++){
+    msgEl.textContent=t('zipping',{n:i+1,t:withFile.length});
+    const r=withFile[i],u=(ACC.users||[]).find(x=>x.id===r.user_id)||{};
+    let n=(label?'':((u.username||'user')+'/'))+fileNameOf(r);while(used.has(n))n=n.replace(/(\.[^.]+)$/,'_$1');used.add(n);
+    try{files.push({name:n,data:await fetchSongFile(r)})}catch(e){console.warn(e)}
+    await tick();
+  }
+  if(!files.length){msgEl.textContent=t('noSongs');return}
+  saveBlob(zip(files),`${label||'Chord Room'} - songs.zip`);msgEl.textContent=t('dlDone',{s:(files.reduce((a,f)=>a+f.data.length,0)/1048576).toFixed(1)});
+}
+async function adminOpen(r){
+  try{busy(t('bCloud'),0.05);$('#admin').hidden=true;showView('tool');
+    const d=await fetchSongFile(r);const buf=await ac().decodeAudioData(d.buffer);await analyze(buf,r.name,false,true);
+    showNotice(t('adminOpened'));
+  }catch(e){console.warn(e);busy(null)}
+}
+document.querySelectorAll('#admTabs button').forEach(b=>b.onclick=()=>{ACC.admView=b.dataset.v;ACC.admUser=null;if(b.dataset.v==='songs'&&!ACC.songsAll)loadAdminSongs();renderAdmin()});
+$('#udBack').onclick=()=>{ACC.admUser=null;renderAdmin()};
+$('#udAll').onclick=()=>busyBtn($('#udAll'),()=>adminZip(ACC.admUserSongs||[],ACC.admUser.username||'user',$('#udMsg')));
+$('#sAll').onclick=()=>busyBtn($('#sAll'),()=>adminZip(ACC.songsAll||[],'',$('#sMsg')));
+$('#sSearch').addEventListener('input',()=>renderAdmin());
 /* cloud song library */
 async function loadCloudLib(){
   if(!ACC.user)return;
@@ -1737,12 +1789,37 @@ window.addEventListener('hashchange',()=>showView(location.hash==='#discover'?'d
 /* ---------- events ---------- */
 async function loadFile(file){
   if(!file)return;
+  const name=file.name.replace(/\.[^.]+$/,'');
   try{busy(t('bReading'),0.01);const ab=await file.arrayBuffer();const buf=await ac().decodeAudioData(ab);
-    // keep cues/edits from a saved copy of the same song
-    const saved=readLib().find(x=>x.name===file.name.replace(/\.[^.]+$/,''));
-    await analyze(buf,file.name.replace(/\.[^.]+$/,''),false);
-    if(saved&&Math.abs(saved.dur-buf.duration)<0.5){S.bpm=saved.bpm;S.offset=saved.offset;buildBeats();S.chords=Int8Array.from(saved.chords);S.down=saved.down;S.edited=new Set(saved.edited||[]);S.cues=saved.cues||S.cues;renderAll()}
-  }catch(e){console.error(e);busy(null);const n=$('#notice');n.hidden=false;n.textContent=t('readErr')}
+    const saved=readLib().find(x=>x.name===name);
+    setSaveState('');
+    await analyze(buf,name,false);S.genre=(saved&&saved.genre)||'';
+    if(saved&&Math.abs(saved.dur-buf.duration)<0.5)restoreSaved(saved);
+    storeUpload(file,name);
+  }catch(e){console.error(e);busy(null);showNotice(t('readErr'))}
+}
+const songKeyOf=name=>{let h=2166136261;for(const ch of name){h^=ch.codePointAt(0);h=Math.imul(h,16777619)>>>0}return 's'+h.toString(36)+'-'+Math.min(40,name.length)};
+function setSaveState(st){const el=$('#saveState');if(!el)return;el.className='sst '+st;el.hidden=!st;
+  el.querySelector('span').textContent=st==='saving'?t('savingCloud'):st==='saved'?t('savedCloud'):st==='fail'?t('saveCloudFail'):''}
+async function storeUpload(file,name){
+  if(!ACC.on||!ACC.user||file.size>50*1024*1024)return;
+  setSaveState('saving');
+  try{
+    const meta=await Backend.uploadSongFile(file,songKeyOf(name));
+    if(S.name!==name)return;
+    S.fileMeta=meta;saveLib();setSaveState('saved');
+    lookupGenre(name).then(g=>{if(g&&S.name===name){S.genre=g;saveLib()}});
+  }catch(e){console.warn(e);if(S.name===name)setSaveState('fail')}
+}
+// genre from Deezer's catalogue, matched by the file name (best effort)
+async function lookupGenre(name){
+  try{
+    const q=normTok(name).slice(0,8).join(' ');if(!q)return '';
+    const r=await dz('search',{q,limit:1});const tr=r&&r.data&&r.data[0];if(!tr||!tr.album)return '';
+    const tt=normTok(tr.title);if(!tt.length||!tt.every(w=>q.includes(w)))return '';
+    const al=await dz(`album/${tr.album.id}`);const g=al&&al.genres&&al.genres.data&&al.genres.data[0];
+    return g?g.name:'';
+  }catch(e){return ''}
 }
 $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value=''});
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
@@ -1771,7 +1848,7 @@ function loopToggle(){
 $('#loopBtn').onclick=loopToggle;
 document.querySelectorAll('[data-lb]').forEach(b=>b.onclick=()=>{S.loopBars=+b.dataset.lb;if(S.loop){const T=60/S.bpm;S.loop.le=Math.min(S.dur,S.loop.ls+S.loopBars*4*T);restart()}renderLoop();dirty=true});
 $('#clickBtn').onclick=()=>{S.click=!S.click;$('#clickBtn').classList.toggle('on',S.click)};
-$('#aiBtn').onclick=aiSeparate;$('#quickBtn').onclick=quickSeparate;$('#cancelBtn').onclick=()=>cancelSep(false);
+$('#aiBtn').onclick=aiSeparate;$('#cancelBtn').onclick=()=>cancelSep(false);
 $('#dlBtn').onclick=download;
 $('#editBtn').onclick=()=>{S.editing=!S.editing;$('#pop').hidden=true;renderSheet()};
 $('#libBtn').onclick=()=>{renderLib();$('#lib').hidden=false};$('#libClose').onclick=()=>$('#lib').hidden=true;
