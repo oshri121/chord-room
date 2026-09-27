@@ -1456,7 +1456,7 @@ function songRows(list,withUser){
     <td class="acts">${r.file_path?`<button type="button" class="btn ghost" data-dl="${i}">${esc(t('dlFile'))}</button><button type="button" class="btn ghost" data-op="${i}">${esc(t('dOpen'))}</button>`:`<span class="snote">${esc(t('noFile'))}</span>`}</td></tr>`}).join('');
 }
 function wireSongRows(tbody,list){
-  tbody.querySelectorAll('tr').forEach((tr,i)=>{const r=list[i];if(!r)return;tr.querySelector('.sn').textContent=r.name;tr.querySelector('.gen').textContent=r.genre||'—'});
+  tbody.querySelectorAll('tr').forEach((tr,i)=>{const r=list[i];if(!r)return;const sn=tr.querySelector('.sn');sn.textContent=r.name;sn.title=r.name;tr.querySelector('.gen').textContent=r.genre||'—'});
   tbody.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminDownloadFile(list[+b.dataset.dl])));
   tbody.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminOpen(list[+b.dataset.op])));
 }
@@ -1465,7 +1465,7 @@ function renderAdminSongs(){
   const list=ACC.songsAll||[],q=$('#sSearch').value.trim().toLowerCase();
   const f=list.filter(r=>!q||[r.name,r.genre].some(x=>String(x||'').toLowerCase().includes(q)));
   const tot=list.reduce((a,r)=>a+(r.file_size||0),0);
-  $('#sInfo').textContent=`${list.length} · ${fmtMB(tot)}`;
+  $('#sInfo').innerHTML=ltr(`${list.length} · ${fmtMB(tot)}`);
   const tb=$('#sBody');tb.innerHTML=songRows(f,true);wireSongRows(tb,f);
 }
 async function loadAdminUser(m){

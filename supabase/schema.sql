@@ -252,6 +252,14 @@ alter table public.songs add column if not exists created_at timestamptz not nul
 drop policy if exists "songs: admins read" on public.songs;
 create policy "songs: admins read" on public.songs for select using (public.is_admin());
 
+-- fill the new columns for songs saved before they existed (the analysis is already in `data`)
+update public.songs set
+  bpm      = coalesce(bpm, nullif(data->>'bpm','')::numeric),
+  key_pc   = coalesce(key_pc, nullif(data->'key'->>'pc','')::smallint),
+  key_mode = coalesce(key_mode, case data->'key'->>'mode' when 'true' then 1 when 'false' then 0 else nullif(data->'key'->>'mode','')::smallint end),
+  duration = coalesce(duration, nullif(data->>'dur','')::numeric)
+where bpm is null or key_pc is null or duration is null;
+
 insert into storage.buckets (id, name, public, file_size_limit)
   values ('uploads', 'uploads', false, 52428800)
   on conflict (id) do update set public = false, file_size_limit = 52428800;
