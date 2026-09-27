@@ -1,0 +1,9 @@
+{
+  "name": "Chord Room",
+  "short_name": "Chord Room",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B0B0C",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

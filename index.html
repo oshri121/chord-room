@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Chord Room</title>
+<meta name="description" content="BPM, key and chord detection, RGB DJ waveform, AI stem separation and MIDI export for FL Studio.">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/app.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <svg class="logo" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="4" fill="#0B0B0C"/><g fill="#fff"><rect x="7" y="14" width="2.4" height="6" rx="1"/><rect x="11" y="10" width="2.4" height="14" rx="1"/><rect x="15" y="6" width="2.4" height="22" rx="1"/><rect x="19" y="11" width="2.4" height="12" rx="1"/><rect x="23" y="8" width="2.4" height="18" rx="1"/></g><rect x="27" y="13" width="2.4" height="8" rx="1" fill="#E5322B"/></svg>
+    <span class="wm">CHORD ROOM</span>
+    <span class="tl" data-i="tagline"></span>
+  </div>
+  <nav class="nav">
+    <select class="sel" id="lang" aria-label="Language">
+      <option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option><option value="ru">Русский</option><option value="es">Español</option>
+    </select>
+    <button class="btn ghost" id="libBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h10"/></svg><span data-i="library"></span></button>
+    <label class="btn solid" for="file" tabindex="0" id="upLbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 16V4m0 0l-5 5m5-5l5 5M4 20h16"/></svg><span data-i="upload"></span></label>
+    <input type="file" id="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
+    <button class="btn ghost" id="adminBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg><span data-i="adminPanel"></span></button>
+    <button class="btn ghost" id="signInBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-i="signIn"></span></button>
+    <button class="avbtn" id="accBtn" type="button" hidden><img id="accImg" alt=""></button>
+  </nav>
+</header>
+<div class="banner" id="banner" hidden><b data-i="notice"></b><span id="bannerT"></span></div>
+
+<main class="wrap">
+  <section class="track" aria-live="polite">
+    <div>
+      <div class="eyebrow" data-i="loaded"></div>
+      <h1 id="tname">—</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="k">BPM</span><span class="v" id="sBpm">—</span><span class="s" id="sBpmS"></span></div>
+      <div class="stat"><span class="k" data-i="key"></span><span class="v" id="sKey">—</span><span class="s" id="sKeyS"></span></div>
+      <div class="stat"><span class="k">Camelot</span><span class="v"><span class="cam" id="sCam">—</span></span><span class="s"></span></div>
+      <div class="stat"><span class="k" data-i="length"></span><span class="v" id="sDur">—</span><span class="s"></span></div>
+      <div class="stat"><span class="k" data-i="loudness"></span><span class="v" id="sLufs">—</span><span class="s" id="sPeak"></span></div>
+    </div>
+  </section>
+
+  <section class="deck" dir="ltr">
+    <canvas id="ov"></canvas>
+    <canvas id="zm"></canvas>
+    <div class="dbar">
+      <button class="play" id="play" type="button">
+        <svg id="icPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>
+        <svg id="icPause" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>
+      </button>
+      <div class="time" id="time">0:00.0 <span>/ 0:00</span></div>
+      <div class="hc" id="hc"></div>
+      <div class="grp"><span class="lb" data-i="loop"></span><button type="button" data-lb="1">1</button><button type="button" data-lb="2">2</button><button type="button" data-lb="4">4</button><button type="button" data-lb="8">8</button><button type="button" id="loopBtn">⟲</button></div>
+      <div class="grp"><button type="button" id="clickBtn" data-i="click"></button></div>
+      <span class="dspacer"></span>
+      <div class="grp"><span class="lb" data-i="wave"></span><button type="button" data-wm="rgb">RGB</button><button type="button" data-wm="3band">3B</button><button type="button" data-wm="blue">MONO</button></div>
+      <div class="grp"><span class="lb" data-i="zoom"></span><button type="button" id="zOut">−</button><button type="button" id="zIn">+</button></div>
+      <div class="grp"><span class="lb">BPM</span><button type="button" id="bpmH">÷2</button><button type="button" id="bpmD">×2</button></div>
+      <div class="grp"><span class="lb" data-i="grid"></span><button type="button" id="gL">◀</button><button type="button" id="gR">▶</button><button type="button" id="gBar">1</button></div>
+    </div>
+    <div class="overlay" id="busy" hidden><div class="msg" id="busyMsg"></div><div class="pbar"><i id="busyBar"></i></div></div>
+  </section>
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="cols">
+    <section>
+      <h2 data-i="now"></h2>
+      <div class="now">
+        <div class="big" id="nowName">—</div>
+        <div class="dia" id="nowDia"></div>
+        <div class="next">
+          <div><div class="k" data-i="next"></div><div class="nm" id="nextName">—</div><div class="w" id="nextWhen"></div></div>
+          <div class="dia" id="nextDia"></div>
+        </div>
+      </div>
+    </section>
+    <section class="ctl">
+      <h2 data-i="playAlong"></h2>
+      <div class="crow"><div><div class="n" data-i="transpose"></div><div class="h" data-i="transposeH"></div></div>
+        <div class="step"><button type="button" id="trM">−</button><output id="trV">0</output><button type="button" id="trP">+</button></div></div>
+      <div class="crow"><div><div class="n" data-i="capo"></div><div class="h" id="capoH"></div></div>
+        <div class="step"><button type="button" id="cpM">−</button><output id="cpV">0</output><button type="button" id="cpP">+</button></div></div>
+      <div class="crow"><div class="n" data-i="diagrams"></div>
+        <div class="seg"><button type="button" data-dg="guitar" data-i="guitar"></button><button type="button" data-dg="piano" data-i="piano"></button></div></div>
+      <div class="crow"><div class="n" data-i="names"></div>
+        <div class="seg"><button type="button" data-acc="0" data-i="auto"></button><button type="button" data-acc="1">♯</button><button type="button" data-acc="2">♭</button></div></div>
+      <div class="crow"><div><div class="n" data-i="harmonic"></div><div class="h" data-i="harmonicH"></div></div>
+        <div class="harm" id="harm" dir="ltr"></div></div>
+    </section>
+  </div>
+
+  <section class="block" id="stemsBlock">
+    <div class="bhead"><h2 data-i="stems"></h2><p data-i="stemsH"></p></div>
+    <div class="sepbar">
+      <button class="btn solid" type="button" id="aiBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"/><circle cx="12" cy="12" r="3.2"/></svg><span data-i="aiSep"></span></button>
+      <button class="btn ghost" type="button" id="quickBtn" data-i="quickSep"></button>
+      <button class="btn ghost" type="button" id="cancelBtn" data-i="cancel" hidden></button>
+      <span class="engine" id="engine"></span>
+      <div class="sprog" id="sprog" hidden><div class="track2"><i id="sbar"></i></div><span id="smsg"></span></div>
+    </div>
+    <p class="snote" id="snote"></p>
+    <div class="mixer" id="mixer"></div>
+  </section>
+
+  <section class="block">
+    <div class="bhead"><h2 data-i="export"></h2><p data-i="exportH"></p></div>
+    <div class="xlist" id="xlist"></div>
+    <div class="xrow"><button class="btn solid" type="button" id="dlBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg><span data-i="download"></span></button><span class="snote" id="dlMsg"></span></div>
+  </section>
+
+  <section class="block">
+    <div class="bhead"><h2 data-i="chordsIn"></h2></div>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <section class="block">
+    <div class="bhead"><h2 data-i="sheet"></h2>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="snote" id="sheetHint"></span><button class="btn ghost" type="button" id="editBtn" data-i="edit"></button></div></div>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <footer>
+    <div><h3 data-i="about"></h3><p data-i="aboutT" style="margin:0 0 8px"></p><p data-i="credits" style="margin:0"></p></div>
+    <div><h3 data-i="keys"></h3><div class="keys" id="keys"></div></div>
+  </footer>
+</main>
+
+<aside class="lib" id="lib" hidden>
+  <div class="hd"><h3 data-i="library"></h3><button class="btn ghost" id="libClose" type="button" data-i="close"></button></div>
+  <p class="snote" data-i="libH" style="margin:0"></p>
+  <ul id="libList"></ul>
+</aside>
+<div class="pop" id="pop" hidden></div>
+
+<aside class="acc" id="acc" hidden>
+  <div class="hd"><h3 data-i="account"></h3><button class="btn ghost" id="accClose" type="button" data-i="close"></button></div>
+  <div class="bd">
+    <div class="who"><div class="ph"><img id="pImg" alt=""></div><div style="min-width:0"><div class="nm" id="pName"></div><div class="snote" id="pUser" dir="ltr" style="text-align:start"></div><span class="rl" id="pRole"></span></div></div>
+    <form id="pForm" class="fset" autocomplete="off">
+      <div class="fld"><label data-i="photo"></label><div class="row2"><label class="btn ghost" for="pFile" tabindex="0" data-i="changePhoto"></label><button class="btn ghost" type="button" id="pRm" data-i="removePhoto"></button></div><input type="file" id="pFile" accept="image/*"></div>
+      <div class="fld"><label for="pUname" data-i="username"></label><input type="text" id="pUname" dir="ltr" maxlength="24" pattern="[A-Za-z0-9_.\-]{3,24}"><span class="snote" data-i="usernameH"></span></div>
+      <div class="fld"><label for="pNick" data-i="nick"></label><input type="text" id="pNick" maxlength="40"></div>
+      <div class="fld"><label for="pBio" data-i="bio"></label><textarea id="pBio" maxlength="280"></textarea></div>
+      <div class="fld"><label for="pLang" data-i="prefLang"></label><select id="pLang"><option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option><option value="ru">Русский</option><option value="es">Español</option></select></div>
+      <div class="row2"><button class="btn solid" type="submit" id="pSave" data-i="save"></button><span class="snote" id="pMsg"></span></div>
+    </form>
+    <dl class="dl" id="pDl"></dl>
+    <div class="sech" data-i="security"></div>
+    <form id="fEmail" class="fset">
+      <div class="fld"><label for="chEmail" data-i="changeEmail"></label><input type="email" id="chEmail" dir="ltr" required autocomplete="email" data-ip="newEmail"></div>
+      <div class="row2"><button class="btn ghost" type="submit" data-i="save"></button><span class="snote amsg"></span></div>
+    </form>
+    <form id="fPass" class="fset">
+      <div class="fld"><label data-i="changePass"></label>
+        <input type="password" id="chCur" required autocomplete="current-password" data-ip="curPass">
+        <input type="password" id="chNew" required minlength="8" autocomplete="new-password" data-ip="newPass">
+        <input type="password" id="chNew2" required minlength="8" autocomplete="new-password" data-ip="password2"></div>
+      <div class="row2"><button class="btn ghost" type="submit" data-i="save"></button><span class="snote amsg"></span></div>
+    </form>
+    <button class="btn ghost" type="button" id="signOutBtn" data-i="signOut"></button>
+  </div>
+</aside>
+
+<div class="dlgwrap" id="authDlg" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="dh"><h3 id="authTitle"></h3><button class="x" type="button" id="authClose" aria-label="Close">×</button></div>
+    <form id="fIn" class="fset">
+      <div class="fld"><label for="inEmail" data-i="email"></label><input type="email" id="inEmail" dir="ltr" required autocomplete="email"></div>
+      <div class="fld"><label for="inPass" data-i="password"></label><input type="password" id="inPass" required autocomplete="current-password"></div>
+      <button class="btn solid wide" type="submit" data-i="signIn"></button>
+      <p class="snote amsg"></p>
+      <div class="links"><button type="button" class="lnk" id="toForgot" data-i="forgot"></button><button type="button" class="lnk" id="toUp" data-i="toUp"></button></div>
+    </form>
+    <form id="fUp" class="fset" hidden>
+      <div class="fld"><label for="upUser" data-i="username"></label><input type="text" id="upUser" dir="ltr" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_.\-]{3,24}" autocomplete="username"><span class="snote" data-i="usernameH"></span></div>
+      <div class="fld"><label for="upEmail" data-i="email"></label><input type="email" id="upEmail" dir="ltr" required autocomplete="email"></div>
+      <div class="fld"><label for="upPass" data-i="password"></label><input type="password" id="upPass" required minlength="8" autocomplete="new-password"></div>
+      <div class="fld"><label for="upPass2" data-i="password2"></label><input type="password" id="upPass2" required minlength="8" autocomplete="new-password"></div>
+      <button class="btn solid wide" type="submit" data-i="signUp"></button>
+      <p class="snote amsg"></p>
+      <div class="links"><button type="button" class="lnk" id="toIn" data-i="toIn"></button></div>
+    </form>
+    <form id="fForgot" class="fset" hidden>
+      <div class="fld"><label for="fgEmail" data-i="email"></label><input type="email" id="fgEmail" dir="ltr" required autocomplete="email"></div>
+      <button class="btn solid wide" type="submit" data-i="sendReset"></button>
+      <p class="snote amsg"></p>
+      <div class="links"><button type="button" class="lnk" id="toIn2" data-i="toIn"></button></div>
+    </form>
+    <form id="fReset" class="fset" hidden>
+      <div class="fld"><label for="rsPass" data-i="newPass"></label><input type="password" id="rsPass" required minlength="8" autocomplete="new-password"></div>
+      <div class="fld"><label for="rsPass2" data-i="password2"></label><input type="password" id="rsPass2" required minlength="8" autocomplete="new-password"></div>
+      <button class="btn solid wide" type="submit" data-i="setNewPass"></button>
+      <p class="snote amsg"></p>
+    </form>
+  </div>
+</div>
+
+<div class="admin" id="admin" hidden>
+  <div class="in">
+    <div class="ah"><h2 data-i="admin"></h2><button class="btn ghost" id="adminClose" type="button" data-i="close"></button></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="asec"><div class="bhead"><h3 data-i="users"></h3><input type="search" id="uSearch" class="srch" data-ip="search"></div>
+      <div class="tblw"><table class="ut"><thead><tr><th data-i="colUser"></th><th data-i="role"></th><th data-i="joined"></th><th data-i="lastSeen"></th><th data-i="songsSaved"></th><th data-i="seps"></th><th data-i="colStatus"></th><th></th></tr></thead><tbody id="uBody"></tbody></table></div></div>
+    <div class="asec"><div class="bhead"><h3 data-i="settings"></h3></div>
+      <div class="sgrid">
+        <div class="fld"><label for="cTitle" data-i="siteTitle"></label><input type="text" id="cTitle" maxlength="40" placeholder="CHORD ROOM"></div>
+        <div class="fld"><label for="cLang" data-i="defLang"></label><select id="cLang"><option value="he">עברית</option><option value="en">English</option><option value="ar">العربية</option><option value="ru">Русский</option><option value="es">Español</option></select></div>
+        <div class="fld" style="grid-column:1/-1"><label for="cAnn" data-i="announce"></label><input type="text" id="cAnn" maxlength="200"><span class="snote" data-i="announceH"></span></div>
+        <label class="tog"><span data-i="aiOn"></span><input type="checkbox" id="cAi"></label>
+        <label class="tog"><span data-i="dlOn"></span><input type="checkbox" id="cDl"></label>
+        <label class="tog"><span data-i="allowSignup"></span><input type="checkbox" id="cSign"></label>
+        <label class="tog"><span data-i="reqLogin"></span><input type="checkbox" id="cReq"></label>
+        <div class="row2" style="grid-column:1/-1"><button class="btn solid" type="button" id="cSave" data-i="saveSettings"></button><span class="snote" id="cMsg"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="gate" id="gate" hidden><div><p data-i="gateMsg"></p><button class="btn solid" type="button" id="gateIn" data-i="signIn"></button></div></div>
+<div class="blocked" id="blocked" hidden><div><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M6 18L18 6"/></svg><p data-i="blockedMsg"></p></div></div>
+<div class="drop" id="drop" hidden data-i="drop"></div>
+
+<script src="config.js?v=1"></script>
+<script src="vendor/supabase.js"></script>
+<script src="assets/backend.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>

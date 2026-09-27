@@ -1,0 +1,12 @@
+{
+  "name": "chord-room-ai-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild worker.js --bundle --format=iife --minify --platform=browser --define:import.meta.url=self.__ortBase \"--banner:js=self.__ortBase=self.location.href;\" --outfile=../../ai/worker.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "onnxruntime-web": "1.23.0"
+  }
+}
