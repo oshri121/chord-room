@@ -1584,7 +1584,15 @@ function rowEl(r,n){
   li.querySelector('.op').onclick=()=>openInTool(r);
   return li;
 }
-function refreshRow(r){const el=document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`);if(el){const n=el.querySelector('.dn').textContent;el.replaceWith(rowEl(r,n))}}
+// update a row in place (never replace it), so a click that is in progress is not lost
+function refreshRow(r){
+  const el=document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`);if(!el)return;
+  const a=r.a,dk=el.querySelector('.dk');dk.innerHTML='';dk.appendChild(keyBadge(a,r.status));
+  if(r.full){const f=document.createElement('span');f.className='fulltag';f.textContent=t('fullTag');f.title=t('fullTagT');dk.appendChild(f)}
+  el.querySelector('.db').innerHTML=`${a?Math.round(a.bpm):'—'}<small>BPM</small>`;
+  el.querySelector('.dch').innerHTML=a&&a.chords?a.chords.slice(0,4).map(c=>`<span>${esc(chordText(c,a))}</span>`).join(''):'';
+  el.querySelector('.mx').disabled=!a;el.querySelector('.pv').textContent=DC.playing===r.id?'❚❚':'▶';
+}
 function fmtDay(d){const x=new Date(d);return isNaN(x)?'':x.toLocaleDateString(LANG==='he'?'he-IL':LANG==='ar'?'ar':LANG,{day:'numeric',month:'short'})}
 function setDiscMsg(m){$('#dMsg').textContent=m||''}
 
