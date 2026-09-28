@@ -1428,6 +1428,7 @@ function saveLib(){
   const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,rate:S.rate,transpose:S.transpose,lufs:S.lufs,peak:S.peak,saved:Date.now(),
     ...(S.fileMeta||{}),genre:S.genre||(S.fileMeta&&S.fileMeta.genre)||''};
   const loc=readLocal().filter(x=>x.name!==S.name);loc.unshift(item);writeLib(loc.slice(0,80));cloudSave(item);
+  rememberState(item);
 }
 let saveT=0;function saveLibSoon(){clearTimeout(saveT);saveT=setTimeout(saveLib,400)}
 function renderLib(){
@@ -1456,8 +1457,9 @@ async function openLib(it){
       busy(t('bCloud'),0.05);
       const url=await Backend.songFileUrl(it.file_path);
       const ab=await (await fetch(url)).arrayBuffer();busy(t('bCloud'),0.3);
+      const blob=new Blob([ab],{type:it.file_type||''});   // copy before decodeAudioData detaches the buffer
       const buf=await ac().decodeAudioData(ab);
-      await analyze(buf,it.name,false,true);restoreSaved(it);
+      await analyze(buf,it.name,false,true);restoreSaved(it);rememberSong(blob,{name:it.name});
       S.fileMeta={file_path:it.file_path,file_size:it.file_size,file_type:it.file_type};S.genre=it.genre||'';setSaveState('saved');
       $('#notice').hidden=true;return;
     }catch(e){console.warn(e);busy(null)}
@@ -1466,6 +1468,7 @@ async function openLib(it){
     stems:null,stemEnv:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null,fileMeta:null,genre:it.genre||''});
   buildBeats();S.chords=Int8Array.from(it.chords);renderAll();setSaveState('');
   showNotice(t('fromLib'),[[t('upload'),()=>$('#file').click()]]);
+  rememberSong(null,{name:it.name,meta:it});
 }
 
 
@@ -1696,7 +1699,8 @@ async function adminZip(list,label,msgEl){
 }
 async function adminOpen(r){
   try{busy(t('bCloud'),0.05);$('#admin').hidden=true;showView('tool');
-    const d=await fetchSongFile(r);const buf=await ac().decodeAudioData(d.buffer);await analyze(buf,r.name,false,true);
+    const d=await fetchSongFile(r);const blob=new Blob([d],{type:r.file_type||''});
+    const buf=await ac().decodeAudioData(d.buffer);await analyze(buf,r.name,false,true);rememberSong(blob,{name:r.name});
     showNotice(t('adminOpened'));
   }catch(e){console.warn(e);busy(null)}
 }
@@ -1900,6 +1904,34 @@ function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).
 /* ---------- discover: trending songs, catalog, DJ mix matches ---------- */
 const DISC_GENRES=[[0,'dAll'],[-1,'gIsrael'],[132,'gPop'],[116,'gHiphop'],[113,'gDance'],[106,'gElectro'],[197,'gLatin'],[165,'gRnb'],[152,'gRock']];
 const TOP_ISRAEL=1362507345;
+// Deezer's "Top Israel" is what Israelis stream, so it mixes in international hits. We keep only Israeli
+// artists and top the list up from a current Israeli-hits playlist.
+const IL_EXTRA=[15605422363];
+const HEB=/[֐-׿]/;
+const IL_ARTISTS=new Set(['omer adam','noa kirel','eden ben zaken','static & ben el','static','ben el','ben el tavori','eden hason','anna zak',
+  'nasrin kadri','itay levi','itay levy','moshe peretz','sarit hadad','eyal golan','hanan ben ari','ishay ribo','ravid plotnik','tuna',
+  'stephane legar','maor edri','osher cohen','agam buhbut','kobi peretz','idan raichel','shlomo artzi','ivri lider','netta','eden golan',
+  'yuval dayan','nechi nech','mergui','peer tasi','lior narkis','dudu aharon','avraham tal','ofer levi','zehavi','omri 69','eliad nachum',
+  'shahar saul','noga erez','hadag nahash','keren peles','harel skaat','shlomi shabat','amir dadon','idan amedi','liran danino','elai botner',
+  'yuval raphael','nadav guedj','e-z','jasmin moallem','noam bettan','odeya','marina maximilian','ella lee','gali atari','boaz sharabi',
+  'rotem cohen','dudu tassa','berry sakharof','aviv geffen','rita','mosh ben ari','subliminal','hatikva 6','jane bordeaux','shiri maimon',
+  'young buta','peled','sagol 59','eden derso','ness & stilla','tamar yahalomy','shai tsabari','yishai levi','akiva','ran danker','kobi aflalo']);
+const ilName=n=>String(n||'').toLowerCase().replace(/\s+/g,' ').trim();
+function israeliFilter(list){
+  // an artist is Israeli if their name is in the list, or any of their tracks here has Hebrew in it
+  const ok=new Set();
+  for(const x of list){const a=x.artist||{};if(HEB.test((x.title||'')+(a.name||'')+((x.album&&x.album.title)||''))||IL_ARTISTS.has(ilName(a.name)))ok.add(a.id)}
+  // featured / split names ("Static & Ben El", "Omer Adam feat. X")
+  const hit=n=>ilName(n).split(/\s*(?:,|&|\bx\b|\bfeat\.?|\bft\.?|\bwith\b)\s*/).some(p=>IL_ARTISTS.has(p));
+  return list.filter(x=>x.readable!==false&&x.artist&&(ok.has(x.artist.id)||hit(x.artist.name)));
+}
+async function israeliTracks(){
+  const lists=await Promise.all([TOP_ISRAEL,...IL_EXTRA].map(id=>dz(`playlist/${id}/tracks`,{limit:100}).then(d=>d.data||[]).catch(()=>[])));
+  if(!lists[0].length&&!lists.slice(1).some(l=>l.length))throw new Error('deezer');
+  const seen=new Set(),out=[];
+  for(const x of israeliFilter(lists.flat())){if(!seen.has(x.id)){seen.add(x.id);out.push(x)}}
+  return out;   // chart order first, then the extra playlist
+}
 const DC={tab:'trend',genre:0,rows:{},lists:{},keyF:'',bpmMin:'',bpmMax:'',queue:[],working:false,audio:null,playing:null,loaded:false,mixFor:null,pool:null};
 const CACHE_K='chordroom.cat.v1';
 const cacheRead=()=>{try{return JSON.parse(localStorage.getItem(CACHE_K)||'{}')}catch(e){return {}}};
@@ -1948,13 +1980,13 @@ async function loadTab(){
     $('#dList').innerHTML=`<li class="dempty">${esc(t('dLoading'))}</li>`;
     try{
       let rows=[];
-      if(tab==='trend'&&DC.genre===-1){const d=await dz(`playlist/${TOP_ISRAEL}/tracks`,{limit:60});rows=(d.data||[]).filter(x=>x.readable!==false).map(x=>rowFromTrack(x))}
+      if(tab==='trend'&&DC.genre===-1){rows=(await israeliTracks()).slice(0,60).map(x=>rowFromTrack(x))}
       else if(tab==='new'&&DC.genre===-1){
-        // newest songs in the Israeli chart, by album release date
-        const d=await dz(`playlist/${TOP_ISRAEL}/tracks`,{limit:100});const tr=(d.data||[]).filter(x=>x.album&&x.album.id);
-        const ids=[...new Set(tr.map(x=>x.album.id))],dates={};
-        await Promise.all(ids.map(id=>dz(`album/${id}`).then(a=>{dates[id]=a.release_date||''}).catch(()=>{})));
-        rows=tr.map(x=>rowFromTrack(x,{...x.album,release_date:dates[x.album.id]})).sort((p,q)=>String(q.release||'').localeCompare(String(p.release||''))).slice(0,40);
+        // newest Israeli songs, by album release date
+        const tr=(await israeliTracks()).filter(x=>x.album&&x.album.id);
+        const ids=[...new Set(tr.map(x=>x.album.id))].slice(0,90),dates={};
+        for(let i=0;i<ids.length;i+=10)await Promise.all(ids.slice(i,i+10).map(id=>dz(`album/${id}`).then(a=>{dates[id]=a.release_date||''}).catch(()=>{})));
+        rows=tr.filter(x=>x.album.id in dates).map(x=>rowFromTrack(x,{...x.album,release_date:dates[x.album.id]})).sort((p,q)=>String(q.release||'').localeCompare(String(p.release||''))).slice(0,40);
       }
       else if(tab==='trend'){const d=await dz(`chart/${DC.genre}/tracks`,{limit:50});rows=(d.data||[]).map(x=>rowFromTrack(x))}
       else if(tab==='new'){
@@ -2095,8 +2127,10 @@ $('#fullClose').onclick=closeFull;
 async function openInTool(r){
   stopPreview();setDiscMsg(t('dLoading'));
   try{
-    const buf=await ac().decodeAudioData(await (await fetch(await freshPreview(r))).arrayBuffer());
+    const ab=await (await fetch(await freshPreview(r))).arrayBuffer(),blob=new Blob([ab],{type:'audio/mpeg'});
+    const buf=await ac().decodeAudioData(ab);
     setDiscMsg('');showView('tool');await analyze(buf,`${r.artist} – ${r.title}`,false,true);
+    rememberSong(blob,{name:S.name,catRef:r});
     S.catRef=r;showNotice(t('dPreviewNote'),[[t('fullPlay'),()=>openFull(r),FULL_IC],[t('uploadFullBtn'),()=>$('#file').click()]]);
     if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{});
   }catch(e){console.warn(e);setDiscMsg(t('dNoPreview'))}
@@ -2170,6 +2204,44 @@ const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'ab
 const routeHash=()=>{const h=location.hash.slice(1);showView(viewOfHash(),h==='about-a11y'?h:null)};
 window.addEventListener('hashchange',routeHash);
 
+/* ---------- last song: the tool reopens it after a reload / browser restart (IndexedDB) ---------- */
+const LastDB=(()=>{let p=null;
+  const db=()=>p||(p=new Promise((ok,no)=>{try{const r=indexedDB.open('chordroom',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}}));
+  const run=(mode,fn)=>db().then(d=>new Promise((ok,no)=>{const x=d.transaction('kv',mode),q=fn(x.objectStore('kv'));x.oncomplete=()=>ok(q.result);x.onerror=x.onabort=()=>no(x.error)}));
+  return {get:k=>run('readonly',s=>s.get(k)),set:(k,v)=>run('readwrite',s=>s.put(v,k))};
+})();
+const POS_K='chordroom.lastpos';
+function rememberSong(blob,info){
+  if(blob&&blob.size>200*1024*1024)return;
+  let rec={...info,blob:blob||null,at:Date.now()};
+  const put=r=>LastDB.set('audio',r);
+  put(rec).catch(()=>{if(rec.catRef){rec={...rec,catRef:{id:rec.catRef.id,ext:rec.catRef.ext,title:rec.catRef.title,artist:rec.catRef.artist,inCat:!!rec.catRef.inCat}};put(rec).catch(()=>{})}});
+  try{localStorage.removeItem(POS_K)}catch(e){}
+}
+function rememberState(item){if(!S.demo)LastDB.set('state',item).catch(()=>{})}
+function rememberPos(){if(!S.buffer||S.demo)return;try{localStorage.setItem(POS_K,JSON.stringify({name:S.name,pos:P.playing?now():P.pos}))}catch(e){}}
+window.addEventListener('pagehide',rememberPos);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)rememberPos()});
+async function restoreLast(){
+  let a=null;try{a=await LastDB.get('audio')}catch(e){}
+  if(!a||!a.name)return false;
+  if(!a.blob){if(!a.meta)return false;try{await openLib(a.meta);return true}catch(e){return false}}
+  try{
+    busy(t('bReading'),0.01);
+    const buf=await ac().decodeAudioData(await a.blob.arrayBuffer());
+    await analyze(buf,a.name,false,true);
+    let st=null;try{st=await LastDB.get('state')}catch(e){}
+    if(!st||st.name!==a.name)st=readLib().find(x=>x.name===a.name)||null;
+    if(st&&st.chords&&Math.abs((st.dur||0)-buf.duration)<0.5){
+      restoreSaved(st);S.genre=st.genre||'';
+      if(st.file_path){S.fileMeta={file_path:st.file_path,file_size:st.file_size,file_type:st.file_type};setSaveState('saved')}
+    }
+    if(a.catRef){const r=a.catRef;S.catRef=r;if(r.ext)showNotice(t('dPreviewNote'),[[t('fullPlay'),()=>openFull(r),FULL_IC],[t('uploadFullBtn'),()=>$('#file').click()]])}
+    try{const p=JSON.parse(localStorage.getItem(POS_K)||'null');if(p&&p.name===a.name&&p.pos>0.5&&p.pos<S.dur-1)seek(p.pos)}catch(e){}
+    return true;
+  }catch(e){console.warn(e);busy(null);return false}
+}
+
 /* ---------- events ---------- */
 async function loadFile(file){
   if(!file)return;
@@ -2179,6 +2251,7 @@ async function loadFile(file){
     setSaveState('');
     await analyze(buf,name,false);S.genre=(saved&&saved.genre)||'';
     if(saved&&Math.abs(saved.dur-buf.duration)<0.5)restoreSaved(saved);
+    rememberSong(file,{name});
     storeUpload(file,name);
   }catch(e){console.error(e);busy(null);showNotice(t('readErr'))}
 }
@@ -2301,5 +2374,5 @@ window.CR={
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
 document.addEventListener('DOMContentLoaded',()=>{hookPages();if(location.hash.length>1)routeHash()});
-(async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
+(async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();
