@@ -248,7 +248,7 @@ es:{tempoDown:'Más lento (Shift: 0.1)',tempoUp:'Más rápido (Shift: 0.1)',bpmE
 for(const k in IT)Object.assign(I[k],IT[k]);
 // points, plans, pages, MP3
 const IP={
-he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',creditsBal:'יתרת נקודות',seePlans:'מסלולים ומחירים',creditsHist:'היסטוריית נקודות',creditsTitle:'נקודות ומסלול',creditsCol:'נקודות',
+he:{navPricing:'מחירים',navAbout:'אודות',navHome:'בית',creditsL:'נקודות',creditsBal:'יתרת נקודות',seePlans:'מסלולים ומחירים',creditsHist:'היסטוריית נקודות',creditsTitle:'נקודות ומסלול',creditsCol:'נקודות',
   grantNote:'הערה (לא חובה)',grantBtn:'הוספה / הורדה של נקודות',setPlanBtn:'הפעלת מסלול',grantDone:'עודכן. יתרה: {b}',planDone:'המסלול עודכן.',months:'חודשים',
   billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. קישור תשלום = קישור הקנייה של המסלול ב-Lemon Squeezy, ומזהה וריאנט = המספר שלו שם. אחרי תשלום המסלול מופעל והנקודות נכנסות אוטומטית (ההוראות ב-PAYMENTS.md). אפשר עדיין להפעיל מסלול ידנית מהפרטים של המשתמש.',
   billingOn:'שיטת הנקודות פעילה (כבוי = הכול בחינם)',billSignup:'מתנת הרשמה (נקודות)',billContact:'יצירת קשר לתשלום (מייל או קישור)',billSep:'עלות הפרדת ערוצים',billStems:'עלות הורדת סטמים',
@@ -257,7 +257,7 @@ he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',cred
   dlCostNote:'הורדת הסטמים עולה {n} נקודות (פעם אחת לשיר)',chargeFail:'לא הצלחנו לחייב נקודות. נסה שוב.',subNoLink:'כדי להצטרף למסלול כתבו לנו: {c}',subSoon:'ההצטרפות למסלולים תיפתח בקרוב.',
   planUntil:'בתוקף עד {d}',planFreeL:'מסלול חינמי',lr_signup:'מתנת הרשמה',lr_spend:'שימוש',lr_grant:'עדכון ידני',lr_refill:'חידוש חודשי',lr_plan:'הפעלת מסלול',lr_refund:'החזר',
   fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.',lk_sep:'הפרדת ערוצים',lk_stems:'הורדת סטמים',refunded:'ההפרדה לא הושלמה, הנקודות הוחזרו.'},
-en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
+en:{navPricing:'Pricing',navAbout:'About',navHome:'Home',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
   grantNote:'Note (optional)',grantBtn:'Add / remove points',setPlanBtn:'Activate plan',grantDone:'Updated. Balance: {b}',planDone:'Plan updated.',months:'months',
   billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = the plan\'s Lemon Squeezy checkout link; variant ID = its variant number there. After payment the plan turns on and the points arrive automatically (setup steps in PAYMENTS.md). You can still activate a plan by hand from the user\'s details.',
   billingOn:'Points system on (off = everything is free)',billSignup:'Signup gift (points)',billContact:'Billing contact (email or link)',billSep:'Stem separation cost',billStems:'Stems download cost',
@@ -266,7 +266,7 @@ en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points b
   dlCostNote:'Downloading the stems costs {n} points (once per song)',chargeFail:'Couldn\'t charge points. Try again.',subNoLink:'To join a plan, write to us: {c}',subSoon:'Plans open for sign-up soon.',
   planUntil:'Valid until {d}',planFreeL:'Free plan',lr_signup:'Signup gift',lr_spend:'Used',lr_grant:'Manual update',lr_refill:'Monthly refill',lr_plan:'Plan activated',lr_refund:'Refund',
   fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.',lk_sep:'Stem separation',lk_stems:'Stems download',refunded:'The separation didn\'t finish, your points were returned.'},
-ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
+ar:{navPricing:'الأسعار',navAbout:'حول',navHome:'الرئيسية',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
   grantNote:'ملاحظة (اختياري)',grantBtn:'إضافة / خصم نقاط',setPlanBtn:'تفعيل الخطة',grantDone:'تم التحديث. الرصيد: {b}',planDone:'تم تحديث الخطة.',months:'أشهر',
   billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = رابط شراء الخطة في Lemon Squeezy، ومعرّف النسخة = رقمها هناك. بعد الدفع تُفعَّل الخطة وتصل النقاط تلقائيًا (خطوات الإعداد في PAYMENTS.md). لا يزال بإمكانك تفعيل خطة يدويًا من تفاصيل المستخدم.',
   billingOn:'نظام النقاط مفعّل (إيقاف = كل شيء مجاني)',billSignup:'هدية التسجيل (نقاط)',billContact:'جهة اتصال للدفع (بريد أو رابط)',billSep:'تكلفة فصل المسارات',billStems:'تكلفة تنزيل المسارات',
@@ -275,7 +275,7 @@ ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal
   dlCostNote:'تنزيل المسارات يكلف {n} نقاط (مرة واحدة لكل أغنية)',chargeFail:'تعذّر خصم النقاط. حاول مجددًا.',subNoLink:'للاشتراك في خطة راسلنا: {c}',subSoon:'سيُفتح الاشتراك في الخطط قريبًا.',
   planUntil:'سارية حتى {d}',planFreeL:'الخطة المجانية',lr_signup:'هدية التسجيل',lr_spend:'استخدام',lr_grant:'تحديث يدوي',lr_refill:'تجديد شهري',lr_plan:'تفعيل خطة',lr_refund:'استرداد',
   fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.',lk_sep:'فصل المسارات',lk_stems:'تنزيل المسارات',refunded:'لم يكتمل الفصل، أُعيدت نقاطك.'},
-ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
+ru:{navPricing:'Тарифы',navAbout:'О проекте',navHome:'Главная',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
   grantNote:'Заметка (необязательно)',grantBtn:'Начислить / списать баллы',setPlanBtn:'Включить тариф',grantDone:'Готово. Баланс: {b}',planDone:'Тариф обновлён.',months:'мес.',
   billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = ссылка покупки тарифа в Lemon Squeezy, ID варианта = его номер там. После оплаты тариф включается и баллы приходят автоматически (настройка описана в PAYMENTS.md). Тариф по-прежнему можно включить вручную в карточке пользователя.',
   billingOn:'Система баллов включена (выкл. = всё бесплатно)',billSignup:'Подарок при регистрации (баллы)',billContact:'Контакт по оплате (email или ссылка)',billSep:'Цена разделения на дорожки',billStems:'Цена скачивания дорожек',
@@ -284,7 +284,7 @@ ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'балло�
   dlCostNote:'Скачивание дорожек стоит {n} баллов (один раз на песню)',chargeFail:'Не удалось списать баллы. Попробуйте ещё раз.',subNoLink:'Чтобы подключить тариф, напишите нам: {c}',subSoon:'Подключение тарифов скоро откроется.',
   planUntil:'Действует до {d}',planFreeL:'Бесплатный тариф',lr_signup:'Подарок за регистрацию',lr_spend:'Использовано',lr_grant:'Ручное изменение',lr_refill:'Ежемесячное пополнение',lr_plan:'Тариф включён',lr_refund:'Возврат',
   fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.',lk_sep:'Разделение на стемы',lk_stems:'Скачивание стемов',refunded:'Разделение не завершилось, баллы возвращены.'},
-es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
+es:{navPricing:'Precios',navAbout:'Acerca de',navHome:'Inicio',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
   grantNote:'Nota (opcional)',grantBtn:'Sumar / restar puntos',setPlanBtn:'Activar plan',grantDone:'Actualizado. Saldo: {b}',planDone:'Plan actualizado.',months:'meses',
   billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = el enlace de compra del plan en Lemon Squeezy; ID de variante = su número allí. Tras el pago, el plan se activa y los puntos llegan solos (pasos en PAYMENTS.md). Aún puedes activar un plan a mano desde los detalles del usuario.',
   billingOn:'Sistema de puntos activo (apagado = todo gratis)',billSignup:'Regalo de registro (puntos)',billContact:'Contacto de pagos (email o enlace)',billSep:'Coste de separar pistas',billStems:'Coste de descargar pistas',
@@ -351,6 +351,53 @@ ru:{admActivity:'Активность',actAll:'Все действия',actNone:
 es:{admActivity:'Actividad',actAll:'Todas las acciones',actNone:'Aún no hay actividad.',actMissing:'El registro de actividad aún no está instalado: ejecuta el SQL "Activity log" en Supabase.',actRefresh:'Actualizar',actSearch:'Buscar usuario o detalle',actWhat:'Acción',actDetail:'Detalles',userActivity:'Actividad reciente',
   act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación'}};
 for(const k in IACT)Object.assign(I[k],IACT[k]);
+const IROLE={
+he:{roleOwner:'בעלים',admRoles:'רולים והרשאות',changeRole:'רול…',roleSel:'רול',rolePw:'סיסמת הרשאות',rolePwH:'נדרשת כדי לתת גישה לניהול. רק הבעלים קובע אותה.',roleApply:'עדכון',roleDlgT:'שינוי רול · {u}',
+  roleNoPw:'קודם צריך לקבוע סיסמת הרשאות (בלשונית "רולים והרשאות").',rolesMissing:'ניהול הרולים עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Owner & roles" ב־Supabase.',
+  rpTitle:'סיסמת הרשאות',rpH:'כדי לתת למישהו גישה לניהול צריך להקליד את הסיסמה הזו. רק הבעלים יכול לקבוע ולשנות אותה. היא נשמרת מוצפנת ואף אחד לא יכול לקרוא אותה.',
+  rpSetS:'הסיסמה מוגדרת.',rpNotSet:'עדיין לא נקבעה סיסמה. צריך לקבוע אותה לפני שנותנים הרשאות.',rpOld:'הסיסמה הנוכחית',rpNew:'סיסמה חדשה (לפחות 8 תווים)',rpNew2:'שוב הסיסמה החדשה',rpSave:'שמירת הסיסמה',
+  rpSaved:'הסיסמה נשמרה.',rpBad:'הסיסמה שגויה.',rpLocked:'יותר מדי ניסיונות שגויים. אפשר לנסות שוב בעוד 15 דקות.',rpShort:'הסיסמה צריכה לפחות 8 תווים.',
+  rlTitle:'רולים',rlH:'לכל רול בוחרים מה מותר לו לראות ולעשות בפאנל הניהול. "מנהל" מקבל הכול חוץ מניהול רולים. רק הבעלים נותן רולים, ואת הבעלים אי אפשר להוריד או לחסום.',
+  rlName:'שם הרול החדש',rlAdd:'יצירת רול',rlSave:'שמירה',rlDel:'מחיקה',rlDelSure:'ללחוץ שוב למחיקה',rlUsers:'{n} משתמשים',rlBuiltin:'מובנה',
+  perm_users:'לראות משתמשים',perm_block:'לחסום משתמשים',perm_credits:'נקודות ומסלולים',perm_songs:'כל השירים והקבצים',perm_activity:'יומן פעילות',perm_settings:'הגדרות האתר והתשלומים',perm_payments:'אירועי תשלום',perm_catalog:'קטלוג הגלה',
+  act_role_change:'שינוי רול',act_roles_password:'שינוי סיסמת הרשאות'},
+en:{roleOwner:'Owner',admRoles:'Roles & permissions',changeRole:'Role…',roleSel:'Role',rolePw:'Roles password',rolePwH:'Needed to give management access. Only the owner sets it.',roleApply:'Update',roleDlgT:'Change role · {u}',
+  roleNoPw:'Set a roles password first (in "Roles & permissions").',rolesMissing:'Role management isn\'t installed yet: run the "Owner & roles" SQL in Supabase.',
+  rpTitle:'Roles password',rpH:'Giving anyone management access requires this password. Only the owner can set or change it. It is stored encrypted and nobody can read it.',
+  rpSetS:'The password is set.',rpNotSet:'No password yet. Set one before giving out roles.',rpOld:'Current password',rpNew:'New password (at least 8 characters)',rpNew2:'New password again',rpSave:'Save password',
+  rpSaved:'Password saved.',rpBad:'Wrong password.',rpLocked:'Too many wrong tries. Try again in 15 minutes.',rpShort:'The password needs at least 8 characters.',
+  rlTitle:'Roles',rlH:'Choose what each role may see and do in the admin panel. "Admin" gets everything except roles. Only the owner gives roles, and the owner can never be demoted or blocked.',
+  rlName:'New role name',rlAdd:'Create role',rlSave:'Save',rlDel:'Delete',rlDelSure:'Click again to delete',rlUsers:'{n} users',rlBuiltin:'built-in',
+  perm_users:'See users',perm_block:'Block users',perm_credits:'Points & plans',perm_songs:'All songs & files',perm_activity:'Activity log',perm_settings:'Site & billing settings',perm_payments:'Payment events',perm_catalog:'Discover catalog',
+  act_role_change:'Role change',act_roles_password:'Roles password changed'},
+ar:{roleOwner:'المالك',admRoles:'الأدوار والصلاحيات',changeRole:'الدور…',roleSel:'الدور',rolePw:'كلمة مرور الصلاحيات',rolePwH:'مطلوبة لمنح صلاحيات الإدارة. المالك وحده يحددها.',roleApply:'تحديث',roleDlgT:'تغيير الدور · {u}',
+  roleNoPw:'حدّد أولًا كلمة مرور الصلاحيات (في "الأدوار والصلاحيات").',rolesMissing:'إدارة الأدوار غير مثبتة بعد: شغّل كود SQL الخاص بـ "Owner & roles" في Supabase.',
+  rpTitle:'كلمة مرور الصلاحيات',rpH:'منح أي شخص صلاحيات إدارة يتطلب كلمة المرور هذه. المالك وحده يمكنه تحديدها وتغييرها. تُحفظ مشفّرة ولا يمكن لأحد قراءتها.',
+  rpSetS:'كلمة المرور محددة.',rpNotSet:'لم تُحدَّد كلمة مرور بعد. حدّدها قبل منح الأدوار.',rpOld:'كلمة المرور الحالية',rpNew:'كلمة مرور جديدة (8 أحرف على الأقل)',rpNew2:'كلمة المرور الجديدة مرة أخرى',rpSave:'حفظ كلمة المرور',
+  rpSaved:'تم حفظ كلمة المرور.',rpBad:'كلمة المرور خاطئة.',rpLocked:'محاولات خاطئة كثيرة. حاول مجددًا بعد 15 دقيقة.',rpShort:'تحتاج كلمة المرور إلى 8 أحرف على الأقل.',
+  rlTitle:'الأدوار',rlH:'اختر ما يمكن لكل دور رؤيته وفعله في لوحة الإدارة. "المدير" يحصل على كل شيء عدا إدارة الأدوار. المالك وحده يمنح الأدوار، ولا يمكن تخفيض المالك أو حظره.',
+  rlName:'اسم الدور الجديد',rlAdd:'إنشاء دور',rlSave:'حفظ',rlDel:'حذف',rlDelSure:'اضغط مرة أخرى للحذف',rlUsers:'{n} مستخدمين',rlBuiltin:'مدمج',
+  perm_users:'رؤية المستخدمين',perm_block:'حظر المستخدمين',perm_credits:'النقاط والخطط',perm_songs:'كل الأغاني والملفات',perm_activity:'سجل النشاط',perm_settings:'إعدادات الموقع والدفع',perm_payments:'أحداث الدفع',perm_catalog:'كتالوج اكتشف',
+  act_role_change:'تغيير دور',act_roles_password:'تغيير كلمة مرور الصلاحيات'},
+ru:{roleOwner:'Владелец',admRoles:'Роли и права',changeRole:'Роль…',roleSel:'Роль',rolePw:'Пароль ролей',rolePwH:'Нужен, чтобы выдать доступ к управлению. Задаёт только владелец.',roleApply:'Обновить',roleDlgT:'Смена роли · {u}',
+  roleNoPw:'Сначала задайте пароль ролей (во вкладке «Роли и права»).',rolesMissing:'Управление ролями ещё не установлено: выполните SQL "Owner & roles" в Supabase.',
+  rpTitle:'Пароль ролей',rpH:'Чтобы выдать кому-то доступ к управлению, нужен этот пароль. Задать и сменить его может только владелец. Он хранится в зашифрованном виде, и прочитать его нельзя.',
+  rpSetS:'Пароль задан.',rpNotSet:'Пароль ещё не задан. Задайте его, прежде чем выдавать роли.',rpOld:'Текущий пароль',rpNew:'Новый пароль (не менее 8 символов)',rpNew2:'Новый пароль ещё раз',rpSave:'Сохранить пароль',
+  rpSaved:'Пароль сохранён.',rpBad:'Неверный пароль.',rpLocked:'Слишком много неверных попыток. Повторите через 15 минут.',rpShort:'Пароль должен быть не короче 8 символов.',
+  rlTitle:'Роли',rlH:'Выберите, что каждой роли можно видеть и делать в панели. «Администратор» получает всё, кроме управления ролями. Роли выдаёт только владелец, а владельца нельзя понизить или заблокировать.',
+  rlName:'Название новой роли',rlAdd:'Создать роль',rlSave:'Сохранить',rlDel:'Удалить',rlDelSure:'Нажмите ещё раз для удаления',rlUsers:'Пользователей: {n}',rlBuiltin:'встроенная',
+  perm_users:'Видеть пользователей',perm_block:'Блокировать',perm_credits:'Баллы и тарифы',perm_songs:'Все песни и файлы',perm_activity:'Журнал активности',perm_settings:'Настройки сайта и оплаты',perm_payments:'События оплаты',perm_catalog:'Каталог «Обзора»',
+  act_role_change:'Смена роли',act_roles_password:'Смена пароля ролей'},
+es:{roleOwner:'Propietario',admRoles:'Roles y permisos',changeRole:'Rol…',roleSel:'Rol',rolePw:'Contraseña de roles',rolePwH:'Necesaria para dar acceso de administración. Solo el propietario la define.',roleApply:'Actualizar',roleDlgT:'Cambiar rol · {u}',
+  roleNoPw:'Primero define una contraseña de roles (en "Roles y permisos").',rolesMissing:'La gestión de roles aún no está instalada: ejecuta el SQL "Owner & roles" en Supabase.',
+  rpTitle:'Contraseña de roles',rpH:'Para dar a alguien acceso de administración se necesita esta contraseña. Solo el propietario puede definirla y cambiarla. Se guarda cifrada y nadie puede leerla.',
+  rpSetS:'La contraseña está definida.',rpNotSet:'Aún no hay contraseña. Defínela antes de dar roles.',rpOld:'Contraseña actual',rpNew:'Nueva contraseña (mínimo 8 caracteres)',rpNew2:'Repite la nueva contraseña',rpSave:'Guardar contraseña',
+  rpSaved:'Contraseña guardada.',rpBad:'Contraseña incorrecta.',rpLocked:'Demasiados intentos fallidos. Vuelve a intentarlo en 15 minutos.',rpShort:'La contraseña necesita al menos 8 caracteres.',
+  rlTitle:'Roles',rlH:'Elige qué puede ver y hacer cada rol en el panel. "Administrador" lo tiene todo salvo los roles. Solo el propietario da roles, y al propietario nunca se le puede quitar el acceso ni bloquear.',
+  rlName:'Nombre del nuevo rol',rlAdd:'Crear rol',rlSave:'Guardar',rlDel:'Eliminar',rlDelSure:'Pulsa otra vez para eliminar',rlUsers:'{n} usuarios',rlBuiltin:'integrado',
+  perm_users:'Ver usuarios',perm_block:'Bloquear usuarios',perm_credits:'Puntos y planes',perm_songs:'Todas las canciones y archivos',perm_activity:'Registro de actividad',perm_settings:'Ajustes del sitio y pagos',perm_payments:'Eventos de pago',perm_catalog:'Catálogo de Descubrir',
+  act_role_change:'Cambio de rol',act_roles_password:'Cambio de contraseña de roles'}};
+for(const k in IROLE)Object.assign(I[k],IROLE[k]);
 
 
 
@@ -1605,26 +1652,32 @@ async function initAccount(){
     authChanged(user?user.id:null,event);
     if(user&&changed&&event==='SIGNED_IN')setTimeout(()=>logAct('sign_in',navigator.language||''),0);
     else if(user&&changed){try{const k='chordroom.visit.'+user.id,d=new Date().toDateString();if(sessionStorage.getItem(k)!==d){sessionStorage.setItem(k,d);setTimeout(()=>logAct('visit',location.hash.slice(1)||'tool'),1500)}}catch(e){}}
-    if(!user){ACC.profile=null;ACC.admin=false;ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
+    if(!user){ACC.profile=null;ACC.admin=false;ACC.owner=false;ACC.panel=false;ACC.perms=new Set();ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
     if(changed||event==='USER_UPDATED'||event==='INITIAL'){await loadProfile(true);loadCloudLib()}
   });
 }
 async function loadProfile(touch){
   try{ACC.profile=await Backend.getProfile()}catch(e){ACC.profile=null}
-  ACC.admin=!!(ACC.profile&&ACC.profile.role==='admin'&&!ACC.profile.blocked);
+  const pr=ACC.profile||{};ACC.access=null;
+  if(ACC.user&&Backend.myAccess)try{ACC.access=await Backend.myAccess()}catch(e){ACC.access=null}
+  ACC.owner=!!((ACC.access&&ACC.access.owner)||pr.owner);
+  ACC.admin=ACC.owner||(pr.role==='admin'&&!pr.blocked);          // full admin: everything, actions are free
+  ACC.perms=new Set(ACC.access&&Array.isArray(ACC.access.perms)?ACC.access.perms:ACC.admin?ALL_PERMS:[]);
+  ACC.panel=ACC.perms.size>0||ACC.owner;                            // may open the admin panel at all
+  if(ACC.panel)loadRoles(ACC.owner);
   if(touch&&ACC.profile){Backend.touch().catch(()=>{});const pl=ACC.profile.lang;if(pl&&!LANG_CHOSEN&&pl!==LANG)setLang(pl,false)}
   renderAccount();applyConfig();loadCredits(touch);
 }
 function myName(){const p=ACC.profile||{};return p.display_name||p.username||(ACC.user&&ACC.user.email)||'—'}
 function renderAccount(){
   const on=ACC.on,user=ACC.user;
-  $('#signInBtn').hidden=!on||!!user;$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.admin;
+  $('#signInBtn').hidden=!on||!!user;$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.panel;
   if(!user)return;
   const p=ACC.profile||{};
   $('#accImg').src=avatarFor(p);$('#accBtn').setAttribute('aria-label',t('account'));
   if(!pendingAvatar)$('#pImg').src=avatarFor(p);
   $('#pName').textContent=myName();$('#pUser').textContent=p.username?'@'+p.username:'';
-  const rl=$('#pRole');rl.textContent=ACC.admin?t('roleAdmin'):t('roleUser');rl.classList.toggle('adm',ACC.admin);
+  const rl=$('#pRole');rl.textContent=ACC.owner?t('roleOwner'):roleName((ACC.profile||{}).role);rl.classList.toggle('adm',ACC.panel);
   if(!$('#acc').contains(document.activeElement)){
     $('#pUname').value=p.username||'';$('#pNick').value=p.display_name||'';$('#pBio').value=p.bio||'';$('#pLang').value=p.lang||LANG;
   }
@@ -1704,7 +1757,7 @@ function applyConfig(){
   renderStemsUI();renderCredits();
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
-$('#adminBtn').onclick=()=>{fillSettings();fillBilling();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadUsers()};
+$('#adminBtn').onclick=()=>{fillSettings();fillBilling();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadRoles();loadUsers();if(!tabOk(ACC.admView))ACC.admView=ADM_TABS.find(tabOk)||'users';if(ACC.admView==='activity')loadAdminAct()};
 $('#adminClose').onclick=()=>$('#admin').hidden=true;
 function fillSettings(){const c=ACC.config||{};$('#cTitle').value=c.title||'';$('#cAnn').value=c.announce||'';$('#cLang').value=c.lang||'he';$('#cAi').checked=c.ai!==false;$('#cDl').checked=c.dl!==false;$('#cReq').checked=!!c.require_login;$('#cSign').checked=c.allow_signup!==false;setMsg($('#cMsg'),'')}
 $('#cSave').onclick=()=>busyBtn($('#cSave'),async()=>{
@@ -1719,17 +1772,20 @@ const ltr=x=>`<span dir="ltr" class="ltr">${esc(x)}</span>`;
 function keyCell(pc,mode){if(pc==null)return '—';const a={pc,mode},c=camOf(a);return `<span class="kb kn" style="background:${camColor(c.n,c.l)}"><b>${esc(keyText(a))}</b></span>`}
 ACC.admView='users';
 function renderAdmin(){
-  if(!ACC.admin||$('#admin').hidden)return;
+  if(!ACC.panel||$('#admin').hidden)return;
+  if(!tabOk(ACC.admView))ACC.admView=ADM_TABS.find(tabOk)||'users';
   const M=ACC.users||[],wk=Date.now()-7*864e5,dl=ACC.dlAll||[];
   const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('downloadsL'),dl.length],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
   $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
-  document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
+  document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.hidden=!tabOk(b.dataset.v);b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
   $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;$('#admAct').hidden=ACC.admView!=='activity'||!!ACC.admUser;
-  const setSec=$('#cTitle').closest('.asec');const bSec=$('#bOn');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView!=='users';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  $('#admSettings').hidden=!!ACC.admUser||ACC.admView!=='settings';$('#admRolesSec').hidden=!!ACC.admUser||ACC.admView!=='roles';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
   renderPayEvents();
   if(ACC.admUser){renderAdminUser();return}
   if(ACC.admView==='songs'){renderAdminSongs();return}
   if(ACC.admView==='activity'){renderAdminAct();return}
+  if(ACC.admView==='roles'){renderRoles();return}
+  if(ACC.admView==='settings')return;
   const dlc={};for(const d of dl)dlc[d.user_id]=(dlc[d.user_id]||0)+1;
   const q=$('#uSearch').value.trim().toLowerCase();
   const rows=M.filter(m=>!q||[m.username,m.display_name,m.email].some(x=>String(x||'').toLowerCase().includes(q)));
@@ -1737,18 +1793,18 @@ function renderAdmin(){
   if(!rows.length){body.innerHTML=`<tr><td colspan="10" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
   rows.forEach(m=>{
     const tr=document.createElement('tr'),isMe=ACC.user&&m.id===ACC.user.id,adm=m.role==='admin';
-    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${adm?'adm':''}">${esc(adm?t('roleAdmin'):t('roleUser'))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td class="mono">${m.credits??0}${m.plan&&m.plan!=='free'?` · ${esc(planName(m.plan))}`:''}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
+    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${m.owner?'own':m.role!=='user'?'adm':''}">${esc(m.owner?t('roleOwner'):roleName(m.role))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td class="mono">${m.credits??0}${m.plan&&m.plan!=='free'?` · ${esc(planName(m.plan))}`:''}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
     tr.querySelector('img').src=avatarFor(m);
     tr.querySelector('.t').textContent=(m.display_name||m.username||'—')+(isMe?` (${t('you')})`:'');
     tr.querySelector('.e').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
     const acts=tr.querySelector('.acts');
     const b0=document.createElement('button');b0.type='button';b0.className='btn solid';b0.textContent=t('details');b0.onclick=()=>{ACC.admUser=m;renderAdmin();loadAdminUser(m)};acts.append(b0);
-    if(!isMe){
-      const b1=document.createElement('button');b1.type='button';b1.className='btn ghost';b1.textContent=adm?t('removeAdmin'):t('makeAdmin');
-      b1.onclick=()=>busyBtn(b1,async()=>{try{await Backend.adminSetRole(m.id,adm?'user':'admin');await loadUsers()}catch(e){console.warn(e)}});
-      const b2=document.createElement('button');b2.type='button';b2.className='btn '+(m.blocked?'solid':'ghost');b2.textContent=m.blocked?t('unblock'):t('block');
-      b2.onclick=()=>busyBtn(b2,async()=>{try{await Backend.adminSetBlocked(m.id,!m.blocked);await loadUsers()}catch(e){console.warn(e)}});
-      acts.append(b1,b2);
+    if(!isMe&&!m.owner){
+      if(ACC.owner){const b1=document.createElement('button');b1.type='button';b1.className='btn ghost';b1.textContent=t('changeRole');b1.onclick=()=>openRoleDlg(m);acts.append(b1)}
+      if(ACC.perms.has('block')&&(ACC.owner||m.role==='user')){
+        const b2=document.createElement('button');b2.type='button';b2.className='btn '+(m.blocked?'solid':'ghost');b2.textContent=m.blocked?t('unblock'):t('block');
+        b2.onclick=()=>busyBtn(b2,async()=>{try{await Backend.adminSetBlocked(m.id,!m.blocked);await loadUsers()}catch(e){console.warn(e)}});
+        acts.append(b2)}
     }
     body.appendChild(tr);
   });
@@ -1768,8 +1824,74 @@ function wireSongRows(tbody,list){
   tbody.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminOpen(list[+b.dataset.op])));
 }
 async function loadAdminSongs(){try{ACC.songsAll=await Backend.adminSongs()}catch(e){ACC.songsAll=[]}renderAdmin()}
+/* ---------- owner, roles & permissions (schema.sql "Owner & roles") ---------- */
+const ALL_PERMS=['users','block','credits','songs','activity','settings','payments','catalog'];
+const ADM_TABS=['users','songs','activity','settings','roles'];
+const TAB_PERM={users:'users',songs:'songs',activity:'activity',settings:'settings'};
+function tabOk(v){if(v==='roles')return !!ACC.owner;const p=TAB_PERM[v];return !!p&&!!ACC.perms&&ACC.perms.has(p)}
+ACC.roles=[];
+function roleName(id){if(!id||id==='user')return t('roleUser');if(id==='admin')return t('roleAdmin');const r=(ACC.roles||[]).find(x=>x.id===id);return r?r.name:id}
+async function loadRoles(withPw){
+  if(!Backend.roles)return;
+  try{ACC.roles=await Backend.roles()||[]}catch(e){ACC.roles=[]}
+  if(ACC.owner&&withPw&&Backend.ownerRolePasswordSet){try{ACC.rpSet=await Backend.ownerRolePasswordSet()}catch(e){ACC.rpSet=null}}
+  renderAdmin();renderAccount();
+}
+function rpText(code){return {ok:t('rpSaved'),short:t('rpShort'),bad_password:t('rpBad'),locked:t('rpLocked'),no_role_password:t('roleNoPw')}[code]||t('saveFail')}
+function renderRoles(){
+  const st=$('#rpState');st.textContent=ACC.rpSet==null?'':ACC.rpSet?t('rpSetS'):t('rpNotSet');st.classList.toggle('err',ACC.rpSet===false);
+  $('#rpOldF').hidden=!ACC.rpSet;
+  const users=ACC.users||[],cnt=id=>users.filter(u=>u.role===id&&!u.owner).length;
+  const box=$('#rlList');box.innerHTML='';
+  const list=[{id:'admin',name:t('roleAdmin'),perms:ALL_PERMS,builtin:true},...(ACC.roles||[]).filter(r=>r.id!=='admin')];
+  for(const r of list){
+    const el=document.createElement('div');el.className='rlrow';
+    el.innerHTML=`<div class="rlh"><input type="text" maxlength="40" class="rln" ${r.builtin?'disabled':''}><span class="snote">${esc(t('rlUsers',{n:cnt(r.id)}))}${r.builtin?' · '+esc(t('rlBuiltin')):''}</span></div>
+      <div class="rlp">${ALL_PERMS.map(p=>`<label class="chk"><input type="checkbox" value="${p}" ${r.perms.includes(p)?'checked':''} ${r.builtin?'disabled':''}><span>${esc(t('perm_'+p))}</span></label>`).join('')}</div>
+      ${r.builtin?'':`<div class="row2"><button type="button" class="btn solid rls">${esc(t('rlSave'))}</button><button type="button" class="btn ghost rld">${esc(t('rlDel'))}</button><span class="snote rlm"></span></div>`}`;
+    el.querySelector('.rln').value=r.name;
+    if(!r.builtin){
+      const msg=el.querySelector('.rlm');
+      el.querySelector('.rls').onclick=e=>busyBtn(e.currentTarget,async()=>{const perms=[...el.querySelectorAll('.rlp input:checked')].map(x=>x.value),nm=el.querySelector('.rln').value.trim();
+        if(!nm){setMsg(msg,t('rlName'),true);return}
+        try{await Backend.ownerSaveRole(r.id,nm,perms);setMsg(msg,t('saved'));await loadRoles()}catch(x){setMsg(msg,t('saveFail'),true)}});
+      const d=el.querySelector('.rld');d.onclick=()=>{if(!d.classList.contains('arm')){d.classList.add('arm');d.textContent=t('rlDelSure');setTimeout(()=>{d.classList.remove('arm');d.textContent=t('rlDel')},3000);return}
+        busyBtn(d,async()=>{try{await Backend.ownerDeleteRole(r.id);await loadRoles();await loadUsers()}catch(x){setMsg(msg,t('saveFail'),true)}})};
+    }
+    box.appendChild(el);
+  }
+}
+$('#rpSave').onclick=()=>busyBtn($('#rpSave'),async()=>{
+  const m=$('#rpMsg'),n1=$('#rpNew').value,n2=$('#rpNew2').value,old=$('#rpOld').value;
+  if(n1.length<8)return setMsg(m,t('rpShort'),true);if(n1!==n2)return setMsg(m,t('errMismatch'),true);
+  try{const r=await Backend.ownerSetRolePassword(n1,ACC.rpSet?old:null);setMsg(m,rpText(r),r!=='ok');if(r==='ok'){$('#rpOld').value=$('#rpNew').value=$('#rpNew2').value='';ACC.rpSet=true;renderRoles();logAct('roles_password','')}}
+  catch(e){setMsg(m,missingDb(e)?t('rolesMissing'):t('saveFail'),true)}});
+$('#rlAdd').onclick=()=>busyBtn($('#rlAdd'),async()=>{
+  const nm=$('#rlName').value.trim(),m=$('#rlMsg');if(!nm)return setMsg(m,t('rlName'),true);
+  let id=nm.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20);
+  if(!/^[a-z][a-z0-9_]{1,23}$/.test(id)||['user','admin','owner'].includes(id)||(ACC.roles||[]).some(r=>r.id===id))id='r_'+Math.random().toString(36).slice(2,8);
+  try{await Backend.ownerSaveRole(id,nm,[]);$('#rlName').value='';setMsg(m,'');await loadRoles()}catch(e){setMsg(m,missingDb(e)?t('rolesMissing'):t('saveFail'),true)}});
+/* the owner gives or changes a role: a management role needs the roles password */
+function openRoleDlg(m){
+  let d=$('#roleDlg');
+  if(!d){d=document.createElement('div');d.id='roleDlg';d.className='roledlg';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');document.body.appendChild(d)}
+  const opts=[['user',t('roleUser')],['admin',t('roleAdmin')],...(ACC.roles||[]).filter(r=>r.id!=='admin').map(r=>[r.id,r.name])];
+  d.innerHTML=`<div class="rdin"><h3></h3><label class="fld"><span>${esc(t('roleSel'))}</span><select id="rdSel">${opts.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select></label>
+    <label class="fld" id="rdPwF"><span>${esc(t('rolePw'))}</span><input type="password" id="rdPw" autocomplete="off" maxlength="200"><span class="snote">${esc(t('rolePwH'))}</span></label>
+    <div class="row2"><button type="button" class="btn solid" id="rdOk">${esc(t('roleApply'))}</button><button type="button" class="btn ghost" id="rdX">${esc(t('close'))}</button><span class="snote" id="rdMsg"></span></div></div>`;
+  d.querySelector('h3').textContent=t('roleDlgT',{u:m.display_name||m.username||m.email||''});
+  const sel=d.querySelector('#rdSel');sel.value=m.role||'user';
+  const sync=()=>{d.querySelector('#rdPwF').hidden=sel.value==='user'};sel.onchange=sync;sync();
+  const close=()=>{d.hidden=true;d.innerHTML=''};d.querySelector('#rdX').onclick=close;d.onkeydown=e=>{if(e.key==='Escape')close()};
+  d.querySelector('#rdOk').onclick=e=>busyBtn(e.currentTarget,async()=>{const msg=d.querySelector('#rdMsg');
+    try{const r=await Backend.adminSetRole(m.id,sel.value,sel.value==='user'?null:d.querySelector('#rdPw').value);
+      if(r!=='ok'){setMsg(msg,rpText(r),true);return}
+      logAct('role_change',`${m.username||m.email||m.id} → ${sel.value}`);close();await loadUsers();if(ACC.admUser)await refreshAdmUser()}
+    catch(x){setMsg(msg,missingDb(x)?t('rolesMissing'):t('saveFail'),true)}});
+  d.hidden=false;sel.focus();
+}
 /* activity (admin): everyone's recent actions, or one user's in the details view */
-const ACT_KEYS=['visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
+const ACT_KEYS=['role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
 const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
 async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
 function actRows(list,withUser){
@@ -1804,7 +1926,8 @@ function renderAdminUser(){
   const m=ACC.admUser,songs=ACC.admUserSongs||[],dls=ACC.admUserDls||[];
   $('#udImg').src=avatarFor(m);$('#udName').textContent=m.display_name||m.username||'—';
   $('#udMeta').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
-  const facts=[[t('role'),m.role==='admin'?t('roleAdmin'):t('roleUser')],[t('joined'),fmtDate(m.created_at)],[t('lastSeen'),fmtDate(m.last_seen)],[t('uploads'),String(songs.length)],[t('downloadsL'),String(dls.length)],[t('seps'),String(m.seps||0)],[t('colStatus'),m.blocked?t('blockedS'):t('active')]];
+  $('#udCred').hidden=!ACC.perms.has('credits');
+  const facts=[[t('role'),m.owner?t('roleOwner'):roleName(m.role)],[t('joined'),fmtDate(m.created_at)],[t('lastSeen'),fmtDate(m.last_seen)],[t('uploads'),String(songs.length)],[t('downloadsL'),String(dls.length)],[t('seps'),String(m.seps||0)],[t('colStatus'),m.blocked?t('blockedS'):t('active')]];
   facts.push([t('creditsCol'),String(m.credits??0)],[t('seePlans'),m.plan&&m.plan!=='free'?`${planName(m.plan)} · ${t('planUntil',{d:fmtDate(m.plan_until)})}`:t('planFreeL')]);
   $('#udFacts').innerHTML=facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
   const ps=$('#udPlan');ps.innerHTML=['free',...BILL().plans.map(p=>p.id)].map(id=>`<option value="${esc(id)}">${esc(planName(id))}</option>`).join('');ps.value=m.plan||'free';
@@ -1838,7 +1961,7 @@ async function adminOpen(r){
     showNotice(t('adminOpened'));
   }catch(e){console.warn(e);busy(null)}
 }
-document.querySelectorAll('#admTabs button').forEach(b=>b.onclick=()=>{ACC.admView=b.dataset.v;ACC.admUser=null;if(b.dataset.v==='songs'&&!ACC.songsAll)loadAdminSongs();if(b.dataset.v==='activity')loadAdminAct();renderAdmin()});
+document.querySelectorAll('#admTabs button').forEach(b=>b.onclick=()=>{ACC.admView=b.dataset.v;ACC.admUser=null;if(b.dataset.v==='songs'&&!ACC.songsAll)loadAdminSongs();if(b.dataset.v==='activity')loadAdminAct();if(b.dataset.v==='roles')loadRoles(true);renderAdmin()});
 $('#aFilter').onchange=()=>renderAdmin();$('#aSearch').addEventListener('input',()=>renderAdmin());$('#aRefresh').onclick=()=>busyBtn($('#aRefresh'),loadAdminAct);
 $('#udBack').onclick=()=>{ACC.admUser=null;renderAdmin()};
 $('#udAll').onclick=()=>busyBtn($('#udAll'),()=>adminZip(ACC.admUserSongs||[],ACC.admUser.username||'user',$('#udMsg')));
@@ -2062,6 +2185,7 @@ function fillBilling(){
 }
 // admin: the last webhook deliveries from the payment provider
 async function loadPayEvents(){
+  if(!ACC.perms||!ACC.perms.has('payments')){PAY.ev=null;renderPayEvents();return}
   try{PAY.ev=await Backend.adminPayEvents(20)}catch(e){PAY.ev=null}   // null = table not installed yet
   renderPayEvents();
 }
@@ -2368,7 +2492,8 @@ function showView(v,anchor){
   if(window.CRATE)v==='crate'?CRATE.show():CRATE.hide();
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
-  try{history.replaceState(null,'',v==='tool'?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
+  document.documentElement.classList.remove('home');
+  try{history.replaceState(null,'',v==='about'&&!anchor?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
   const tgt=anchor&&document.getElementById(anchor);
   if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
 }
@@ -2391,7 +2516,8 @@ $('#navCrate').onclick=()=>showView('crate');
 $('#navPricing').onclick=()=>showView('pricing');
 $('#navAbout').onclick=()=>showView('about');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
-const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'about':VIEWS[h]?h:'tool'};
+// the About page is the home page (no hash); the tool lives at #tool
+const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'about':VIEWS[h]?h:'about'};
 const routeHash=()=>{const h=location.hash.slice(1);showView(viewOfHash(),h==='about-a11y'?h:null)};
 window.addEventListener('hashchange',routeHash);
 
@@ -2448,6 +2574,7 @@ async function restoreLast(){
 /* ---------- events ---------- */
 async function loadFile(file){
   if(!file)return;
+  if($('#toolView').hidden)showView('tool');
   const name=file.name.replace(/\.[^.]+$/,'');
   try{busy(t('bReading'),0.01);const ab=await file.arrayBuffer();const buf=await ac().decodeAudioData(ab);
     const saved=readLib().find(x=>x.name===name);
@@ -2580,6 +2707,6 @@ window.CR={
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
-document.addEventListener('DOMContentLoaded',()=>{hookPages();if(location.hash.length>1)routeHash()});
+document.addEventListener('DOMContentLoaded',()=>{hookPages();routeHash()});
 (async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

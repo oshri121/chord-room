@@ -34,7 +34,7 @@
     if(closeBtn)closeBtn.setAttribute('aria-label',l.close);
     if(burger)burger.setAttribute('aria-label',isOpen()?l.close:l.open);
     if(tabs)tabs.setAttribute('aria-label',l.nav);
-    var tl=document.querySelector('#navTool span[data-i]');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
+    var tl=document.querySelector('#navAbout span[data-i]');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
     /* icon-only tabs/tools (compact levels) still show their name on hover */
     Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn'),function(b){
       var s=b.querySelector('span[data-i]');if(s&&s.textContent&&b.title!==s.textContent)b.title=s.textContent;
@@ -64,7 +64,7 @@
   /* ---------- brand mark → home (the Tool view) ---------- */
   if(mark){
     mark.setAttribute('role','link');mark.tabIndex=0;
-    var goHome=function(){var t=document.getElementById('navTool');if(t)t.click();if(isOpen())close(false)};
+    var goHome=function(){var t=document.getElementById('navAbout');if(t)t.click();if(isOpen())close(false)};
     mark.addEventListener('click',goHome);
     mark.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();goHome()}});
   }

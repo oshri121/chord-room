@@ -256,7 +256,22 @@
       if (error) throw error;
       return data;
     },
-    async adminSetRole(id, role) { const { error } = await sb.rpc('admin_set_role', { target: id, new_role: role }); if (error) throw error; },
+    // roles: only the owner changes them; a management role needs the roles password → 'ok' | 'bad_password' | 'locked' | 'no_role_password'
+    async adminSetRole(id, role, password) {
+      const { data, error } = await sb.rpc('admin_set_role', { target: id, new_role: role, p_password: password || null });
+      if (error) throw error;
+      return data || 'ok';
+    },
+    async myAccess() { const { data, error } = await sb.rpc('my_access'); if (error) throw error; return data; },
+    async roles() { const { data, error } = await sb.from('roles').select('id,name,perms').order('created_at'); if (error) throw error; return data; },
+    async ownerSaveRole(id, name, perms) { const { error } = await sb.rpc('owner_save_role', { p_id: id, p_name: name, p_perms: perms }); if (error) throw error; },
+    async ownerDeleteRole(id) { const { error } = await sb.rpc('owner_delete_role', { p_id: id }); if (error) throw error; },
+    async ownerRolePasswordSet() { const { data, error } = await sb.rpc('owner_role_password_set'); if (error) throw error; return !!data; },
+    async ownerSetRolePassword(newPw, oldPw) {
+      const { data, error } = await sb.rpc('owner_set_role_password', { p_new: newPw, p_old: oldPw || null });
+      if (error) throw error;
+      return data || 'ok';
+    },
     async adminSetBlocked(id, blocked) { const { error } = await sb.rpc('admin_set_blocked', { target: id, is_blocked: blocked }); if (error) throw error; },
     async adminGrantCredits(id, amount, note) {
       const { data, error } = await sb.rpc('admin_grant_credits', { target: id, p_amount: amount, p_note: note || null });

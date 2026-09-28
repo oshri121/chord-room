@@ -934,3 +934,223 @@ begin
 end $$;
 revoke execute on function public.log_activity(text, text) from public, anon;
 grant execute on function public.log_activity(text, text) to authenticated;
+
+-- =====================================================================
+-- Owner & roles.
+-- * The OWNER (profiles.owner) is the site's first account. Nobody can change its role or block it, and only the
+--   owner hands out management access.
+-- * Giving someone a management role needs the ROLES PASSWORD, which only the owner sets (bcrypt hash in
+--   private.settings 'role_password'; 5 wrong tries → locked for 15 minutes). Taking a role away needs no password.
+-- * Roles: 'user' (no access), 'admin' (everything except roles), and custom roles the owner creates with a set of
+--   permissions: users (see users) · block (block users) · credits (points & plans) · songs (all songs + files) ·
+--   activity (activity log) · settings (site & billing settings) · payments (payment events) · catalog (Discover).
+-- =====================================================================
+alter table public.profiles add column if not exists owner boolean not null default false;
+create unique index if not exists profiles_one_owner on public.profiles (owner) where owner;
+revoke update (owner, role, blocked) on public.profiles from authenticated, anon, public;
+alter table public.profiles drop constraint if exists profiles_role_check;
+alter table public.profiles add constraint profiles_role_check check (role ~ '^[a-z][a-z0-9_]{1,23}$');
+
+-- the owner = the first account (the site owner's own address wins if it has an account)
+update public.profiles set owner = true, role = 'admin', blocked = false
+ where not exists (select 1 from public.profiles where owner)
+   and id = coalesce((select id from public.profiles where lower(email) = 'oshri1006@gmail.com' order by created_at limit 1),
+                     (select id from public.profiles order by created_at, id limit 1));
+
+-- new accounts: the very first one is the owner
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  wanted text := nullif(new.raw_user_meta_data->>'username', '');
+  first_user boolean := not exists (select 1 from public.profiles);
+begin
+  if wanted is not null and (wanted !~ '^[A-Za-z0-9_.-]{3,24}$' or exists (select 1 from public.profiles where lower(username) = lower(wanted))) then
+    wanted := null;
+  end if;
+  insert into public.profiles (id, username, email, display_name, role, owner)
+  values (new.id, wanted, new.email, coalesce(wanted, ''), case when first_user then 'admin' else 'user' end, first_user);
+  return new;
+end $$;
+
+create table if not exists public.roles (
+  id         text primary key check (id ~ '^[a-z][a-z0-9_]{1,23}$'),
+  name       text not null check (char_length(name) between 1 and 40),
+  perms      text[] not null default '{}',
+  created_at timestamptz not null default now()
+);
+alter table public.roles enable row level security;
+revoke all on public.roles from anon, authenticated, public;
+grant select on public.roles to authenticated;
+drop policy if exists "roles: read" on public.roles;
+create policy "roles: read" on public.roles for select to authenticated using (true);
+
+create or replace function public.all_perms() returns text[] language sql immutable as $$
+  select array['users','block','credits','songs','activity','settings','payments','catalog']::text[];
+$$;
+create or replace function public.is_owner() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles where id = auth.uid() and owner);
+$$;
+-- 'admin' (and the owner) have every permission; custom roles have their list
+create or replace function public.has_perm(p text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles pr left join public.roles r on r.id = pr.role
+                  where pr.id = auth.uid() and (pr.owner or (not pr.blocked and (pr.role = 'admin' or p = any(coalesce(r.perms, '{}'))))));
+$$;
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles where id = auth.uid() and (owner or (role = 'admin' and not blocked)));
+$$;
+-- what the signed-in user may do (the admin panel shows only these parts)
+create or replace function public.my_access() returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object('owner', pr.owner, 'role', pr.role,
+    'perms', to_jsonb(case when pr.owner or (pr.role = 'admin' and not pr.blocked) then public.all_perms()
+                           when pr.blocked then '{}'::text[] else coalesce(r.perms, '{}') end))
+    from public.profiles pr left join public.roles r on r.id = pr.role where pr.id = auth.uid();
+$$;
+revoke execute on function public.my_access() from public, anon;
+grant execute on function public.my_access() to authenticated;
+
+-- custom-role holders see what their permissions cover (policies add up, so admins keep their old access)
+drop policy if exists "profiles: perm users" on public.profiles;
+create policy "profiles: perm users" on public.profiles for select to authenticated using (public.has_perm('users'));
+drop policy if exists "songs: perm songs" on public.songs;
+create policy "songs: perm songs" on public.songs for select to authenticated using (public.has_perm('songs'));
+drop policy if exists "uploads: perm songs read" on storage.objects;
+create policy "uploads: perm songs read" on storage.objects for select to authenticated using (bucket_id = 'uploads' and public.has_perm('songs'));
+drop policy if exists "downloads: perm users" on public.downloads;
+create policy "downloads: perm users" on public.downloads for select to authenticated using (public.has_perm('users'));
+drop policy if exists "ledger: perm credits" on public.credit_ledger;
+create policy "ledger: perm credits" on public.credit_ledger for select to authenticated using (public.has_perm('credits'));
+drop policy if exists "pay_events: perm payments" on public.pay_events;
+create policy "pay_events: perm payments" on public.pay_events for select to authenticated using (public.has_perm('payments'));
+drop policy if exists "activity: perm activity" on public.activity;
+create policy "activity: perm activity" on public.activity for select to authenticated using (public.has_perm('activity'));
+drop policy if exists "config: perm settings" on public.site_config;
+create policy "config: perm settings" on public.site_config for update to authenticated using (public.has_perm('settings')) with check (public.has_perm('settings'));
+drop policy if exists "catalog: perm catalog edit" on public.catalog;
+create policy "catalog: perm catalog edit" on public.catalog for update to authenticated using (public.has_perm('catalog')) with check (public.has_perm('catalog'));
+drop policy if exists "catalog: perm catalog delete" on public.catalog;
+create policy "catalog: perm catalog delete" on public.catalog for delete to authenticated using (public.has_perm('catalog'));
+
+-- points & plans by hand: 'credits' permission
+create or replace function public.admin_grant_credits(target uuid, p_amount integer, p_note text default null)
+returns integer language plpgsql security definer set search_path = public as $$
+declare cur integer; nxt integer;
+begin
+  if not public.has_perm('credits') then raise exception 'not allowed'; end if;
+  if p_amount is null or p_amount = 0 or abs(p_amount) > 1000000 then raise exception 'bad amount'; end if;
+  select credits into cur from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  nxt := greatest(0, cur + p_amount);
+  update public.profiles set credits = nxt where id = target;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (target, nxt - cur, nxt, 'grant', left(nullif(btrim(p_note), ''), 300));
+  return nxt;
+end $$;
+do $$ declare src text; begin
+  -- admin_set_plan keeps its body; only the permission check changes
+  select pg_get_functiondef('public.admin_set_plan(uuid, text, integer)'::regprocedure) into src;
+  if position('public.is_admin()' in src) > 0 then execute replace(src, 'public.is_admin()', 'public.has_perm(''credits'')'); end if;
+exception when others then null; end $$;
+
+-- blocking: 'block' permission; the owner can never be blocked, and only the owner can block people with a role
+create or replace function public.admin_set_blocked(target uuid, is_blocked boolean) returns void
+language plpgsql security definer set search_path = public as $$
+declare t public.profiles;
+begin
+  if not public.has_perm('block') then raise exception 'not allowed'; end if;
+  if target = auth.uid() then raise exception 'cannot block yourself'; end if;
+  select * into t from public.profiles where id = target;
+  if not found then raise exception 'no such user'; end if;
+  if t.owner then raise exception 'owner'; end if;
+  if t.role <> 'user' and not public.is_owner() then raise exception 'not allowed'; end if;
+  update public.profiles set blocked = is_blocked where id = target;
+end $$;
+
+-- roles password (owner only)
+create table if not exists private.role_pw_fail (at timestamptz not null default now());
+revoke all on private.role_pw_fail from public, anon, authenticated;
+create or replace function private.role_pw_ok(p text) returns boolean
+language plpgsql security definer set search_path = public, extensions as $$
+declare h text;
+begin
+  select value into h from private.settings where key = 'role_password';
+  if h is null then raise exception 'no_role_password'; end if;
+  if (select count(*) from private.role_pw_fail where at > now() - interval '15 minutes') >= 5 then raise exception 'locked'; end if;
+  if p is not null and extensions.crypt(p, h) = h then delete from private.role_pw_fail; return true; end if;
+  insert into private.role_pw_fail default values;
+  return false;
+end $$;
+revoke execute on function private.role_pw_ok(text) from public, anon, authenticated;
+
+create or replace function public.owner_role_password_set() returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_owner() then raise exception 'not allowed'; end if;
+  return exists (select 1 from private.settings where key = 'role_password');
+end $$;
+-- returns 'ok' | 'short' | 'bad_password' | 'locked' (a wrong password must not raise: the failed try has to stay counted)
+drop function if exists public.owner_set_role_password(text, text);
+create or replace function public.owner_set_role_password(p_new text, p_old text default null) returns text
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not public.is_owner() then raise exception 'not allowed'; end if;
+  if p_new is null or char_length(p_new) < 8 or char_length(p_new) > 200 then return 'short'; end if;
+  if exists (select 1 from private.settings where key = 'role_password') then
+    if (select count(*) from private.role_pw_fail where at > now() - interval '15 minutes') >= 5 then return 'locked'; end if;
+    if not private.role_pw_ok(p_old) then return 'bad_password'; end if;
+  end if;
+  insert into private.settings (key, value) values ('role_password', extensions.crypt(p_new, extensions.gen_salt('bf', 10)))
+    on conflict (key) do update set value = excluded.value;
+  return 'ok';
+end $$;
+
+-- roles: owner only, and a management role needs the roles password
+-- returns 'ok' | 'bad_password' | 'locked' | 'no_role_password'
+drop function if exists public.admin_set_role(uuid, text);
+drop function if exists public.admin_set_role(uuid, text, text);
+create or replace function public.admin_set_role(target uuid, new_role text, p_password text default null) returns text
+language plpgsql security definer set search_path = public as $$
+declare t public.profiles;
+begin
+  if not public.is_owner() then raise exception 'not allowed'; end if;
+  if target = auth.uid() then raise exception 'cannot change your own role'; end if;
+  select * into t from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  if t.owner then raise exception 'owner'; end if;
+  if new_role is null or (new_role not in ('user','admin') and not exists (select 1 from public.roles where id = new_role)) then raise exception 'bad role'; end if;
+  if new_role <> 'user' then
+    if not exists (select 1 from private.settings where key = 'role_password') then return 'no_role_password'; end if;
+    if (select count(*) from private.role_pw_fail where at > now() - interval '15 minutes') >= 5 then return 'locked'; end if;
+    if not private.role_pw_ok(p_password) then return 'bad_password'; end if;
+  end if;
+  update public.profiles set role = new_role where id = target;
+  return 'ok';
+end $$;
+create or replace function public.owner_save_role(p_id text, p_name text, p_perms text[]) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_owner() then raise exception 'not allowed'; end if;
+  if p_id is null or p_id !~ '^[a-z][a-z0-9_]{1,23}$' or p_id in ('user','admin','owner') then raise exception 'bad role'; end if;
+  if p_name is null or char_length(btrim(p_name)) not between 1 and 40 then raise exception 'bad name'; end if;
+  if exists (select 1 from unnest(coalesce(p_perms, '{}')) x where x <> all(public.all_perms())) then raise exception 'bad perms'; end if;
+  insert into public.roles (id, name, perms) values (p_id, btrim(p_name), coalesce(p_perms, '{}'))
+    on conflict (id) do update set name = excluded.name, perms = excluded.perms;
+end $$;
+create or replace function public.owner_delete_role(p_id text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_owner() then raise exception 'not allowed'; end if;
+  update public.profiles set role = 'user' where role = p_id and not owner;
+  delete from public.roles where id = p_id;
+end $$;
+do $$ declare f text; begin
+  foreach f in array array['owner_role_password_set()','owner_set_role_password(text, text)','admin_set_role(uuid, text, text)',
+                           'owner_save_role(text, text, text[])','owner_delete_role(text)','admin_set_blocked(uuid, boolean)',
+                           'admin_grant_credits(uuid, integer, text)','has_perm(text)','is_owner()'] loop
+    execute 'revoke execute on function public.' || f || ' from public, anon';
+    execute 'grant execute on function public.' || f || ' to authenticated';
+  end loop;
+end $$;

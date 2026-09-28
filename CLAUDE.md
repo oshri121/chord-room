@@ -65,6 +65,15 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   from Deezer `search/artist` (cached in `chordroom.dzartist.v1`, accepted only when the consonant skeleton matches).
   MP3: Hebrew ID3 text frames converted + TIT2/TPE1 set; FLAC: Vorbis comments; other formats: file name only.
   Each Hebrew row shows its Latin name under the title, editable (✎) and saved in the row (`r.lat`).
+- Home = the About page (no hash); the tool is `#tool`. First nav tab "בית" is `#navAbout`; the brand mark goes home.
+  `html.home` (set by an inline script before paint) hides the tool until the router runs.
+- Owner & roles (schema.sql "Owner & roles"): `profiles.owner` (the first account; can't be demoted/blocked). Only the owner
+  changes roles (`admin_set_role(target, role, password)` → 'ok'|'bad_password'|'locked'|'no_role_password'); giving any
+  management role needs the roles password (bcrypt in `private.settings 'role_password'`, set by `owner_set_role_password`,
+  5 wrong tries → 15 min lock). Roles: user, admin (all perms), custom `roles` rows with perms from `all_perms()`
+  (users, block, credits, songs, activity, settings, payments, catalog), checked by `has_perm(p)`; `my_access()` feeds the
+  admin panel (`ACC.panel/perms/owner`; `ACC.admin` = full admin, actions free). Admin tabs: users, songs, activity,
+  settings, roles (owner only).
 - Per user: the Crate is stored per account (`chordroom.crate.v1:<uid|guest>`, the old shared key goes to the first account
   that signs in; a guest's rows move to the account on sign-in when it has none). The remembered tool song carries the uid and
   is shown only to that account; switching account resets the tool (`authChanged` → `cr-user` event → `userSwitched`).

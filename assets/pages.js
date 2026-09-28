@@ -14,7 +14,7 @@ he: {
   heroP: 'קצב, סולם ואקורדים תוך שניות, הפרדת ערוצים ב־AI, מיקס חי על שני דקים וייצוא ל־FL Studio. הכל רץ בדפדפן, בלי להתקין כלום.',
   ctaTool: 'פתחו את הכלי', ctaDj: 'למיקס החי', ctaDisc: 'גלו מה חם עכשיו',
   heroNote: ['חינם להתחלה', 'בלי התקנה', '5 שפות'],
-  rdBpm: 'BPM', rdKey: 'סולם', rdCam: 'קאמלוט', rdLufs: 'LUFS',
+  rdBpm: 'BPM', rdKey: 'סולם', rdCam: 'אורך', rdLufs: 'LUFS',
   stems: ['שירה', 'תופים', 'בס', 'שאר הכלים'],
   featEyebrow: 'מה יש בפנים', featH: 'כל השיר, במקום אחד.',
   f1k: 'הכלי', f1h: 'ניתוח, אקורדים ונגינה',
@@ -91,7 +91,7 @@ en: {
   heroP: 'Tempo, key and chords in seconds, AI stem separation, a live two-deck mix and export to FL Studio. It all runs in your browser — nothing to install.',
   ctaTool: 'Open the tool', ctaDj: 'Go to DJ Mix', ctaDisc: 'See what’s trending',
   heroNote: ['Free to start', 'No install', '5 languages'],
-  rdBpm: 'BPM', rdKey: 'Key', rdCam: 'Camelot', rdLufs: 'LUFS',
+  rdBpm: 'BPM', rdKey: 'Key', rdCam: 'Length', rdLufs: 'LUFS',
   stems: ['Vocals', 'Drums', 'Bass', 'Other'],
   featEyebrow: 'What’s inside', featH: 'The whole song, in one place.',
   f1k: 'The tool', f1h: 'Analyse, read the chords, play along',
@@ -167,7 +167,7 @@ ar: {
   heroP: 'الإيقاع والمقام والكوردات في ثوانٍ، وفصل المسارات بالذكاء الاصطناعي، ومزج حيّ على منصّتين، وتصدير إلى FL Studio. كل ذلك داخل متصفحك دون تثبيت أي شيء.',
   ctaTool: 'افتح الأداة', ctaDj: 'إلى مزج DJ', ctaDisc: 'اكتشف الرائج الآن',
   heroNote: ['ابدأ مجانًا', 'بلا تثبيت', '5 لغات'],
-  rdBpm: 'BPM', rdKey: 'المقام', rdCam: 'كاميلوت', rdLufs: 'LUFS',
+  rdBpm: 'BPM', rdKey: 'المقام', rdCam: 'المدة', rdLufs: 'LUFS',
   stems: ['الغناء', 'الطبول', 'الباص', 'باقي الآلات'],
   featEyebrow: 'ماذا في الداخل', featH: 'الأغنية كاملة، في مكان واحد.',
   f1k: 'الأداة', f1h: 'تحليل وكوردات وعزف',
@@ -243,7 +243,7 @@ ru: {
   heroP: 'Темп, тональность и аккорды за секунды, разделение на стемы с AI, живой микс на двух деках и экспорт в FL Studio. Всё работает в браузере — ничего не нужно устанавливать.',
   ctaTool: 'Открыть инструмент', ctaDj: 'В DJ-микс', ctaDisc: 'Что сейчас в тренде',
   heroNote: ['Бесплатный старт', 'Без установки', '5 языков'],
-  rdBpm: 'BPM', rdKey: 'Тональность', rdCam: 'Camelot', rdLufs: 'LUFS',
+  rdBpm: 'BPM', rdKey: 'Тональность', rdCam: 'Длина', rdLufs: 'LUFS',
   stems: ['Вокал', 'Барабаны', 'Бас', 'Остальное'],
   featEyebrow: 'Что внутри', featH: 'Вся песня — в одном месте.',
   f1k: 'Инструмент', f1h: 'Анализ, аккорды и игра',
@@ -319,7 +319,7 @@ es: {
   heroP: 'Tempo, tonalidad y acordes en segundos, separación de pistas con IA, una mezcla en vivo con dos platos y exportación a FL Studio. Todo funciona en tu navegador, sin instalar nada.',
   ctaTool: 'Abrir la herramienta', ctaDj: 'Ir a Mezcla DJ', ctaDisc: 'Ver lo que es tendencia',
   heroNote: ['Empieza gratis', 'Sin instalar', '5 idiomas'],
-  rdBpm: 'BPM', rdKey: 'Tonalidad', rdCam: 'Camelot', rdLufs: 'LUFS',
+  rdBpm: 'BPM', rdKey: 'Tonalidad', rdCam: 'Duración', rdLufs: 'LUFS',
   stems: ['Voz', 'Batería', 'Bajo', 'Resto'],
   featEyebrow: 'Qué hay dentro', featH: 'Toda la canción, en un solo lugar.',
   f1k: 'La herramienta', f1h: 'Analiza, lee los acordes y toca',
@@ -498,12 +498,12 @@ function artTool() {
     chips += '<g class="pg-chd" style="--i:' + i + '"><rect x="' + x + '" y="216" width="99" height="40" rx="7"/><text x="' + (x + 14) + '" y="242">' + c + '</text></g>';
   });
   return '<svg viewBox="0 0 480 290" aria-hidden="true" focusable="false">' +
-    '<text class="pg-am" x="28" y="30">124.0 BPM</text><text class="pg-am" x="130" y="30">Am · 8A</text><text class="pg-am dim" x="452" y="30" text-anchor="end">−8.6 LUFS</text>' +
+    '<text class="pg-am" x="28" y="30">124.0 BPM</text><text class="pg-am" x="130" y="30">Am</text><text class="pg-am dim" x="452" y="30" text-anchor="end">−8.6 LUFS</text>' +
     grid + '<g style="mix-blend-mode:screen"><g fill="#FF3B3B" opacity=".95">' + lo + '</g><g fill="#2BE36F" opacity=".9" style="mix-blend-mode:screen">' + mi + '</g><g fill="#3D7BFF" style="mix-blend-mode:screen">' + hi + '</g></g>' +
     '<g class="pg-ph"><line x1="28" x2="28" y1="42" y2="202" stroke="#fff" stroke-width="2"/><path d="M22 42h12l-6 7z" fill="#fff"/></g>' + chips + '</svg>';
 }
 function artDisc() {
-  const rows = [['8A', '124', '#2F8CFF', '#B66DFF', 1], ['9A', '126', '#FF7A1A', '#E5322B', 1], ['3B', '98', '#2BD46A', '#2F8CFF', 0], ['8B', '122', '#B66DFF', '#FF4FA3', 1]];
+  const rows = [['Am', '124', '#2F8CFF', '#B66DFF', 1], ['Em', '126', '#FF7A1A', '#E5322B', 1], ['Db', '98', '#2BD46A', '#2F8CFF', 0], ['C', '122', '#B66DFF', '#FF4FA3', 1]];
   let g = '<defs>';
   rows.forEach((rw, i) => { g += '<linearGradient id="pgc' + i + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + rw[2] + '"/><stop offset="1" stop-color="' + rw[3] + '"/></linearGradient>'; });
   g += '</defs>';
@@ -618,7 +618,7 @@ function renderAbout(el, billing) {
     '<div class="pg-rd">' +
       '<div><span>' + t('rdBpm') + '</span><b dir="ltr">124.0</b></div>' +
       '<div><span>' + t('rdKey') + '</span><b dir="ltr">Am</b></div>' +
-      '<div><span>' + t('rdCam') + '</span><b dir="ltr"><em>8A</em></b></div>' +
+      '<div><span>' + t('rdCam') + '</span><b dir="ltr">3:24</b></div>' +
       '<div><span>' + t('rdLufs') + '</span><b dir="ltr">−8.6</b></div></div>' +
     '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '">' + c + '</span>').join('') + '</div>' +
     '<div class="pg-stm">' + st.map((s, i) => '<div style="--c:' + stc[i] + ';--i:' + i + '"><span>' + s + '</span><i><u></u></i></div>').join('') + '</div></div>';

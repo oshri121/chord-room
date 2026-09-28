@@ -734,3 +734,25 @@ html[dir="rtl"] .lib,html[dir="rtl"] .acc,html[dir="rtl"] .mix{animation-name:cr
 .refcard .refbox{margin:0;padding:0;border:0}
 .refcard .refh b{font-size:18px}
 .kb.kn{min-width:38px;justify-content:center}
+
+/* roles & permissions */
+.pill.own{background:var(--acc-grad);color:#fff;border-color:transparent}
+.rllist{display:grid;gap:12px}
+.rlrow{border:1px solid var(--line2);border-radius:var(--r-md);padding:14px;display:grid;gap:10px}
+.rlh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rlh .rln{height:36px;padding:0 10px;border:1px solid var(--line2);border-radius:var(--r-sm,8px);background:var(--paper);color:var(--ink);font-weight:600;min-width:180px}
+.rlp{display:flex;flex-wrap:wrap;gap:8px 16px}
+.rlp .chk{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.rlp .chk input{accent-color:var(--ink)}
+.rlnew{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.rlnew input{height:38px;padding:0 12px;border:1px solid var(--line2);border-radius:var(--r-sm,8px);background:var(--paper);color:var(--ink);min-width:220px}
+.btn.arm{border-color:var(--signal);color:var(--signal)}
+.roledlg{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(8,8,10,.45);padding:16px}
+.roledlg[hidden]{display:none}
+.roledlg .rdin{width:min(420px,100%);background:var(--paper);color:var(--ink);border:1px solid var(--line2);border-radius:var(--r-md);padding:18px;display:grid;gap:12px;box-shadow:0 24px 60px -20px var(--shadow)}
+.roledlg h3{margin:0;font-size:16px}
+.roledlg .fld{display:grid;gap:6px;font-size:13px}
+.roledlg select,.roledlg input{height:38px;padding:0 10px;border:1px solid var(--line2);border-radius:var(--r-sm,8px);background:var(--paper);color:var(--ink)}
+
+/* the About page is the home page: no flash of the tool before the router runs */
+html.home #toolView{display:none}
