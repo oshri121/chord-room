@@ -45,8 +45,17 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `refill_credits` (lazy monthly refill, called on sign-in), `admin_grant_credits`, `admin_set_plan`. In app.js
   (`/* ---------- points & plans ---------- */`): `payFor(kind)` checks before, `charge(kind,ref)` spends — separation is
   charged BEFORE it runs and refunded if it fails or is cancelled, stems once per song on download (`S.stemsPaid`). Admins and `billing.on=false` are free.
-  No payment provider yet: plan "Subscribe" opens the plan's payment link; the admin activates plans from user details.
   Separation runs in the browser, so the gate is honest-user level; the ledger is authoritative.
+- Payments (Lemon Squeezy subscriptions; owner setup in `PAYMENTS.md`): each plan has `link` (checkout URL) + `variant` (id).
+  "Subscribe" (signed-in only) opens `link` + `checkout[custom][user_id|plan]` + `checkout[email]`; an active subscriber goes to
+  the portal instead. Webhooks → `functions/api/pay/webhook.js` (no secrets; forwards raw body + X-Signature) → SQL
+  `pay_webhook(p_body,p_sig)`: HMAC-SHA256 with `private.settings.lemon_signing_secret`, once per event in `pay_events`
+  (admin-readable), user = custom user_id → `profiles.pay_sub_id` → email; plan = variant → product/variant name →
+  custom plan (only while no variant is configured). Points go in with ledger reason 'payment', exactly once per key in the ref
+  (`ls:sub:<id>` first payment, `ls:inv:<id>` renewal, `ls:up:…` upgrade difference, `ls:rf:…` refund take-back).
+  `profiles.pay_*` (status/portal/renews/plan…) are webhook-only. `refill_credits` skips live subscriptions (points only
+  from payments) but still expires `plan_until` (= renews_at + 3 days). Return URL `?paid=1#pricing` polls `loadCredits`
+  (`payReturn`). `admin_set_plan` still works for manual plans. Local SQL tests: signed bodies via python HMAC.
 - Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from
   `A11Y.statementHTML`). Header + mobile drawer: `assets/shell.js/css` (nav tabs keep their `data-i` on an inner span).
   Animated background: `assets/bg.js` (`BG.pulse(level)` from the players). Accessibility plugin: `assets/a11y.js/css`

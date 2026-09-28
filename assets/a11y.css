@@ -35,10 +35,12 @@
 :root.a11y-contrast .btn.ghost{border-color:var(--ink)}
 :root.a11y-contrast :is(.djcon,.dk,.mixer){background:#000!important;border-color:#fff!important}
 :root.a11y-contrast .djcon button{background:#000;border-color:#fff;color:#fff}
-:root.a11y-contrast .djglow{display:none}
+:root.a11y-contrast .djglow,:root.a11y-contrast #bgCanvas{display:none}
+:root.a11y-contrast body{background:var(--paper)}
+:root.a11y-contrast :is(.block,.cols,.stats,.dlist,.djmatch,.djrecs,.kpis,.tblw,.sgrid,.chips,.sheet){border-color:var(--ink);box-shadow:none}
 
 /* ---- colour vision: safe palette (tokens) / grayscale (backdrop layer, keeps the menu itself in colour) ---- */
-:root.a11y-cb-safe{--signal:#D55E00; --ok:#009E73; --il:#0072B2}
+:root.a11y-cb-safe{--signal:#D55E00; --ok:#009E73; --il:#0072B2; --acc-a:#56B4E9; --acc-b:#E69F00; --acc-p:#CC79A7}
 :root.a11y-cb-safe[data-theme-resolved="dark"]{--il:#56B4E9}
 .a11y-gray{position:fixed;inset:0;z-index:89;pointer-events:none;display:none;-webkit-backdrop-filter:grayscale(1);backdrop-filter:grayscale(1)}
 :root.a11y-cb-mono .a11y-gray{display:block}

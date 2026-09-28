@@ -105,8 +105,14 @@
     async bumpSeps() { await sb.rpc('bump_seps'); },
 
     // points (credits) and plans: balances change only inside Postgres (supabase/schema.sql)
+    // pay_* = the automatic subscription (written only by the payment webhook). Falls back to the older columns
+    // while the payments part of schema.sql hasn't been run yet.
     async credits() {
-      const { data, error } = await sb.from('profiles').select('credits,plan,plan_until,last_refill').eq('id', B.user.id).maybeSingle();
+      const base = 'credits,plan,plan_until,last_refill';
+      let { data, error } = await sb.from('profiles').select(base + ',pay_status,pay_portal,pay_renews').eq('id', B.user.id).maybeSingle();
+      if (error && /42703|does not exist/i.test((error.code || '') + ' ' + (error.message || ''))) {
+        ({ data, error } = await sb.from('profiles').select(base).eq('id', B.user.id).maybeSingle());
+      }
       if (error) throw error;
       return data || { credits: 0, plan: 'free', plan_until: null, last_refill: null };
     },
@@ -241,6 +247,12 @@
       let q = sb.from('credit_ledger').select('id,user_id,delta,balance,reason,ref,created_at').order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
       if (userId) q = q.eq('user_id', userId);
       const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    },
+    // webhook deliveries from the payment provider (admins only, enforced by RLS)
+    async adminPayEvents(limit = 20) {
+      const { data, error } = await sb.from('pay_events').select('id,key,event,user_id,test,result,created_at').order('id', { ascending: false }).limit(limit);
       if (error) throw error;
       return data;
     }

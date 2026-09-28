@@ -1,6 +1,7 @@
 /* Chord Room — About and Pricing pages.
    window.PAGES = { renderAbout(el, billing?), renderPricing(el, billing, state), lang() }
-   The integrator sets PAGES.onNav(view), PAGES.onSignup(), PAGES.onSubscribe(planId) and may set PAGES.contact.
+   The integrator sets PAGES.onNav(view), PAGES.onSignup(), PAGES.onSubscribe(planId), PAGES.onManage() and may set PAGES.contact.
+   renderPricing state: { signedIn, plan, credits, planUntil, portal (URL|null), payStatus ('active'|'cancelled'|'past_due'|null), renews (ISO|null) }.
    Text comes from the tables below (he/en/ar/ru/es), picked by <html lang>. Numbers, prices and codes stay LTR. */
 (function () {
 'use strict';
@@ -65,6 +66,7 @@ he: {
   /* pricing */
   prEyebrow: 'מסלולים ונקודות', prH: 'משלמים רק על העבודה הכבדה.',
   prP: 'ניתוח, אקורדים, גלה שירים, המיקס החי ו־MIDI — בחינם. נקודות משמשות להפרדת ערוצים ב־AI ולהורדת ערוצים.',
+  stActive: 'המנוי פעיל', stRenews: 'מתחדש ב־{d}', stCancelled: 'המנוי בוטל · פעיל עד {d}', stCancelledNd: 'המנוי בוטל', stPastDue: 'התשלום נכשל — עדכנו את אמצעי התשלום', manage: 'ניהול המנוי',
   balance: 'היתרה שלכם', planL: 'מסלול', until: 'בתוקף עד {d}',
   free: 'חינם', perMonth: 'לחודש', oneTime: 'חד־פעמי', buyOr: 'או',
   incFree: ['BPM, סולם, קאמלוט ועוצמה', 'אקורדים, דף אקורדים ודיאגרמות', 'גלה שירים ומיקס חי', 'ייצוא MIDI לפסנתר'],
@@ -140,6 +142,7 @@ en: {
   credits: 'Stem separation: Demucs v4 by Meta, run with ONNX Runtime Web · Tempo & key: Signalsmith Stretch · Charts & previews: Deezer',
   prEyebrow: 'Plans & points', prH: 'Pay only for the heavy lifting.',
   prP: 'Analysis, chords, Discover, the DJ mix and MIDI are free. Points are for AI stem separation and stem downloads.',
+  stActive: 'Subscription active', stRenews: 'Renews on {d}', stCancelled: 'Cancelled · active until {d}', stCancelledNd: 'Subscription cancelled', stPastDue: 'Payment failed — please update your payment method', manage: 'Manage subscription',
   balance: 'Your balance', planL: 'Plan', until: 'Valid until {d}',
   free: 'Free', perMonth: 'per month', oneTime: 'one-time', buyOr: 'or',
   incFree: ['BPM, key, Camelot and loudness', 'Chords, chord sheet and diagrams', 'Discover and DJ Mix', 'Piano MIDI export'],
@@ -215,6 +218,7 @@ ar: {
   credits: 'فصل المسارات: Demucs v4 من Meta عبر ONNX Runtime Web · الإيقاع والمقام: Signalsmith Stretch · القوائم والمقاطع: Deezer',
   prEyebrow: 'الباقات والنقاط', prH: 'ادفع فقط مقابل العمل الثقيل.',
   prP: 'التحليل والكوردات والاكتشاف ومزج DJ وMIDI مجانًا. النقاط لفصل المسارات بالذكاء الاصطناعي وتنزيلها.',
+  stActive: 'الاشتراك فعّال', stRenews: 'يتجدد في {d}', stCancelled: 'أُلغي · فعّال حتى {d}', stCancelledNd: 'تم إلغاء الاشتراك', stPastDue: 'فشل الدفع — يرجى تحديث وسيلة الدفع', manage: 'إدارة الاشتراك',
   balance: 'رصيدك', planL: 'الباقة', until: 'صالحة حتى {d}',
   free: 'مجاني', perMonth: 'شهريًا', oneTime: 'مرة واحدة', buyOr: 'أو',
   incFree: ['BPM والمقام وكاميلوت والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ', 'تصدير MIDI للبيانو'],
@@ -290,6 +294,7 @@ ru: {
   credits: 'Разделение: Demucs v4 от Meta через ONNX Runtime Web · Темп и тональность: Signalsmith Stretch · Чарты и превью: Deezer',
   prEyebrow: 'Тарифы и баллы', prH: 'Платите только за тяжёлую работу.',
   prP: 'Анализ, аккорды, обзор, DJ-микс и MIDI бесплатны. Баллы нужны для разделения на стемы с AI и скачивания стемов.',
+  stActive: 'Подписка активна', stRenews: 'Продлится {d}', stCancelled: 'Отменена · действует до {d}', stCancelledNd: 'Подписка отменена', stPastDue: 'Платёж не прошёл — обновите способ оплаты', manage: 'Управление подпиской',
   balance: 'Ваш баланс', planL: 'Тариф', until: 'Действует до {d}',
   free: 'Бесплатно', perMonth: 'в месяц', oneTime: 'разово', buyOr: 'или',
   incFree: ['BPM, тональность, Camelot и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор и DJ-микс', 'Экспорт фортепианного MIDI'],
@@ -365,6 +370,7 @@ es: {
   credits: 'Separación: Demucs v4 de Meta con ONNX Runtime Web · Tempo y tonalidad: Signalsmith Stretch · Listas y vistas previas: Deezer',
   prEyebrow: 'Planes y puntos', prH: 'Paga solo por el trabajo pesado.',
   prP: 'El análisis, los acordes, Descubrir, la mezcla DJ y el MIDI son gratis. Los puntos son para separar pistas con IA y descargarlas.',
+  stActive: 'Suscripción activa', stRenews: 'Se renueva el {d}', stCancelled: 'Cancelada · activa hasta el {d}', stCancelledNd: 'Suscripción cancelada', stPastDue: 'El pago falló: actualiza tu método de pago', manage: 'Gestionar suscripción',
   balance: 'Tu saldo', planL: 'Plan', until: 'Válido hasta el {d}',
   free: 'Gratis', perMonth: 'al mes', oneTime: 'una vez', buyOr: 'o',
   incFree: ['BPM, tonalidad, Camelot y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir y Mezcla DJ', 'Exportación MIDI de piano'],
@@ -695,11 +701,20 @@ function renderPricing(el, billing, state) {
   const accs = ['blue', 'purple', 'orange'];
 
   let bal = '';
+  /* subscription status from the payments integration: payStatus 'active' | 'cancelled' | 'past_due' | null, renews = ISO date */
+  const pay = state.signedIn && /^(active|cancelled|past_due)$/.test(state.payStatus || '') ? state.payStatus : null;
+  const dt = d => '<span dir="auto">' + esc(fmtDate(d)) + '</span>';
+  const endD = state.renews || state.planUntil || null;
+  const stText = pay === 'active' ? (state.renews ? fill(t('stRenews'), { d: dt(state.renews) }) : t('stActive'))
+    : pay === 'cancelled' ? (endD ? fill(t('stCancelled'), { d: dt(endD) }) : t('stCancelledNd'))
+    : pay === 'past_due' ? t('stPastDue') : '';
   if (state.signedIn) {
     bal = '<aside class="pg-bal rv" style="--i:2"><span class="pg-eb">' + t('balance') + '</span>' +
       '<div class="pg-balv"><b dir="ltr" data-count="' + (+state.credits || 0) + '">' + fmtN(+state.credits || 0) + '</b><span>' + plWord('ptsL', +state.credits || 0) + '</span></div>' +
       '<div class="pg-balm"><span>' + t('planL') + ': <strong>' + esc(planName(myPlan)) + '</strong></span>' +
-      (state.planUntil && myPlan !== 'free' ? '<span>' + fill(t('until'), { d: '<span dir="auto">' + esc(fmtDate(state.planUntil)) + '</span>' }) + '</span>' : '') + '</div></aside>';
+      (!pay && state.planUntil && myPlan !== 'free' ? '<span>' + fill(t('until'), { d: dt(state.planUntil) }) + '</span>' : '') + '</div>' +
+      (pay ? '<p class="pg-st ' + esc(pay) + '" role="status"><i aria-hidden="true"></i><span>' + stText + '</span></p>' : '') +
+      (state.portal ? '<button type="button" class="pg-btn line pg-manage" data-manage="1">' + ic('sliders') + '<span>' + t('manage') + '</span></button>' : '') + '</aside>';
   }
   const head = '<header class="pg-phead"><div>' + '<span class="pg-eb rv">' + t('prEyebrow') + '</span><h1 class="rv" style="--i:1">' + t('prH') + '</h1><p class="pg-lead rv" style="--i:2">' + t('prP') + '</p></div>' + bal + '</header>';
 
@@ -788,6 +803,7 @@ function wire(el) {
         if (b.dataset.nav) PAGES.onNav(b.dataset.nav);
         else if (b.dataset.signup) PAGES.onSignup();
         else if (b.dataset.sub) PAGES.onSubscribe(b.dataset.sub);
+        else if (b.dataset.manage) { if (PAGES.onManage) PAGES.onManage(); }
       } catch (err) { console.error(err); }
     });
   }
@@ -804,7 +820,7 @@ function lang() {
 
 const PAGES = window.PAGES = {
   renderAbout, renderPricing, lang,
-  onNav: function () {}, onSignup: function () {}, onSubscribe: function () {},
+  onNav: function () {}, onSignup: function () {}, onSubscribe: function () {}, onManage: null,
   contact: '', billing: null
 };
 })();

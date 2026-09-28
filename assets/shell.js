@@ -34,6 +34,7 @@
     if(closeBtn)closeBtn.setAttribute('aria-label',l.close);
     if(burger)burger.setAttribute('aria-label',isOpen()?l.close:l.open);
     if(tabs)tabs.setAttribute('aria-label',l.nav);
+    var tl=document.querySelector('#navTool span[data-i]');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
     /* icon-only tabs/tools (compact levels) still show their name on hover */
     Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn'),function(b){
       var s=b.querySelector('span[data-i]');if(s&&s.textContent&&b.title!==s.textContent)b.title=s.textContent;
@@ -58,6 +59,14 @@
     if(m){LEVELS.forEach(function(c){cl.remove(c)});cl.add('m');if(overflows())cl.add('m2');if(overflows())cl.add('m3')}
     if(wasDrawer&&!m)close(false);
     if(m!==wasDrawer){cl.remove('anim');setInert();if(m)requestAnimationFrame(function(){requestAnimationFrame(function(){if(isDrawer())cl.add('anim')})})}
+  }
+
+  /* ---------- brand mark → home (the Tool view) ---------- */
+  if(mark){
+    mark.setAttribute('role','link');mark.tabIndex=0;
+    var goHome=function(){var t=document.getElementById('navTool');if(t)t.click();if(isOpen())close(false)};
+    mark.addEventListener('click',goHome);
+    mark.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();goHome()}});
   }
 
   /* ---------- sliding tab indicator ---------- */
@@ -130,7 +139,7 @@
   }
   new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['lang','dir','class','style']});
   document.addEventListener('a11y-change',schedule); /* text size / font from the accessibility panel */
-  window.addEventListener('resize',schedule);
+  window.addEventListener('resize',function(){if(ind){ind.classList.remove('ready')}schedule()});
   if(mq.addEventListener)mq.addEventListener('change',schedule);else if(mq.addListener)mq.addListener(schedule);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
   if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',schedule);

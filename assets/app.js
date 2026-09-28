@@ -250,7 +250,7 @@ for(const k in IT)Object.assign(I[k],IT[k]);
 const IP={
 he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',creditsBal:'יתרת נקודות',seePlans:'מסלולים ומחירים',creditsHist:'היסטוריית נקודות',creditsTitle:'נקודות ומסלול',creditsCol:'נקודות',
   grantNote:'הערה (לא חובה)',grantBtn:'הוספה / הורדה של נקודות',setPlanBtn:'הפעלת מסלול',grantDone:'עודכן. יתרה: {b}',planDone:'המסלול עודכן.',months:'חודשים',
-  billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. קישור תשלום = עמוד התשלום של חברת הסליקה; אחרי תשלום מפעילים את המסלול למשתמש מהפרטים שלו.',
+  billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. קישור תשלום = קישור הקנייה של המסלול ב-Lemon Squeezy, ומזהה וריאנט = המספר שלו שם. אחרי תשלום המסלול מופעל והנקודות נכנסות אוטומטית (ההוראות ב-PAYMENTS.md). אפשר עדיין להפעיל מסלול ידנית מהפרטים של המשתמש.',
   billingOn:'שיטת הנקודות פעילה (כבוי = הכול בחינם)',billSignup:'מתנת הרשמה (נקודות)',billContact:'יצירת קשר לתשלום (מייל או קישור)',billSep:'עלות הפרדת ערוצים',billStems:'עלות הורדת סטמים',
   planPrice:'מחיר לחודש',planPoints:'נקודות לחודש',planLink:'קישור תשלום',planBest:'מומלץ',plan_free:'חינמי',plan_basic:'בסיסי',plan_pro:'מקצועי',plan_studio:'סטודיו',
   needSignIn:'כדי להשתמש בזה צריך להתחבר. נרשמים בחינם ומקבלים {n} נקודות מתנה.',noPoints:'אין מספיק נקודות: הפעולה עולה {n} ויש לך {b}.',charged:'ירדו {n} נקודות. נשארו {b}.',
@@ -259,7 +259,7 @@ he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',cred
   fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.',lk_sep:'הפרדת ערוצים',lk_stems:'הורדת סטמים',refunded:'ההפרדה לא הושלמה, הנקודות הוחזרו.'},
 en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
   grantNote:'Note (optional)',grantBtn:'Add / remove points',setPlanBtn:'Activate plan',grantDone:'Updated. Balance: {b}',planDone:'Plan updated.',months:'months',
-  billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = your payment provider\'s checkout page; after payment, activate the plan from the user\'s details.',
+  billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = the plan\'s Lemon Squeezy checkout link; variant ID = its variant number there. After payment the plan turns on and the points arrive automatically (setup steps in PAYMENTS.md). You can still activate a plan by hand from the user\'s details.',
   billingOn:'Points system on (off = everything is free)',billSignup:'Signup gift (points)',billContact:'Billing contact (email or link)',billSep:'Stem separation cost',billStems:'Stems download cost',
   planPrice:'Price per month',planPoints:'Points per month',planLink:'Payment link',planBest:'Recommended',plan_free:'Free',plan_basic:'Basic',plan_pro:'Pro',plan_studio:'Studio',
   needSignIn:'Sign in to use this. Signing up is free and you get {n} points as a gift.',noPoints:'Not enough points: this costs {n} and you have {b}.',charged:'{n} points used. {b} left.',
@@ -268,7 +268,7 @@ en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points b
   fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.',lk_sep:'Stem separation',lk_stems:'Stems download',refunded:'The separation didn\'t finish, your points were returned.'},
 ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
   grantNote:'ملاحظة (اختياري)',grantBtn:'إضافة / خصم نقاط',setPlanBtn:'تفعيل الخطة',grantDone:'تم التحديث. الرصيد: {b}',planDone:'تم تحديث الخطة.',months:'أشهر',
-  billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = صفحة الدفع لدى مزوّد الدفع؛ بعد الدفع فعّل الخطة من تفاصيل المستخدم.',
+  billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = رابط شراء الخطة في Lemon Squeezy، ومعرّف النسخة = رقمها هناك. بعد الدفع تُفعَّل الخطة وتصل النقاط تلقائيًا (خطوات الإعداد في PAYMENTS.md). لا يزال بإمكانك تفعيل خطة يدويًا من تفاصيل المستخدم.',
   billingOn:'نظام النقاط مفعّل (إيقاف = كل شيء مجاني)',billSignup:'هدية التسجيل (نقاط)',billContact:'جهة اتصال للدفع (بريد أو رابط)',billSep:'تكلفة فصل المسارات',billStems:'تكلفة تنزيل المسارات',
   planPrice:'السعر الشهري',planPoints:'نقاط شهريًا',planLink:'رابط الدفع',planBest:'موصى بها',plan_free:'مجانية',plan_basic:'أساسية',plan_pro:'احترافية',plan_studio:'استوديو',
   needSignIn:'سجّل الدخول لاستخدام هذه الميزة. التسجيل مجاني وتحصل على {n} نقطة هدية.',noPoints:'النقاط غير كافية: العملية تكلف {n} ولديك {b}.',charged:'تم خصم {n} نقاط. المتبقي {b}.',
@@ -277,7 +277,7 @@ ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal
   fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.',lk_sep:'فصل المسارات',lk_stems:'تنزيل المسارات',refunded:'لم يكتمل الفصل، أُعيدت نقاطك.'},
 ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
   grantNote:'Заметка (необязательно)',grantBtn:'Начислить / списать баллы',setPlanBtn:'Включить тариф',grantDone:'Готово. Баланс: {b}',planDone:'Тариф обновлён.',months:'мес.',
-  billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = страница оплаты вашего платёжного сервиса; после оплаты включите тариф в карточке пользователя.',
+  billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = ссылка покупки тарифа в Lemon Squeezy, ID варианта = его номер там. После оплаты тариф включается и баллы приходят автоматически (настройка описана в PAYMENTS.md). Тариф по-прежнему можно включить вручную в карточке пользователя.',
   billingOn:'Система баллов включена (выкл. = всё бесплатно)',billSignup:'Подарок при регистрации (баллы)',billContact:'Контакт по оплате (email или ссылка)',billSep:'Цена разделения на дорожки',billStems:'Цена скачивания дорожек',
   planPrice:'Цена в месяц',planPoints:'Баллов в месяц',planLink:'Ссылка на оплату',planBest:'Рекомендуем',plan_free:'Бесплатный',plan_basic:'Базовый',plan_pro:'Про',plan_studio:'Студия',
   needSignIn:'Войдите, чтобы пользоваться этим. Регистрация бесплатна, и вы получите {n} баллов в подарок.',noPoints:'Недостаточно баллов: действие стоит {n}, у вас {b}.',charged:'Списано {n} баллов. Осталось {b}.',
@@ -286,7 +286,7 @@ ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'балло�
   fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.',lk_sep:'Разделение на стемы',lk_stems:'Скачивание стемов',refunded:'Разделение не завершилось, баллы возвращены.'},
 es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
   grantNote:'Nota (opcional)',grantBtn:'Sumar / restar puntos',setPlanBtn:'Activar plan',grantDone:'Actualizado. Saldo: {b}',planDone:'Plan actualizado.',months:'meses',
-  billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = la página de pago de tu proveedor; tras el pago, activa el plan desde los detalles del usuario.',
+  billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = el enlace de compra del plan en Lemon Squeezy; ID de variante = su número allí. Tras el pago, el plan se activa y los puntos llegan solos (pasos en PAYMENTS.md). Aún puedes activar un plan a mano desde los detalles del usuario.',
   billingOn:'Sistema de puntos activo (apagado = todo gratis)',billSignup:'Regalo de registro (puntos)',billContact:'Contacto de pagos (email o enlace)',billSep:'Coste de separar pistas',billStems:'Coste de descargar pistas',
   planPrice:'Precio al mes',planPoints:'Puntos al mes',planLink:'Enlace de pago',planBest:'Recomendado',plan_free:'Gratis',plan_basic:'Básico',plan_pro:'Pro',plan_studio:'Estudio',
   needSignIn:'Inicia sesión para usar esto. Registrarte es gratis y recibes {n} puntos de regalo.',noPoints:'No tienes puntos suficientes: esto cuesta {n} y tienes {b}.',charged:'Se usaron {n} puntos. Quedan {b}.',
@@ -294,6 +294,29 @@ es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Sald
   planUntil:'Válido hasta {d}',planFreeL:'Plan gratis',lr_signup:'Regalo de registro',lr_spend:'Uso',lr_grant:'Ajuste manual',lr_refill:'Recarga mensual',lr_plan:'Plan activado',lr_refund:'Reembolso',
   fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.',lk_sep:'Separación de pistas',lk_stems:'Descarga de pistas',refunded:'La separación no terminó, te devolvimos los puntos.'}};
 for(const k in IP)Object.assign(I[k],IP[k]);
+// automatic subscription payments (Lemon Squeezy)
+const IPAY={
+he:{payWait:'התשלום התקבל, מפעילים את המסלול…',payDone:'המסלול {p} פעיל! יש לך עכשיו {n} נקודות.',paySlow:'התשלום עדיין מאושר אצל חברת הסליקה. זה יכול לקחת דקה, רעננו את הדף בעוד רגע. אם הנקודות לא מגיעות, כתבו לנו.',payContact:'יצירת קשר',
+  payManage:'ניהול המנוי',payRenews:'מתחדש אוטומטית ב־{d}',payTrial:'תקופת ניסיון עד {d}',payCancelled:'המנוי בוטל, בתוקף עד {d}',payPastDue:'החיוב האחרון נכשל: עדכנו אמצעי תשלום בניהול המנוי',payPaused:'המנוי מושהה',payEnded:'המנוי הסתיים',
+  payHaveSub:'כבר יש לך מנוי. החלפת מסלול או ביטול נעשים בעמוד ניהול המנוי.',planVariant:'מזהה וריאנט (Lemon Squeezy)',payEvents:'תשלומים אחרונים',payNone:'עדיין אין תשלומים.',payTestL:'בדיקה',payEvCol:'אירוע',payResCol:'תוצאה',payUserCol:'משתמש',
+  lr_payment:'תשלום',payRefundL:'החזר כספי',payUpgradeL:'שדרוג'},
+en:{payWait:'Payment received, activating your plan…',payDone:'Your {p} plan is active! You now have {n} points.',paySlow:'Your payment is still being confirmed. This can take a minute, so refresh the page shortly. If the points don\'t arrive, contact us.',payContact:'Contact us',
+  payManage:'Manage subscription',payRenews:'Renews automatically on {d}',payTrial:'Trial until {d}',payCancelled:'Cancelled, active until {d}',payPastDue:'The last payment failed: update your payment method in Manage subscription',payPaused:'Subscription paused',payEnded:'Subscription ended',
+  payHaveSub:'You already have a subscription. Change plan or cancel from the subscription page.',planVariant:'Variant ID (Lemon Squeezy)',payEvents:'Recent payments',payNone:'No payments yet.',payTestL:'test',payEvCol:'Event',payResCol:'Result',payUserCol:'User',
+  lr_payment:'Payment',payRefundL:'Money refunded',payUpgradeL:'upgrade'},
+ar:{payWait:'تم استلام الدفع، جارٍ تفعيل خطتك…',payDone:'خطة {p} مفعّلة! لديك الآن {n} نقطة.',paySlow:'ما زال الدفع قيد التأكيد. قد يستغرق ذلك دقيقة، حدّث الصفحة بعد قليل. إن لم تصل النقاط، راسلنا.',payContact:'تواصل معنا',
+  payManage:'إدارة الاشتراك',payRenews:'يتجدد تلقائيًا في {d}',payTrial:'فترة تجريبية حتى {d}',payCancelled:'أُلغي الاشتراك، ساري حتى {d}',payPastDue:'فشلت الدفعة الأخيرة: حدّث وسيلة الدفع من إدارة الاشتراك',payPaused:'الاشتراك متوقف مؤقتًا',payEnded:'انتهى الاشتراك',
+  payHaveSub:'لديك اشتراك بالفعل. غيّر الخطة أو ألغِها من صفحة إدارة الاشتراك.',planVariant:'معرّف النسخة (Lemon Squeezy)',payEvents:'آخر المدفوعات',payNone:'لا توجد مدفوعات بعد.',payTestL:'تجربة',payEvCol:'الحدث',payResCol:'النتيجة',payUserCol:'المستخدم',
+  lr_payment:'دفعة',payRefundL:'استرداد المبلغ',payUpgradeL:'ترقية'},
+ru:{payWait:'Оплата получена, включаем тариф…',payDone:'Тариф «{p}» включён! Теперь у вас {n} баллов.',paySlow:'Оплата ещё подтверждается. Это может занять минуту, обновите страницу чуть позже. Если баллы не придут, напишите нам.',payContact:'Написать нам',
+  payManage:'Управление подпиской',payRenews:'Продлится автоматически {d}',payTrial:'Пробный период до {d}',payCancelled:'Подписка отменена, действует до {d}',payPastDue:'Последний платёж не прошёл: обновите способ оплаты в управлении подпиской',payPaused:'Подписка приостановлена',payEnded:'Подписка закончилась',
+  payHaveSub:'У вас уже есть подписка. Сменить тариф или отменить её можно на странице управления подпиской.',planVariant:'ID варианта (Lemon Squeezy)',payEvents:'Последние платежи',payNone:'Платежей пока нет.',payTestL:'тест',payEvCol:'Событие',payResCol:'Результат',payUserCol:'Пользователь',
+  lr_payment:'Оплата',payRefundL:'Возврат денег',payUpgradeL:'повышение'},
+es:{payWait:'Pago recibido, activando tu plan…',payDone:'¡Tu plan {p} está activo! Ahora tienes {n} puntos.',paySlow:'Tu pago aún se está confirmando. Puede tardar un minuto; recarga la página en un momento. Si los puntos no llegan, escríbenos.',payContact:'Contáctanos',
+  payManage:'Gestionar suscripción',payRenews:'Se renueva automáticamente el {d}',payTrial:'Prueba hasta el {d}',payCancelled:'Cancelada, activa hasta el {d}',payPastDue:'El último pago falló: actualiza tu método de pago en Gestionar suscripción',payPaused:'Suscripción en pausa',payEnded:'La suscripción terminó',
+  payHaveSub:'Ya tienes una suscripción. Cambia de plan o cancela desde la página de la suscripción.',planVariant:'ID de variante (Lemon Squeezy)',payEvents:'Pagos recientes',payNone:'Aún no hay pagos.',payTestL:'prueba',payEvCol:'Evento',payResCol:'Resultado',payUserCol:'Usuario',
+  lr_payment:'Pago',payRefundL:'Dinero reembolsado',payUpgradeL:'mejora'}};
+for(const k in IPAY)Object.assign(I[k],IPAY[k]);
 
 
 
@@ -1585,9 +1608,10 @@ function renderAdmin(){
   const M=ACC.users||[],wk=Date.now()-7*864e5,dl=ACC.dlAll||[];
   const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('downloadsL'),dl.length],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
   $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
-  document.querySelectorAll('#admTabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ACC.admView&&!ACC.admUser));
+  document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
   $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;
   const setSec=$('#cTitle').closest('.asec');const bSec=$('#bOn');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView==='songs';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  renderPayEvents();
   if(ACC.admUser){renderAdminUser();return}
   if(ACC.admView==='songs'){renderAdminSongs();return}
   const dlc={};for(const d of dl)dlc[d.user_id]=(dlc[d.user_id]||0)+1;
@@ -1705,14 +1729,15 @@ async function loadCredits(refill){
   if(!ACC.on||!ACC.user){ACC.cred=null;renderCredits();return}
   try{if(refill)await Backend.refillCredits()}catch(e){}
   try{ACC.cred=await Backend.credits();ACC.credMissing=false}catch(e){console.warn(e);if(missingDb(e))ACC.credMissing=true}
-  renderCredits();
+  renderCredits();payReturn();
 }
 function planName(id){return t('plan_'+id)!=='plan_'+id?t('plan_'+id):id}
 function renderCredits(){
   const c=ACC.cred,show=!!(ACC.user&&c&&billingOn());
   const chip=$('#creditsChip');if(chip){chip.hidden=!show;if(show){$('#creditsN').textContent=(c.credits||0).toLocaleString('en-US');chip.title=t('creditsBal')}}
   const box=$('#ptsBox');if(box){box.hidden=!show;if(show){$('#ptsN').textContent=c.credits||0;
-    $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}}
+    $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}
+    renderPayLine(show?c:null)}
   const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(costOf('sep')):''}
   renderDlCost();
   if(!$('#pricingView').hidden)renderPricingPage();
@@ -1750,6 +1775,8 @@ async function refund(pay){
 }
 function ledgerRef(r){
   if(!r.ref||r.reason==='refund')return '';
+  if(r.reason==='payment'){const m=/^ls:(rf:)?(sub|inv|up):\S*\s*(\S*)\s*(upgrade)?/.exec(r.ref),test=/\(test\)\s*$/.test(r.ref)?' (test)':'';
+    return m?(m[1]?t('payRefundL'):planName(m[3])+(m[4]?` · ${t('payUpgradeL')}`:''))+test:r.ref}
   const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);return m?t('lk_'+m[1])+(m[2]?` · ${m[2]}`:''):r.ref;
 }
 async function renderLedger(ul,rows){
@@ -1761,7 +1788,8 @@ async function renderLedger(ul,rows){
 $('#creditsChip').onclick=()=>showView('pricing');
 $('#ptsPlans').onclick=()=>{$('#acc').hidden=true;showView('pricing')};
 $('#ptsBox').querySelector('details').addEventListener('toggle',async e=>{if(e.target.open){try{renderLedger($('#ptsLog'),await Backend.ledger(30))}catch(x){}}});
-function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null}}
+function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null,
+  portal:portalUrl(c),payStatus:c.pay_status||null,renews:c.pay_renews||null}}
 function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState())}
 function renderAboutPage(){if(window.PAGES)PAGES.renderAbout($('#aboutView'),BILL())}
 function hookPages(){
@@ -1770,12 +1798,60 @@ function hookPages(){
   PAGES.onSignup=()=>{if(ACC.on)openDlg('up')};
   PAGES.onSubscribe=id=>{
     const b=BILL(),p=b.plans.find(x=>x.id===id);
-    if(p&&/^https:\/\//.test(p.link||'')){window.open(p.link,'_blank','noopener');return}
+    if(p&&/^https:\/\//.test(p.link||'')){
+      if(!ACC.user){if(ACC.on)openDlg('up');return}                       // the payment must know whose account to fill
+      const c=ACC.cred||{};
+      if(portalUrl(c)&&PAY_LIVE.includes(c.pay_status)){toast(t('payHaveSub'),[[t('payManage'),openPortal]]);return}   // change plan in the portal, not a 2nd subscription
+      PAY.opened=Date.now();window.open(checkoutUrl(p.link,p.id),'_blank','noopener');return}
     const c=(b.contact||'').trim();
-    if(c){toast(t('subNoLink',{c}),[[/^https?:/.test(c)?c.replace(/^https?:\/\//,'').slice(0,40):c,()=>{location.href=/@/.test(c)&&!/^https?:/.test(c)?'mailto:'+c:c}]]);return}
+    if(c){toast(t('subNoLink',{c}),[contactAction(c)]);return}
     toast(t('subSoon'));
   };
+  PAGES.onManage=openPortal;
 }
+// ── automatic payments: checkout link → Lemon Squeezy → webhook (functions/api/pay/webhook.js → pay_webhook in SQL)
+const PAY={opened:0,polling:false,focusAt:0};
+const PAY_LIVE=['active','on_trial','past_due','paused'];
+function contactAction(c){return [/^https?:/.test(c)?c.replace(/^https?:\/\//,'').slice(0,40):c,()=>{location.href=/@/.test(c)&&!/^https?:/.test(c)?'mailto:'+c:c}]}
+// the plan's checkout link + who is paying (Lemon Squeezy returns checkout[custom] in the webhook; other providers ignore it)
+function checkoutUrl(link,planId){
+  try{const u=new URL(link);for(const k of [...u.searchParams.keys()])if(/^checkout\[(custom\]\[(user_id|plan)|email)\]$/.test(k))u.searchParams.delete(k);
+    const add=[['checkout[custom][user_id]',ACC.user.id],['checkout[custom][plan]',planId]];if(ACC.user.email)add.push(['checkout[email]',ACC.user.email]);
+    u.search=(u.search.length>1?u.search.slice(1)+'&':'')+add.map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');return u.href}catch(e){return link}
+}
+// the portal link from the webhook is pre-signed for a limited time; once it has expired, open the plain portal (sign-in by email link)
+function portalUrl(c){
+  const v=c&&c.pay_portal;if(!v||!/^https:\/\//.test(v))return null;
+  try{const u=new URL(v),exp=+u.searchParams.get('expires');if(exp&&exp*1000<Date.now()+60000)u.search='';return u.href}catch(e){return null}
+}
+function openPortal(){const u=portalUrl(ACC.cred);if(u)window.open(u,'_blank','noopener')}
+function renderPayLine(c){
+  const box=$('#ptsBox');if(!box)return;let el=$('#ptsPay');
+  if(!el){el=document.createElement('div');el.id='ptsPay';el.className='snote';$('#ptsPlan').after(el)}
+  const st=c&&c.pay_status;el.hidden=!st;el.textContent='';if(!st)return;
+  const d=fmtDate(st==='cancelled'?c.plan_until:c.pay_renews);
+  const k={active:'payRenews',on_trial:'payTrial',cancelled:'payCancelled',past_due:'payPastDue',paused:'payPaused'}[st]||'payEnded';
+  const sp=document.createElement('span');sp.textContent=t(k,{d});el.append(sp);
+  const u=portalUrl(c);if(u){const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.textContent=t('payManage');el.append(' · ',a)}
+}
+// back from checkout (?paid=1): wait for the webhook to activate the plan
+async function recentPayment(){try{const r=(await Backend.ledger(1))||[];return !!(r[0]&&r[0].reason==='payment'&&r[0].delta>0&&Date.now()-Date.parse(r[0].created_at)<15*60000)}catch(e){return false}}
+function payReturn(){
+  if(PAY.polling||!ACC.user||!ACC.cred||!/[?&]paid=1(&|$)/.test(location.search))return;
+  const u=new URL(location.href);u.searchParams.delete('paid');history.replaceState(history.state,'',u.pathname+u.search+u.hash);
+  PAY.polling=true;const c0={...ACC.cred},t0=Date.now();
+  toast(t('payWait'));
+  const done=()=>{PAY.polling=false;const c=ACC.cred||{};toast(t('payDone',{p:planName(c.plan||'free'),n:(c.credits||0).toLocaleString('en-US')}))};
+  const tick=async()=>{
+    await loadCredits(false);const c=ACC.cred||{};
+    if((c.plan&&c.plan!==c0.plan)||(c.credits||0)>(c0.credits||0)||await recentPayment())return done();
+    if(Date.now()-t0>=90000){PAY.polling=false;const ct=(BILL().contact||'').trim();toast(t('paySlow'),ct?[contactAction(ct)]:[]);return}
+    setTimeout(tick,3000);
+  };
+  setTimeout(tick,3000);
+}
+// checkout was opened in another tab → refresh the balance when the user comes back to this one
+window.addEventListener('focus',()=>{if(PAY.opened&&Date.now()-PAY.opened<30*60000&&Date.now()-PAY.focusAt>5000&&ACC.user&&!PAY.polling){PAY.focusAt=Date.now();loadCredits(false)}});
 async function refreshAdmUser(){const m=ACC.admUser;if(!m)return;try{const u=(await Backend.adminUsers()).find(x=>x.id===m.id);if(u){Object.assign(m,u);ACC.users=ACC.users.map(x=>x.id===m.id?m:x)}}catch(e){}renderAdminUser();
   if($('#udCred details').open){try{renderLedger($('#udLog'),await Backend.adminLedger(m.id,50))}catch(e){}}}
 $('#udGrant').onclick=()=>busyBtn($('#udGrant'),async()=>{const m=ACC.admUser,n=parseInt($('#udPts').value,10);if(!m||!n)return;
@@ -1789,15 +1865,35 @@ function fillBilling(){
     <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
     <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
     <label class="wide"><span>${esc(t('planLink'))}</span><input type="url" dir="ltr" data-f="link" placeholder="https://" value="${esc(p.link||'')}"></label>
+    <label><span>${esc(t('planVariant'))}</span><input type="text" inputmode="numeric" dir="ltr" data-f="variant" placeholder="123456" value="${esc(p.variant==null?'':p.variant)}"></label>
     <label class="best"><input type="radio" name="bBest" ${p.best?'checked':''}><span>${esc(t('planBest'))}</span></label></div>`).join('');
-  setMsg($('#bMsg'),'');
+  setMsg($('#bMsg'),'');loadPayEvents();
+}
+// admin: the last webhook deliveries from the payment provider
+async function loadPayEvents(){
+  try{PAY.ev=await Backend.adminPayEvents(20)}catch(e){PAY.ev=null}   // null = table not installed yet
+  renderPayEvents();
+}
+function renderPayEvents(){
+  let box=$('#payEv');const rows=PAY.ev;
+  if(!box){if(!rows)return;const bill=$('#bPlans').closest('.sgrid');if(!bill)return;box=document.createElement('div');box.id='payEv';bill.after(box)}
+  box.hidden=!rows;if(!rows)return;const M=ACC.users||[];
+  const who=id=>{if(!id)return '—';const m=M.find(x=>x.id===id);return m?(m.username||m.display_name||m.email||id.slice(0,8)):id.slice(0,8)};
+  box.innerHTML=`<div class="bhead" style="margin-top:26px"><h3>${esc(t('payEvents'))}</h3></div><div class="tblw"><table class="ut st"><thead><tr><th>${esc(t('date'))}</th><th>${esc(t('payEvCol'))}</th><th>${esc(t('payUserCol'))}</th><th>${esc(t('payResCol'))}</th></tr></thead><tbody></tbody></table></div>`;
+  const tb=box.querySelector('tbody');
+  if(!rows.length){tb.innerHTML=`<tr><td colspan="4" class="snote">${esc(t('payNone'))}</td></tr>`;return}
+  for(const r of rows){const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${esc(fmtDate(r.created_at))}</td><td><span dir="ltr" class="mono"></span>${r.test?` <span class="pill">${esc(t('payTestL'))}</span>`:''}</td><td></td><td><span dir="ltr"></span></td>`;
+    tr.querySelector('td:nth-child(2) span').textContent=r.event||'';tr.children[2].textContent=who(r.user_id);tr.querySelector('td:nth-child(4) span').textContent=r.result||'';tb.appendChild(tr)}
 }
 $('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
   const b=BILL(),plans=[...document.querySelectorAll('#bPlans .bplan')].map((el,i)=>{const p=b.plans[i],f=k=>el.querySelector(`[data-f="${k}"]`).value;
-    return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(el.querySelector('.best input').checked?{best:true}:{})}});
+    const v=f('variant').trim();
+    return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(v?{variant:v}:{}),...(el.querySelector('.best input').checked?{best:true}:{})}});
   const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),
     costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans};
   const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
+  const badV=plans.find(p=>p.variant&&!/^\d{1,12}$/.test(p.variant));if(badV){setMsg($('#bMsg'),t('planVariant')+': 0-9',true);return}
   try{const c={...ACC.config,billing};await Backend.saveConfig(c);ACC.config=c;applyConfig();setMsg($('#bMsg'),t('saved'))}catch(e){setMsg($('#bMsg'),t('saveFail'),true)}});
 function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).catch(()=>{})}
 
@@ -2054,7 +2150,7 @@ function showView(v,anchor){
 }
 function renderDiscControls(){
   const tabs=[['trend','dTrend'],['new','dNew'],['played','dPlayed'],['recent','dRecent']];
-  $('#dTabs').innerHTML='';tabs.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=t(l);b.classList.toggle('on',DC.tab===k);b.onclick=()=>{DC.tab=k;renderDiscControls();loadTab()};$('#dTabs').appendChild(b)});
+  $('#dTabs').innerHTML='';tabs.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=t(l);b.classList.toggle('on',DC.tab===k);b.setAttribute('role','tab');b.setAttribute('aria-selected',String(DC.tab===k));b.onclick=()=>{DC.tab=k;renderDiscControls();loadTab()};$('#dTabs').appendChild(b)});
   const gOk=DC.tab==='trend'||DC.tab==='new';$('#dGenres').hidden=!gOk;$('#dGenres').innerHTML='';
   DISC_GENRES.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=t(name);if(id===-1)b.classList.add('il');b.classList.toggle('on',DC.genre===id);b.onclick=()=>{DC.genre=id;renderDiscControls();loadTab()};$('#dGenres').appendChild(b)});
   const sel=$('#dKey'),cur=DC.keyF;sel.innerHTML=`<option value="">${esc(t('dAllKeys'))}</option><option value="match">${esc(t('dMatchCur'))}</option>`;

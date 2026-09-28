@@ -460,6 +460,10 @@ begin
     update public.profiles set plan = 'free', plan_until = null where id = me.id;   -- expired; points stay
     return me.credits;
   end if;
+  -- a live paid subscription gets its points only from payment events (pay_webhook below), never from here
+  if me.pay_sub_id is not null and coalesce(me.pay_status, '') not in ('expired', 'unpaid') then
+    return me.credits;
+  end if;
   if me.last_refill is null or me.last_refill <= now() - interval '1 month' then
     pts := public.plan_points(me.plan);
     if coalesce(pts, 0) > 0 then
@@ -492,7 +496,7 @@ end $$;
 revoke execute on function public.admin_grant_credits(uuid, integer, text) from public, anon;
 grant execute on function public.admin_grant_credits(uuid, integer, text) to authenticated;
 
--- admin: activate / extend / cancel a plan (until a payment provider is connected)
+-- admin: activate / extend / cancel a plan by hand (paid subscriptions are handled by pay_webhook below)
 create or replace function public.admin_set_plan(target uuid, p_plan text, p_months integer default 1)
 returns void language plpgsql security definer set search_path = public as $$
 declare me public.profiles; pts integer;
@@ -519,3 +523,306 @@ begin
 end $$;
 revoke execute on function public.admin_set_plan(uuid, text, integer) from public, anon;
 grant execute on function public.admin_set_plan(uuid, text, integer) to authenticated;
+
+-- ───────────── automatic payments (Lemon Squeezy subscriptions) ─────────────
+-- Checkout happens on Lemon Squeezy (link per plan in site_config.billing.plans[].link, with the user id in
+-- checkout[custom][user_id]). Lemon Squeezy then POSTs signed webhooks to /api/pay/webhook (Cloudflare Pages
+-- Function), which forwards the raw body + X-Signature header to public.pay_webhook below. That function checks
+-- the HMAC with a secret only the database knows, records the event once (pay_events) and activates the plan /
+-- grants the points. The signing secret is stored OUTSIDE the repo, once, in the SQL editor:
+--   insert into private.settings (key, value) values ('lemon_signing_secret', 'YOUR-SECRET')
+--     on conflict (key) do update set value = excluded.value;
+create extension if not exists pgcrypto with schema extensions;
+
+-- settings that must never reach the browser (the API does not expose this schema and nobody but the owner can use it)
+create schema if not exists private;
+revoke all on schema private from public, anon, authenticated;
+create table if not exists private.settings (key text primary key, value text not null);
+revoke all on private.settings from public, anon, authenticated;
+alter table private.settings enable row level security;   -- no policies: only the owner (and security-definer functions) can read it
+
+-- subscription state per user (written only by pay_webhook; not in the column grant, so the browser can't change it)
+alter table public.profiles add column if not exists pay_provider    text;
+alter table public.profiles add column if not exists pay_sub_id      text;
+alter table public.profiles add column if not exists pay_customer_id text;
+alter table public.profiles add column if not exists pay_portal      text;   -- customer portal link (manage / cancel)
+alter table public.profiles add column if not exists pay_status      text;   -- active / on_trial / past_due / paused / cancelled / expired / unpaid
+alter table public.profiles add column if not exists pay_renews      timestamptz;
+alter table public.profiles add column if not exists pay_plan        text;   -- plan id of the subscription
+revoke update (pay_provider, pay_sub_id, pay_customer_id, pay_portal, pay_status, pay_renews, pay_plan)
+  on public.profiles from authenticated, anon, public;
+create index if not exists profiles_pay_sub_idx on public.profiles (pay_sub_id) where pay_sub_id is not null;
+
+-- ledger: payments get their own reason
+alter table public.credit_ledger drop constraint if exists credit_ledger_reason_check;
+alter table public.credit_ledger add constraint credit_ledger_reason_check
+  check (reason in ('signup','spend','grant','refill','plan','refund','payment'));
+
+-- every webhook delivery, once (key = event + object id + version). Admins can read; nobody writes directly.
+create table if not exists public.pay_events (
+  id         bigserial primary key,
+  key        text unique not null,
+  event      text,
+  user_id    uuid references auth.users(id) on delete set null,
+  test       boolean not null default false,
+  result     text,
+  payload    jsonb,
+  created_at timestamptz not null default now()
+);
+create index if not exists pay_events_created_idx on public.pay_events (created_at desc);
+alter table public.pay_events enable row level security;
+revoke all on public.pay_events from anon, public;
+revoke insert, update, delete, truncate on public.pay_events from authenticated;
+grant select on public.pay_events to authenticated;
+revoke all on sequence public.pay_events_id_seq from authenticated, anon, public;
+drop policy if exists "pay_events: admin read" on public.pay_events;
+create policy "pay_events: admin read" on public.pay_events for select to authenticated using (public.is_admin());
+
+-- helpers (private schema = not callable through the API)
+create or replace function private.pay_ts(v text) returns timestamptz
+language plpgsql immutable as $$
+begin
+  return nullif(btrim(v), '')::timestamptz;
+exception when others then return null;
+end $$;
+
+-- plan id for a Lemon Squeezy object: 1) the plan whose "variant" is the variant id, 2) a plan id found in the
+-- product/variant name, 3) the plan the checkout link asked for, ONLY while no plan has a variant id configured
+-- (the buyer can edit that link, so with variants configured it would let a cheap variant claim a bigger plan)
+create or replace function private.pay_plan_of(a jsonb, cd jsonb) returns text
+language plpgsql stable set search_path = public as $$
+declare plans jsonb; r text; nm text; vid text;
+begin
+  select c.billing->'plans' into plans from public.site_config c where c.id = 1;
+  if plans is null or jsonb_typeof(plans) <> 'array' then plans := '[]'::jsonb; end if;
+  vid := btrim(coalesce(a->>'variant_id', a->'first_order_item'->>'variant_id', ''));
+  if vid <> '' then
+    select p->>'id' into r from jsonb_array_elements(plans) p
+     where btrim(coalesce(p->>'variant', '')) = vid and coalesce(p->>'id', '') not in ('', 'free') limit 1;
+    if r is not null then return r; end if;
+  end if;
+  nm := lower(concat_ws(' ', a->>'variant_name', a->>'product_name',
+                        a->'first_order_item'->>'variant_name', a->'first_order_item'->>'product_name'));
+  if btrim(nm) <> '' then
+    select p->>'id' into r from jsonb_array_elements(plans) p
+     where coalesce(p->>'id', '') not in ('', 'free') and position(lower(p->>'id') in nm) > 0
+     order by length(p->>'id') desc limit 1;
+    if r is not null then return r; end if;
+  end if;
+  if not exists (select 1 from jsonb_array_elements(plans) p where btrim(coalesce(p->>'variant', '')) <> '') then
+    select p->>'id' into r from jsonb_array_elements(plans) p
+     where p->>'id' = cd->>'plan' and p->>'id' <> 'free' limit 1;
+  end if;
+  return r;
+end $$;
+
+-- add points for one payment, exactly once per key (ledger ref starts with 'ls:<key>'). Returns points added.
+create or replace function private.pay_grant(p_uid uuid, p_pts integer, p_key text, p_label text, p_test boolean)
+returns integer language plpgsql set search_path = public as $$
+declare cur integer;
+begin
+  if p_pts is null or p_pts <= 0 then return 0; end if;
+  if exists (select 1 from public.credit_ledger where user_id = p_uid and reason = 'payment'
+              and split_part(ref, ' ', 1) = 'ls:' || p_key) then return 0; end if;
+  update public.profiles set credits = credits + p_pts where id = p_uid returning credits into cur;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (p_uid, p_pts, cur, 'payment',
+            left('ls:' || p_key || ' ' || coalesce(p_label, '') || case when p_test then ' (test)' else '' end, 300));
+  return p_pts;
+end $$;
+
+-- take back the points of a refunded payment, once, never below 0. Returns points removed (null = nothing was granted).
+create or replace function private.pay_take_back(p_uid uuid, p_key text, p_test boolean)
+returns integer language plpgsql set search_path = public as $$
+declare g integer; cur integer; nxt integer;
+begin
+  select delta into g from public.credit_ledger where user_id = p_uid and reason = 'payment' and delta > 0
+     and split_part(ref, ' ', 1) = 'ls:' || p_key order by id limit 1;
+  if g is null then return null; end if;
+  if exists (select 1 from public.credit_ledger where user_id = p_uid and reason = 'payment'
+              and split_part(ref, ' ', 1) = 'ls:rf:' || p_key) then return 0; end if;
+  select credits into cur from public.profiles where id = p_uid;
+  nxt := greatest(0, cur - g);
+  update public.profiles set credits = nxt where id = p_uid;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (p_uid, nxt - cur, nxt, 'payment',
+            left('ls:rf:' || p_key || ' refund' || case when p_test then ' (test)' else '' end, 300));
+  return cur - nxt;
+end $$;
+revoke all on function private.pay_ts(text), private.pay_plan_of(jsonb, jsonb),
+  private.pay_grant(uuid, integer, text, text, boolean), private.pay_take_back(uuid, text, boolean)
+  from public, anon, authenticated;
+
+-- the webhook. Callable by anyone, but does nothing unless the body is signed with the secret.
+create or replace function public.pay_webhook(p_body text, p_sig text) returns text
+language plpgsql security definer set search_path = public, extensions as $$
+declare
+  secret text; j jsonb; m jsonb; d jsonb; a jsonb; cd jsonb;
+  ev text; typ text; obj text; subid text; test boolean; k text; eid bigint;
+  uid uuid; n integer; ids uuid[]; me public.profiles;
+  st text; br text; pl text; plkey text; renews timestamptz; ends timestamptz; res text; got integer;
+begin
+  select value into secret from private.settings where key = 'lemon_signing_secret';
+  if coalesce(btrim(secret), '') = '' then raise exception 'not configured'; end if;
+  if p_body is null or length(p_body) > 262144 then raise exception 'bad body'; end if;
+  if coalesce(btrim(p_sig), '') = '' then raise exception 'bad signature'; end if;
+  -- compare digests of both sides so the comparison time doesn't depend on how much of the signature matches
+  if extensions.digest(encode(extensions.hmac(convert_to(p_body, 'UTF8'), convert_to(secret, 'UTF8'), 'sha256'), 'hex'), 'sha256')
+     <> extensions.digest(lower(btrim(p_sig)), 'sha256') then
+    raise exception 'bad signature';
+  end if;
+  begin j := p_body::jsonb; exception when others then raise exception 'bad json'; end;
+  if jsonb_typeof(j) <> 'object' then raise exception 'bad json'; end if;
+
+  m := case when jsonb_typeof(j->'meta') = 'object' then j->'meta' else '{}'::jsonb end;
+  d := case when jsonb_typeof(j->'data') = 'object' then j->'data' else '{}'::jsonb end;
+  a := case when jsonb_typeof(d->'attributes') = 'object' then d->'attributes' else '{}'::jsonb end;
+  cd := case when jsonb_typeof(m->'custom_data') = 'object' then m->'custom_data' else '{}'::jsonb end;
+  ev := coalesce(m->>'event_name', ''); typ := coalesce(d->>'type', ''); obj := coalesce(d->>'id', '');
+  test := lower(coalesce(m->>'test_mode', a->>'test_mode', 'false')) = 'true';
+
+  -- exactly once per delivery of the same change
+  k := ev || ':' || obj || ':' ||
+       case when typ = 'subscription-invoices' then coalesce(a->>'status', '') else coalesce(a->>'updated_at', a->>'status', '') end ||
+       case when test then ':test' else '' end;
+  insert into public.pay_events (key, event, test, payload)
+    values (left(k, 300), left(ev, 80), test, j #- '{data,attributes,urls}')     -- portal links are private, don't keep them
+    on conflict (key) do nothing returning id into eid;
+  if eid is null then return 'duplicate'; end if;
+
+  -- which subscription
+  subid := case typ when 'subscriptions' then nullif(obj, '') when 'subscription-invoices' then nullif(a->>'subscription_id', '') end;
+  if typ = 'orders' and obj <> '' then
+    select e.payload->'data'->>'id' into subid from public.pay_events e
+     where e.payload->'data'->>'type' = 'subscriptions' and e.payload->'data'->'attributes'->>'order_id' = obj
+     order by e.id desc limit 1;
+  end if;
+
+  -- which user: our id from the checkout link → the subscription we already know → the buyer's email
+  if coalesce(cd->>'user_id', '') ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+    select id into uid from public.profiles where id = (cd->>'user_id')::uuid;
+  end if;
+  if uid is null and subid is not null then
+    select id into uid from public.profiles where pay_sub_id = subid limit 1;
+  end if;
+  if uid is null and coalesce(btrim(a->>'user_email'), '') <> '' then
+    select array_agg(u.id) into ids from auth.users u join public.profiles p on p.id = u.id
+     where lower(u.email) = lower(btrim(a->>'user_email'));
+    if coalesce(array_length(ids, 1), 0) = 1 then uid := ids[1]; end if;
+  end if;
+  if uid is null then
+    update public.pay_events set result = 'no user' where id = eid;
+    return 'no user';
+  end if;
+  select * into me from public.profiles where id = uid for update;     -- one payment at a time per user
+  update public.pay_events set user_id = uid where id = eid;
+  -- test-mode checkouts accept fake cards: they only count for admin accounts (the owner testing), never for users
+  if test and me.role <> 'admin' then
+    update public.pay_events set result = 'test mode: ignored (only admin accounts can test)' where id = eid;
+    return 'test ignored';
+  end if;
+
+  if typ = 'subscriptions' and ev like 'subscription_%' then
+    st := case when ev = 'subscription_expired' then 'expired' else coalesce(a->>'status', '') end;
+    renews := private.pay_ts(a->>'renews_at'); ends := private.pay_ts(a->>'ends_at');
+    pl := coalesce(private.pay_plan_of(a, cd), case when me.pay_sub_id = subid then me.pay_plan end);
+    if me.pay_sub_id is not null and me.pay_sub_id <> subid and st not in ('active', 'on_trial') then
+      res := 'ignored: older subscription';                 -- the user has a newer subscription; don't let the old one end it
+    else
+      update public.profiles set pay_provider = 'lemonsqueezy', pay_sub_id = subid,
+             pay_customer_id = coalesce(nullif(a->>'customer_id', ''), pay_customer_id),
+             pay_portal = coalesce(nullif(a->'urls'->>'customer_portal', ''), pay_portal),
+             pay_status = nullif(st, ''), pay_renews = coalesce(renews, pay_renews),
+             pay_plan = case when pay_sub_id is distinct from subid then pl else coalesce(pl, pay_plan) end
+       where id = uid;
+      res := st;
+      if st in ('active', 'on_trial') then
+        if pl is null then
+          res := st || ', unknown plan (set the variant id in Billing)';
+        else
+          update public.profiles set plan = pl,
+                 plan_until = greatest(coalesce(renews, now() + interval '1 month'), now()) + interval '3 days'
+           where id = uid;
+          res := st || ', plan ' || pl;
+          if ev = 'subscription_created' and st = 'active' then
+            -- first payment (the initial invoice may have granted it already → 0)
+            got := private.pay_grant(uid, public.plan_points(pl), 'sub:' || subid, pl, test);
+            res := res || ', +' || got;
+          elsif st = 'active' and me.pay_sub_id = subid and me.plan <> 'free' and me.plan <> pl
+                and coalesce(public.plan_points(pl), 0) > coalesce(public.plan_points(me.plan), 0) then
+            -- upgrade: the difference, once per plan per billing period
+            plkey := regexp_replace(pl, '\s', '_', 'g');
+            got := private.pay_grant(uid, public.plan_points(pl) - coalesce(public.plan_points(me.plan), 0),
+                     'up:' || subid || ':' || plkey || ':' || to_char(coalesce(renews, now()), 'YYYYMMDD'), pl || ' upgrade', test);
+            res := res || ', upgrade +' || got;
+          end if;
+        end if;
+      elsif st = 'cancelled' then
+        -- paid until ends_at, then free
+        if ends is not null and ends > now() then
+          update public.profiles set plan = case when plan = 'free' and pl is not null then pl else plan end,
+                 plan_until = ends where id = uid;
+        elsif ends is not null then
+          update public.profiles set plan = 'free', plan_until = null where id = uid;
+        end if;
+      elsif st in ('expired', 'unpaid') then
+        update public.profiles set plan = 'free', plan_until = null where id = uid;
+      end if;                                               -- past_due / paused: keep the plan until plan_until
+    end if;
+
+  elsif typ = 'subscription-invoices' then
+    st := coalesce(a->>'status', ''); br := coalesce(a->>'billing_reason', '');
+    pl := case when me.pay_sub_id = subid then me.pay_plan end;
+    if pl is null then pl := private.pay_plan_of(a, cd); end if;
+    if ev in ('subscription_payment_success', 'subscription_payment_recovered') then
+      if st <> 'paid' then
+        res := 'not paid: ' || st;
+      elsif br not in ('initial', 'renewal') then
+        res := 'paid (' || br || '), no points';
+      elsif pl is null then
+        res := 'paid, plan not known yet (subscription_created will grant)';
+      else
+        got := private.pay_grant(uid, public.plan_points(pl),
+                 case when br = 'initial' then 'sub:' || subid else 'inv:' || obj end, pl, test);
+        res := br || ', plan ' || pl || ', +' || got;
+        if me.pay_sub_id is null or me.pay_sub_id = subid then   -- paid → the plan is on for at least another month
+          update public.profiles set plan = pl, pay_provider = 'lemonsqueezy', pay_sub_id = subid,
+                 pay_plan = coalesce(pay_plan, pl),
+                 pay_status = case when pay_status is null or pay_status in ('past_due', 'unpaid', 'expired') then 'active' else pay_status end,
+                 plan_until = greatest(coalesce(plan_until, now()), now() + interval '1 month 3 days')
+           where id = uid;
+        end if;
+      end if;
+    elsif ev = 'subscription_payment_refunded' then
+      if st = 'refunded' or (lower(coalesce(a->>'refunded', '')) = 'true' and st <> 'partial_refund') then
+        got := private.pay_take_back(uid, case when br = 'initial' then 'sub:' || subid else 'inv:' || obj end, test);
+        res := case when got is null then 'refunded, nothing was granted' else 'refunded, -' || got end;
+      else
+        res := 'partial refund, points kept';
+      end if;
+    else
+      res := 'ignored';                                     -- payment_failed etc.: subscription_updated brings the status
+    end if;
+
+  elsif typ = 'orders' then
+    if ev <> 'order_refunded' then
+      res := 'ignored';
+    elsif subid is null then
+      res := 'ignored: not a subscription order';
+    elsif coalesce(a->>'status', '') = 'refunded' then
+      got := private.pay_take_back(uid, 'sub:' || subid, test);
+      res := case when got is null then 'refunded, nothing was granted' else 'refunded, -' || got end;
+    else
+      res := 'partial refund, points kept';
+    end if;
+
+  else
+    res := 'ignored';
+  end if;
+
+  res := left(coalesce(res, 'ok'), 300);
+  update public.pay_events set result = res where id = eid;
+  return res;
+end $$;
+revoke execute on function public.pay_webhook(text, text) from public;
+grant execute on function public.pay_webhook(text, text) to anon, authenticated;

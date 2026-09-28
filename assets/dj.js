@@ -10,7 +10,10 @@
 'use strict';
 const CR=window.CR;if(!CR)return;
 const {t,$,esc,mod}=CR;
-const COL=['#2F8CFF','#FF7A1A'],LET=['A','B'];
+const COL0=['#2F8CFF','#FF7A1A'],COL=COL0.slice(),LET=['A','B'];
+/* deck colours follow the accessibility "safe palette" (the DOM gets the same pair from dj.css) */
+function syncCol(){let p=null;if(window.A11Y&&A11Y.activePalette)p=A11Y.activePalette();else try{if((JSON.parse(localStorage.getItem('chordroom.a11y'))||{}).cb==='safe')p={a:'#56B4E9',b:'#E69F00'}}catch(e){}COL[0]=p?p.a:COL0[0];COL[1]=p?p.b:COL0[1]}
+syncCol();document.addEventListener('a11y-change',syncCol);
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const dbg=db=>Math.pow(10,db/20);
 const DEMOS=[{bpm:124,shift:0,key:'Am'},{bpm:126,shift:7,key:'Em'},{bpm:122,shift:5,key:'Dm'},{bpm:128,shift:-2,key:'Gm'}];
@@ -948,7 +951,7 @@ document.addEventListener('keydown',e=>{
 
 /* ---------- public ---------- */
 window.DJ={
-  show(){if(!D.built){D.decks=[];build()}D.visible=true;CR.stopTool();
+  show(){syncCol();if(!D.built){D.decks=[];build()}D.visible=true;CR.stopTool();
     init().then(()=>{renderAll();if(D.noStretch)note(t('djEngineOff'))});
     requestAnimationFrame(()=>{sizeAll();if(!D.raf)D.raf=requestAnimationFrame(frame)});renderRecsSoon()},
   hide(){D.visible=false;if(D.ready){D.decks.forEach(d=>d.playing&&stopDeck(d));if(D.fx.on)setFxOn(false);if(D.auto)autoCancel();if(D.rec)recStop()}$('#djMenu')&&($('#djMenu').hidden=true)},

@@ -115,7 +115,8 @@
     mx+=(tx-mx)*.06;my+=(ty-my)*.06;
     draw();
   }
-  function isStill(){return !!(rm&&rm.matches)||root.classList.contains('a11y-noanim')}
+  /* still (and, in high contrast, hidden by a11y.css): reduced motion, the a11y "stop animations" switch, high contrast */
+  function isStill(){return !!(rm&&rm.matches)||root.classList.contains('a11y-noanim')||root.classList.contains('a11y-contrast')}
   function start(){if(!req&&!still&&!document.hidden){last=0;req=requestAnimationFrame(frame)}}
   function stop(){if(req){cancelAnimationFrame(req);req=0}}
   function sync(){
