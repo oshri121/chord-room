@@ -826,3 +826,78 @@ begin
 end $$;
 revoke execute on function public.pay_webhook(text, text) from public;
 grant execute on function public.pay_webhook(text, text) to anon, authenticated;
+
+-- =====================================================================
+-- Invite a friend. Each user has a short code (profiles.ref_code, made on first request). A new account that
+-- signed up through a link ?ref=<code> calls claim_referral once, within 3 days of signing up: the new user AND the
+-- inviter each get billing.referral points (default 10). An inviter is rewarded at most billing.referral_max times
+-- (default 20) per 30 days, so fake sign-ups can't farm points. Ledger reason 'referral', ref
+-- 'ref:joined:<inviter id>' (new user) / 'ref:inviter:<new user id>' (inviter) — each new user is credited once.
+-- =====================================================================
+alter table public.profiles add column if not exists ref_code    text;
+alter table public.profiles add column if not exists referred_by uuid references public.profiles(id) on delete set null;
+create unique index if not exists profiles_ref_code_idx on public.profiles (ref_code) where ref_code is not null;
+revoke update (ref_code, referred_by) on public.profiles from authenticated, anon, public;
+
+alter table public.credit_ledger drop constraint if exists credit_ledger_reason_check;
+alter table public.credit_ledger add constraint credit_ledger_reason_check
+  check (reason in ('signup','spend','grant','refill','plan','refund','payment','referral'));
+
+-- my invite code (created on first call) + how many friends joined and the points it earned
+create or replace function public.my_referral() returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare me public.profiles; code text; n integer; pts integer;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;
+  if not found then raise exception 'not allowed'; end if;
+  code := me.ref_code;
+  while code is null loop
+    code := substr(md5(random()::text || clock_timestamp()::text || me.id::text), 1, 8);
+    if code !~ '[a-f]' or exists (select 1 from public.profiles where ref_code = code) then code := null; end if;
+  end loop;
+  if me.ref_code is null then update public.profiles set ref_code = code where id = me.id; end if;
+  select count(*) into n from public.profiles where referred_by = me.id;
+  select coalesce(sum(delta), 0) into pts from public.credit_ledger where user_id = me.id and reason = 'referral' and ref like 'ref:inviter:%';
+  return jsonb_build_object('code', code, 'invited', n, 'earned', pts);
+end $$;
+revoke execute on function public.my_referral() from public, anon;
+grant execute on function public.my_referral() to authenticated;
+
+-- the signed-in (new) user joined through p_code. Returns {ok, points, balance} or {ok:false, why}.
+create or replace function public.claim_referral(p_code text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare me public.profiles; inv public.profiles; b jsonb; pts integer; cap integer; joined timestamptz; recent integer; paid boolean := false;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;
+  if not found or me.blocked then return jsonb_build_object('ok', false, 'why', 'not_allowed'); end if;
+  if me.referred_by is not null then return jsonb_build_object('ok', false, 'why', 'already'); end if;
+  select created_at into joined from auth.users where id = me.id;
+  if joined is null or joined < now() - interval '3 days' then return jsonb_build_object('ok', false, 'why', 'too_late'); end if;
+  if p_code is null or btrim(p_code) !~ '^[a-z0-9]{6,12}$' then return jsonb_build_object('ok', false, 'why', 'bad_code'); end if;
+  select * into inv from public.profiles where ref_code = btrim(p_code) for update;
+  if not found or inv.blocked then return jsonb_build_object('ok', false, 'why', 'bad_code'); end if;
+  if inv.id = me.id then return jsonb_build_object('ok', false, 'why', 'self'); end if;
+
+  select billing into b from public.site_config where id = 1;
+  pts := least(1000, greatest(0, coalesce(public.safe_int(b->>'referral'), 10)));
+  cap := greatest(0, coalesce(public.safe_int(b->>'referral_max'), 20));
+  update public.profiles set referred_by = inv.id where id = me.id;
+  if pts > 0 then
+    update public.profiles set credits = credits + pts where id = me.id;
+    insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+      values (me.id, pts, me.credits + pts, 'referral', 'ref:joined:' || inv.id);
+    select count(*) into recent from public.credit_ledger
+     where user_id = inv.id and reason = 'referral' and ref like 'ref:inviter:%' and created_at > now() - interval '30 days';
+    if recent < cap then
+      update public.profiles set credits = credits + pts where id = inv.id;
+      insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+        values (inv.id, pts, inv.credits + pts, 'referral', 'ref:inviter:' || me.id);
+      paid := true;
+    end if;
+  end if;
+  return jsonb_build_object('ok', true, 'points', pts, 'balance', me.credits + pts, 'inviter_paid', paid);
+end $$;
+revoke execute on function public.claim_referral(text) from public, anon;
+grant execute on function public.claim_referral(text) to authenticated;

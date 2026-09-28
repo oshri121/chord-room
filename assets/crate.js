@@ -1,0 +1,706 @@
+/*
+ * Crate (#crate): batch analysis for DJs. Drop many files (or a folder) → BPM / key / Camelot / length / LUFS / energy
+ * for each, sortable + filterable table, "smart order" into a harmonic set, exports (CSV, rekordbox XML, M3U8,
+ * renamed copies ZIP with ID3 TBPM/TKEY for MP3s). Runs fully in the browser, talks to the app only through window.CR.
+ * Files are decoded and analysed one at a time (CR.analyzeTrack runs on the main thread) and every decoded buffer is
+ * dropped right after its analysis. Only the results (never the audio) are kept in localStorage.
+ *
+ * Energy 1–10 is a deliberately simple estimate:
+ *   L = loudness  (LUFS −20 → 0 … −6 → 1)
+ *   T = tempo     (80 BPM → 0 … 140 BPM → 1)
+ *   D = busyness  (sum of positive steps of the peak-normalised waveform envelope per second, 2.5/s → 0 … 7.5/s → 1)
+ *   energy = round(1 + 9 × (0.5 L + 0.3 T + 0.2 D))
+ */
+(function(){
+'use strict';
+const CR=window.CR;if(!CR)return;
+const {t,$,esc,mod}=CR;
+
+/* ---------- strings (he / en / ar / ru / es) ---------- */
+CR.addStrings({
+he:{navCrate:'ניתוח ספרייה',crEyebrow:'ניתוח מרוכז · בדפדפן שלך',crTitle:'ניתוח ספרייה',
+  crSub:'גוררים תיקייה של שירים ומקבלים לכולם BPM, סולם, Camelot, אורך, עוצמה ואנרגיה. ממיינים, בונים סט הרמוני ומייצאים ל־rekordbox, לאקסל או לפלייליסט.',
+  crDropT:'גרור לכאן קבצי אודיו או תיקייה שלמה',crDropH:'MP3, WAV, M4A, AAC, FLAC, OGG, AIFF · עד {n} קבצים · שום דבר לא עולה לשרת, הכול רץ אצלך במחשב',
+  crPathHint:'לייצוא ל־rekordbox תתבקש להקליד את נתיב התיקייה במחשב (הדפדפן לא יכול לראות אותו).',
+  crFiles:'בחירת קבצים',crFolder:'בחירת תיקייה',crDropping:'שחרר כדי להוסיף לרשימה',crMoreH:'אפשר לגרור עוד קבצים או תיקייה לכל מקום בעמוד',
+  crProg:'מנתח {i} מתוך {n}',crStop:'עצירה',crResume:'לנתח את {n} הנותרים',crClear:'ניקוי',crClearSure:'ללחוץ שוב לניקוי',
+  sTracks:'שירים',sRange:'טווח BPM',sKeyTop:'סולם נפוץ',sTime:'זמן כולל',
+  crSearch:'סינון לפי שם',crAllKeys:'כל הסולמות',crCompat:'מתאימים ל: {name}',crCompatT:'להציג שירים שמתחברים לשיר הזה (שכנים ב־Camelot, קצב בטווח 6%)',crShowAll:'הצג הכול',
+  crSmart:'סידור חכם',crSmartT:'בונה סט: מתחיל מהשיר שנבחר (או הרגוע ביותר), וכל שיר הבא נבחר לפי סולם, קצב ועלייה הדרגתית באנרגיה',crSmartDone:'סודר כסט שמתחיל ב־{name}.',crSmartNeed:'צריך לפחות שני שירים מנותחים.',
+  colName:'שיר',colFile:'קובץ',colKey:'סולם',colLen:'אורך',colEnergy:'אנרגיה',colStatus:'מצב',crSortBy:'מיון',crSetOrder:'סדר הסט',
+  crEnergyT:'אנרגיה 1–10: הערכה גסה לפי עוצמה (LUFS), קצב וצפיפות הביט',
+  crOpen:'פתיחה בכלי',crOpenNo:'צריך להוסיף את הקובץ שוב כדי לפתוח אותו',crHalf:'חצי BPM',crDouble:'כפול BPM',crRemove:'הסרה',crStartT:'להתחיל את הסט מהשיר הזה',crStartTag:'פתיחה',
+  stQ:'ממתין',stDec:'טוען…',stAna:'מנתח…',stErr:'לא הצלחנו לקרוא את הקובץ',stBig:'גדול מדי (מעל 250 MB)',stPause:'נעצר',stSaved:'תוצאה שמורה · הקובץ לא טעון',
+  crDup:'{n} כפולים דולגו.',crBad:'{n} קבצים שאינם אודיו דולגו.',crLim:'הגעת למגבלה: עד {n} קבצים.',crReatt:'{n} שורות שמורות קיבלו את הקובץ בחזרה.',
+  mxGood:'מתחבר טוב לשיר הקודם',mxTempo:'הסולמות מתאימים, פער קצב {p}%',mxBad:'הסולם מתנגש עם השיר הקודם',
+  crExport:'ייצוא',crExportN:'{n} שירים, בסדר שמוצג',crCsv:'CSV (אקסל)',crXml:'rekordbox XML',crM3u:'פלייליסט M3U8',crZip:'עותקים עם שם חדש (ZIP)',crZipT:'עותקים בשם "8A - 124 - שם", ולקובצי MP3 נכתבים תגי BPM וסולם',
+  crFolderL:'התיקייה במחשב שלך',crFolderP:'למשל C:\\Music\\My set או /Users/me/Music/My set',
+  crFolderH:'rekordbox צריך לדעת איפה הקבצים נמצאים: הקלד את הנתיב המלא של התיקייה שבחרת (או של התיקייה שבה הקבצים). שמות הקבצים מתווספים אחריו.',
+  crXmlDone:'קובץ ה־XML נשמר. ב־rekordbox: Preferences › Advanced › rekordbox xml, בוחרים את הקובץ ומייבאים את הפלייליסט "Chord Room".',
+  crXmlNoFolder:'לא הוזן נתיב תיקייה, ולכן rekordbox לא ימצא את הקבצים. הקלד אותו למעלה וייצא שוב.',
+  crZipBig:'קובץ ה־ZIP שוקל {s} MB ונבנה בזיכרון. זה עלול להיות איטי או להיכשל במכשיר הזה.',crZipGo:'לבנות בכל זאת',
+  crZipNo:'{n} שורות שמורות בלי קובץ טעון לא נכללו. הוסף את הקבצים שוב כדי לכלול אותן.',crZipNone:'אין קבצים טעונים להעתקה. הוסף את הקבצים שוב.',crZipBusy:'בונה ZIP… {p}%',crZipDone:'ה־ZIP מוכן ({s} MB).',
+  crRestored:'תוצאות מהביקור הקודם. האודיו לא נשמר: כדי לפתוח שיר או ליצור עותקים, הוסף שוב את אותם קבצים.',
+  crNoMatch:'אין שירים שמתאימים לסינון.',crNothing:'קודם צריך לנתח שירים.'},
+en:{navCrate:'Crate',crEyebrow:'Batch analysis · in your browser',crTitle:'Analyse your library',
+  crSub:'Drop a folder of tracks and get BPM, key, Camelot, length, loudness and energy for all of them. Sort, build a harmonic set and export to rekordbox, Excel or a playlist.',
+  crDropT:'Drop audio files or a whole folder here',crDropH:'MP3, WAV, M4A, AAC, FLAC, OGG, AIFF · up to {n} files · nothing is uploaded, everything runs on your computer',
+  crPathHint:'For the rekordbox export you\'ll type the folder\'s path on your computer (the browser can\'t see it).',
+  crFiles:'Choose files',crFolder:'Choose folder',crDropping:'Drop to add to the crate',crMoreH:'Drop more files or a folder anywhere on this page',
+  crProg:'Analysing {i} of {n}',crStop:'Stop',crResume:'Analyse the remaining {n}',crClear:'Clear',crClearSure:'Click again to clear',
+  sTracks:'Tracks',sRange:'BPM range',sKeyTop:'Top key',sTime:'Total time',
+  crSearch:'Filter by name',crAllKeys:'All keys',crCompat:'Mixes with: {name}',crCompatT:'Show tracks that mix with this one (Camelot neighbours, tempo within 6 %)',crShowAll:'Show all',
+  crSmart:'Smart order',crSmartT:'Builds a DJ set: starts from the selected track (or the calmest), then picks each next track by key, tempo and a gentle energy rise',crSmartDone:'Ordered as a set starting with {name}.',crSmartNeed:'Analyse at least two tracks first.',
+  colName:'Track',colFile:'File',colKey:'Key',colLen:'Length',colEnergy:'Energy',colStatus:'Status',crSortBy:'Sort',crSetOrder:'Set order',
+  crEnergyT:'Energy 1–10: a rough estimate from loudness (LUFS), tempo and how busy the beat is',
+  crOpen:'Open in tool',crOpenNo:'Add the file again to open it',crHalf:'Half BPM',crDouble:'Double BPM',crRemove:'Remove',crStartT:'Start the set from this track',crStartTag:'Start',
+  stQ:'Waiting',stDec:'Loading…',stAna:'Analysing…',stErr:'Couldn\'t read this file',stBig:'Too large (over 250 MB)',stPause:'Stopped',stSaved:'Saved result · file not loaded',
+  crDup:'{n} duplicates skipped.',crBad:'{n} non-audio files skipped.',crLim:'Limit reached: up to {n} files.',crReatt:'{n} saved rows got their file back.',
+  mxGood:'Mixes well with the previous track',mxTempo:'Keys mix, tempo gap {p} %',mxBad:'Key clashes with the previous track',
+  crExport:'Export',crExportN:'{n} tracks, in the order shown',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'M3U8 playlist',crZip:'Renamed copies (ZIP)',crZipT:'Copies named "8A - 124 - name"; MP3s also get BPM and key tags',
+  crFolderL:'Folder on your computer',crFolderP:'e.g. C:\\Music\\My set or /Users/me/Music/My set',
+  crFolderH:'rekordbox needs the real location of the files: type the full path of the folder you chose (or the one the files are in). File names are added after it.',
+  crXmlDone:'rekordbox XML saved. In rekordbox: Preferences › Advanced › rekordbox xml, pick this file, then import the "Chord Room" playlist.',
+  crXmlNoFolder:'No folder path set, so rekordbox won\'t find the files. Type it above and export again.',
+  crZipBig:'The ZIP is {s} MB and is built in memory. It may be slow or fail on this device.',crZipGo:'Build anyway',
+  crZipNo:'{n} saved rows have no file loaded and were left out. Add the files again to include them.',crZipNone:'No loaded files to copy. Add the files again.',crZipBusy:'Building the ZIP… {p}%',crZipDone:'ZIP ready ({s} MB).',
+  crRestored:'Results from your last visit. The audio isn\'t kept: add the same files again to open them or make renamed copies.',
+  crNoMatch:'No tracks match the filter.',crNothing:'Analyse some tracks first.'},
+ar:{navCrate:'تحليل المكتبة',crEyebrow:'تحليل دفعة واحدة · في متصفحك',crTitle:'تحليل المكتبة',
+  crSub:'اسحب مجلدًا من الأغاني واحصل لكل منها على BPM والمقام وCamelot والمدة والجهارة والطاقة. رتّب، وابنِ مجموعة متناغمة، وصدّر إلى rekordbox أو Excel أو قائمة تشغيل.',
+  crDropT:'اسحب ملفات صوتية أو مجلدًا كاملًا إلى هنا',crDropH:'MP3, WAV, M4A, AAC, FLAC, OGG, AIFF · حتى {n} ملف · لا يُرفع شيء، كل شيء يعمل على جهازك',
+  crPathHint:'لتصدير rekordbox ستكتب مسار المجلد على جهازك (المتصفح لا يستطيع رؤيته).',
+  crFiles:'اختيار ملفات',crFolder:'اختيار مجلد',crDropping:'أفلت للإضافة إلى القائمة',crMoreH:'يمكنك سحب المزيد من الملفات أو مجلد إلى أي مكان في الصفحة',
+  crProg:'تحليل {i} من {n}',crStop:'إيقاف',crResume:'تحليل المتبقي ({n})',crClear:'مسح',crClearSure:'اضغط مرة أخرى للمسح',
+  sTracks:'أغانٍ',sRange:'نطاق BPM',sKeyTop:'المقام الأكثر شيوعًا',sTime:'المدة الكلية',
+  crSearch:'تصفية بالاسم',crAllKeys:'كل المقامات',crCompat:'تتوافق مع: {name}',crCompatT:'إظهار الأغاني التي تمتزج مع هذه (جيران Camelot، إيقاع ضمن 6%)',crShowAll:'إظهار الكل',
+  crSmart:'ترتيب ذكي',crSmartT:'يبني مجموعة DJ: يبدأ من الأغنية المختارة (أو الأهدأ)، ثم يختار كل أغنية تالية حسب المقام والإيقاع وارتفاع تدريجي في الطاقة',crSmartDone:'رُتّبت كمجموعة تبدأ بـ {name}.',crSmartNeed:'حلّل أغنيتين على الأقل أولًا.',
+  colName:'الأغنية',colFile:'الملف',colKey:'المقام',colLen:'المدة',colEnergy:'الطاقة',colStatus:'الحالة',crSortBy:'ترتيب',crSetOrder:'ترتيب المجموعة',
+  crEnergyT:'الطاقة 1–10: تقدير تقريبي من الجهارة (LUFS) والإيقاع وكثافة الضربات',
+  crOpen:'فتح في الأداة',crOpenNo:'أضف الملف مرة أخرى لفتحه',crHalf:'نصف BPM',crDouble:'ضعف BPM',crRemove:'إزالة',crStartT:'ابدأ المجموعة من هذه الأغنية',crStartTag:'البداية',
+  stQ:'في الانتظار',stDec:'تحميل…',stAna:'تحليل…',stErr:'تعذّرت قراءة الملف',stBig:'كبير جدًا (أكثر من 250 MB)',stPause:'متوقف',stSaved:'نتيجة محفوظة · الملف غير محمّل',
+  crDup:'تم تخطي {n} ملفات مكررة.',crBad:'تم تخطي {n} ملفات ليست صوتية.',crLim:'بلغت الحد: حتى {n} ملف.',crReatt:'استعادت {n} صفوف محفوظة ملفاتها.',
+  mxGood:'يمتزج جيدًا مع الأغنية السابقة',mxTempo:'المقامات متوافقة، فرق الإيقاع {p}%',mxBad:'المقام يتعارض مع الأغنية السابقة',
+  crExport:'تصدير',crExportN:'{n} أغانٍ، بالترتيب المعروض',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'قائمة تشغيل M3U8',crZip:'نسخ بأسماء جديدة (ZIP)',crZipT:'نسخ باسم "8A - 124 - الاسم"، وتُكتب في ملفات MP3 وسوم BPM والمقام',
+  crFolderL:'المجلد على جهازك',crFolderP:'مثلًا C:\\Music\\My set أو /Users/me/Music/My set',
+  crFolderH:'يحتاج rekordbox إلى المكان الحقيقي للملفات: اكتب المسار الكامل للمجلد الذي اخترته (أو الذي توجد فيه الملفات). تُضاف أسماء الملفات بعده.',
+  crXmlDone:'تم حفظ ملف XML. في rekordbox: Preferences › Advanced › rekordbox xml، اختر الملف ثم استورد قائمة "Chord Room".',
+  crXmlNoFolder:'لم يُدخل مسار المجلد، لذا لن يجد rekordbox الملفات. اكتبه في الأعلى وصدّر مرة أخرى.',
+  crZipBig:'حجم ZIP هو {s} MB ويُبنى في الذاكرة. قد يكون بطيئًا أو يفشل على هذا الجهاز.',crZipGo:'إنشاء على أي حال',
+  crZipNo:'لم تُضمَّن {n} صفوف محفوظة بلا ملف محمّل. أضف الملفات مرة أخرى لتضمينها.',crZipNone:'لا توجد ملفات محمّلة للنسخ. أضف الملفات مرة أخرى.',crZipBusy:'جارٍ إنشاء ZIP… {p}%',crZipDone:'ملف ZIP جاهز ({s} MB).',
+  crRestored:'نتائج من زيارتك السابقة. الصوت لا يُحفظ: أضف الملفات نفسها مرة أخرى لفتحها أو لإنشاء نسخ بأسماء جديدة.',
+  crNoMatch:'لا توجد أغانٍ تطابق التصفية.',crNothing:'حلّل بعض الأغاني أولًا.'},
+ru:{navCrate:'Анализ библиотеки',crEyebrow:'Пакетный анализ · в браузере',crTitle:'Анализ библиотеки',
+  crSub:'Перетащите папку с треками и получите BPM, тональность, Camelot, длительность, громкость и энергию для каждого. Сортируйте, собирайте гармоничный сет и экспортируйте в rekordbox, Excel или плейлист.',
+  crDropT:'Перетащите сюда аудиофайлы или целую папку',crDropH:'MP3, WAV, M4A, AAC, FLAC, OGG, AIFF · до {n} файлов · ничего не загружается, всё работает на вашем компьютере',
+  crPathHint:'Для экспорта в rekordbox нужно будет ввести путь к папке на компьютере (браузер его не видит).',
+  crFiles:'Выбрать файлы',crFolder:'Выбрать папку',crDropping:'Отпустите, чтобы добавить',crMoreH:'Можно перетащить ещё файлы или папку в любое место страницы',
+  crProg:'Анализ {i} из {n}',crStop:'Стоп',crResume:'Проанализировать оставшиеся ({n})',crClear:'Очистить',crClearSure:'Нажмите ещё раз, чтобы очистить',
+  sTracks:'Треков',sRange:'Диапазон BPM',sKeyTop:'Частая тональность',sTime:'Общее время',
+  crSearch:'Фильтр по названию',crAllKeys:'Все тональности',crCompat:'Сочетается с: {name}',crCompatT:'Показать треки, которые сводятся с этим (соседи по Camelot, темп в пределах 6 %)',crShowAll:'Показать все',
+  crSmart:'Умный порядок',crSmartT:'Собирает DJ-сет: начинает с выбранного трека (или самого спокойного), затем выбирает следующий по тональности, темпу и плавному росту энергии',crSmartDone:'Упорядочено как сет, начиная с {name}.',crSmartNeed:'Сначала проанализируйте хотя бы два трека.',
+  colName:'Трек',colFile:'Файл',colKey:'Тональность',colLen:'Длина',colEnergy:'Энергия',colStatus:'Статус',crSortBy:'Сортировка',crSetOrder:'Порядок сета',
+  crEnergyT:'Энергия 1–10: грубая оценка по громкости (LUFS), темпу и плотности ритма',
+  crOpen:'Открыть в инструменте',crOpenNo:'Добавьте файл снова, чтобы открыть его',crHalf:'BPM пополам',crDouble:'BPM ×2',crRemove:'Удалить',crStartT:'Начать сет с этого трека',crStartTag:'Старт',
+  stQ:'В очереди',stDec:'Загрузка…',stAna:'Анализ…',stErr:'Не удалось прочитать файл',stBig:'Слишком большой (более 250 MB)',stPause:'Остановлено',stSaved:'Сохранённый результат · файл не загружен',
+  crDup:'Пропущено дубликатов: {n}.',crBad:'Пропущено файлов не аудио: {n}.',crLim:'Достигнут предел: до {n} файлов.',crReatt:'Сохранённым строкам возвращены файлы: {n}.',
+  mxGood:'Хорошо сводится с предыдущим треком',mxTempo:'Тональности сочетаются, разница темпа {p} %',mxBad:'Тональность конфликтует с предыдущим треком',
+  crExport:'Экспорт',crExportN:'Треков: {n}, в показанном порядке',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Плейлист M3U8',crZip:'Переименованные копии (ZIP)',crZipT:'Копии с именами "8A - 124 - название", в MP3 записываются теги BPM и тональности',
+  crFolderL:'Папка на вашем компьютере',crFolderP:'например C:\\Music\\My set или /Users/me/Music/My set',
+  crFolderH:'rekordbox нужно настоящее расположение файлов: введите полный путь к выбранной папке (или к папке с файлами). Имена файлов добавляются после него.',
+  crXmlDone:'XML сохранён. В rekordbox: Preferences › Advanced › rekordbox xml, выберите файл и импортируйте плейлист "Chord Room".',
+  crXmlNoFolder:'Путь к папке не указан, поэтому rekordbox не найдёт файлы. Введите его выше и экспортируйте снова.',
+  crZipBig:'ZIP весит {s} MB и собирается в памяти. На этом устройстве это может быть медленно или не получиться.',crZipGo:'Всё равно собрать',
+  crZipNo:'Сохранённые строки без загруженного файла пропущены: {n}. Добавьте файлы снова, чтобы их включить.',crZipNone:'Нет загруженных файлов для копирования. Добавьте файлы снова.',crZipBusy:'Сборка ZIP… {p}%',crZipDone:'ZIP готов ({s} MB).',
+  crRestored:'Результаты прошлого визита. Аудио не сохраняется: добавьте те же файлы снова, чтобы открыть их или сделать переименованные копии.',
+  crNoMatch:'Нет треков под фильтр.',crNothing:'Сначала проанализируйте треки.'},
+es:{navCrate:'Biblioteca DJ',crEyebrow:'Análisis por lotes · en tu navegador',crTitle:'Analiza tu biblioteca',
+  crSub:'Arrastra una carpeta de temas y obtén BPM, tonalidad, Camelot, duración, sonoridad y energía de todos. Ordena, arma un set armónico y exporta a rekordbox, Excel o una playlist.',
+  crDropT:'Arrastra aquí archivos de audio o una carpeta entera',crDropH:'MP3, WAV, M4A, AAC, FLAC, OGG, AIFF · hasta {n} archivos · no se sube nada, todo se ejecuta en tu equipo',
+  crPathHint:'Para exportar a rekordbox escribirás la ruta de la carpeta en tu equipo (el navegador no puede verla).',
+  crFiles:'Elegir archivos',crFolder:'Elegir carpeta',crDropping:'Suelta para añadir',crMoreH:'Puedes arrastrar más archivos o una carpeta a cualquier parte de la página',
+  crProg:'Analizando {i} de {n}',crStop:'Detener',crResume:'Analizar los {n} restantes',crClear:'Vaciar',crClearSure:'Pulsa otra vez para vaciar',
+  sTracks:'Temas',sRange:'Rango de BPM',sKeyTop:'Tonalidad más común',sTime:'Duración total',
+  crSearch:'Filtrar por nombre',crAllKeys:'Todas las tonalidades',crCompat:'Mezcla con: {name}',crCompatT:'Mostrar temas que mezclan con este (vecinos Camelot, tempo dentro del 6 %)',crShowAll:'Mostrar todo',
+  crSmart:'Orden inteligente',crSmartT:'Arma un set: empieza por el tema seleccionado (o el más tranquilo) y elige cada siguiente por tonalidad, tempo y una subida suave de energía',crSmartDone:'Ordenado como set empezando por {name}.',crSmartNeed:'Analiza al menos dos temas primero.',
+  colName:'Tema',colFile:'Archivo',colKey:'Tonalidad',colLen:'Duración',colEnergy:'Energía',colStatus:'Estado',crSortBy:'Ordenar',crSetOrder:'Orden del set',
+  crEnergyT:'Energía 1–10: estimación aproximada a partir de la sonoridad (LUFS), el tempo y la densidad del ritmo',
+  crOpen:'Abrir en la herramienta',crOpenNo:'Añade el archivo otra vez para abrirlo',crHalf:'Mitad de BPM',crDouble:'Doble de BPM',crRemove:'Quitar',crStartT:'Empezar el set por este tema',crStartTag:'Inicio',
+  stQ:'En espera',stDec:'Cargando…',stAna:'Analizando…',stErr:'No se pudo leer el archivo',stBig:'Demasiado grande (más de 250 MB)',stPause:'Detenido',stSaved:'Resultado guardado · archivo no cargado',
+  crDup:'{n} duplicados omitidos.',crBad:'{n} archivos que no son audio omitidos.',crLim:'Límite alcanzado: hasta {n} archivos.',crReatt:'{n} filas guardadas recuperaron su archivo.',
+  mxGood:'Mezcla bien con el tema anterior',mxTempo:'Las tonalidades encajan, diferencia de tempo {p} %',mxBad:'La tonalidad choca con el tema anterior',
+  crExport:'Exportar',crExportN:'{n} temas, en el orden mostrado',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Playlist M3U8',crZip:'Copias renombradas (ZIP)',crZipT:'Copias con nombre "8A - 124 - nombre"; en los MP3 se escriben etiquetas de BPM y tonalidad',
+  crFolderL:'Carpeta en tu equipo',crFolderP:'p. ej. C:\\Music\\My set o /Users/me/Music/My set',
+  crFolderH:'rekordbox necesita la ubicación real de los archivos: escribe la ruta completa de la carpeta que elegiste (o donde están los archivos). Los nombres se añaden después.',
+  crXmlDone:'XML guardado. En rekordbox: Preferences › Advanced › rekordbox xml, elige el archivo e importa la playlist "Chord Room".',
+  crXmlNoFolder:'No hay ruta de carpeta, así que rekordbox no encontrará los archivos. Escríbela arriba y exporta de nuevo.',
+  crZipBig:'El ZIP pesa {s} MB y se crea en memoria. Puede ser lento o fallar en este dispositivo.',crZipGo:'Crear igualmente',
+  crZipNo:'Se omitieron {n} filas guardadas sin archivo cargado. Añade los archivos otra vez para incluirlas.',crZipNone:'No hay archivos cargados para copiar. Añádelos otra vez.',crZipBusy:'Creando el ZIP… {p}%',crZipDone:'ZIP listo ({s} MB).',
+  crRestored:'Resultados de tu última visita. El audio no se guarda: añade los mismos archivos otra vez para abrirlos o crear copias renombradas.',
+  crNoMatch:'Ningún tema coincide con el filtro.',crNothing:'Analiza algunos temas primero.'}
+});
+
+/* ---------- constants & state ---------- */
+const LS_K='chordroom.crate.v1',MAX=300,MAX_BYTES=250*1024*1024,BIG_ZIP=500*1024*1024,LS_CAP=1000;
+const AUDIO_EXT=['mp3','wav','m4a','aac','mp4','flac','ogg','oga','opus','aif','aiff'];
+const ACCEPT='audio/*,'+AUDIO_EXT.map(e=>'.'+e).join(',');
+/* rekordbox / ID3 TKEY key names by Camelot number (index 1–12), minor = A, major = B */
+const RB_A=[,'Abm','Ebm','Bbm','Fm','Cm','Gm','Dm','Am','Em','Bm','F#m','Dbm'];
+const RB_B=[,'B','F#','Db','Ab','Eb','Bb','F','C','G','D','A','E'];
+const KIND={mp3:'MP3 File',wav:'WAV File',m4a:'M4A File',aac:'M4A File',mp4:'M4A File',flac:'FLAC File',aif:'AIFF File',aiff:'AIFF File',ogg:'OGG File',oga:'OGG File',opus:'OGG File'};
+const COLS=[['n','#'],['name','colName'],['bpm','BPM'],['key','colKey'],['dur','colLen'],['lufs','LUFS'],['energy','colEnergy'],['st','colStatus']];
+const SORTABLE=new Set(['n','name','bpm','key','dur','lufs','energy']);
+const C={built:false,visible:false,rows:[],sort:null,q:'',key:'',compat:null,sel:null,folder:'',running:false,cancel:false,cur:null,curP:0,
+  msg:'',msgErr:false,msgAct:null,clearArm:0,seq:0,zipBusy:false};
+
+const IC={
+  files:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  folder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>',
+  drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>',
+  smart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18c3 0 4-12 8-12s5 8 8 8"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="14" r="1.5"/></svg>',
+  open:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>'
+};
+
+/* ---------- helpers ---------- */
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const byId=id=>C.rows.find(r=>r.id===id)||null;
+const extOf=n=>{const m=/\.([^./\\]+)$/.exec(n||'');return m?m[1].toLowerCase():''};
+const baseOf=n=>String(n||'').replace(/\.[^./\\]+$/,'');
+const fmtB=b=>b==null?'—':Math.abs(b-Math.round(b))<0.05?String(Math.round(b)):b.toFixed(1);
+const fmtLen=s=>{if(s==null)return '—';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s/60)%60,x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')};
+const camStr=k=>k?CR.camelot(k.pc,k.mode):'';
+const camO=k=>k?CR.camOf(k):null;
+const rbKey=k=>{if(!k)return '';const c=CR.camOf(k);return (c.l==='A'?RB_A:RB_B)[c.n]};
+const mb=b=>(b/1048576).toFixed(b>=1048576*10?0:1);
+const done=r=>r.st==='ok'&&r.bpm>0;
+function nid(){return 'r'+Date.now().toString(36)+(C.seq++).toString(36)}
+/* "01 - Artist - Title (Mix).mp3" → {artist,title}; also strips our own "8A - 124 - " prefix */
+function parseName(fn){
+  let b=baseOf(fn).trim();if(!/\s/.test(b))b=b.replace(/_/g,' ');
+  b=b.replace(/^\d{1,2}[AB] - \d{2,3}(?:\.\d)? - /,'').replace(/^\d{1,3}\s*[-.)_]\s*(?=\S)/,'').trim();
+  const m=/^(.+?)\s+[-–—]\s+(.+)$/.exec(b);
+  return m?{artist:m[1].trim(),title:m[2].trim()}:{artist:'',title:b};
+}
+/* energy (see header) */
+function fluxOf(w,dur){
+  if(!w||!w.amp||!dur)return null;const a=w.amp;let s=0;
+  for(let i=1;i<a.length;i++){const d=a[i]-a[i-1];if(d>0)s+=d}
+  return s/dur;
+}
+function energyOf(r){
+  if(r.lufs==null||!isFinite(r.lufs)||!r.bpm)return null;
+  const L=clamp((r.lufs+20)/14,0,1),T=clamp((r.bpm-80)/60,0,1),D=r.flux==null?0.5:clamp((r.flux-2.5)/5,0,1);
+  return clamp(Math.round(1+9*(0.5*L+0.3*T+0.2*D)),1,10);
+}
+/* how well b follows a: 'good' (Camelot neighbour + tempo ≤6 %), 'tempo' (keys fit, bigger tempo gap), 'bad' (key clash) */
+function mixOf(a,b){
+  if(!done(a)||!done(b)||!a.key||!b.key)return null;
+  const rel=CR.camRel(camO(a.key),camO(b.key)),fit=CR.bpmFit(a.bpm,b.bpm);
+  if(rel<0)return {k:'bad',fit};
+  return {k:fit<=0.06?'good':'tempo',fit};
+}
+function compatible(a,b){return a===b||(done(a)&&done(b)&&a.key&&b.key&&CR.camRel(camO(a.key),camO(b.key))>=0&&CR.bpmFit(a.bpm,b.bpm)<=0.06)}
+
+/* ---------- persistence (results only, never audio) ---------- */
+const r3=x=>x==null?null:Math.round(x*1000)/1000;
+function save(){
+  try{
+    const rows=C.rows.filter(done).slice(0,LS_CAP).map(r=>({id:r.id,name:r.name,rel:r.rel,size:r.size,ext:r.ext,dur:r3(r.dur),lufs:r3(r.lufs),peak:r3(r.peak),
+      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux)}));
+    localStorage.setItem(LS_K,JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
+  }catch(e){}
+}
+function load(){
+  try{
+    const o=JSON.parse(localStorage.getItem(LS_K)||'null');if(!o||o.v!==1||!Array.isArray(o.rows))return;
+    C.folder=typeof o.folder==='string'?o.folder:'';
+    C.sort=o.sort&&SORTABLE.has(o.sort.k)?{k:o.sort.k,dir:o.sort.dir<0?-1:1}:null;
+    C.rows=o.rows.filter(r=>r&&r.name&&r.bpm>0).map(r=>{const x={...r,st:'ok',file:null,p:1};x.energy=energyOf(x);return x});
+    C.sel=o.sel&&byId(o.sel)?o.sel:null;
+  }catch(e){}
+}
+
+/* ---------- adding files ---------- */
+function isAudio(f){return AUDIO_EXT.includes(extOf(f.name))||/^audio\//.test(f.type||'')}
+function addFiles(list){
+  let dup=0,bad=0,lim=0,re=0;
+  for(const {file,rel} of list){
+    if(!file||/^\._/.test(file.name))continue;
+    if(!isAudio(file)){bad++;continue}
+    const ex=C.rows.find(x=>x.name===file.name&&x.size===file.size);
+    if(ex){if(!ex.file){ex.file=file;if(rel)ex.rel=rel;if(!done(ex))ex.st='q';re++}else dup++;continue}
+    if(C.rows.length>=MAX){lim++;continue}
+    C.rows.push({id:nid(),name:file.name,rel:rel||file.name,size:file.size,ext:extOf(file.name),file,st:'q',p:0});
+  }
+  const m=[];if(re)m.push(t('crReatt',{n:re}));if(dup)m.push(t('crDup',{n:dup}));if(bad)m.push(t('crBad',{n:bad}));if(lim)m.push(t('crLim',{n:MAX}));
+  setMsg(m.join(' '),!!lim);
+  renderAll();save();pump();
+}
+function fromInput(inp,folder){
+  const fs=[...inp.files];inp.value='';
+  addFiles(fs.map(f=>{let rel=f.name;if(folder&&f.webkitRelativePath){const p=f.webkitRelativePath.split('/');rel=p.length>1?p.slice(1).join('/'):f.webkitRelativePath}return {file:f,rel}}));
+}
+/* drag & drop, folders included (webkitGetAsEntry). One dropped folder → paths relative to it. */
+function collect(dt){
+  const items=[...(dt.items||[])].filter(i=>i.kind==='file'),ents=items.map(i=>i.webkitGetAsEntry?i.webkitGetAsEntry():null);
+  const files=[...(dt.files||[])];
+  if(!ents.length||ents.some(e=>!e)){addFiles(files.map(f=>({file:f,rel:f.name})));return}
+  (async()=>{
+    const out=[],one=ents.length===1;
+    const fileOf=en=>new Promise((res,rej)=>en.file(res,rej));
+    async function walk(dir,prefix){
+      const rd=dir.createReader();
+      for(;;){const batch=await new Promise((res,rej)=>rd.readEntries(res,rej));if(!batch.length)break;
+        for(const en of batch){if(out.length>MAX*4)return;if(en.isFile){try{out.push({file:await fileOf(en),rel:prefix+en.name})}catch(e){}}else if(en.isDirectory)await walk(en,prefix+en.name+'/')}}
+    }
+    for(const en of ents){try{if(en.isFile)out.push({file:await fileOf(en),rel:en.name});else if(en.isDirectory)await walk(en,one?'':en.name+'/')}catch(e){console.warn(e)}}
+    out.sort((a,b)=>a.rel.localeCompare(b.rel,undefined,{numeric:true}));
+    addFiles(out);
+  })();
+}
+
+/* ---------- analysis queue: one file at a time, buffer dropped after each ---------- */
+async function pump(){
+  if(C.running)return;C.running=true;C.cancel=false;
+  try{
+    for(;;){
+      if(C.cancel)break;
+      const r=C.rows.find(x=>x.st==='q'&&x.file);if(!r)break;
+      await analyzeRow(r);save();renderAll();await CR.tick();
+    }
+  }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save()}
+}
+async function analyzeRow(r){
+  C.cur=r.id;C.curP=0;r.st='dec';r.p=0;renderRow(r);renderDeck();
+  let buf=null;
+  try{
+    if(r.size>MAX_BYTES){r.st='err';r.err='stBig';return}
+    buf=await CR.ac().decodeAudioData(await r.file.arrayBuffer());
+    if(!C.rows.includes(r))return;
+    r.st='ana';renderRow(r);
+    const res=await CR.analyzeTrack(buf,p=>setP(r,p));
+    buf=null;
+    if(!C.rows.includes(r))return;
+    Object.assign(r,{dur:res.dur,lufs:isFinite(res.lufs)?res.lufs:null,peak:isFinite(res.peak)?res.peak:null,bpm:res.bpm,bpm0:res.bpm,offset:res.offset,down:res.down||0,key:res.key||null,flux:fluxOf(res.wave,res.dur)});
+    r.energy=energyOf(r);r.st=r.bpm>0?'ok':'err';r.err=r.st==='err'?'stErr':null;r.p=1;
+  }catch(e){console.warn('crate',r.name,e);r.st='err';r.err='stErr'}
+  finally{buf=null;if(C.cur===r.id)C.cur=null}
+}
+function setP(r,p){
+  r.p=p;C.curP=p;
+  const b=document.querySelector(`#crTab tr[data-id="${r.id}"] .rp i`);if(b)b.style.width=Math.round(p*100)+'%';
+  renderProg();
+}
+function stop(){C.cancel=true;C.rows.forEach(r=>{if(r.st==='q')r.st='pause'});renderAll()}
+function resume(){C.rows.forEach(r=>{if(r.st==='pause'&&r.file)r.st='q'});renderAll();pump()}
+
+/* ---------- view model ---------- */
+function sortVal(r,k,i){
+  switch(k){
+    case 'name':return parseName(r.name).title.toLowerCase();
+    case 'bpm':return done(r)?r.bpm:null;
+    case 'key':{const c=done(r)&&camO(r.key);return c?c.n*2+(c.l==='B'?1:0):null}
+    case 'dur':return r.dur??null;
+    case 'lufs':return r.lufs??null;
+    case 'energy':return r.energy??null;
+    default:return i;
+  }
+}
+function view(){
+  let list=C.rows.map((r,i)=>({r,i}));
+  if(C.q){const q=C.q.toLowerCase();list=list.filter(({r})=>(r.name+' '+r.rel).toLowerCase().includes(q))}
+  if(C.key)list=list.filter(({r})=>done(r)&&camStr(r.key)===C.key);
+  const a=C.compat&&byId(C.compat);
+  if(a)list=list.filter(({r})=>compatible(a,r));
+  if(C.sort){const {k,dir}=C.sort;list=list.map(o=>({...o,v:sortVal(o.r,k,o.i)}));
+    list.sort((x,y)=>{if(x.v==null&&y.v==null)return x.i-y.i;if(x.v==null)return 1;if(y.v==null)return -1;
+      const c=typeof x.v==='string'?x.v.localeCompare(y.v,undefined,{numeric:true}):x.v-y.v;return c?c*dir:x.i-y.i})}
+  if(a){const j=list.findIndex(o=>o.r===a);if(j>0)list.unshift(...list.splice(j,1))}
+  return list.map(o=>o.r);
+}
+const exportRows=()=>view().filter(done);
+
+/* ---------- smart order: greedy harmonic path with a gentle energy rise ---------- */
+function stepCost(a,b,target){
+  const rel=CR.camRel(camO(a.key),camO(b.key));
+  const k=rel===0?0:rel===1?0.25:rel>=2?0.35:1.6;
+  const f=CR.bpmFit(a.bpm,b.bpm),tp=f<=0.06?f/0.06*0.6:0.6+(f-0.06)*20;
+  const ea=a.energy||5,eb=b.energy||5,de=eb-ea;
+  const en=de<0?-de*0.3:de>2?(de-2)*0.25:0;
+  return k+tp+en+Math.abs(eb-target)*0.08;
+}
+function smartOrder(){
+  const ok=C.rows.filter(r=>done(r)&&r.key);
+  if(ok.length<2){setMsg(t('crSmartNeed'),true);renderMsg();return}
+  const rest=C.rows.filter(r=>!ok.includes(r));
+  let cur=(C.sel&&ok.find(r=>r.id===C.sel))||ok.slice().sort((a,b)=>((a.energy||5)-(b.energy||5))||(a.bpm-b.bpm))[0];
+  const left=new Set(ok),path=[cur];left.delete(cur);
+  const e0=cur.energy||1,eMax=Math.max(...ok.map(r=>r.energy||1)),N=ok.length;
+  while(left.size){
+    const target=e0+(eMax-e0)*(path.length/(N-1));let best=null,bs=Infinity;
+    for(const r of left){const s=stepCost(cur,r,target);if(s<bs){bs=s;best=r}}
+    path.push(best);left.delete(best);cur=best;
+  }
+  C.rows=[...path,...rest];C.sort=null;C.compat=null;C.key='';C.q='';
+  const si=$('#crQ');if(si)si.value='';
+  setMsg(t('crSmartDone',{name:'\u2068'+parseName(path[0].name).title+'\u2069'}));
+  save();renderAll();
+}
+
+/* ---------- exports ---------- */
+function csvCell(v){let s=String(v??'');if(/^[=+\-@]/.test(s)&&!/^-?\d/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function exportCsv(){
+  const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
+  const L=[[t('colName'),t('colFile'),'BPM',t('colKey'),'Camelot',t('colLen'),'LUFS',t('colEnergy')].map(csvCell).join(',')];
+  for(const r of rows){const p=parseName(r.name);
+    L.push([p.artist?p.artist+' - '+p.title:p.title,r.rel||r.name,fmtB(r.bpm),r.key?CR.keyText(r.key):'',camStr(r.key),fmtLen(r.dur),r.lufs!=null?r.lufs.toFixed(1):'',r.energy??''].map(csvCell).join(','))}
+  CR.saveBlob(new Blob(['\uFEFF'+L.join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'}),'chord-room-crate.csv');
+  setMsg('');renderMsg();
+}
+const xa=s=>String(s??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g,'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+function folderSegs(f){return String(f||'').trim().replace(/^file:\/\/(localhost)?\/?/i,'').replace(/\\/g,'/').split('/').filter(s=>s&&s!=='.')}
+function locOf(r){
+  const segs=[...folderSegs(C.folder),...String(r.rel||r.name).split('/').filter(Boolean)];
+  return 'file://localhost/'+segs.map((s,i)=>i===0&&/^[A-Za-z]:$/.test(s)?s:encodeURIComponent(s)).join('/');
+}
+/* first downbeat of the grid, re-anchored if the user halved/doubled the BPM */
+function gridStart(r){
+  const T0=60/(r.bpm0||r.bpm),Tn=60/r.bpm,td=mod(r.offset||0,T0)+(r.down||0)*T0;
+  const ini=mod(td,Tn),k=Math.round((td-ini)/Tn);return {ini,beat:mod(-k,4)+1};
+}
+function exportXml(){
+  const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
+  const day=new Date().toISOString().slice(0,10),L=['<?xml version="1.0" encoding="UTF-8"?>','<DJ_PLAYLISTS Version="1.0.0">','  <PRODUCT Name="Chord Room" Version="1.0" Company="Chord Room"/>',`  <COLLECTION Entries="${rows.length}">`];
+  rows.forEach((r,i)=>{const p=parseName(r.name),g=gridStart(r),bpm=r.bpm.toFixed(2);
+    L.push(`    <TRACK TrackID="${i+1}" Name="${xa(p.title)}" Artist="${xa(p.artist)}" Composer="" Album="" Grouping="" Genre="" Kind="${xa(KIND[r.ext]||(r.ext||'').toUpperCase()+' File')}" Size="${r.size|0}" TotalTime="${Math.round(r.dur||0)}" DiscNumber="0" TrackNumber="0" Year="0" AverageBpm="${bpm}" DateAdded="${day}" BitRate="0" SampleRate="0" Comments="${xa(camStr(r.key))}" PlayCount="0" Rating="0" Location="${xa(locOf(r))}" Remixer="" Tonality="${xa(rbKey(r.key))}" Label="" Mix="">`,
+      `      <TEMPO Inizio="${g.ini.toFixed(3)}" Bpm="${bpm}" Metro="4/4" Battito="${g.beat}"/>`,'    </TRACK>')});
+  L.push('  </COLLECTION>','  <PLAYLISTS>','    <NODE Type="0" Name="ROOT" Count="1">',`      <NODE Name="Chord Room" Type="1" KeyType="0" Entries="${rows.length}">`);
+  rows.forEach((r,i)=>L.push(`        <TRACK Key="${i+1}"/>`));
+  L.push('      </NODE>','    </NODE>','  </PLAYLISTS>','</DJ_PLAYLISTS>');
+  CR.saveBlob(new Blob([L.join('\n')+'\n'],{type:'application/xml'}),'chord-room-rekordbox.xml');
+  if(folderSegs(C.folder).length)setMsg(t('crXmlDone'));else setMsg(t('crXmlNoFolder'),true);
+  renderMsg();
+}
+function m3u(rows,nameOf){
+  const L=['#EXTM3U','#PLAYLIST:Chord Room'];
+  for(const r of rows){const p=parseName(r.name);L.push(`#EXTINF:${Math.round(r.dur||0)},${p.artist?p.artist+' - ':''}${p.title}`,nameOf(r))}
+  return L.join('\n')+'\n';
+}
+function exportM3u(){
+  const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
+  CR.saveBlob(new Blob([m3u(rows,r=>r.rel||r.name)],{type:'audio/x-mpegurl'}),'chord-room-set.m3u8');setMsg('');renderMsg();
+}
+function renamed(r){
+  const safe=s=>s.replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').trim();
+  const base=baseOf(r.name).replace(/^\d{1,2}[AB] - \d{2,3}(?:\.\d)? - /,'');
+  return safe(`${camStr(r.key)||'--'} - ${Math.round(r.bpm)} - ${base}`).slice(0,180)+(r.ext?'.'+r.ext:'');
+}
+async function exportZip(force){
+  if(C.zipBusy)return;
+  const all=exportRows(),rows=all.filter(r=>r.file),miss=all.length-rows.length;
+  if(!rows.length){setMsg(all.length?t('crZipNone'):t('crNothing'),true);renderMsg();return}
+  const total=rows.reduce((a,r)=>a+r.size,0);
+  if(total>BIG_ZIP&&!force){setMsg(t('crZipBig',{s:mb(total)}),true,[t('crZipGo'),()=>exportZip(true)]);renderMsg();return}
+  C.zipBusy=true;renderExp();
+  try{
+    const files=[],used=new Set();let i=0;
+    for(const r of rows){
+      setMsg(t('crZipBusy',{p:Math.round(i/rows.length*100)}));renderMsg();await CR.tick();
+      let nm=renamed(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
+      used.add(nm.toLowerCase());r._zn=nm;
+      let data=new Uint8Array(await r.file.arrayBuffer());
+      if(r.ext==='mp3')try{data=tagMp3(data,{bpm:String(Math.round(r.bpm)),key:rbKey(r.key),cam:camStr(r.key)})}catch(e){console.warn('id3',r.name,e)}
+      files.push({name:nm,data});i++;
+    }
+    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(m3u(rows,r=>r._zn))});
+    setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
+    const blob=CR.zip(files);
+    CR.saveBlob(blob,'chord-room-renamed.zip');
+    setMsg(t('crZipDone',{s:mb(blob.size)})+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
+  }catch(e){console.error(e);setMsg(t('stErr'),true)}
+  finally{C.zipBusy=false;renderExp();renderMsg()}
+}
+
+/* ---------- ID3v2: keep the existing tag's frames (v2.3 / v2.4), replace TBPM / TKEY, Camelot into the comment ---------- */
+const ss=(u,p)=>((u[p]&127)<<21)|((u[p+1]&127)<<14)|((u[p+2]&127)<<7)|(u[p+3]&127);
+const be=(u,p)=>((u[p]<<24)>>>0)+(u[p+1]<<16)+(u[p+2]<<8)+u[p+3];
+const ssEnc=n=>[(n>>>21)&127,(n>>>14)&127,(n>>>7)&127,n&127];
+const beEnc=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
+function readTag(u){
+  const none={end:0,ver:3,frames:[]};
+  if(u.length<10||u[0]!==73||u[1]!==68||u[2]!==51||u[6]>127||u[7]>127||u[8]>127||u[9]>127)return none;
+  const maj=u[3],fl=u[5],size=ss(u,6),tagEnd=Math.min(u.length,10+size);
+  const out={end:Math.min(u.length,10+size+(maj===4&&(fl&16)?10:0)),ver:3,frames:[]};
+  if((maj!==3&&maj!==4)||(fl&128))return out; // v2.2 or whole-tag unsynchronisation → write a fresh v2.3 tag
+  const parse=sync=>{
+    let p=10;if(fl&64)p+=maj===3?4+be(u,10):ss(u,10);const fr=[];
+    while(p+10<=tagEnd){
+      if(u[p]===0)break; // padding
+      const id=String.fromCharCode(u[p],u[p+1],u[p+2],u[p+3]);if(!/^[A-Z0-9]{4}$/.test(id))throw new Error('frame id');
+      const n=sync?ss(u,p+4):be(u,p+4);if(p+10+n>tagEnd)throw new Error('frame size');
+      fr.push({id,f1:u[p+8],f2:u[p+9],data:u.subarray(p+10,p+10+n)});p+=10+n;
+    }
+    return fr;
+  };
+  try{out.frames=parse(maj===4);out.ver=maj}
+  catch(e){if(maj===4){try{out.frames=parse(false);out.ver=4}catch(e2){out.frames=[];out.ver=3}}else{out.frames=[];out.ver=3}}
+  return out;
+}
+function decStr(enc,b){
+  try{
+    if(enc===0)return new TextDecoder('latin1').decode(b);
+    if(enc===3)return new TextDecoder('utf-8').decode(b);
+    if(enc===1)return new TextDecoder(b[0]===0xFE&&b[1]===0xFF?'utf-16be':'utf-16le').decode(b);
+    if(enc===2)return new TextDecoder('utf-16be').decode(b);
+  }catch(e){}
+  return '';
+}
+function parseComm(d){
+  const enc=d[0],lang=String.fromCharCode(d[1]||0,d[2]||0,d[3]||0),w=enc===1||enc===2?2:1;let q=4;
+  while(q+w<=d.length){if(d[q]===0&&(w===1||d[q+1]===0))break;q+=w}
+  return {enc,lang,desc:decStr(enc,d.subarray(4,q)).replace(/\0+$/,''),text:decStr(enc,d.subarray(Math.min(d.length,q+w))).replace(/\0+$/,'')};
+}
+const u16=s=>{const a=[0xFF,0xFE];for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a.push(c&255,c>>8)}return a};
+const latin=s=>[...s].map(c=>c.charCodeAt(0)&255);
+function tagMp3(u,{bpm,key,cam}){
+  const T=readTag(u),ver=T.ver,keep=[];let old=null;
+  for(const f of T.frames){
+    if(f.id==='TBPM'||f.id==='TKEY')continue;
+    if(f.id==='COMM'){const c=parseComm(f.data);if(c.desc==='Camelot')continue;if(c.desc===''&&!old){old=c;continue}}
+    keep.push(f);
+  }
+  let com=cam;
+  if(old&&old.text){const rest=old.text.replace(/^\d{1,2}[AB](?:\s*·\s*|\s*$)/,'').trim();if(rest)com=cam+' · '+rest}
+  const lang=old&&/^[A-Za-z]{3}$/.test(old.lang)?old.lang:'eng';
+  const add=[{id:'TBPM',data:[0,...latin(bpm)]}];
+  if(key)add.push({id:'TKEY',data:[0,...latin(key)]});
+  if(com)add.push({id:'COMM',data:[1,...latin(lang),...u16(''),0,0,...u16(com)]});
+  const parts=[];let size=0;
+  const push=(id,f1,f2,data)=>{const h=[...latin(id),...(ver===4?ssEnc(data.length):beEnc(data.length)),f1,f2];parts.push(new Uint8Array(h),data instanceof Uint8Array?data:new Uint8Array(data));size+=10+data.length};
+  for(const f of keep)push(f.id,f.f1,f.f2,f.data);
+  for(const f of add)push(f.id,0,0,f.data);
+  const head=new Uint8Array([73,68,51,ver,0,0,...ssEnc(size)]),audio=u.subarray(T.end);
+  const out=new Uint8Array(10+size+audio.length);let o=0;
+  out.set(head,0);o=10;for(const p of parts){out.set(p,o);o+=p.length}out.set(audio,o);
+  return out;
+}
+
+/* ---------- messages ---------- */
+function setMsg(text,err,act){C.msg=text||'';C.msgErr=!!err;C.msgAct=act||null}
+function renderMsg(){
+  const m=$('#crMsg');if(!m)return;m.innerHTML='';m.classList.toggle('err',C.msgErr);
+  if(!C.msg)return;const s=document.createElement('span');s.textContent=C.msg;m.appendChild(s);
+  if(C.msgAct){const b=document.createElement('button');b.type='button';b.className='btn ghost';b.textContent=C.msgAct[0];const fn=C.msgAct[1];b.onclick=()=>{setMsg('');renderMsg();fn()};m.appendChild(b)}
+}
+
+/* ---------- build ---------- */
+function build(){
+  const v=$('#crateView');
+  v.innerHTML=`
+<div class="dhead crhead">
+  <div><div class="eyebrow" data-i="crEyebrow"></div><h1 data-i="crTitle"></h1><p data-i="crSub"></p></div>
+  <div class="cracts" id="crActs">
+    <button type="button" class="btn solid" id="crFilesB">${IC.files}<span data-i="crFiles"></span></button>
+    <button type="button" class="btn" id="crFolderB">${IC.folder}<span data-i="crFolder"></span></button>
+  </div>
+</div>
+<div class="crdrop" id="crDrop">
+  <div class="crdi">${IC.drop}</div>
+  <b data-i="crDropT"></b>
+  <p class="snote" id="crDropH"></p>
+  <div class="crdb"><button type="button" class="btn solid" id="crFilesB2">${IC.files}<span data-i="crFiles"></span></button>
+    <button type="button" class="btn" id="crFolderB2">${IC.folder}<span data-i="crFolder"></span></button></div>
+  <p class="snote crhint" data-i="crPathHint"></p>
+</div>
+<div id="crMain" hidden>
+  <div class="crdeck" id="crDeck"></div>
+  <div class="crtools">
+    <input type="search" class="srch" id="crQ" data-ip="crSearch" autocomplete="off">
+    <select class="sel" id="crKey"></select>
+    <select class="sel crsortm" id="crSortM"></select>
+    <span class="crchip" id="crChip" hidden></span>
+    <button type="button" class="btn" id="crSmart">${IC.smart}<span data-i="crSmart"></span></button>
+  </div>
+  <div class="snote crmsg" id="crMsg" role="status" aria-live="polite"></div>
+  <div class="crwrap"><table class="crtab" id="crTab"><thead><tr id="crHead"></tr></thead><tbody id="crBody"></tbody></table><p class="dempty" id="crNone" hidden></p></div>
+  <p class="snote crmore" data-i="crMoreH"></p>
+  <section class="crexp" aria-labelledby="crExpH">
+    <div class="crexph"><h2 id="crExpH" data-i="crExport"></h2><span class="snote" id="crExpN"></span></div>
+    <div class="crfld"><label for="crFolderIn" data-i="crFolderL"></label>
+      <input type="text" class="srch" id="crFolderIn" aria-describedby="crFolderH" dir="ltr" spellcheck="false" autocomplete="off" data-ip="crFolderP">
+      <p class="snote" id="crFolderH" data-i="crFolderH"></p></div>
+    <div class="crxb">
+      <button type="button" class="btn" id="crCsv">${IC.dl}<span data-i="crCsv"></span></button>
+      <button type="button" class="btn" id="crXml">${IC.dl}<span data-i="crXml"></span></button>
+      <button type="button" class="btn" id="crM3u">${IC.dl}<span data-i="crM3u"></span></button>
+      <button type="button" class="btn" id="crZip">${IC.dl}<span data-i="crZip"></span></button>
+    </div>
+  </section>
+</div>
+<input type="file" id="crIn" multiple accept="${ACCEPT}">
+<input type="file" id="crDir" multiple webkitdirectory>
+<div class="crover" id="crOver" hidden><div><span>${IC.drop}</span><b data-i="crDropping"></b></div></div>`;
+  C.built=true;wire();CR.applyLang();renderAll();
+}
+function wire(){
+  const fin=$('#crIn'),din=$('#crDir');
+  ['#crFilesB','#crFilesB2'].forEach(s=>$(s).onclick=()=>fin.click());
+  ['#crFolderB','#crFolderB2'].forEach(s=>$(s).onclick=()=>din.click());
+  $('#crFolderB2').setAttribute('aria-describedby','crDropH');
+  fin.onchange=()=>fromInput(fin,false);din.onchange=()=>fromInput(din,true);
+  $('#crQ').oninput=e=>{C.q=e.target.value.trim();renderTable()};
+  $('#crKey').onchange=e=>{C.key=e.target.value;renderTable()};
+  $('#crSortM').onchange=e=>{const [k,d]=e.target.value.split(':');C.sort=k==='n'?null:{k,dir:+d};save();renderTable();renderSortM()};
+  $('#crSmart').onclick=smartOrder;
+  $('#crCsv').onclick=exportCsv;$('#crXml').onclick=exportXml;$('#crM3u').onclick=exportM3u;$('#crZip').onclick=()=>exportZip(false);
+  const fi=$('#crFolderIn');fi.value=C.folder;fi.oninput=e=>{C.folder=e.target.value;save()};
+  $('#crHead').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;
+    if(k==='n')C.sort=null;else if(!C.sort||C.sort.k!==k)C.sort={k,dir:k==='energy'||k==='lufs'?-1:1};else if(C.sort.dir===(k==='energy'||k==='lufs'?-1:1))C.sort.dir*=-1;else C.sort=null;
+    save();renderTable();renderSortM();const nb=$(`#crHead button[data-k="${k}"]`);if(nb)nb.focus()};
+  $('#crBody').onclick=e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const tr=b.closest('tr'),r=tr&&byId(tr.dataset.id);if(!r)return;act(b.dataset.act,r)};
+  $('#crDeck').onclick=e=>{const b=e.target.closest('[data-act]');if(!b)return;
+    if(b.dataset.act==='stop')stop();else if(b.dataset.act==='resume')resume();
+    else if(b.dataset.act==='clear'){
+      if(Date.now()-C.clearArm<4000){C.clearArm=0;if(C.running)stop();C.rows=[];C.sel=null;C.compat=null;setMsg('');save();renderAll();const f=$('#crFilesB2');if(f)f.focus()}
+      else{C.clearArm=Date.now();renderDeck();const nb=$('#crDeck [data-act="clear"]');if(nb)nb.focus();setTimeout(()=>{if(C.clearArm&&Date.now()-C.clearArm>=4000){C.clearArm=0;renderDeck()}},4100)}
+    }};
+}
+function act(a,r){
+  const keep=`#crBody tr[data-id="${r.id}"] [data-act="${a}"]`;
+  if(a==='sel'){C.sel=C.sel===r.id?null:r.id;save()}
+  else if(a==='compat'){C.compat=C.compat===r.id?null:r.id}
+  else if(a==='half'||a==='dbl'){if(!done(r))return;r.bpm=a==='half'?r.bpm/2:r.bpm*2;r.energy=energyOf(r);save();renderDeck()}
+  else if(a==='open'){if(r.file)CR.openFile(r.file);return}
+  else if(a==='rm'){const i=view().indexOf(r);C.rows=C.rows.filter(x=>x!==r);if(C.sel===r.id)C.sel=null;if(C.compat===r.id)C.compat=null;save();renderAll();
+    const tr=$('#crBody').children[Math.max(0,Math.min(i,$('#crBody').children.length-1))],f=tr&&tr.querySelector('[data-act="rm"]');if(f)f.focus();else{const s=$('#crFilesB2');if(s&&!$('#crDrop').hidden)s.focus()}return}
+  renderTable();const n=$(keep);if(n)n.focus();
+}
+
+/* ---------- render ---------- */
+function renderAll(){if(!C.built)return;
+  const has=C.rows.length>0;$('#crDrop').hidden=has;$('#crMain').hidden=!has;$('#crActs').hidden=!has;
+  $('#crDropH').textContent=t('crDropH',{n:MAX});
+  $('#crSmart').title=t('crSmartT');$('#crZip').title=t('crZipT');$('#crQ').setAttribute('aria-label',t('crSearch'));
+  renderDeck();renderTools();renderTable();renderExp();renderMsg();
+}
+function renderDeck(){
+  const d=$('#crDeck');if(!d)return;
+  const ok=C.rows.filter(done),bp=ok.map(r=>r.bpm),tot=ok.reduce((a,r)=>a+(r.dur||0),0);
+  const cnt={};let top=null;ok.forEach(r=>{if(!r.key)return;const c=camStr(r.key);cnt[c]=(cnt[c]||0)+1;if(!top||cnt[c]>cnt[camStr(top)])top=r.key});
+  const paused=C.rows.filter(r=>r.st==='pause'&&r.file).length;
+  const st=(k,v)=>`<div class="crst"><span class="k">${esc(t(k))}</span><span class="v mono" dir="ltr">${v}</span></div>`;
+  d.innerHTML=st('sTracks',`${ok.length}${ok.length<C.rows.length?`<small>/${C.rows.length}</small>`:''}`)+
+    st('sRange',bp.length?`${Math.round(Math.min(...bp))}–${Math.round(Math.max(...bp))}`:'—')+
+    `<div class="crst"><span class="k">${esc(t('sKeyTop'))}</span><span class="v kv"></span></div>`+
+    st('sTime',ok.length?fmtLen(tot):'—')+
+    `<div class="crprog" id="crProg"${C.running?'':' hidden'}><span class="pt mono"></span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div></div>`+
+    `<div class="crdact">${C.running?`<button type="button" class="btn" data-act="stop">${esc(t('crStop'))}</button>`:''}${!C.running&&paused?`<button type="button" class="btn" data-act="resume">${esc(t('crResume',{n:paused}))}</button>`:''}`+
+    `<button type="button" class="btn ghost${C.clearArm?' arm':''}" data-act="clear">${IC.x}<span>${esc(t(C.clearArm?'crClearSure':'crClear'))}</span></button></div>`;
+  const kv=d.querySelector('.kv');if(top)kv.appendChild(CR.keyBadge(top));else kv.textContent='—';
+  renderProg();
+}
+function renderProg(){
+  const p=$('#crProg');if(!p)return;p.hidden=!C.running;if(!C.running)return;
+  const act=C.rows.filter(r=>r.file&&r.st!=='pause'),fin=act.filter(r=>r.st==='ok'||r.st==='err').length,n=act.length;
+  const cur=C.cur&&byId(C.cur),frac=n?(fin+(cur?C.curP:0))/n:0;
+  p.querySelector('.pt').textContent=t('crProg',{i:Math.min(n,fin+1),n})+(cur?' · '+parseName(cur.name).title:'');
+  p.querySelector('i').style.width=Math.round(frac*100)+'%';p.querySelector('.bar').setAttribute('aria-valuenow',Math.round(frac*100));
+}
+function renderTools(){
+  const sel=$('#crKey'),cur=C.key;sel.innerHTML='';sel.setAttribute('aria-label',t('colKey'));
+  const o0=document.createElement('option');o0.value='';o0.textContent=t('crAllKeys');sel.appendChild(o0);
+  const have=new Set(C.rows.filter(done).map(r=>camStr(r.key)));
+  for(let n=1;n<=12;n++)for(const l of ['A','B']){const k=n+l;if(!have.has(k)&&k!==cur)continue;
+    const pc=l==='B'?CR.CAM_MAJ.indexOf(n):mod(CR.CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=k;o.textContent=`${k} · ${CR.keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
+  sel.value=cur;renderSortM();renderChip();
+}
+function renderSortM(){
+  const s=$('#crSortM');if(!s)return;s.setAttribute('aria-label',t('crSortBy'));
+  const opts=[['n:1',t('crSetOrder')],['name:1',t('colName')+' ↑'],['name:-1',t('colName')+' ↓'],['bpm:1','BPM ↑'],['bpm:-1','BPM ↓'],['key:1',t('colKey')+' ↑'],['energy:-1',t('colEnergy')+' ↓'],['energy:1',t('colEnergy')+' ↑'],['dur:1',t('colLen')+' ↑'],['lufs:-1','LUFS ↓']];
+  s.innerHTML=opts.map(([v,l])=>`<option value="${v}">${esc(t('crSortBy'))}: ${esc(l)}</option>`).join('');
+  const v=C.sort?C.sort.k+':'+C.sort.dir:'n:1';if(![...s.options].some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=t('crSortBy')+': '+(COLS.find(c=>c[0]===C.sort.k)||[])[1];s.appendChild(o)}s.value=v;
+}
+function renderChip(){
+  const c=$('#crChip'),a=C.compat&&byId(C.compat);c.hidden=!a;if(!a)return;
+  c.innerHTML=`<span></span><button type="button" class="ib" id="crChipX">${IC.x}<span>${esc(t('crShowAll'))}</span></button>`;
+  const s=c.firstChild,parts=t('crCompat').split('{name}');s.append(parts[0]);const b=document.createElement('bdi');b.textContent=parseName(a.name).title;s.append(b,parts[1]||'');
+  c.querySelector('#crChipX').onclick=()=>{C.compat=null;renderTable();const k=$(`#crBody tr[data-id="${a.id}"] [data-act="compat"]`);if(k)k.focus()};
+}
+function renderHead(){
+  const h=$('#crHead');
+  h.innerHTML=COLS.map(([k,l])=>{
+    const lab=l==='#'||l==='BPM'||l==='LUFS'?l:t(l),on=k==='n'?!C.sort:C.sort&&C.sort.k===k,dir=on&&C.sort?C.sort.dir:0;
+    const aria=SORTABLE.has(k)?` aria-sort="${k==='n'?(on?'ascending':'none'):dir>0?'ascending':dir<0?'descending':'none'}"`:'';
+    const inner=SORTABLE.has(k)?`<button type="button" data-k="${k}"${k==='energy'?` title="${esc(t('crEnergyT'))}"`:''}${k==='n'?` title="${esc(t('crSetOrder'))}"`:''}><span>${esc(lab)}</span><i class="sa" aria-hidden="true">${on&&dir?dir>0?'▲':'▼':on?'•':''}</i></button>`:`<span class="th">${esc(lab)}</span>`;
+    return `<th scope="col" class="c-${k}"${aria}>${inner}</th>`}).join('');
+}
+function rowHTML(r,i,prev){
+  const p=parseName(r.name),ok=done(r),mx=prev?mixOf(prev,r):null;
+  const sub=[p.artist,r.rel&&r.rel!==r.name?r.rel:''].filter(Boolean);
+  const mxT=mx?mx.k==='good'?t('mxGood'):mx.k==='tempo'?t('mxTempo',{p:(mx.fit*100).toFixed(1)}):t('mxBad'):'';
+  const stat=r.st==='dec'||r.st==='ana'?`<div class="rs"><span>${esc(t(r.st==='dec'?'stDec':'stAna'))}</span><span class="rp"><i style="width:${Math.round((r.p||0)*100)}%"></i></span></div>`
+    :r.st==='err'?`<span class="rs err">${esc(t(r.err||'stErr'))}</span>`
+    :r.st==='q'?`<span class="rs">${esc(t('stQ'))}</span>`:r.st==='pause'?`<span class="rs">${esc(t('stPause'))}</span>`
+    :!r.file?`<span class="rs saved" title="${esc(t('crOpenNo'))}">${esc(t('stSaved'))}</span>`:'';
+  const openB=ok?`<button type="button" class="ib op" data-act="open" ${r.file?'':'disabled'} title="${esc(r.file?t('crOpen'):t('crOpenNo'))}" aria-label="${esc(r.file?t('crOpen'):t('crOpenNo'))}">${IC.open}<span>${esc(t('crOpen'))}</span></button>`:'';
+  const nm=esc(p.title);
+  return `<tr data-id="${r.id}" class="${C.sel===r.id?'sel ':''}${C.compat===r.id?'anchor ':''}st-${r.st}">
+<td class="c-n">${mx?`<span class="mx ${mx.k}" role="img" title="${esc(mxT)}" aria-label="${esc(mxT)}">${mx.k==='good'?'':mx.k==='tempo'?'~':'×'}</span>`:''}<button type="button" class="rn mono" data-act="sel" aria-pressed="${C.sel===r.id}" title="${esc(t('crStartT'))}" aria-label="${i+1} · ${esc(t('crStartT'))}">${i+1}</button></td>
+<td class="c-name"><div class="tt" dir="auto" title="${esc(r.name)}">${nm}${C.sel===r.id?` <span class="tag">${esc(t('crStartTag'))}</span>`:''}</div>${sub.length?`<div class="ar" dir="auto">${esc(sub.join(' · '))}</div>`:''}</td>
+<td class="c-bpm"><div class="bw"><b class="mono" dir="ltr">${ok?fmtB(r.bpm):'—'}</b>${ok?`<span class="hx" dir="ltr"><button type="button" data-act="half" title="${esc(t('crHalf'))}" aria-label="${esc(t('crHalf'))} · ${nm}">½</button><button type="button" data-act="dbl" title="${esc(t('crDouble'))}" aria-label="${esc(t('crDouble'))} · ${nm}">2×</button></span>`:''}</div></td>
+<td class="c-key">${ok&&r.key?`<button type="button" class="kbb" data-act="compat" aria-pressed="${C.compat===r.id}" title="${esc(t('crCompatT'))}" aria-label="${esc(camStr(r.key)+' '+CR.keyText(r.key))} · ${esc(t('crCompatT'))}"></button>`:'<span class="mono dim">—</span>'}</td>
+<td class="c-dur" data-l="${esc(t('colLen'))}"><span class="mono" dir="ltr">${fmtLen(r.dur)}</span></td>
+<td class="c-lufs" data-l="LUFS"><span class="mono" dir="ltr">${r.lufs!=null?r.lufs.toFixed(1):'—'}</span></td>
+<td class="c-energy" data-l="${esc(t('colEnergy'))}">${r.energy?`<span class="eb" title="${esc(t('crEnergyT'))}"><span class="ebar" aria-hidden="true"><i style="width:${r.energy*10}%"></i></span><b class="mono" dir="ltr">${r.energy}</b></span>`:'<span class="mono dim">—</span>'}</td>
+<td class="c-st"><div class="sw">${stat}${openB}<button type="button" class="ib rm" data-act="rm" title="${esc(t('crRemove'))}" aria-label="${esc(t('crRemove'))} · ${nm}">${IC.x}</button></div></td></tr>`;
+}
+function renderTable(){
+  if(!C.built)return;
+  const ae=document.activeElement,foc=ae&&ae.closest&&ae.closest('#crBody tr')&&ae.dataset.act?`#crBody tr[data-id="${ae.closest('tr').dataset.id}"] [data-act="${ae.dataset.act}"]`:null;
+  renderHead();renderChip();
+  const list=view(),body=$('#crBody');
+  body.innerHTML=list.map((r,i)=>rowHTML(r,i,i?list[i-1]:null)).join('');
+  list.forEach(r=>{if(!done(r)||!r.key)return;const b=body.querySelector(`tr[data-id="${r.id}"] .kbb`);if(b)b.appendChild(CR.keyBadge(r.key))});
+  const none=$('#crNone');none.hidden=!!list.length||!C.rows.length;none.textContent=t('crNoMatch');
+  renderExp();
+  if(foc){const n=$(foc);if(n)n.focus()}
+}
+function renderRow(r){
+  const tr=$(`#crBody tr[data-id="${r.id}"]`);if(!tr){return}
+  const list=view(),i=list.indexOf(r);if(i<0)return;
+  const tmp=document.createElement('tbody');tmp.innerHTML=rowHTML(r,i,i?list[i-1]:null);const n=tmp.firstElementChild;
+  if(done(r)&&r.key){const b=n.querySelector('.kbb');if(b)b.appendChild(CR.keyBadge(r.key))}
+  tr.replaceWith(n);
+}
+function renderExp(){
+  if(!C.built)return;
+  const rows=exportRows(),n=rows.length;
+  $('#crExpN').textContent=t('crExportN',{n});
+  ['#crCsv','#crXml','#crM3u'].forEach(s=>$(s).disabled=!n);
+  $('#crZip').disabled=!rows.some(r=>r.file)||C.zipBusy;
+  const restored=C.rows.some(r=>done(r)&&!r.file);
+  let rn=$('#crRest');
+  if(restored&&!rn){rn=document.createElement('p');rn.id='crRest';rn.className='snote crrest';$('#crMain').insertBefore(rn,$('#crMain').querySelector('.crtools'))}
+  if(rn){rn.hidden=!restored;rn.textContent=t('crRestored')}
+}
+
+/* ---------- page-wide drop while the crate is open (runs before app.js' window handlers) ---------- */
+let dd=0;
+const hasFiles=e=>e.dataTransfer&&[...e.dataTransfer.types].includes('Files');
+window.addEventListener('dragenter',e=>{if(!C.visible||!hasFiles(e))return;e.stopImmediatePropagation();dd++;$('#crOver').hidden=false},true);
+window.addEventListener('dragleave',e=>{if(!C.visible||!hasFiles(e))return;e.stopImmediatePropagation();dd=Math.max(0,dd-1);if(!dd)$('#crOver').hidden=true},true);
+window.addEventListener('drop',e=>{if(!C.visible)return;e.preventDefault();e.stopImmediatePropagation();dd=0;$('#crOver').hidden=true;if(e.dataTransfer)collect(e.dataTransfer)},true);
+
+/* ---------- public ---------- */
+load();
+window.CRATE={
+  show(){if(!C.built)build();C.visible=true;renderAll()},
+  hide(){C.visible=false;dd=0;const o=$('#crOver');if(o)o.hidden=true},
+  lang(){if(C.built)renderAll()},
+  _C:C,_tagMp3:tagMp3,_parseName:parseName // for tests
+};
+CR.applyLang();
+if($('#crateView')&&!$('#crateView').hidden)CRATE.show();
+})();

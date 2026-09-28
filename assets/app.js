@@ -13,7 +13,7 @@ aiFirst:'בפעם הראשונה המודל יורד (כ־100MB), ואחר כך 
 quickDone:'הפרדה מהירה מוכנה. האיכות נמוכה מההפרדה ב־AI.',quickRun:'מפריד (מהיר)… {p}%',needAudio:'צריך קובץ שמע טעון כדי להפריד ערוצים.',canceled:'ההפרדה בוטלה.',mono:'השיר מוקלט במונו.',
 vocals:'שירה',drums:'תופים',bass:'בס',other:'שאר הכלים',karaoke:'קריוקי',
 export:'ייצוא ל־FL Studio',exportH:'הכול נארז ב־ZIP: קובץ WAV לכל ערוץ, קובצי MIDI לפסנתר, וקובץ מידע עם BPM וסולם. מניחים הכול בתחילת תיבה 1 והכול מסונכרן.',
-xInst:'אינסטרומנטלי',xOrig:'המקור',xChords:'אקורדים',xBassM:'קו בס',xMel:'מלודיה משירה',download:'הורדה כ־ZIP',packing:'אורז…',transcribing:'מתמלל תווים… {p}%',dlConfirm:'מאשרים את ההורדה בחלון שנפתח…',dlDone:'ההורדה נשלחה ({s} MB).',dlDeclined:'ההורדה בוטלה.',dlBusy:'כבר פתוח חלון הורדה.',dlFail:'ההורדה לא הצליחה. נסה שוב או בחר פחות קבצים.',dlNone:'סמן לפחות קובץ אחד.',dlUnavail:'ההורדה עובדת כשהעמוד פתוח ב־claude.ai.',needStems:'דורש הפרדה',
+xInst:'אינסטרומנטלי',xOrig:'המקור',xChords:'אקורדים',xDrumsM:'תופים (קיק, סנר, היי־האט)',xBassM:'קו בס',xMel:'מלודיה משירה',download:'הורדה כ־ZIP',packing:'אורז…',transcribing:'מתמלל תווים… {p}%',dlConfirm:'מאשרים את ההורדה בחלון שנפתח…',dlDone:'ההורדה נשלחה ({s} MB).',dlDeclined:'ההורדה בוטלה.',dlBusy:'כבר פתוח חלון הורדה.',dlFail:'ההורדה לא הצליחה. נסה שוב או בחר פחות קבצים.',dlNone:'סמן לפחות קובץ אחד.',dlUnavail:'ההורדה עובדת כשהעמוד פתוח ב־claude.ai.',needStems:'דורש הפרדה',
 chordsIn:'האקורדים בשיר',sheet:'גיליון אקורדים',sheetHint:'לחיצה על משבצת קופצת לשם',edit:'עריכת אקורדים',editing:'סיום עריכה',editHint:'לחיצה על משבצת משנה את האקורד',thisBeat:'רק הפעמה',block:'כל הקטע',noChord:'בלי',maj:'מז׳ור',min:'מינור',
 about:'על הכלי',aboutT:'הניתוח רץ כולו בדפדפן, והשיר לא נשלח לשום מקום. הזיהוי אוטומטי: אפשר לתקן גריד ואקורדים ידנית.',credits:'הפרדת ערוצים: Demucs v4 של Meta (משקלות לשימוש אישי ולא מסחרי), מורץ עם ONNX Runtime Web.',keys:'קיצורי מקלדת',
 kPlay:'נגן / עצור',kBar:'תיבה אחורה / קדימה',kCue:'קיו חם: שמירה / קפיצה (Shift מוחק)',kLoop:'לופ',kClick:'קליק מטרונום',kZoom:'זום',
@@ -27,7 +27,7 @@ aiFirst:'The first run downloads the model (about 100 MB); after that it stays i
 quickDone:'Quick separation ready. Quality is lower than the AI separation.',quickRun:'Separating (quick)… {p}%',needAudio:'Load an audio file to separate stems.',canceled:'Separation canceled.',mono:'This song is mono.',
 vocals:'Vocals',drums:'Drums',bass:'Bass',other:'Other',karaoke:'Karaoke',
 export:'Export for FL Studio',exportH:'Everything is packed in a ZIP: a WAV per stem, piano MIDI files and an info file with BPM and key. Drop it all at bar 1 and it lines up.',
-xInst:'Instrumental',xOrig:'Original',xChords:'Chords',xBassM:'Bass line',xMel:'Vocal melody',download:'Download ZIP',packing:'Packing…',transcribing:'Transcribing notes… {p}%',dlConfirm:'Confirm the download in the dialog…',dlDone:'Download sent ({s} MB).',dlDeclined:'Download canceled.',dlBusy:'A download dialog is already open.',dlFail:'The download failed. Try again or pick fewer files.',dlNone:'Select at least one file.',dlUnavail:'Downloads work when the page is open in claude.ai.',needStems:'needs stems',
+xInst:'Instrumental',xOrig:'Original',xChords:'Chords',xDrumsM:'Drums (kick, snare, hi-hat)',xBassM:'Bass line',xMel:'Vocal melody',download:'Download ZIP',packing:'Packing…',transcribing:'Transcribing notes… {p}%',dlConfirm:'Confirm the download in the dialog…',dlDone:'Download sent ({s} MB).',dlDeclined:'Download canceled.',dlBusy:'A download dialog is already open.',dlFail:'The download failed. Try again or pick fewer files.',dlNone:'Select at least one file.',dlUnavail:'Downloads work when the page is open in claude.ai.',needStems:'needs stems',
 chordsIn:'Chords in this song',sheet:'Chord sheet',sheetHint:'Click a cell to jump there',edit:'Edit chords',editing:'Done editing',editHint:'Click a cell to change its chord',thisBeat:'This beat',block:'Whole block',noChord:'None',maj:'Major',min:'Minor',
 about:'About',aboutT:'All analysis runs in your browser and the song never leaves your device. Detection is automatic; you can correct the grid and chords by hand.',credits:'Stem separation: Demucs v4 by Meta (weights for personal, non-commercial use), run with ONNX Runtime Web.',keys:'Keyboard',
 kPlay:'Play / pause',kBar:'Bar back / forward',kCue:'Hot cue: set / jump (Shift clears)',kLoop:'Loop',kClick:'Metronome click',kZoom:'Zoom',
@@ -41,7 +41,7 @@ aiFirst:'في المرة الأولى يُحمَّل النموذج (نحو 100M
 quickDone:'الفصل السريع جاهز، وجودته أقل من الفصل بالذكاء الاصطناعي.',quickRun:'جارٍ الفصل السريع… {p}%',needAudio:'حمّل ملفًا صوتيًا لفصل المسارات.',canceled:'أُلغي الفصل.',mono:'هذه الأغنية أحادية القناة.',
 vocals:'الغناء',drums:'الطبول',bass:'الباص',other:'باقي الآلات',karaoke:'كاريوكي',
 export:'تصدير إلى FL Studio',exportH:'كل شيء في ملف ZIP: ملف WAV لكل مسار، وملفات MIDI للبيانو، وملف معلومات بالإيقاع والمقام. ضعها كلها عند المازورة 1 فتتزامن.',
-xInst:'موسيقى بلا غناء',xOrig:'الأصلي',xChords:'الكوردات',xBassM:'خط الباص',xMel:'لحن الغناء',download:'تنزيل ZIP',packing:'جارٍ التجميع…',transcribing:'تدوين النوتات… {p}%',dlConfirm:'أكّد التنزيل في النافذة…',dlDone:'أُرسل التنزيل ({s} MB).',dlDeclined:'أُلغي التنزيل.',dlBusy:'نافذة تنزيل مفتوحة بالفعل.',dlFail:'فشل التنزيل. حاول مجددًا أو اختر ملفات أقل.',dlNone:'اختر ملفًا واحدًا على الأقل.',dlUnavail:'التنزيل يعمل عند فتح الصفحة في claude.ai.',needStems:'يتطلب الفصل',
+xInst:'موسيقى بلا غناء',xOrig:'الأصلي',xChords:'الكوردات',xDrumsM:'الطبول (كيك، سنير، هاي هات)',xBassM:'خط الباص',xMel:'لحن الغناء',download:'تنزيل ZIP',packing:'جارٍ التجميع…',transcribing:'تدوين النوتات… {p}%',dlConfirm:'أكّد التنزيل في النافذة…',dlDone:'أُرسل التنزيل ({s} MB).',dlDeclined:'أُلغي التنزيل.',dlBusy:'نافذة تنزيل مفتوحة بالفعل.',dlFail:'فشل التنزيل. حاول مجددًا أو اختر ملفات أقل.',dlNone:'اختر ملفًا واحدًا على الأقل.',dlUnavail:'التنزيل يعمل عند فتح الصفحة في claude.ai.',needStems:'يتطلب الفصل',
 chordsIn:'كوردات الأغنية',sheet:'ورقة الكوردات',sheetHint:'انقر على خانة للانتقال إليها',edit:'تعديل الكوردات',editing:'إنهاء التعديل',editHint:'انقر على خانة لتغيير الكورد',thisBeat:'هذه النبضة',block:'المقطع كله',noChord:'بلا',maj:'ماجور',min:'مينور',
 about:'عن الأداة',aboutT:'يجري التحليل كله داخل متصفحك ولا تغادر الأغنية جهازك. الاكتشاف تلقائي ويمكنك تصحيح الشبكة والكوردات يدويًا.',credits:'فصل المسارات: Demucs v4 من Meta (أوزان للاستخدام الشخصي غير التجاري)، يعمل عبر ONNX Runtime Web.',keys:'لوحة المفاتيح',
 kPlay:'تشغيل / إيقاف',kBar:'مازورة للخلف / للأمام',kCue:'نقطة سريعة: حفظ / انتقال (Shift للحذف)',kLoop:'تكرار',kClick:'نقرة المترونوم',kZoom:'تكبير',
@@ -55,7 +55,7 @@ aiFirst:'При первом запуске модель загружается 
 quickDone:'Быстрое разделение готово. Качество ниже, чем у AI.',quickRun:'Быстрое разделение… {p}%',needAudio:'Загрузите аудиофайл, чтобы разделить стемы.',canceled:'Разделение отменено.',mono:'Песня записана в моно.',
 vocals:'Вокал',drums:'Барабаны',bass:'Бас',other:'Остальное',karaoke:'Караоке',
 export:'Экспорт для FL Studio',exportH:'Всё в ZIP: WAV для каждого стема, MIDI-файлы для фортепиано и файл с BPM и тональностью. Поставьте всё на такт 1 — и всё совпадёт.',
-xInst:'Минус',xOrig:'Оригинал',xChords:'Аккорды',xBassM:'Басовая линия',xMel:'Мелодия вокала',download:'Скачать ZIP',packing:'Упаковка…',transcribing:'Распознавание нот… {p}%',dlConfirm:'Подтвердите загрузку в окне…',dlDone:'Загрузка отправлена ({s} МБ).',dlDeclined:'Загрузка отменена.',dlBusy:'Окно загрузки уже открыто.',dlFail:'Не удалось скачать. Повторите или выберите меньше файлов.',dlNone:'Выберите хотя бы один файл.',dlUnavail:'Скачивание работает, когда страница открыта в claude.ai.',needStems:'нужны стемы',
+xInst:'Минус',xOrig:'Оригинал',xChords:'Аккорды',xDrumsM:'Ударные (бочка, малый, хай-хэт)',xBassM:'Басовая линия',xMel:'Мелодия вокала',download:'Скачать ZIP',packing:'Упаковка…',transcribing:'Распознавание нот… {p}%',dlConfirm:'Подтвердите загрузку в окне…',dlDone:'Загрузка отправлена ({s} МБ).',dlDeclined:'Загрузка отменена.',dlBusy:'Окно загрузки уже открыто.',dlFail:'Не удалось скачать. Повторите или выберите меньше файлов.',dlNone:'Выберите хотя бы один файл.',dlUnavail:'Скачивание работает, когда страница открыта в claude.ai.',needStems:'нужны стемы',
 chordsIn:'Аккорды песни',sheet:'Аккордовая сетка',sheetHint:'Нажмите на клетку, чтобы перейти туда',edit:'Править аккорды',editing:'Готово',editHint:'Нажмите на клетку, чтобы сменить аккорд',thisBeat:'Эта доля',block:'Весь блок',noChord:'Нет',maj:'Мажор',min:'Минор',
 about:'О сервисе',aboutT:'Анализ идёт в браузере, песня не покидает устройство. Распознавание автоматическое, сетку и аккорды можно поправить вручную.',credits:'Разделение: Demucs v4 от Meta (веса для личного некоммерческого использования), через ONNX Runtime Web.',keys:'Клавиши',
 kPlay:'Пуск / пауза',kBar:'Такт назад / вперёд',kCue:'Хот-кью: задать / перейти (Shift удаляет)',kLoop:'Луп',kClick:'Метроном',kZoom:'Зум',
@@ -69,7 +69,7 @@ aiFirst:'La primera vez se descarga el modelo (unos 100 MB) y luego queda en el 
 quickDone:'Separación rápida lista. La calidad es menor que con IA.',quickRun:'Separando (rápido)… {p}%',needAudio:'Carga un archivo de audio para separar pistas.',canceled:'Separación cancelada.',mono:'La canción está en mono.',
 vocals:'Voz',drums:'Batería',bass:'Bajo',other:'Resto',karaoke:'Karaoke',
 export:'Exportar a FL Studio',exportH:'Todo va en un ZIP: un WAV por pista, archivos MIDI de piano y un archivo con BPM y tonalidad. Colócalo todo en el compás 1 y queda sincronizado.',
-xInst:'Instrumental',xOrig:'Original',xChords:'Acordes',xBassM:'Línea de bajo',xMel:'Melodía vocal',download:'Descargar ZIP',packing:'Empaquetando…',transcribing:'Transcribiendo notas… {p}%',dlConfirm:'Confirma la descarga en el cuadro…',dlDone:'Descarga enviada ({s} MB).',dlDeclined:'Descarga cancelada.',dlBusy:'Ya hay un cuadro de descarga abierto.',dlFail:'La descarga falló. Inténtalo de nuevo o elige menos archivos.',dlNone:'Elige al menos un archivo.',dlUnavail:'Las descargas funcionan con la página abierta en claude.ai.',needStems:'requiere pistas',
+xInst:'Instrumental',xOrig:'Original',xChords:'Acordes',xDrumsM:'Batería (bombo, caja, hi-hat)',xBassM:'Línea de bajo',xMel:'Melodía vocal',download:'Descargar ZIP',packing:'Empaquetando…',transcribing:'Transcribiendo notas… {p}%',dlConfirm:'Confirma la descarga en el cuadro…',dlDone:'Descarga enviada ({s} MB).',dlDeclined:'Descarga cancelada.',dlBusy:'Ya hay un cuadro de descarga abierto.',dlFail:'La descarga falló. Inténtalo de nuevo o elige menos archivos.',dlNone:'Elige al menos un archivo.',dlUnavail:'Las descargas funcionan con la página abierta en claude.ai.',needStems:'requiere pistas',
 chordsIn:'Acordes de la canción',sheet:'Hoja de acordes',sheetHint:'Haz clic en una celda para saltar allí',edit:'Editar acordes',editing:'Terminar',editHint:'Haz clic en una celda para cambiar el acorde',thisBeat:'Este tiempo',block:'Todo el bloque',noChord:'Ninguno',maj:'Mayor',min:'Menor',
 about:'Acerca de',aboutT:'Todo el análisis ocurre en tu navegador y la canción no sale de tu equipo. La detección es automática; puedes corregir la rejilla y los acordes a mano.',credits:'Separación de pistas: Demucs v4 de Meta (pesos para uso personal no comercial), con ONNX Runtime Web.',keys:'Teclado',
 kPlay:'Reproducir / pausar',kBar:'Compás atrás / adelante',kCue:'Hot cue: fijar / saltar (Shift borra)',kLoop:'Bucle',kClick:'Clic de metrónomo',kZoom:'Zoom',
@@ -317,13 +317,35 @@ es:{payWait:'Pago recibido, activando tu plan…',payDone:'¡Tu plan {p} está a
   payHaveSub:'Ya tienes una suscripción. Cambia de plan o cancela desde la página de la suscripción.',planVariant:'ID de variante (Lemon Squeezy)',payEvents:'Pagos recientes',payNone:'Aún no hay pagos.',payTestL:'prueba',payEvCol:'Evento',payResCol:'Resultado',payUserCol:'Usuario',
   lr_payment:'Pago',payRefundL:'Dinero reembolsado',payUpgradeL:'mejora'}};
 for(const k in IPAY)Object.assign(I[k],IPAY[k]);
+const IREF={
+he:{refTitle:'הזמינו חברים, קבלו נקודות',refText:'כל חבר שנרשם דרך הקישור שלך מקבל {n} נקודות מתנה, ו־{n} נקודות נכנסות גם לך.',refCopy:'העתקה',refCopied:'הועתק ✓',refShare:'שיתוף',
+  refStats:'הצטרפו דרכך {k} · הרווחת {p} נקודות',refMsg:'נסו את Chord Room: BPM, סולם, אקורדים וערוצי AI מכל שיר. נרשמים דרך הקישור ומקבלים {n} נקודות מתנה:',
+  refGot:'הצטרפת דרך הזמנה של חבר: קיבלת {n} נקודות מתנה.',lr_referral:'הזמנת חבר',refJoinedL:'הצטרפות בהזמנה',refInviterL:'חבר הצטרף',
+  billRef:'נקודות על כל הזמנה (לכל צד)',billRefMax:'תגמולים למזמין ב־30 יום (מקסימום)'},
+en:{refTitle:'Invite friends, get points',refText:'Every friend who signs up through your link gets {n} free points, and you get {n} too.',refCopy:'Copy',refCopied:'Copied ✓',refShare:'Share',
+  refStats:'{k} joined through you · you earned {p} points',refMsg:'Try Chord Room: BPM, key, chords and AI stems from any song. Sign up through this link and get {n} free points:',
+  refGot:'You joined through a friend\'s invite: {n} free points added.',lr_referral:'Friend invite',refJoinedL:'joined by invite',refInviterL:'a friend joined',
+  billRef:'Points per invite (each side)',billRefMax:'Max rewards per inviter in 30 days'},
+ar:{refTitle:'ادعُ أصدقاءك واحصل على نقاط',refText:'كل صديق يسجّل عبر رابطك يحصل على {n} نقاط مجانية، وتحصل أنت أيضًا على {n}.',refCopy:'نسخ',refCopied:'تم النسخ ✓',refShare:'مشاركة',
+  refStats:'انضم عبرك {k} · ربحت {p} نقطة',refMsg:'جرّب Chord Room: الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية. سجّل عبر هذا الرابط واحصل على {n} نقاط مجانية:',
+  refGot:'انضممت عبر دعوة صديق: أُضيفت {n} نقاط مجانية.',lr_referral:'دعوة صديق',refJoinedL:'انضمام بدعوة',refInviterL:'انضم صديق',
+  billRef:'نقاط لكل دعوة (لكل طرف)',billRefMax:'الحد الأقصى للمكافآت لكل داعٍ خلال 30 يومًا'},
+ru:{refTitle:'Пригласите друзей и получите баллы',refText:'Каждый друг, который зарегистрируется по вашей ссылке, получит {n} бесплатных баллов, и вы тоже получите {n}.',refCopy:'Копировать',refCopied:'Скопировано ✓',refShare:'Поделиться',
+  refStats:'По вашей ссылке пришли: {k} · вы заработали {p} баллов',refMsg:'Попробуйте Chord Room: темп, тональность, аккорды и AI-разделение любой песни. Регистрируйтесь по ссылке и получите {n} бесплатных баллов:',
+  refGot:'Вы пришли по приглашению друга: начислено {n} бесплатных баллов.',lr_referral:'Приглашение друга',refJoinedL:'регистрация по приглашению',refInviterL:'друг зарегистрировался',
+  billRef:'Баллы за приглашение (каждой стороне)',billRefMax:'Макс. наград одному пригласившему за 30 дней'},
+es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se registre con tu enlace recibe {n} puntos gratis, y tú también recibes {n}.',refCopy:'Copiar',refCopied:'Copiado ✓',refShare:'Compartir',
+  refStats:'{k} se unieron gracias a ti · ganaste {p} puntos',refMsg:'Prueba Chord Room: BPM, tonalidad, acordes y pistas separadas con IA de cualquier canción. Regístrate con este enlace y recibe {n} puntos gratis:',
+  refGot:'Te uniste con la invitación de un amigo: se añadieron {n} puntos gratis.',lr_referral:'Invitación de amigo',refJoinedL:'registro por invitación',refInviterL:'se unió un amigo',
+  billRef:'Puntos por invitación (cada lado)',billRefMax:'Máx. recompensas por invitador en 30 días'}};
+for(const k in IREF)Object.assign(I[k],IREF[k]);
 
 
 
 
 let LANG='he';let LANG_CHOSEN=false;
 try{const s=localStorage.getItem('chordroom.lang');if(s&&I[s]){LANG=s;LANG_CHOSEN=true}}catch(e){}
-function t(k,v){let s=(I[LANG][k]??I.en[k]??k);if(v)for(const x in v)s=s.replace('{'+x+'}',v[x]);return s}
+function t(k,v){let s=(I[LANG][k]??I.en[k]??k);if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
 function applyLang(){
   const rtl=LANG==='he'||LANG==='ar';
   document.documentElement.lang=LANG;document.documentElement.dir=rtl?'rtl':'ltr';
@@ -1044,7 +1066,7 @@ function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hi
 async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
   Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
-    edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
+    edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null,drumHits:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
   const x=await toMono(buffer);
@@ -1170,7 +1192,7 @@ async function stereo44(){
 function setStems(res,len,kind){
   const c=ac(),was=P.playing;if(was)stop();
   S.stems=STEMS.map((st,i)=>{const b=c.createBuffer(2,len,44100);b.copyToChannel(res[i*2],0);b.copyToChannel(res[i*2+1],1);return b});
-  S.stemKind=kind;S.notes=null;
+  S.stemKind=kind;S.notes=null;S.drumHits=null;
   S.stemEnv=stemEnvelopes();S.wmode='stems';buildOverview();renderStats();
   if(was)play();
 }
@@ -1307,6 +1329,60 @@ function chordMidi(){
 }
 function notesMidi(name,list,oct){const ev=[];for(const n of list){let p=n.n+S.transpose;ev.push(...note(tk(n.t),tk(n.t+n.d),Math.max(0,Math.min(127,p)),n.v))}return midiFile(name,ev)}
 
+/* ---------- drums → MIDI: kick / snare / hi-hat onsets from the drums stem, quantised to 1/16 ---------- */
+async function drumBands(sr){
+  const b=S.stems[1],oc=new OfflineAudioContext(3,Math.ceil(b.duration*sr),sr),src=oc.createBufferSource();src.buffer=b;
+  const mg=oc.createChannelMerger(3);
+  const f=(type,hz)=>{const x=oc.createBiquadFilter();x.type=type;x.frequency.value=hz;x.Q.value=0.707;return x};
+  const chain=(nodes,ch)=>{let p=src;for(const x of nodes){p.connect(x);p=x}p.connect(mg,0,ch)};
+  chain([f('lowpass',110),f('lowpass',110)],0);                       // kick
+  chain([f('highpass',200),f('highpass',200),f('lowpass',2600)],1);   // snare body + crack
+  chain([f('highpass',7000),f('highpass',7000)],2);                   // hats / cymbals
+  mg.connect(oc.destination);src.start();
+  const out=await oc.startRendering();return [0,1,2].map(c=>out.getChannelData(c));
+}
+function bandOnsets(x,sr,minGap){
+  const hop=Math.max(1,Math.round(sr*0.005)),win=hop*2,n=Math.max(0,Math.floor((x.length-win)/hop)),e=new Float32Array(n);
+  for(let fr=0;fr<n;fr++){let s=0;const o=fr*hop;for(let i=0;i<win;i++){const v=x[o+i];s+=v*v}e[fr]=Math.sqrt(s/win)}
+  let mx=0;for(const v of e)if(v>mx)mx=v;if(mx<1e-5)return {hits:[],mx:0};
+  const c=e.map(v=>Math.log1p(60*v/mx)),d=new Float32Array(n);
+  for(let i=2;i<n;i++)d[i]=Math.max(0,c[i]-c[i-2]);
+  let dm=0;for(const v of d)if(v>dm)dm=v;
+  const W=Math.round(0.12/0.005),gap=Math.max(1,Math.round(minGap/0.005)),hits=[];let sum=0;
+  for(let i=0;i<Math.min(n,W);i++)sum+=d[i];
+  for(let i=0;i<n;i++){
+    if(i+W<n)sum+=d[i+W];if(i-W-1>=0)sum-=d[i-W-1];
+    const mean=sum/(Math.min(n-1,i+W)-Math.max(0,i-W)+1);
+    if(d[i]<mean*1.6+dm*0.12)continue;
+    let ok=true;for(let k=Math.max(0,i-gap);k<=Math.min(n-1,i+gap);k++)if(d[k]>d[i]||(d[k]===d[i]&&k<i)){ok=false;break}
+    if(!ok)continue;
+    let pk=0;for(let k=i;k<Math.min(n,i+8);k++)if(e[k]>pk)pk=e[k];
+    if(pk<mx*0.06)continue;
+    hits.push({t:Math.max(0,(i-1)*hop/sr),r:pk/mx});
+  }
+  return {hits,mx};
+}
+async function drumHits(){
+  if(S.drumHits)return S.drumHits;
+  const sr=22050,[lo,mid,hi]=await drumBands(sr);await tick();
+  // keep hits that are strong for their band (p90 = level of a typical real hit), and drop bleed from the
+  // other drums: a weak snare-band hit on a kick, a weak hat-band hit on a snare
+  const band=(x,gap)=>{const h=bandOnsets(x,sr,gap).hits,r=h.map(v=>v.r).sort((a,b)=>a-b),p90=r.length?r[Math.floor(r.length*0.9)]:1;return h.filter(v=>v.r>0.3*p90).map(v=>({...v,q:v.r/p90}))};
+  const near=(list,t)=>list.some(h=>Math.abs(h.t-t)<0.03);
+  const K=band(lo,0.09);await tick();
+  const Sn=band(mid,0.09).filter(h=>!near(K,h.t)||h.q>0.65);await tick();
+  const H=band(hi,0.055).filter(h=>!near(Sn,h.t)||h.q>0.5);
+  return S.drumHits={kick:K,snare:Sn,hat:H};
+}
+function drumsMidi(h){
+  const st=60/S.bpm/4,q=t=>Math.max(0,S.offset+Math.round((t-S.offset)/st)*st),vel=r=>Math.max(30,Math.min(127,Math.round(40+87*Math.sqrt(r))));
+  const map=new Map(),len=Math.max(1,Math.round(PPQ/4)-10);
+  for(const [kind,nn] of [['kick',36],['snare',38],['hat',42]])for(const x of h[kind]){
+    const on=tk(q(x.t)),k=on+':'+nn,v=vel(x.r);if(!map.has(k)||map.get(k).v<v)map.set(k,{on,nn,v})}
+  const ev=[];for(const n of map.values())ev.push({t:n.on,o:1,b:[0x99,n.nn,n.v]},{t:n.on+len,o:0,b:[0x89,n.nn,0]});
+  return midiFile('Drums (GM)',ev);   // channel 10 = General MIDI drums (FL Studio: drop on FPC)
+}
+
 /* ---------- WAV + ZIP ---------- */
 // render one stereo track through the same tempo/key chain as playback (offline, faster than real time)
 async function fxRender(L,R,sr){
@@ -1360,8 +1436,8 @@ function infoText(){
   if(row.length)L.push(row.join(' '));
   return new TextEncoder().encode(L.filter((x,i)=>x!==''||i>7).join('\n'));
 }
-const EXP=[{id:'vocals',st:0},{id:'drums',st:1},{id:'bass',st:2},{id:'other',st:3},{id:'xInst',st:'inst'},{id:'xOrig',st:'orig'},{id:'xChords',st:'mchords',midi:1},{id:'xBassM',st:'mbass',midi:1},{id:'xMel',st:'mmel',midi:1}];
-const expSel={vocals:1,drums:1,bass:1,other:1,xInst:0,xOrig:0,xChords:1,xBassM:1,xMel:1};
+const EXP=[{id:'vocals',st:0},{id:'drums',st:1},{id:'bass',st:2},{id:'other',st:3},{id:'xInst',st:'inst'},{id:'xOrig',st:'orig'},{id:'xChords',st:'mchords',midi:1},{id:'xDrumsM',st:'mdrums',midi:1},{id:'xBassM',st:'mbass',midi:1},{id:'xMel',st:'mmel',midi:1}];
+const expSel={vocals:1,drums:1,bass:1,other:1,xInst:0,xOrig:0,xChords:1,xDrumsM:1,xBassM:1,xMel:1};
 function expOk(e){if(e.st==='mchords')return !!S.chords;if(e.st==='orig')return !!S.buffer;return !!S.stems}
 let expFmt=(()=>{try{return localStorage.getItem('chordroom.fmt')==='mp3'?'mp3':'wav'}catch(e){return 'wav'}})();
 function renderFmt(){document.querySelectorAll('[data-fmt]').forEach(b=>{const on=b.dataset.fmt===expFmt;b.classList.toggle('on',on);b.setAttribute('aria-checked',on)});renderDlCost()}
@@ -1405,6 +1481,7 @@ async function download(){
       else if(e.st==='inst'){const n=S.stems[1].length,L=new Float32Array(n),R=new Float32Array(n);for(const i of [1,2,3]){const a=S.stems[i].getChannelData(0),b=S.stems[i].getChannelData(1);for(let k=0;k<n;k++){L[k]+=a[k];R[k]+=b[k]}}files.push({name:`${safe} - Instrumental.${EXT}`,data:await W(L,R,S.stems[1].sampleRate,'Instrumental')})}
       else if(e.st==='orig'){const b=S.buffer,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;files.push({name:`${safe}.${EXT}`,data:await W(L,R,b.sampleRate)})}
       else if(e.st==='mchords')files.push({name:`${safe} - Chords (Piano).mid`,data:chordMidi()});
+      else if(e.st==='mdrums'){msg.textContent=t('transcribing',{p:0});await tick();files.push({name:`${safe} - Drums (GM).mid`,data:drumsMidi(await drumHits())})}
       else if(e.st==='mbass')files.push({name:`${safe} - Bass line (Piano).mid`,data:notesMidi('Bass line',S.notes.bass)});
       else if(e.st==='mmel')files.push({name:`${safe} - Vocal melody (Piano).mid`,data:notesMidi('Vocal melody',S.notes.mel)});
       await tick();
@@ -1465,7 +1542,7 @@ async function openLib(it){
     }catch(e){console.warn(e);busy(null)}
   }
   Object.assign(S,{name:it.name,buffer:null,dur:it.dur,wave:null,chroma:null,env:null,lowEnv:null,bpm:it.bpm,offset:it.offset,down:it.down,key:it.key,transpose:it.transpose||0,rate:it.rate||1,capo:0,demo:false,
-    stems:null,stemEnv:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null,fileMeta:null,genre:it.genre||''});
+    stems:null,stemEnv:null,stemKind:null,edited:new Set(it.edited||[]),cues:it.cues||new Array(8).fill(null),loop:null,lufs:it.lufs??null,peak:it.peak??null,notes:null,drumHits:null,fileMeta:null,genre:it.genre||''});
   buildBeats();S.chords=Int8Array.from(it.chords);renderAll();setSaveState('');
   showNotice(t('fromLib'),[[t('upload'),()=>$('#file').click()]]);
   rememberSong(null,{name:it.name,meta:it});
@@ -1734,6 +1811,55 @@ async function loadCredits(refill){
   try{if(refill)await Backend.refillCredits()}catch(e){}
   try{ACC.cred=await Backend.credits();ACC.credMissing=false}catch(e){console.warn(e);if(missingDb(e))ACC.credMissing=true}
   renderCredits();payReturn();
+  if(refill){await claimRef();loadRef()}
+}
+/* ---------- invite a friend (referrals: my_referral / claim_referral in schema.sql) ---------- */
+const REF_K='chordroom.ref';
+// ?ref=<code> in the link → remember it until this browser signs in (the new account claims it once)
+(()=>{try{const u=new URL(location.href),c=(u.searchParams.get('ref')||'').trim().toLowerCase();if(!u.searchParams.has('ref'))return;
+  if(/^[a-z0-9]{6,12}$/.test(c))localStorage.setItem(REF_K,JSON.stringify({c,t:Date.now()}));
+  u.searchParams.delete('ref');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}})();
+const REF={me:null,for:null};
+const refPts=()=>{const n=parseInt(BILL().referral,10);return isFinite(n)&&n>=0?n:10};
+const refLink=code=>`${location.origin}${location.pathname.replace(/index\.html$/,'')}?ref=${code}`;
+async function claimRef(){
+  if(!ACC.user||!Backend.claimReferral)return;
+  let s=null;try{s=JSON.parse(localStorage.getItem(REF_K)||'null')}catch(e){}
+  if(!s||!s.c)return;
+  const drop=()=>{try{localStorage.removeItem(REF_K)}catch(e){}};
+  if(Date.now()-(+s.t||0)>14*864e5){drop();return}
+  try{const r=await Backend.claimReferral(s.c);drop();
+    if(r&&r.ok){if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance;renderCredits();if(r.points>0)toast(t('refGot',{n:r.points}))}}
+  catch(e){console.warn(e)}   // keep the code: the SQL may not be installed yet, try again on the next sign-in
+}
+// pages.js re-renders the pricing page on its own (language, theme…) → put the invite card back
+try{new MutationObserver(()=>{if(!$('#refCard')&&REF.me)renderRef()}).observe($('#pricingView'),{childList:true})}catch(e){}
+async function loadRef(){
+  if(!ACC.user||!Backend.myReferral)return;const uid=ACC.user.id;
+  try{const r=await Backend.myReferral();if(ACC.user&&ACC.user.id===uid){REF.me=r;REF.for=uid}}catch(e){if(!missingDb(e))console.warn(e)}
+  renderRef();
+}
+function refHTML(id){return `<div class="refbox" id="${id}"><div class="refh"><b></b><span class="refpill mono" dir="ltr"></span></div><p class="snote"></p>
+  <div class="refrow"><input type="text" readonly dir="ltr" class="refurl"><button type="button" class="btn solid refcopy"></button></div>
+  <div class="refrow2"><a class="btn ghost refwa" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/></svg><span>WhatsApp</span></a><button type="button" class="btn ghost refsh"></button><span class="snote refst"></span></div></div>`}
+function fillRef(el){
+  const me=REF.me,n=refPts(),url=refLink(me.code),msg=t('refMsg',{n});
+  el.querySelector('.refh b').textContent=t('refTitle');el.querySelector('.refpill').textContent='+'+n;
+  el.querySelector('p').textContent=t('refText',{n});
+  const inp=el.querySelector('.refurl');inp.value=url;inp.setAttribute('aria-label',t('refTitle'));inp.onfocus=()=>inp.select();
+  const cp=el.querySelector('.refcopy');cp.textContent=t('refCopy');
+  cp.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(e){inp.focus();inp.select();try{ok=document.execCommand('copy')}catch(x){}}
+    if(ok){cp.textContent=t('refCopied');clearTimeout(cp._t);cp._t=setTimeout(()=>{cp.textContent=t('refCopy')},2000)}};
+  el.querySelector('.refwa').href='https://wa.me/?text='+encodeURIComponent(msg+' '+url);
+  const sh=el.querySelector('.refsh');sh.hidden=!navigator.share;sh.textContent=t('refShare');sh.onclick=()=>navigator.share({title:'Chord Room',text:msg,url}).catch(()=>{});
+  el.querySelector('.refst').textContent=me.invited?t('refStats',{k:me.invited,p:me.earned||0}):'';
+}
+function renderRef(){
+  const on=!!(ACC.user&&REF.me&&REF.me.code&&REF.for===ACC.user.id&&billingOn()&&refPts()>0);
+  const box=$('#ptsBox');
+  if(box){let el=$('#refBox');if(!el&&on){box.querySelector('details').insertAdjacentHTML('beforebegin',refHTML('refBox'));el=$('#refBox')}if(el){el.hidden=!on;if(on)fillRef(el)}}
+  const pv=$('#pricingView');
+  if(pv&&!pv.hidden){let el=$('#refCard');if(!el&&on){const at=pv.querySelector('.pg-plans');(at||pv).insertAdjacentHTML(at?'afterend':'beforeend',`<div class="refcard">${refHTML('refCard')}</div>`);el=$('#refCard')}if(el){el.parentElement.hidden=!on;if(on)fillRef(el)}}
 }
 function planName(id){return t('plan_'+id)!=='plan_'+id?t('plan_'+id):id}
 function renderCredits(){
@@ -1742,6 +1868,7 @@ function renderCredits(){
   const box=$('#ptsBox');if(box){box.hidden=!show;if(show){$('#ptsN').textContent=c.credits||0;
     $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}
     renderPayLine(show?c:null)}
+  renderRef();
   const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(costOf('sep')):''}
   renderDlCost();
   if(!$('#pricingView').hidden)renderPricingPage();
@@ -1781,6 +1908,7 @@ function ledgerRef(r){
   if(!r.ref||r.reason==='refund')return '';
   if(r.reason==='payment'){const m=/^ls:(rf:)?(sub|inv|up):\S*\s*(\S*)\s*(upgrade)?/.exec(r.ref),test=/\(test\)\s*$/.test(r.ref)?' (test)':'';
     return m?(m[1]?t('payRefundL'):planName(m[3])+(m[4]?` · ${t('payUpgradeL')}`:''))+test:r.ref}
+  if(r.reason==='referral')return /^ref:inviter:/.test(r.ref)?t('refInviterL'):t('refJoinedL');
   const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);return m?t('lk_'+m[1])+(m[2]?` · ${m[2]}`:''):r.ref;
 }
 async function renderLedger(ul,rows){
@@ -1794,7 +1922,7 @@ $('#ptsPlans').onclick=()=>{$('#acc').hidden=true;showView('pricing')};
 $('#ptsBox').querySelector('details').addEventListener('toggle',async e=>{if(e.target.open){try{renderLedger($('#ptsLog'),await Backend.ledger(30))}catch(x){}}});
 function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null,
   portal:portalUrl(c),payStatus:c.pay_status||null,renews:c.pay_renews||null}}
-function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState())}
+function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState());renderRef()}
 function renderAboutPage(){if(window.PAGES)PAGES.renderAbout($('#aboutView'),BILL())}
 function hookPages(){
   if(!window.PAGES||PAGES.__hooked)return;PAGES.__hooked=true;
@@ -1864,7 +1992,7 @@ $('#udPlanBtn').onclick=()=>busyBtn($('#udPlanBtn'),async()=>{const m=ACC.admUse
   try{await Backend.adminSetPlan(m.id,$('#udPlan').value,+$('#udMonths').value);setMsg($('#udCredMsg'),t('planDone'));if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
 $('#udCred details').addEventListener('toggle',async e=>{if(e.target.open&&ACC.admUser){try{renderLedger($('#udLog'),await Backend.adminLedger(ACC.admUser.id,50))}catch(x){}}});
 function fillBilling(){
-  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;
+  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;$('#bRef').value=refPts();$('#bRefMax').value=(()=>{const n=parseInt(b.referral_max,10);return isFinite(n)&&n>=0?n:20})();
   $('#bPlans').innerHTML=b.plans.map((p,i)=>`<div class="bplan" data-i="${i}"><b>${esc(planName(p.id))}</b>
     <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
     <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
@@ -1895,7 +2023,8 @@ $('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
     const v=f('variant').trim();
     return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(v?{variant:v}:{}),...(el.querySelector('.best input').checked?{best:true}:{})}});
   const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),
-    costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans};
+    costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans,
+    referral:Math.min(1000,Math.max(0,parseInt($('#bRef').value,10)||0)),referral_max:Math.max(0,parseInt($('#bRefMax').value,10)||0)};
   const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
   const badV=plans.find(p=>p.variant&&!/^\d{1,12}$/.test(p.variant));if(badV){setMsg($('#bMsg'),t('planVariant')+': 0-9',true);return}
   try{const c={...ACC.config,billing};await Backend.saveConfig(c);ACC.config=c;applyConfig();setMsg($('#bMsg'),t('saved'))}catch(e){setMsg($('#bMsg'),t('saveFail'),true)}});
@@ -2167,7 +2296,7 @@ function renderMix(){
 $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
-const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout']};
+const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout']};
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
   for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=k!==v;$(nav).classList.toggle('on',k===v)}
@@ -2176,6 +2305,7 @@ function showView(v,anchor){
   if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
   else{stopPreview();if(v==='tool')requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(window.DJ)j?DJ.show():DJ.hide();
+  if(window.CRATE)v==='crate'?CRATE.show():CRATE.hide();
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
   try{history.replaceState(null,'',v==='tool'?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
@@ -2197,6 +2327,7 @@ $('#dBpmMax').oninput=e=>{DC.bpmMax=e.target.value;renderList()};
 $('#navDisc').onclick=()=>showView('discover');
 $('#navTool').onclick=()=>showView('tool');
 $('#navDj').onclick=()=>showView('dj');
+$('#navCrate').onclick=()=>showView('crate');
 $('#navPricing').onclick=()=>showView('pricing');
 $('#navAbout').onclick=()=>showView('about');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
@@ -2282,7 +2413,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -2346,10 +2477,11 @@ const endDrag=()=>{if(!drag)return;zm.classList.remove('drag');const w=drag.was;
 zm.addEventListener('pointerup',endDrag);zm.addEventListener('pointercancel',endDrag);
 zm.addEventListener('wheel',e=>{if(!S.dur)return;e.preventDefault();if(Math.abs(e.deltaY)>Math.abs(e.deltaX))zoom(e.deltaY>0?1:-1);else seek(now()+e.deltaX/400*S.win)},{passive:false});
 let dd=0;
-window.addEventListener('dragenter',e=>{if($('#djView')&&!$('#djView').hidden)return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
+const otherDrop=()=>['#djView','#crateView'].some(q=>$(q)&&!$(q).hidden);
+window.addEventListener('dragenter',e=>{if(otherDrop())return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
 window.addEventListener('dragleave',()=>{dd=Math.max(0,dd-1);if(!dd)$('#drop').hidden=true});
 window.addEventListener('dragover',e=>e.preventDefault());
-window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;if($('#djView')&&!$('#djView').hidden)return;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
+window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;if(otherDrop())return;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{sizeCanvases();renderMixer()},120)});
 
 /* ---------- theme (light / dark) ---------- */
@@ -2368,7 +2500,8 @@ window.CR={
   signedIn:()=>!!(ACC.on&&ACC.user),
   songFileUrl:p=>Backend.songFileUrl(p),
   toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur}:null,
-  stopTool:()=>{if(P.playing)stop();stopPreview()}
+  stopTool:()=>{if(P.playing)stop();stopPreview()},
+  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName
 };
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();

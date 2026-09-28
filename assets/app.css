@@ -714,3 +714,22 @@ html[dir="rtl"] .lib,html[dir="rtl"] .acc,html[dir="rtl"] .mix{animation-name:cr
   :root:is(.a11y-t130,.a11y-t150) .stat{border-inline-start:0!important;border-top:1px solid var(--line2)}
   :root:is(.a11y-t130,.a11y-t150) .stat:first-child{border-top:0}
 }
+
+/* invite a friend (points box in the account panel + card under the pricing page) */
+.refbox{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line2)}
+.refbox[hidden],.refcard[hidden]{display:none}
+.refh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.refh b{font-size:15px;font-weight:600}
+.refpill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;color:#fff;background:var(--acc-grad)}
+.refbox>p{margin:4px 0 10px}
+.refrow{display:flex;gap:8px}
+.refurl{flex:1;min-width:0;font:13px/1.2 "IBM Plex Mono",ui-monospace,monospace;padding:9px 10px;border:1px solid var(--line2);border-radius:var(--r-sm,8px);background:var(--paper);color:inherit}
+.refrow2{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.refrow2 .btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.refrow2 .ic{width:16px;height:16px}
+.refrow2 .refst{margin-inline-start:auto}
+.refcard{max-width:720px;margin:28px auto 8px;padding:18px 18px 16px;border:1px solid var(--line2);border-radius:var(--r-md);position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(47,140,255,.07),rgba(182,109,255,.07) 50%,rgba(255,122,26,.07)),var(--paper)}
+.refcard::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--acc-grad)}
+.refcard .refbox{margin:0;padding:0;border:0}
+.refcard .refh b{font-size:18px}

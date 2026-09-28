@@ -133,6 +133,17 @@
       if (error) throw error;
       return data;
     },
+    // invite a friend: my code + stats ({code, invited, earned}); claim = the new user joined through a code
+    async myReferral() {
+      const { data, error } = await sb.rpc('my_referral');
+      if (error) throw error;
+      return data;
+    },
+    async claimReferral(code) {
+      const { data, error } = await sb.rpc('claim_referral', { p_code: String(code || '').slice(0, 20) });
+      if (error) throw error;
+      return data || { ok: false };
+    },
     async ledger(limit = 30) {
       const { data, error } = await sb.from('credit_ledger').select('id,delta,balance,reason,ref,created_at').eq('user_id', B.user.id).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
       if (error) throw error;

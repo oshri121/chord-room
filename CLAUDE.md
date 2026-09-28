@@ -56,6 +56,19 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `profiles.pay_*` (status/portal/renews/plan…) are webhook-only. `refill_credits` skips live subscriptions (points only
   from payments) but still expires `plan_until` (= renews_at + 3 days). Return URL `?paid=1#pricing` polls `loadCredits`
   (`payReturn`). `admin_set_plan` still works for manual plans. Local SQL tests: signed bodies via python HMAC.
+- Crate (`#crateView`, hash `#crate`, nav "ניתוח ספרייה"): `assets/crate.js/css` (strings inside), talks only through `window.CR`.
+  Batch BPM/key/Camelot/LUFS/energy for many files (sequential `CR.analyzeTrack`), sortable/filterable table, smart set order,
+  exports CSV / rekordbox XML (Location from the folder path the user types, TEMPO beatgrid) / M3U8 / renamed-copies ZIP with ID3 TBPM+TKEY.
+  Results (not audio) persist in localStorage `chordroom.crate.v1`.
+- Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
+  item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
+- Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,
+  quantised to 1/16), GM channel 10 (36/38/42). Tested on synthetic drums (`drumHits`, `drumsMidi`).
+- Invite a friend: `?ref=<code>` is stored in localStorage `chordroom.ref`; after sign-in `claim_referral(code)` (once, within 3 days
+  of signup; both sides get `billing.referral` points, inviter capped by `billing.referral_max` per 30 days). `my_referral()` gives the
+  code + stats; the invite box sits in the points box and under the plans on the pricing page (`renderRef`).
+- Discover "Israeli": Top Israel chart + an Israeli-hits playlist, filtered to Israeli artists (`israeliFilter`: Hebrew text,
+  artists learned from Hebrew tracks, `IL_ARTISTS` list).
 - Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from
   `A11Y.statementHTML`). Header + mobile drawer: `assets/shell.js/css` (nav tabs keep their `data-i` on an inner span).
   Animated background: `assets/bg.js` (`BG.pulse(level)` from the players). Accessibility plugin: `assets/a11y.js/css`
