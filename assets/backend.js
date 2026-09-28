@@ -104,6 +104,28 @@
     },
     async bumpSeps() { await sb.rpc('bump_seps'); },
 
+    // points (credits) and plans: balances change only inside Postgres (supabase/schema.sql)
+    async credits() {
+      const { data, error } = await sb.from('profiles').select('credits,plan,plan_until,last_refill').eq('id', B.user.id).maybeSingle();
+      if (error) throw error;
+      return data || { credits: 0, plan: 'free', plan_until: null, last_refill: null };
+    },
+    async refillCredits() {
+      const { data, error } = await sb.rpc('refill_credits');
+      if (error) throw error;
+      return data;
+    },
+    async spendCredits(amount, reason, ref) {
+      const { data, error } = await sb.rpc('spend_credits', { p_amount: amount, p_reason: reason || '', p_ref: ref == null ? null : String(ref).slice(0, 300) });
+      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      return data;
+    },
+    async ledger(limit = 30) {
+      const { data, error } = await sb.from('credit_ledger').select('id,delta,balance,reason,ref,created_at').eq('user_id', B.user.id).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
+      if (error) throw error;
+      return data;
+    },
+
     async listSongs() {
       const { data, error } = await sb.from('songs').select('name,data,updated_at,file_path,file_size,file_type,genre').eq('user_id', B.user.id).order('updated_at', { ascending: false });
       if (error) throw error;
@@ -161,6 +183,7 @@
     },
     async saveConfig(c) {
       const row = { id: 1, title: c.title, announce: c.announce, lang: c.lang, ai: c.ai, dl: c.dl, require_login: c.require_login, allow_signup: c.allow_signup, updated_at: new Date().toISOString() };
+      if (c.billing !== undefined && c.billing !== null) row.billing = c.billing;
       const { error } = await sb.from('site_config').upsert(row);
       if (error) throw error;
     },
@@ -197,7 +220,23 @@
       return data;
     },
     async adminSetRole(id, role) { const { error } = await sb.rpc('admin_set_role', { target: id, new_role: role }); if (error) throw error; },
-    async adminSetBlocked(id, blocked) { const { error } = await sb.rpc('admin_set_blocked', { target: id, is_blocked: blocked }); if (error) throw error; }
+    async adminSetBlocked(id, blocked) { const { error } = await sb.rpc('admin_set_blocked', { target: id, is_blocked: blocked }); if (error) throw error; },
+    async adminGrantCredits(id, amount, note) {
+      const { data, error } = await sb.rpc('admin_grant_credits', { target: id, p_amount: amount, p_note: note || null });
+      if (error) throw error;
+      return data;
+    },
+    async adminSetPlan(id, plan, months) {
+      const { error } = await sb.rpc('admin_set_plan', { target: id, p_plan: plan, p_months: months || 1 });
+      if (error) throw error;
+    },
+    async adminLedger(userId, limit = 50) {
+      let q = sb.from('credit_ledger').select('id,user_id,delta,balance,reason,ref,created_at').order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
+      if (userId) q = q.eq('user_id', userId);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    }
   };
 
   window.Backend = window.__MOCK_BACKEND || B;

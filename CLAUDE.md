@@ -38,6 +38,18 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   start, bass swap, crossfader), recording to 16-bit WAV via an AudioWorklet, match score (Camelot + tempo) with advice,
   next-song picks from My Songs (cloud files) and the Discover catalog (30 s previews). Hardware labels stay English.
   Verified sync by panning A/B hard left/right and cross-correlating a recording: ≤1 ms offset.
+- Points & plans: `profiles.credits/plan/plan_until/last_refill`, `credit_ledger`, `site_config.billing` (costs, signup gift,
+  plans with price/points/payment link). Changed ONLY by security-definer RPCs: `spend_credits` (error `insufficient_credits`),
+  `refill_credits` (lazy monthly refill, called on sign-in), `admin_grant_credits`, `admin_set_plan`. In app.js
+  (`/* ---------- points & plans ---------- */`): `payFor(kind)` checks before, `charge(kind,ref)` spends — separation is
+  charged after it succeeds, stems once per song on download (`S.stemsPaid`). Admins and `billing.on=false` are free.
+  No payment provider yet: plan "Subscribe" opens the plan's payment link; the admin activates plans from user details.
+  Separation runs in the browser, so the gate is honest-user level; the ledger is authoritative.
+- Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from
+  `A11Y.statementHTML`). Header + mobile drawer: `assets/shell.js/css` (nav tabs keep their `data-i` on an inner span).
+  Animated background: `assets/bg.js` (`BG.pulse(level)` from the players). Accessibility plugin: `assets/a11y.js/css`
+  (`A11Y.get('mono'|'cb'|'noanim'|'flash')`, `A11Y.beat()`, `A11Y.waveColor`; owner must fill the CONTACT object).
+  MP3 320: `assets/mp3.js` + `assets/mp3-worker.js` + `vendor/lamejs-1.2.7.min.js` (LGPL — keep it a separate, unmodified file).
 - Theme: `data-theme` on <html> (light/dark, saved in localStorage; no attribute = follow the system). Colours come
   from CSS tokens; the dark block redefines them. Use `currentColor`/tokens, never hard-coded light colours.
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.

@@ -246,6 +246,54 @@ ru:{tempoDown:'Медленнее (Shift: 0.1)',tempoUp:'Быстрее (Shift: 
 es:{tempoDown:'Más lento (Shift: 0.1)',tempoUp:'Más rápido (Shift: 0.1)',bpmEdit:'Escribe un BPM nuevo y la canción sonará a ese tempo',keyDown:'Bajar la tonalidad un semitono',keyUp:'Subir la tonalidad un semitono',origL:'Original',resetL:'Volver al original',
   fxFail:'No se pudo cargar el motor de tempo y tonalidad en este navegador.',fxRender:'Procesando tempo y tonalidad, archivo {n} de {m}…',transposeH:'Cambia la tonalidad de la canción, tanto el audio como los acordes'}};
 for(const k in IT)Object.assign(I[k],IT[k]);
+// points, plans, pages, MP3
+const IP={
+he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',creditsBal:'יתרת נקודות',seePlans:'מסלולים ומחירים',creditsHist:'היסטוריית נקודות',creditsTitle:'נקודות ומסלול',creditsCol:'נקודות',
+  grantNote:'הערה (לא חובה)',grantBtn:'הוספה / הורדה של נקודות',setPlanBtn:'הפעלת מסלול',grantDone:'עודכן. יתרה: {b}',planDone:'המסלול עודכן.',months:'חודשים',
+  billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. קישור תשלום = עמוד התשלום של חברת הסליקה; אחרי תשלום מפעילים את המסלול למשתמש מהפרטים שלו.',
+  billingOn:'שיטת הנקודות פעילה (כבוי = הכול בחינם)',billSignup:'מתנת הרשמה (נקודות)',billContact:'יצירת קשר לתשלום (מייל או קישור)',billSep:'עלות הפרדת ערוצים',billStems:'עלות הורדת סטמים',
+  planPrice:'מחיר לחודש',planPoints:'נקודות לחודש',planLink:'קישור תשלום',planBest:'מומלץ',plan_free:'חינמי',plan_basic:'בסיסי',plan_pro:'מקצועי',plan_studio:'סטודיו',
+  needSignIn:'כדי להשתמש בזה צריך להתחבר. נרשמים בחינם ומקבלים {n} נקודות מתנה.',noPoints:'אין מספיק נקודות: הפעולה עולה {n} ויש לך {b}.',charged:'ירדו {n} נקודות. נשארו {b}.',
+  dlCostNote:'הורדת הסטמים עולה {n} נקודות (פעם אחת לשיר)',chargeFail:'לא הצלחנו לחייב נקודות. נסה שוב.',subNoLink:'כדי להצטרף למסלול כתבו לנו: {c}',subSoon:'ההצטרפות למסלולים תיפתח בקרוב.',
+  planUntil:'בתוקף עד {d}',planFreeL:'מסלול חינמי',lr_signup:'מתנת הרשמה',lr_spend:'שימוש',lr_grant:'עדכון ידני',lr_refill:'חידוש חודשי',lr_plan:'הפעלת מסלול',lr_refund:'החזר',
+  fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.'},
+en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
+  grantNote:'Note (optional)',grantBtn:'Add / remove points',setPlanBtn:'Activate plan',grantDone:'Updated. Balance: {b}',planDone:'Plan updated.',months:'months',
+  billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = your payment provider\'s checkout page; after payment, activate the plan from the user\'s details.',
+  billingOn:'Points system on (off = everything is free)',billSignup:'Signup gift (points)',billContact:'Billing contact (email or link)',billSep:'Stem separation cost',billStems:'Stems download cost',
+  planPrice:'Price per month',planPoints:'Points per month',planLink:'Payment link',planBest:'Recommended',plan_free:'Free',plan_basic:'Basic',plan_pro:'Pro',plan_studio:'Studio',
+  needSignIn:'Sign in to use this. Signing up is free and you get {n} points as a gift.',noPoints:'Not enough points: this costs {n} and you have {b}.',charged:'{n} points used. {b} left.',
+  dlCostNote:'Downloading the stems costs {n} points (once per song)',chargeFail:'Couldn\'t charge points. Try again.',subNoLink:'To join a plan, write to us: {c}',subSoon:'Plans open for sign-up soon.',
+  planUntil:'Valid until {d}',planFreeL:'Free plan',lr_signup:'Signup gift',lr_spend:'Used',lr_grant:'Manual update',lr_refill:'Monthly refill',lr_plan:'Plan activated',lr_refund:'Refund',
+  fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.'},
+ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
+  grantNote:'ملاحظة (اختياري)',grantBtn:'إضافة / خصم نقاط',setPlanBtn:'تفعيل الخطة',grantDone:'تم التحديث. الرصيد: {b}',planDone:'تم تحديث الخطة.',months:'أشهر',
+  billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = صفحة الدفع لدى مزوّد الدفع؛ بعد الدفع فعّل الخطة من تفاصيل المستخدم.',
+  billingOn:'نظام النقاط مفعّل (إيقاف = كل شيء مجاني)',billSignup:'هدية التسجيل (نقاط)',billContact:'جهة اتصال للدفع (بريد أو رابط)',billSep:'تكلفة فصل المسارات',billStems:'تكلفة تنزيل المسارات',
+  planPrice:'السعر الشهري',planPoints:'نقاط شهريًا',planLink:'رابط الدفع',planBest:'موصى بها',plan_free:'مجانية',plan_basic:'أساسية',plan_pro:'احترافية',plan_studio:'استوديو',
+  needSignIn:'سجّل الدخول لاستخدام هذه الميزة. التسجيل مجاني وتحصل على {n} نقطة هدية.',noPoints:'النقاط غير كافية: العملية تكلف {n} ولديك {b}.',charged:'تم خصم {n} نقاط. المتبقي {b}.',
+  dlCostNote:'تنزيل المسارات يكلف {n} نقاط (مرة واحدة لكل أغنية)',chargeFail:'تعذّر خصم النقاط. حاول مجددًا.',subNoLink:'للاشتراك في خطة راسلنا: {c}',subSoon:'سيُفتح الاشتراك في الخطط قريبًا.',
+  planUntil:'سارية حتى {d}',planFreeL:'الخطة المجانية',lr_signup:'هدية التسجيل',lr_spend:'استخدام',lr_grant:'تحديث يدوي',lr_refill:'تجديد شهري',lr_plan:'تفعيل خطة',lr_refund:'استرداد',
+  fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.'},
+ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
+  grantNote:'Заметка (необязательно)',grantBtn:'Начислить / списать баллы',setPlanBtn:'Включить тариф',grantDone:'Готово. Баланс: {b}',planDone:'Тариф обновлён.',months:'мес.',
+  billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = страница оплаты вашего платёжного сервиса; после оплаты включите тариф в карточке пользователя.',
+  billingOn:'Система баллов включена (выкл. = всё бесплатно)',billSignup:'Подарок при регистрации (баллы)',billContact:'Контакт по оплате (email или ссылка)',billSep:'Цена разделения на дорожки',billStems:'Цена скачивания дорожек',
+  planPrice:'Цена в месяц',planPoints:'Баллов в месяц',planLink:'Ссылка на оплату',planBest:'Рекомендуем',plan_free:'Бесплатный',plan_basic:'Базовый',plan_pro:'Про',plan_studio:'Студия',
+  needSignIn:'Войдите, чтобы пользоваться этим. Регистрация бесплатна, и вы получите {n} баллов в подарок.',noPoints:'Недостаточно баллов: действие стоит {n}, у вас {b}.',charged:'Списано {n} баллов. Осталось {b}.',
+  dlCostNote:'Скачивание дорожек стоит {n} баллов (один раз на песню)',chargeFail:'Не удалось списать баллы. Попробуйте ещё раз.',subNoLink:'Чтобы подключить тариф, напишите нам: {c}',subSoon:'Подключение тарифов скоро откроется.',
+  planUntil:'Действует до {d}',planFreeL:'Бесплатный тариф',lr_signup:'Подарок за регистрацию',lr_spend:'Использовано',lr_grant:'Ручное изменение',lr_refill:'Ежемесячное пополнение',lr_plan:'Тариф включён',lr_refund:'Возврат',
+  fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.'},
+es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
+  grantNote:'Nota (opcional)',grantBtn:'Sumar / restar puntos',setPlanBtn:'Activar plan',grantDone:'Actualizado. Saldo: {b}',planDone:'Plan actualizado.',months:'meses',
+  billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = la página de pago de tu proveedor; tras el pago, activa el plan desde los detalles del usuario.',
+  billingOn:'Sistema de puntos activo (apagado = todo gratis)',billSignup:'Regalo de registro (puntos)',billContact:'Contacto de pagos (email o enlace)',billSep:'Coste de separar pistas',billStems:'Coste de descargar pistas',
+  planPrice:'Precio al mes',planPoints:'Puntos al mes',planLink:'Enlace de pago',planBest:'Recomendado',plan_free:'Gratis',plan_basic:'Básico',plan_pro:'Pro',plan_studio:'Estudio',
+  needSignIn:'Inicia sesión para usar esto. Registrarte es gratis y recibes {n} puntos de regalo.',noPoints:'No tienes puntos suficientes: esto cuesta {n} y tienes {b}.',charged:'Se usaron {n} puntos. Quedan {b}.',
+  dlCostNote:'Descargar las pistas cuesta {n} puntos (una vez por canción)',chargeFail:'No se pudieron cobrar los puntos. Inténtalo de nuevo.',subNoLink:'Para unirte a un plan, escríbenos: {c}',subSoon:'Los planes se abrirán pronto.',
+  planUntil:'Válido hasta {d}',planFreeL:'Plan gratis',lr_signup:'Regalo de registro',lr_spend:'Uso',lr_grant:'Ajuste manual',lr_refill:'Recarga mensual',lr_plan:'Plan activado',lr_refund:'Reembolso',
+  fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.'}};
+for(const k in IP)Object.assign(I[k],IP[k]);
 
 
 
@@ -633,7 +681,7 @@ function drawWave(g,cols,cy,amp){
     g.fillStyle='rgba(255,255,255,.55)';g.beginPath();for(const c of cols){const h=Math.max(.5,c[1]*amp*.45);g.rect(c[0],cy-h,1,2*h)}g.fill();return;
   }
   const col=S.wave.col;
-  for(const c of cols){const h=Math.max(.5,c[1]*amp),j=c[5]*3;g.fillStyle=`rgb(${col[j]},${col[j+1]},${col[j+2]})`;g.fillRect(c[0],cy-h,1,2*h)}
+  for(const c of cols){const h=Math.max(.5,c[1]*amp),j=c[5]*3;g.fillStyle=wcol(col[j],col[j+1],col[j+2]);g.fillRect(c[0],cy-h,1,2*h)}
   g.fillStyle='rgba(255,255,255,.22)';g.beginPath();for(const c of cols){const h=Math.max(.3,c[1]*amp*.38);g.rect(c[0],cy-h,1,2*h)}g.fill();
 }
 function buildOverview(){
@@ -699,7 +747,11 @@ function drawZoom(tm){
 
 /* ---------- audio engine ---------- */
 let actx=null;const P={srcs:[],gains:[],playing:false,startCtx:0,startPos:0,pos:0,loop:null,rate:1,fx:false};
-const ac=()=>actx||(actx=new (window.AudioContext||window.webkitAudioContext)());
+const ac=()=>{if(!actx){actx=new (window.AudioContext||window.webkitAudioContext)();applyMono()}return actx};
+// accessibility: "mono audio" folds L/R together for listeners who hear with one ear
+function applyMono(){if(!actx)return;const m=!!(window.A11Y&&A11Y.get('mono'));try{actx.destination.channelCount=m?1:Math.min(2,actx.destination.maxChannelCount||2);actx.destination.channelInterpretation='speakers'}catch(e){}}
+// colour-blind-safe waveform colours when the accessibility plugin asks for them
+const wcol=(r,g,b)=>window.A11Y&&A11Y.get('cb')==='safe'&&A11Y.waveColor?A11Y.waveColor(r,g,b):`rgb(${r},${g},${b})`;
 const MIX=STEMS.map(()=>({vol:1,mute:false,solo:false}));
 function stemGain(i){const any=MIX.some(m=>m.solo),m=MIX[i];return any?(m.solo?m.vol:0):(m.mute?0:m.vol)}
 let ovPending=false;
@@ -884,6 +936,7 @@ let lastBeat=-2,lastBar=null;
 function beatAt(tm){if(!S.beats.length)return -1;const T=60/S.bpm;const b=Math.floor((tm-S.beats[0])/T+1e-6);return b<0?-1:Math.min(b,S.beats.length-1)}
 function updateNow(tm){
   const b=beatAt(tm);if(b===lastBeat)return;
+  if(P.playing&&b>=0){const bar=mod(b-S.down,4)===0;if(window.A11Y)A11Y.beat(bar);if(window.BG)BG.pulse(bar?0.75:0.4)}
   if(cells[lastBeat])cells[lastBeat].classList.remove('on');lastBeat=b;if(cells[b])cells[b].classList.add('on');
   const bar=bars[b]||null;
   if(bar!==lastBar){if(lastBar)lastBar.classList.remove('cur');if(bar){bar.classList.add('cur');const sh=$('#sheet');const top=bar.offsetTop;if(top<sh.scrollTop+10||top>sh.scrollTop+sh.clientHeight-bar.offsetHeight-10)sh.scrollTop=Math.max(0,top-sh.clientHeight/3)}lastBar=bar}
@@ -967,7 +1020,7 @@ function showNotice(text,actions){
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
 async function analyze(buffer,name,demo,nosave){
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -1111,6 +1164,7 @@ function stemEnvelopes(){
 const fmtEta=s=>s>=90?Math.round(s/60)+' '+t('min_'):Math.max(5,Math.round(s/5)*5)+' '+t('sec_');
 async function aiSeparate(){
   if(!S.buffer||AI.busy)return;
+  if(!(await payFor('sep')))return;
   AI.busy=true;const job=++AI.job;renderStemsUI();
   const token=S.buffer;
   try{
@@ -1140,7 +1194,7 @@ async function aiSeparate(){
       AI.w.postMessage({type:'run',L,R},[L.buffer,R.buffer]);
     });
     if(job!==AI.job||S.buffer!==token)return;
-    setStems(res,len,'ai');sepEnd(null);bumpSeps();
+    setStems(res,len,'ai');sepEnd(null);bumpSeps();charge('sep',S.name);S.stemsPaid=false;
   }catch(e){
     console.error(e);if(job!==AI.job)return;
     if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
@@ -1284,12 +1338,16 @@ function infoText(){
 const EXP=[{id:'vocals',st:0},{id:'drums',st:1},{id:'bass',st:2},{id:'other',st:3},{id:'xInst',st:'inst'},{id:'xOrig',st:'orig'},{id:'xChords',st:'mchords',midi:1},{id:'xBassM',st:'mbass',midi:1},{id:'xMel',st:'mmel',midi:1}];
 const expSel={vocals:1,drums:1,bass:1,other:1,xInst:0,xOrig:0,xChords:1,xBassM:1,xMel:1};
 function expOk(e){if(e.st==='mchords')return !!S.chords;if(e.st==='orig')return !!S.buffer;return !!S.stems}
+let expFmt=(()=>{try{return localStorage.getItem('chordroom.fmt')==='mp3'?'mp3':'wav'}catch(e){return 'wav'}})();
+function renderFmt(){document.querySelectorAll('[data-fmt]').forEach(b=>{const on=b.dataset.fmt===expFmt;b.classList.toggle('on',on);b.setAttribute('aria-checked',on)});renderDlCost()}
+document.querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{expFmt=b.dataset.fmt;try{localStorage.setItem('chordroom.fmt',expFmt)}catch(e){}renderFmt();renderExport()});
 function renderExport(){
   const box=$('#xlist');box.innerHTML='';
   EXP.forEach(e=>{const ok=expOk(e),l=document.createElement('label');if(!ok)l.className='dis';
-    l.innerHTML=`<input type="checkbox" id="x-${e.id}" ${expSel[e.id]&&ok?'checked':''} ${ok?'':'disabled'}><span></span><span class="ext">${e.midi?'MIDI':'WAV'}</span>`;
+    l.innerHTML=`<input type="checkbox" id="x-${e.id}" ${expSel[e.id]&&ok?'checked':''} ${ok?'':'disabled'}><span></span><span class="ext">${e.midi?'MIDI':expFmt==='mp3'?'MP3':'WAV'}</span>`;
     l.querySelector('span').textContent=t(e.id)+(ok?'':` · ${t('needStems')}`);
-    l.querySelector('input').onchange=ev=>{expSel[e.id]=ev.target.checked?1:0};box.appendChild(l)});
+    l.querySelector('input').onchange=ev=>{expSel[e.id]=ev.target.checked?1:0;renderDlCost()};box.appendChild(l)});
+  renderDlCost();
 }
 function saveBlob(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
 async function download(){
@@ -1302,13 +1360,25 @@ async function download(){
     const fx=fxOn(),tag=fx?` (${fmtBpm(Math.round(ebpm()*100)/100)} BPM${S.key?' '+keyName(mod(S.key.pc+S.transpose,12),S.key.mode,true):''})`:'';
     const safe=((S.name||'song').replace(/[\\/:*?"<>|]/g,'_').slice(0,80)+tag).replace(/[\\/:*?"<>|]/g,'_'),files=[];
     const wavs=pick.filter(e=>!e.midi).length;let wi=0;
-    const W=async(L,R,sr)=>{if(!fx)return wav(L,R,sr);msg.textContent=t('fxRender',{n:++wi,m:wavs});await tick();const [a,b]=await fxRender(L,R,sr);return wav(a,b,sr)};
+    const mp3=expFmt==='mp3'&&window.MP3&&MP3.supported,EXT=mp3?'mp3':'wav';
+    const W=async(L,R,sr,part)=>{
+      let a=L,b=R;if(fx){msg.textContent=t('fxRender',{n:++wi,m:wavs});await tick();[a,b]=await fxRender(L,R,sr)}
+      if(!mp3)return wav(a,b,sr);
+      const kp=S.key?mod(S.key.pc+S.transpose,12):null;
+      return MP3.encode(a,b,sr,{kbps:320,tags:{title:part?`${S.name} (${part})`:S.name,artist:'Chord Room',bpm:S.bpm?ebpm():undefined,key:kp!=null?keyName(kp,S.key.mode,true):undefined},
+        onProgress:p=>{msg.textContent=t('encoding',{p:Math.round(p*100)})}});
+    };
+    if(pick.some(e=>typeof e.st==='number'||e.st==='inst')&&!S.stemsPaid){
+      if(!(await payFor('stems')))return;
+      if(!(await charge('stems',S.name)))return;
+      S.stemsPaid=true;renderDlCost();
+    }
     if(pick.some(e=>e.st==='mbass'||e.st==='mmel'))await transcribe(p=>{msg.textContent=t('transcribing',{p:Math.round(p*100)})});
     msg.textContent=t('packing');await tick();
     for(const e of pick){
-      if(typeof e.st==='number'){const b=S.stems[e.st];files.push({name:`${safe} - ${STEMS[e.st].file}.wav`,data:await W(b.getChannelData(0),b.getChannelData(1),b.sampleRate)})}
-      else if(e.st==='inst'){const n=S.stems[1].length,L=new Float32Array(n),R=new Float32Array(n);for(const i of [1,2,3]){const a=S.stems[i].getChannelData(0),b=S.stems[i].getChannelData(1);for(let k=0;k<n;k++){L[k]+=a[k];R[k]+=b[k]}}files.push({name:`${safe} - Instrumental.wav`,data:await W(L,R,S.stems[1].sampleRate)})}
-      else if(e.st==='orig'){const b=S.buffer,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;files.push({name:`${safe}.wav`,data:await W(L,R,b.sampleRate)})}
+      if(typeof e.st==='number'){const b=S.stems[e.st];files.push({name:`${safe} - ${STEMS[e.st].file}.${EXT}`,data:await W(b.getChannelData(0),b.getChannelData(1),b.sampleRate,STEMS[e.st].file)})}
+      else if(e.st==='inst'){const n=S.stems[1].length,L=new Float32Array(n),R=new Float32Array(n);for(const i of [1,2,3]){const a=S.stems[i].getChannelData(0),b=S.stems[i].getChannelData(1);for(let k=0;k<n;k++){L[k]+=a[k];R[k]+=b[k]}}files.push({name:`${safe} - Instrumental.${EXT}`,data:await W(L,R,S.stems[1].sampleRate,'Instrumental')})}
+      else if(e.st==='orig'){const b=S.buffer,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;files.push({name:`${safe}.${EXT}`,data:await W(L,R,b.sampleRate)})}
       else if(e.st==='mchords')files.push({name:`${safe} - Chords (Piano).mid`,data:chordMidi()});
       else if(e.st==='mbass')files.push({name:`${safe} - Bass line (Piano).mid`,data:notesMidi('Bass line',S.notes.bass)});
       else if(e.st==='mmel')files.push({name:`${safe} - Vocal melody (Piano).mid`,data:notesMidi('Vocal melody',S.notes.mel)});
@@ -1319,7 +1389,7 @@ async function download(){
     saveBlob(blob,`${safe} - Chord Room.zip`);
     if(ACC.on&&ACC.user)Backend.logDownload({song_name:S.name,files:pick.map(e=>e.id),size:blob.size}).catch(()=>{});
     msg.textContent=t('dlDone',{s:(blob.size/1048576).toFixed(1)});
-  }catch(err){const c=err&&err.code;msg.textContent=c==='declined'?t('dlDeclined'):c==='rate_limited'?t('dlBusy'):t('dlFail');msg.classList.add('err');console.error(err)}
+  }catch(err){const c=err&&err.code;msg.textContent=c==='declined'?t('dlDeclined'):c==='rate_limited'?t('dlBusy'):expFmt==='mp3'?t('mp3Fail'):t('dlFail');msg.classList.add('err');console.error(err)}
   finally{btn.disabled=false}
 }
 
@@ -1395,7 +1465,7 @@ async function initAccount(){
   await Backend.init(async(event,user)=>{
     if(event==='PASSWORD_RECOVERY'){openDlg('reset');}
     const changed=(user&&user.id)!==(ACC.user&&ACC.user.id);ACC.user=user;
-    if(!user){ACC.profile=null;ACC.admin=false;ACC.lib=null;renderAccount();applyConfig();if(changed)renderLib();return}
+    if(!user){ACC.profile=null;ACC.admin=false;ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
     if(changed||event==='USER_UPDATED'||event==='INITIAL'){await loadProfile(true);loadCloudLib()}
   });
 }
@@ -1403,7 +1473,7 @@ async function loadProfile(touch){
   try{ACC.profile=await Backend.getProfile()}catch(e){ACC.profile=null}
   ACC.admin=!!(ACC.profile&&ACC.profile.role==='admin'&&!ACC.profile.blocked);
   if(touch&&ACC.profile){Backend.touch().catch(()=>{});const pl=ACC.profile.lang;if(pl&&!LANG_CHOSEN&&pl!==LANG)setLang(pl,false)}
-  renderAccount();applyConfig();
+  renderAccount();applyConfig();loadCredits(touch);
 }
 function myName(){const p=ACC.profile||{};return p.display_name||p.username||(ACC.user&&ACC.user.email)||'—'}
 function renderAccount(){
@@ -1491,10 +1561,10 @@ function applyConfig(){
   if(c.lang&&I[c.lang]&&!LANG_CHOSEN&&!(ACC.profile&&ACC.profile.lang)&&c.lang!==LANG)setLang(c.lang,false);
   $('#blocked').hidden=!(ACC.profile&&ACC.profile.blocked);
   $('#gate').hidden=!(ACC.on&&c.require_login&&!ACC.user);
-  renderStemsUI();
+  renderStemsUI();renderCredits();
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
-$('#adminBtn').onclick=()=>{fillSettings();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadUsers()};
+$('#adminBtn').onclick=()=>{fillSettings();fillBilling();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadUsers()};
 $('#adminClose').onclick=()=>$('#admin').hidden=true;
 function fillSettings(){const c=ACC.config||{};$('#cTitle').value=c.title||'';$('#cAnn').value=c.announce||'';$('#cLang').value=c.lang||'he';$('#cAi').checked=c.ai!==false;$('#cDl').checked=c.dl!==false;$('#cReq').checked=!!c.require_login;$('#cSign').checked=c.allow_signup!==false;setMsg($('#cMsg'),'')}
 $('#cSave').onclick=()=>busyBtn($('#cSave'),async()=>{
@@ -1515,17 +1585,17 @@ function renderAdmin(){
   $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
   document.querySelectorAll('#admTabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===ACC.admView&&!ACC.admUser));
   $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;
-  const setSec=$('#cTitle').closest('.asec');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView==='songs';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  const setSec=$('#cTitle').closest('.asec');const bSec=$('#bOn');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView==='songs';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
   if(ACC.admUser){renderAdminUser();return}
   if(ACC.admView==='songs'){renderAdminSongs();return}
   const dlc={};for(const d of dl)dlc[d.user_id]=(dlc[d.user_id]||0)+1;
   const q=$('#uSearch').value.trim().toLowerCase();
   const rows=M.filter(m=>!q||[m.username,m.display_name,m.email].some(x=>String(x||'').toLowerCase().includes(q)));
   const body=$('#uBody');body.innerHTML='';
-  if(!rows.length){body.innerHTML=`<tr><td colspan="9" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
+  if(!rows.length){body.innerHTML=`<tr><td colspan="10" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
   rows.forEach(m=>{
     const tr=document.createElement('tr'),isMe=ACC.user&&m.id===ACC.user.id,adm=m.role==='admin';
-    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${adm?'adm':''}">${esc(adm?t('roleAdmin'):t('roleUser'))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
+    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${adm?'adm':''}">${esc(adm?t('roleAdmin'):t('roleUser'))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td class="mono">${m.credits??0}${m.plan&&m.plan!=='free'?` · ${esc(planName(m.plan))}`:''}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
     tr.querySelector('img').src=avatarFor(m);
     tr.querySelector('.t').textContent=(m.display_name||m.username||'—')+(isMe?` (${t('you')})`:'');
     tr.querySelector('.e').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
@@ -1573,7 +1643,10 @@ function renderAdminUser(){
   $('#udImg').src=avatarFor(m);$('#udName').textContent=m.display_name||m.username||'—';
   $('#udMeta').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
   const facts=[[t('role'),m.role==='admin'?t('roleAdmin'):t('roleUser')],[t('joined'),fmtDate(m.created_at)],[t('lastSeen'),fmtDate(m.last_seen)],[t('uploads'),String(songs.length)],[t('downloadsL'),String(dls.length)],[t('seps'),String(m.seps||0)],[t('colStatus'),m.blocked?t('blockedS'):t('active')]];
+  facts.push([t('creditsCol'),String(m.credits??0)],[t('seePlans'),m.plan&&m.plan!=='free'?`${planName(m.plan)} · ${t('planUntil',{d:fmtDate(m.plan_until)})}`:t('planFreeL')]);
   $('#udFacts').innerHTML=facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
+  const ps=$('#udPlan');ps.innerHTML=['free',...BILL().plans.map(p=>p.id)].map(id=>`<option value="${esc(id)}">${esc(planName(id))}</option>`).join('');ps.value=m.plan||'free';
+  [...$('#udMonths').options].forEach(o=>o.textContent=`${o.value} ${t('months')}`);
   $('#udBio').textContent=m.bio||'';$('#udBio').hidden=!m.bio;
   const tb=$('#udSongs');tb.innerHTML=songRows(songs,false);wireSongRows(tb,songs);
   $('#udDls').innerHTML=dls.length?dls.map(d=>`<tr><td class="sn2"></td><td class="mono">${Array.isArray(d.files)?d.files.length:0}</td><td class="mono">${mbCell(d.size)}</td><td>${esc(fmtDate(d.created_at))}</td></tr>`).join(''):`<tr><td colspan="4" class="snote">${esc(t('noDownloads'))}</td></tr>`;
@@ -1618,6 +1691,101 @@ async function loadCloudLib(){
 }
 async function cloudSave(item){if(!ACC.user||ACC.lib===null)return;try{await Backend.saveSong(item);ACC.lib=[item,...ACC.lib.filter(x=>x.name!==item.name)];loadProfile(false)}catch(e){console.warn(e)}}
 async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await Backend.deleteSong(name);ACC.lib=ACC.lib.filter(x=>x.name!==name);loadProfile(false)}catch(e){console.warn(e)}}
+/* ---------- points & plans ---------- */
+const DEF_BILL={on:true,signup:20,costs:{sep:5,stems:2},currency:'ILS',contact:'',plans:[{id:'basic',price:29,points:60,link:''},{id:'pro',price:59,points:150,link:'',best:true},{id:'studio',price:99,points:400,link:''}]};
+function BILL(){const b=(ACC.config&&ACC.config.billing)||{};return {...DEF_BILL,...b,costs:{...DEF_BILL.costs,...(b.costs||{})},plans:Array.isArray(b.plans)&&b.plans.length?b.plans:DEF_BILL.plans}}
+// the points tables/functions not installed yet in Supabase → behave as before (free) instead of blocking everyone
+const missingDb=e=>/does not exist|could not find|schema cache|PGRST20[0-9]|42703|42883/i.test(String((e&&(e.code||''))+' '+(e&&e.message||e)));
+const billingOn=()=>ACC.on&&BILL().on!==false&&!ACC.credMissing;
+const costOf=k=>+BILL().costs[k]||0;
+ACC.cred=null;
+async function loadCredits(refill){
+  if(!ACC.on||!ACC.user){ACC.cred=null;renderCredits();return}
+  try{if(refill)await Backend.refillCredits()}catch(e){}
+  try{ACC.cred=await Backend.credits();ACC.credMissing=false}catch(e){console.warn(e);if(missingDb(e))ACC.credMissing=true}
+  renderCredits();
+}
+function planName(id){return t('plan_'+id)!=='plan_'+id?t('plan_'+id):id}
+function renderCredits(){
+  const c=ACC.cred,show=!!(ACC.user&&c&&billingOn());
+  const chip=$('#creditsChip');if(chip){chip.hidden=!show;if(show){$('#creditsN').textContent=(c.credits||0).toLocaleString('en-US');chip.title=t('creditsBal')}}
+  const box=$('#ptsBox');if(box){box.hidden=!show;if(show){$('#ptsN').textContent=c.credits||0;
+    $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}}
+  const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(costOf('sep')):''}
+  renderDlCost();
+  if(!$('#pricingView').hidden)renderPricingPage();
+}
+function renderDlCost(){
+  const el=$('#dlCost');if(!el)return;
+  const stems=EXP.some(e=>expSel[e.id]&&expOk(e)&&(typeof e.st==='number'||e.st==='inst'));
+  const on=billingOn()&&!ACC.admin&&stems&&!S.stemsPaid;el.hidden=!on;if(on)el.textContent=t('dlCostNote',{n:costOf('stems')});
+}
+function toast(msg,actions){
+  const el=$('#toast');el.innerHTML='';const sp=document.createElement('span');sp.textContent=msg;el.append(sp);
+  for(const [label,fn] of actions||[]){const b=document.createElement('button');b.type='button';b.className='btn ghost';b.textContent=label;b.onclick=()=>{el.hidden=true;fn()};el.append(b)}
+  el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{el.hidden=true},7000);
+}
+// may this user do a paid action right now? (the server checks again when charging)
+async function payFor(kind){
+  if(!billingOn()||ACC.admin)return true;
+  if(!ACC.user){toast(t('needSignIn',{n:BILL().signup}),[[t('signIn'),()=>openDlg('up')]]);return false}
+  if(!ACC.cred)await loadCredits(false);
+  const need=costOf(kind),have=ACC.cred?ACC.cred.credits||0:0;
+  if(have<need){toast(t('noPoints',{n:need,b:have}),[[t('seePlans'),()=>showView('pricing')]]);return false}
+  return true;
+}
+async function charge(kind,ref){
+  if(!billingOn()||ACC.admin||!ACC.user)return true;
+  const n=costOf(kind);
+  try{const b=await Backend.spendCredits(n,kind,String(ref||'').slice(0,200));if(ACC.cred)ACC.cred.credits=b;renderCredits();toast(t('charged',{n,b}));return true}
+  catch(e){if(missingDb(e)){ACC.credMissing=true;renderCredits();return true}if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
+}
+async function renderLedger(ul,rows){
+  ul.innerHTML='';if(!rows||!rows.length){ul.innerHTML=`<li class="snote">${esc(t('noLedger'))}</li>`;return}
+  for(const r of rows){const li=document.createElement('li');li.innerHTML=`<span class="lr"></span><span class="lt snote"></span><b class="mono" dir="ltr"></b>`;
+    li.querySelector('.lr').textContent=t('lr_'+r.reason)+(r.ref?` · ${r.ref}`:'');li.querySelector('.lt').textContent=fmtDate(r.created_at);
+    const d=li.querySelector('b');d.textContent=(r.delta>0?'+':'')+r.delta;d.classList.toggle('neg',r.delta<0);ul.appendChild(li)}
+}
+$('#creditsChip').onclick=()=>showView('pricing');
+$('#ptsPlans').onclick=()=>{$('#acc').hidden=true;showView('pricing')};
+$('#ptsBox').querySelector('details').addEventListener('toggle',async e=>{if(e.target.open){try{renderLedger($('#ptsLog'),await Backend.ledger(30))}catch(x){}}});
+function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null}}
+function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState())}
+function renderAboutPage(){if(window.PAGES)PAGES.renderAbout($('#aboutView'),BILL())}
+if(window.PAGES){
+  PAGES.onNav=v=>showView(v);
+  PAGES.onSignup=()=>{if(ACC.on)openDlg('up')};
+  PAGES.onSubscribe=id=>{
+    const b=BILL(),p=b.plans.find(x=>x.id===id);
+    if(p&&/^https:\/\//.test(p.link||'')){window.open(p.link,'_blank','noopener');return}
+    const c=(b.contact||'').trim();
+    if(c){toast(t('subNoLink',{c}),[[/^https?:/.test(c)?c.replace(/^https?:\/\//,'').slice(0,40):c,()=>{location.href=/@/.test(c)&&!/^https?:/.test(c)?'mailto:'+c:c}]]);return}
+    toast(t('subSoon'));
+  };
+}
+async function refreshAdmUser(){const m=ACC.admUser;if(!m)return;try{const u=(await Backend.adminUsers()).find(x=>x.id===m.id);if(u){Object.assign(m,u);ACC.users=ACC.users.map(x=>x.id===m.id?m:x)}}catch(e){}renderAdminUser();
+  if($('#udCred details').open){try{renderLedger($('#udLog'),await Backend.adminLedger(m.id,50))}catch(e){}}}
+$('#udGrant').onclick=()=>busyBtn($('#udGrant'),async()=>{const m=ACC.admUser,n=parseInt($('#udPts').value,10);if(!m||!n)return;
+  try{const b=await Backend.adminGrantCredits(m.id,n,$('#udNote').value.trim());setMsg($('#udCredMsg'),t('grantDone',{b}));$('#udNote').value='';if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
+$('#udPlanBtn').onclick=()=>busyBtn($('#udPlanBtn'),async()=>{const m=ACC.admUser;if(!m)return;
+  try{await Backend.adminSetPlan(m.id,$('#udPlan').value,+$('#udMonths').value);setMsg($('#udCredMsg'),t('planDone'));if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
+$('#udCred details').addEventListener('toggle',async e=>{if(e.target.open&&ACC.admUser){try{renderLedger($('#udLog'),await Backend.adminLedger(ACC.admUser.id,50))}catch(x){}}});
+function fillBilling(){
+  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;
+  $('#bPlans').innerHTML=b.plans.map((p,i)=>`<div class="bplan" data-i="${i}"><b>${esc(planName(p.id))}</b>
+    <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
+    <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
+    <label class="wide"><span>${esc(t('planLink'))}</span><input type="url" dir="ltr" data-f="link" placeholder="https://" value="${esc(p.link||'')}"></label>
+    <label class="best"><input type="radio" name="bBest" ${p.best?'checked':''}><span>${esc(t('planBest'))}</span></label></div>`).join('');
+  setMsg($('#bMsg'),'');
+}
+$('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
+  const b=BILL(),plans=[...document.querySelectorAll('#bPlans .bplan')].map((el,i)=>{const p=b.plans[i],f=k=>el.querySelector(`[data-f="${k}"]`).value;
+    return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(el.querySelector('.best input').checked?{best:true}:{})}});
+  const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),
+    costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans};
+  const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
+  try{const c={...ACC.config,billing};await Backend.saveConfig(c);ACC.config=c;applyConfig();setMsg($('#bMsg'),t('saved'))}catch(e){setMsg($('#bMsg'),t('saveFail'),true)}});
 function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).catch(()=>{})}
 
 /* ---------- discover: trending songs, catalog, DJ mix matches ---------- */
@@ -1856,15 +2024,20 @@ function renderMix(){
 $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
-function showView(v){
-  const d=v==='discover',j=v==='dj';$('#discover').hidden=!d;$('#toolView').hidden=d||j;$('#djView').hidden=!j;
-  $('#navDisc').classList.toggle('on',d);$('#navDj').classList.toggle('on',j);$('#navTool').classList.toggle('on',!d&&!j);
-  if(d||j){if(P.playing)stop()}
+const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout']};
+function showView(v,anchor){
+  if(!VIEWS[v])v='tool';
+  for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=k!==v;$(nav).classList.toggle('on',k===v)}
+  const d=v==='discover',j=v==='dj';
+  if(v!=='tool'&&P.playing)stop();
   if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
-  else{stopPreview();if(!j)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  else{stopPreview();if(v==='tool')requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(window.DJ)j?DJ.show():DJ.hide();
-  try{history.replaceState(null,'',d?'#discover':j?'#dj':location.pathname+location.search)}catch(e){}
-  window.scrollTo(0,0);
+  if(v==='pricing')renderPricingPage();
+  if(v==='about')renderAboutPage();
+  try{history.replaceState(null,'',v==='tool'?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
+  const tgt=anchor&&document.getElementById(anchor);
+  if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
 }
 function renderDiscControls(){
   const tabs=[['trend','dTrend'],['new','dNew'],['played','dPlayed'],['recent','dRecent']];
@@ -1881,9 +2054,12 @@ $('#dBpmMax').oninput=e=>{DC.bpmMax=e.target.value;renderList()};
 $('#navDisc').onclick=()=>showView('discover');
 $('#navTool').onclick=()=>showView('tool');
 $('#navDj').onclick=()=>showView('dj');
+$('#navPricing').onclick=()=>showView('pricing');
+$('#navAbout').onclick=()=>showView('about');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
-const viewOfHash=()=>location.hash==='#discover'?'discover':location.hash==='#dj'?'dj':'tool';
-window.addEventListener('hashchange',()=>showView(viewOfHash()));
+const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'about':VIEWS[h]?h:'tool'};
+const routeHash=()=>{const h=location.hash.slice(1);showView(viewOfHash(),h==='about-a11y'?h:null)};
+window.addEventListener('hashchange',routeHash);
 
 /* ---------- events ---------- */
 async function loadFile(file){
@@ -1924,7 +2100,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(window.DJ)DJ.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -2000,10 +2176,11 @@ function resolvedTheme(){const t=document.documentElement.dataset.theme;return t
 function applyTheme(){const r=resolvedTheme();document.documentElement.dataset.themeResolved=r;$('#themeBtn').title=r==='dark'?t('themeLight'):t('themeDark');$('#themeBtn').setAttribute('aria-label',$('#themeBtn').title)}
 $('#themeBtn').onclick=()=>{const next=resolvedTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('chordroom.theme',next)}catch(e){}applyTheme();renderChips();lastBeat=-2;dirty=true};
 if(mqDark&&mqDark.addEventListener)mqDark.addEventListener('change',()=>{applyTheme();dirty=true});
+document.addEventListener('a11y-change',()=>{applyMono();buildOverview();dirty=true;if(window.DJ&&DJ.redraw)DJ.redraw()});
 /* ---------- bridge for the DJ view (assets/dj.js) ---------- */
 window.CR={
   t,$,esc,tick,mod,ac,applyLang,getLang:()=>LANG,addStrings:tb=>{for(const k in tb)Object.assign(I[k],tb[k])},
-  analyzeTrack,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,
+  analyzeTrack,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,wcol,
   camelot,camOf,camRel,bpmFit,camColor,keyText,keyBadge,CAM_MAJ,HC_COL,SHARP,FLAT,FLAT_MAJ,
   readLib,libItem:name=>readLib().find(x=>x.name===name)||null,ACC,DC,dz,freshPreview,rowFromCatalog,
   signedIn:()=>!!(ACC.on&&ACC.user),
@@ -2012,7 +2189,7 @@ window.CR={
   stopTool:()=>{if(P.playing)stop();stopPreview()}
 };
 /* ---------- boot ---------- */
-applyTheme();applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
-if(location.hash==='#discover'||location.hash==='#dj')showView(viewOfHash());
+applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
+if(location.hash.length>1)routeHash();
 (async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

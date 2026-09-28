@@ -827,7 +827,7 @@ function buildTiles(d,lh){
   const w=d.track.wave,tiles=[];
   for(let x0=0;x0<w.len;x0+=TILE){
     const tw=Math.min(TILE,w.len-x0),cv=document.createElement('canvas');cv.width=tw;cv.height=lh;const g=cv.getContext('2d'),cy=lh/2,amp=lh/2*0.94;
-    for(let x=0;x<tw;x++){const j=x0+x,h=Math.max(0.5,w.amp[j]*amp),k=j*3;g.fillStyle=`rgb(${w.col[k]},${w.col[k+1]},${w.col[k+2]})`;g.fillRect(x,cy-h,1,2*h)}
+    for(let x=0;x<tw;x++){const j=x0+x,h=Math.max(0.5,w.amp[j]*amp),k=j*3;g.fillStyle=CR.wcol(w.col[k],w.col[k+1],w.col[k+2]);g.fillRect(x,cy-h,1,2*h)}
     g.fillStyle='rgba(255,255,255,.28)';g.beginPath();for(let x=0;x<tw;x++){const h=Math.max(0.3,w.amp[x0+x]*amp*0.36);g.rect(x,cy-h,1,2*h)}g.fill();
     tiles.push({x0,cv});
   }
@@ -876,7 +876,7 @@ function drawOv(d){
   const cv=deckEl(d)&&deckEl(d).querySelector('.dkov');if(!cv||!cv.width)return;const g=cv.getContext('2d'),W=cv.width,H=cv.height;
   if(!d.track){g.fillStyle='#0d0d10';g.fillRect(0,0,W,H);return}
   if(!d.ovc||d.ovc.width!==W){const o=document.createElement('canvas');o.width=W;o.height=H;const og=o.getContext('2d'),w=d.track.wave;og.fillStyle='#0d0d10';og.fillRect(0,0,W,H);
-    for(let x=0;x<W;x++){const i0=Math.floor(x/W*w.len),i1=Math.max(i0+1,Math.floor((x+1)/W*w.len)),s=CR.sliceRange(w,i0,Math.min(i1,w.len)),hh=Math.max(0.5,s[0]*H/2*0.92),k=s[4]*3;og.fillStyle=`rgb(${w.col[k]},${w.col[k+1]},${w.col[k+2]})`;og.fillRect(x,H/2-hh,1,2*hh)}
+    for(let x=0;x<W;x++){const i0=Math.floor(x/W*w.len),i1=Math.max(i0+1,Math.floor((x+1)/W*w.len)),s=CR.sliceRange(w,i0,Math.min(i1,w.len)),hh=Math.max(0.5,s[0]*H/2*0.92),k=s[4]*3;og.fillStyle=CR.wcol(w.col[k],w.col[k+1],w.col[k+2]);og.fillRect(x,H/2-hh,1,2*hh)}
     d.ovc=o}
   g.drawImage(d.ovc,0,0);const h=heard(d),px=h/d.track.dur*W;
   g.fillStyle='rgba(0,0,0,.55)';g.fillRect(0,0,px,H);
@@ -913,7 +913,7 @@ function frame(){
         const h=heard(d);
         if(!d.loop&&srcAt(d,c.currentTime)>=d.track.dur-0.01){stopDeck(d);d.pos=d.track.dur;renderDeck(d)}
         if(d.waitUntil&&c.currentTime>=d.waitUntil){d.waitUntil=0;renderDeck(d)}
-        const b=Math.floor(beatF(d,h));if(b!==d.lastBeat&&h>=first(d)&&c.currentTime-D.lat>=(d.segs[0]?d.segs[0].t0:0)){d.lastBeat=b;const bar=mod(b-d.track.down,4)===0;el.classList.remove('bt','bar');void el.offsetWidth;el.classList.add(bar?'bar':'bt')}
+        const b=Math.floor(beatF(d,h));if(b!==d.lastBeat&&h>=first(d)&&c.currentTime-D.lat>=(d.segs[0]?d.segs[0].t0:0)){d.lastBeat=b;const bar=mod(b-d.track.down,4)===0;el.classList.remove('bt','bar');void el.offsetWidth;el.classList.add(bar?'bar':'bt');if(d.i===D.masterI||!other(d).playing){if(window.A11Y)A11Y.beat(bar);if(window.BG)BG.pulse(bar?0.8:0.45)}}
       }
       if(d.track){
         const h=heard(d),rem=Math.max(0,(d.track.dur-h)/effRate(d));
@@ -953,6 +953,7 @@ window.DJ={
     requestAnimationFrame(()=>{sizeAll();if(!D.raf)D.raf=requestAnimationFrame(frame)});renderRecsSoon()},
   hide(){D.visible=false;if(D.ready){D.decks.forEach(d=>d.playing&&stopDeck(d));if(D.fx.on)setFxOn(false);if(D.auto)autoCancel();if(D.rec)recStop()}$('#djMenu')&&($('#djMenu').hidden=true)},
   lang(){if(D.built){renderAll();renderPick()}},
+  redraw(){for(const d of D.decks)if(d){d.tiles=null;d.ovc=null}},
   _D:D // for tests
 };
 // the view may already be open (#dj in the address) before this script ran

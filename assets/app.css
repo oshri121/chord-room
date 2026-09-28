@@ -562,3 +562,50 @@ html[dir="rtl"] .eyebrow,html[dir="rtl"] .stat .k,html[dir="rtl"] h2,html[dir="r
 .stat.chg .s{color:var(--il)}
 @media (pointer:coarse){.nud{width:32px;height:32px}}
 @media (max-width:640px){.stat.adj{padding-inline:8px}.stat .vrow{gap:4px;justify-content:space-between}}
+
+/* export format */
+.xfmt{display:inline-flex;margin-top:16px;border:1px solid var(--ink);border-radius:4px;overflow:hidden}
+.xfmt button{border:0;background:var(--paper);height:32px;padding:0 14px;font:600 12px var(--mono);letter-spacing:.04em;color:var(--muted)}
+.xfmt button+button{border-inline-start:1px solid var(--line2)}
+.xfmt button.on{background:var(--ink);color:var(--paper)}
+.xcost{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);background:var(--soft);border-radius:20px;padding:4px 12px}
+.xcost::before,.rbtn .cost::before{content:"";width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE08A,#F5A623 60%,#C77A00);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.rbtn .cost{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--mono);font-style:normal;margin-inline-start:4px;padding:2px 7px 2px 5px;border-radius:10px;background:rgba(0,0,0,.08)}
+.rbtn:not(.solid) .cost{background:rgba(255,255,255,.1)}
+
+/* points in the account drawer and admin */
+.ptsbox{border:1px solid var(--ink);border-radius:6px;padding:14px 16px;background:linear-gradient(135deg,rgba(47,140,255,.07),rgba(182,109,255,.07) 50%,rgba(255,122,26,.07))}
+.ptsh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ptsh .k{display:block;font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+html[dir="rtl"] .ptsh .k{letter-spacing:0}
+.ptsh b{font-size:30px;line-height:1.1;font-weight:600}
+.ptsbox>.snote{margin-top:4px}
+.ptslog{margin-top:10px;font-size:13px}
+.ptslog summary{cursor:pointer;color:var(--muted);font-size:13px}
+.ptslog ul{list-style:none;margin:8px 0 0;padding:0;max-height:240px;overflow:auto}
+.ptslog li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}
+.ptslog li .lr{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+.ptslog li .lt{font-size:11px}
+.ptslog li b{color:#1A9E5C}.ptslog li b.neg{color:var(--ink)}
+.udcred{border:1px solid var(--line2);border-radius:6px;padding:14px 16px;margin-bottom:22px;display:flex;flex-direction:column;gap:10px}
+.udcred h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.udcred .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.udcred input,.udcred select,.bplan input{height:36px;border:1px solid var(--line2);border-radius:4px;padding:0 10px;background:var(--paper);color:var(--ink);font:inherit}
+#udPts{width:100px}#udNote{flex:1;min-width:140px}
+.bplans{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.bplan{border:1px solid var(--line2);border-radius:6px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start}
+.bplan>b{grid-column:1/-1;font-size:14px}
+.bplan label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.bplan label.wide{grid-column:1/-1}
+.bplan label.best{flex-direction:row;align-items:center;gap:6px;grid-column:1/-1;color:var(--ink)}
+.bplan input{width:100%}.bplan label.best input{width:auto;height:auto}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:85;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;
+  background:var(--ink);color:var(--paper);border-radius:8px;padding:10px 12px 10px 16px;font-size:14px;max-width:min(620px,calc(100% - 32px));box-shadow:0 12px 32px rgba(0,0,0,.3);animation:toastIn .22s ease-out}
+.toast .btn{height:32px;border-color:rgba(255,255,255,.35);background:transparent;color:var(--paper)}
+.toast .btn:hover{background:rgba(255,255,255,.12)}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}}
+html.a11y-noanim .toast{animation:none}
+.fld input[type=number],.fld input[type=url]{border:1px solid var(--line2);border-radius:4px;padding:9px 11px;font-size:15px;background:var(--paper);color:var(--ink);width:100%}
+html[data-theme-resolved="dark"] .btn.solid:hover{background:#d9d9de;color:#0B0B0C}

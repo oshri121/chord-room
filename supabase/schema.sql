@@ -294,3 +294,182 @@ create policy "downloads: own insert" on public.downloads for insert to authenti
   with check (user_id = auth.uid());
 drop policy if exists "downloads: own or admin read" on public.downloads;
 create policy "downloads: own or admin read" on public.downloads for select using (user_id = auth.uid() or public.is_admin());
+
+-- ───────────── points (credits) and monthly plans ─────────────
+-- AI stem separation and stem downloads cost points. Paying members get a monthly refill.
+-- Balances and plans change ONLY through the security definer functions below; the browser has no
+-- column grant on credits/plan/plan_until/last_refill and no write access to credit_ledger.
+alter table public.profiles add column if not exists credits     integer not null default 0;
+alter table public.profiles add column if not exists plan        text    not null default 'free';
+alter table public.profiles add column if not exists plan_until  timestamptz;
+alter table public.profiles add column if not exists last_refill timestamptz;
+revoke update (credits, plan, plan_until, last_refill) on public.profiles from authenticated, anon, public;
+
+-- billing settings (admin edits them in the admin panel; everyone can read them)
+alter table public.site_config add column if not exists billing jsonb not null default
+  '{"on":true,"signup":20,"costs":{"sep":5,"stems":2},"currency":"ILS","contact":"",
+    "plans":[{"id":"basic","price":29,"points":60,"link":""},
+             {"id":"pro","price":59,"points":150,"link":"","best":true},
+             {"id":"studio","price":99,"points":400,"link":""}]}'::jsonb;
+update public.site_config set billing = default
+  where id = 1 and (billing is null or jsonb_typeof(billing) <> 'object' or billing = '{}'::jsonb);
+
+-- every change of a balance, newest first per user
+create table if not exists public.credit_ledger (
+  id         bigserial primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  delta      integer not null,
+  balance    integer not null,
+  reason     text not null check (reason in ('signup','spend','grant','refill','plan','refund')),
+  ref        text check (char_length(ref) <= 300),
+  created_at timestamptz not null default now()
+);
+create index if not exists credit_ledger_user_idx on public.credit_ledger (user_id, created_at desc);
+alter table public.credit_ledger enable row level security;
+revoke insert, update, delete, truncate on public.credit_ledger from authenticated, anon, public;
+grant select on public.credit_ledger to authenticated;
+revoke all on sequence public.credit_ledger_id_seq from authenticated, anon, public;
+drop policy if exists "ledger: own or admin read" on public.credit_ledger;
+create policy "ledger: own or admin read" on public.credit_ledger
+  for select to authenticated using (user_id = auth.uid() or public.is_admin());
+
+-- points of a plan id from site_config.billing.plans (null = unknown plan)
+create or replace function public.plan_points(p_plan text) returns integer
+language sql stable security definer set search_path = public as $$
+  select greatest(0, (p->>'points')::int)
+    from public.site_config c, jsonb_array_elements(coalesce(c.billing->'plans', '[]'::jsonb)) p
+   where c.id = 1 and p->>'id' = p_plan
+   limit 1;
+$$;
+revoke execute on function public.plan_points(text) from public, anon, authenticated;
+
+-- signup bonus for every new profile (the ledger row is written even when the bonus is 0,
+-- so the backfill below never pays twice)
+create or replace function public.handle_signup_credits() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare bonus integer;
+begin
+  select greatest(0, coalesce((billing->>'signup')::int, 0)) into bonus from public.site_config where id = 1;
+  bonus := coalesce(bonus, 0);
+  update public.profiles set credits = credits + bonus where id = new.id;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (new.id, bonus, new.credits + bonus, 'signup', null);
+  return null;
+end $$;
+revoke execute on function public.handle_signup_credits() from public, anon, authenticated;
+drop trigger if exists on_profile_created_credits on public.profiles;
+create trigger on_profile_created_credits after insert on public.profiles
+  for each row execute function public.handle_signup_credits();
+
+-- one-time backfill: accounts that existed before points get the signup bonus once
+do $$
+declare r record; bonus integer;
+begin
+  select greatest(0, coalesce((billing->>'signup')::int, 0)) into bonus from public.site_config where id = 1;
+  bonus := coalesce(bonus, 0);
+  for r in select p.id from public.profiles p
+            where not exists (select 1 from public.credit_ledger l where l.user_id = p.id)
+            for update loop
+    update public.profiles set credits = credits + bonus where id = r.id;
+    insert into public.credit_ledger (user_id, delta, balance, reason)
+      select r.id, bonus, credits, 'signup' from public.profiles where id = r.id;
+  end loop;
+end $$;
+
+-- spend points (AI separation, stem downloads). Returns the new balance.
+-- Raises 'insufficient_credits' when the balance is too low. Admins and billing.on=false → free.
+create or replace function public.spend_credits(p_amount integer, p_reason text, p_ref text default null)
+returns integer language plpgsql security definer set search_path = public as $$
+declare me public.profiles; b jsonb; label text;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;
+  if not found or me.blocked then raise exception 'not allowed'; end if;
+  if p_amount is null or p_amount < 1 or p_amount > 1000 then raise exception 'bad amount'; end if;
+  select billing into b from public.site_config where id = 1;
+  if not coalesce((b->>'on')::boolean, true) or me.role = 'admin' then
+    return me.credits;
+  end if;
+  if me.credits < p_amount then raise exception 'insufficient_credits'; end if;
+  label := left(coalesce(nullif(btrim(p_reason), ''), 'spend')
+                || coalesce(': ' || nullif(btrim(p_ref), ''), ''), 300);
+  update public.profiles set credits = credits - p_amount where id = me.id;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (me.id, -p_amount, me.credits - p_amount, 'spend', label);
+  return me.credits - p_amount;
+end $$;
+revoke execute on function public.spend_credits(integer, text, text) from public, anon;
+grant execute on function public.spend_credits(integer, text, text) to authenticated;
+
+-- lazy monthly refill, called by the app after sign-in. Returns the balance.
+create or replace function public.refill_credits() returns integer
+language plpgsql security definer set search_path = public as $$
+declare me public.profiles; pts integer;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;
+  if not found then raise exception 'not allowed'; end if;
+  if me.blocked or me.plan = 'free' then return me.credits; end if;
+  if me.plan_until is null or me.plan_until <= now() then
+    update public.profiles set plan = 'free', plan_until = null where id = me.id;   -- expired; points stay
+    return me.credits;
+  end if;
+  if me.last_refill is null or me.last_refill <= now() - interval '1 month' then
+    pts := public.plan_points(me.plan);
+    if coalesce(pts, 0) > 0 then
+      update public.profiles set credits = credits + pts, last_refill = now() where id = me.id;
+      insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+        values (me.id, pts, me.credits + pts, 'refill', me.plan);
+      return me.credits + pts;
+    end if;
+  end if;
+  return me.credits;
+end $$;
+revoke execute on function public.refill_credits() from public, anon;
+grant execute on function public.refill_credits() to authenticated;
+
+-- admin: add (or remove, with a negative amount) points. The balance never drops below 0.
+create or replace function public.admin_grant_credits(target uuid, p_amount integer, p_note text default null)
+returns integer language plpgsql security definer set search_path = public as $$
+declare cur integer; nxt integer;
+begin
+  if not public.is_admin() then raise exception 'not allowed'; end if;
+  if p_amount is null or p_amount = 0 or abs(p_amount) > 1000000 then raise exception 'bad amount'; end if;
+  select credits into cur from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  nxt := greatest(0, cur + p_amount);
+  update public.profiles set credits = nxt where id = target;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (target, nxt - cur, nxt, 'grant', left(nullif(btrim(p_note), ''), 300));
+  return nxt;
+end $$;
+revoke execute on function public.admin_grant_credits(uuid, integer, text) from public, anon;
+grant execute on function public.admin_grant_credits(uuid, integer, text) to authenticated;
+
+-- admin: activate / extend / cancel a plan (until a payment provider is connected)
+create or replace function public.admin_set_plan(target uuid, p_plan text, p_months integer default 1)
+returns void language plpgsql security definer set search_path = public as $$
+declare me public.profiles; pts integer;
+begin
+  if not public.is_admin() then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  if p_plan = 'free' then
+    update public.profiles set plan = 'free', plan_until = null where id = target;
+    return;
+  end if;
+  pts := public.plan_points(p_plan);
+  if pts is null then raise exception 'bad plan'; end if;
+  if p_months is null or p_months < 1 or p_months > 36 then raise exception 'bad months'; end if;
+  update public.profiles
+     set plan = p_plan,
+         plan_until = greatest(now(), coalesce(me.plan_until, now())) + make_interval(months => p_months)
+   where id = target;
+  if (me.plan is distinct from p_plan or me.last_refill is null or me.last_refill <= now() - interval '1 month') then
+    update public.profiles set credits = credits + pts, last_refill = now() where id = target;
+    insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+      values (target, pts, me.credits + pts, 'plan', p_plan || ' x' || p_months);
+  end if;
+end $$;
+revoke execute on function public.admin_set_plan(uuid, text, integer) from public, anon;
+grant execute on function public.admin_set_plan(uuid, text, integer) to authenticated;
