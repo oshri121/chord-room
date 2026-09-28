@@ -166,23 +166,23 @@ es:{crUsb:'USB para Pioneer · nombres en latín',crUsbT:'Copias con el nombre e
 CR.addStrings({
 he:{crNml:'Traktor NML',crNmlDone:'קובץ ה־NML נשמר. ב־Traktor: לגרור אותו לחלון ה־Playlists (או File › Import Collection). נקודות הקיו נכנסות יחד עם השירים.',
   crCuesH:'נקודות קיו אוטומטיות',crCuesT:'לכל שיר מנותח מסומנים קטעי השיר כנקודות קיו בצבעים קבועים, כדי לקפוץ לחלק הנכון בלי לזכור איפה הוא:',
-  crCuesHow:'rekordbox: דרך קובץ ה־XML (ומשם ל־USB ול־CDJ) · Serato: כתוב בתוך עותקי ה־MP3 שב־ZIP · Traktor: דרך קובץ ה־NML',
+  crCuesHow:'Serato ו־VirtualDJ: הנקודות כבר בתוך הקבצים שמורידים (העותקים ב־ZIP וב־USB, קובצי MP3) — גוררים ומנגנים. rekordbox לא קורא נקודות מתוך קבצים (הוא שומר אותן במאגר שלו), ולכן אצלו מייבאים פעם אחת את קובץ ה־XML. Traktor: דרך קובץ ה־NML.',
   crCuesOld:'לשירים שנותחו לפני העדכון אין נקודות קיו: מוסיפים אותם שוב.',crCueAt:'{k} · {t}'},
 en:{crNml:'Traktor NML',crNmlDone:'NML saved. In Traktor, drag it onto the Playlists panel (or File › Import Collection). The cue points come in with the tracks.',
   crCuesH:'Automatic cue points',crCuesT:'Every analysed track gets its sections marked as cue points in fixed colours, so you jump to the right part without remembering where it is:',
-  crCuesHow:'rekordbox: through the XML (then to USB and the CDJ) · Serato: written inside the MP3 copies in the ZIP · Traktor: through the NML',
+  crCuesHow:'Serato and VirtualDJ: the cues are already inside the files you download (the MP3 copies in the ZIP and USB downloads), just drag and play. rekordbox doesn\'t read cue points from files (it keeps them in its own database), so there you import the XML once. Traktor: through the NML.',
   crCuesOld:'Tracks analysed before this update have no cue points: add them again.',crCueAt:'{k} · {t}'},
 ar:{crNml:'Traktor NML',crNmlDone:'تم حفظ NML. في Traktor اسحبه إلى لوحة Playlists (أو File › Import Collection). تدخل نقاط الـ Cue مع الأغاني.',
   crCuesH:'نقاط Cue تلقائية',crCuesT:'تُعلَّم أجزاء كل أغنية محلَّلة كنقاط Cue بألوان ثابتة، لتقفز إلى الجزء الصحيح دون أن تتذكر مكانه:',
-  crCuesHow:'rekordbox: عبر ملف XML (ثم إلى USB والـ CDJ) · Serato: مكتوبة داخل نسخ MP3 في ملف ZIP · Traktor: عبر ملف NML',
+  crCuesHow:'Serato وVirtualDJ: النقاط موجودة داخل الملفات التي تنزّلها (نسخ MP3 في تنزيلات ZIP وUSB)، اسحب وشغّل. rekordbox لا يقرأ النقاط من الملفات (يحفظها في قاعدة بياناته)، لذا تستورد ملف XML مرة واحدة. Traktor: عبر ملف NML.',
   crCuesOld:'الأغاني التي حُلِّلت قبل هذا التحديث بلا نقاط Cue: أضفها مرة أخرى.',crCueAt:'{k} · {t}'},
 ru:{crNml:'Traktor NML',crNmlDone:'NML сохранён. В Traktor перетащите его на панель Playlists (или File › Import Collection). Cue-точки придут вместе с треками.',
   crCuesH:'Автоматические cue-точки',crCuesT:'У каждого проанализированного трека части отмечены cue-точками постоянных цветов — прыгайте к нужной части, не запоминая, где она:',
-  crCuesHow:'rekordbox: через XML (дальше на USB и CDJ) · Serato: записаны внутрь копий MP3 в ZIP · Traktor: через NML',
+  crCuesHow:'Serato и VirtualDJ: точки уже внутри скачанных файлов (копии MP3 в ZIP и USB) — просто перетащите и играйте. rekordbox не читает cue-точки из файлов (хранит их в своей базе), поэтому для него один раз импортируйте XML. Traktor: через NML.',
   crCuesOld:'У треков, проанализированных до обновления, cue-точек нет: добавьте их снова.',crCueAt:'{k} · {t}'},
 es:{crNml:'Traktor NML',crNmlDone:'NML guardado. En Traktor, arrástralo al panel Playlists (o File › Import Collection). Los cue points llegan con los temas.',
   crCuesH:'Cue points automáticos',crCuesT:'Cada tema analizado lleva sus partes marcadas como cue points en colores fijos, para saltar a la parte justa sin recordar dónde está:',
-  crCuesHow:'rekordbox: con el XML (luego a USB y al CDJ) · Serato: escritos dentro de las copias MP3 del ZIP · Traktor: con el NML',
+  crCuesHow:'Serato y VirtualDJ: los cue points ya van dentro de los archivos que descargas (las copias MP3 del ZIP y del USB): arrastra y pincha. rekordbox no lee cue points de los archivos (los guarda en su propia base), así que allí importas el XML una vez. Traktor: con el NML.',
   crCuesOld:'Los temas analizados antes de esta actualización no tienen cue points: añádelos otra vez.',crCueAt:'{k} · {t}'}
 });
 
@@ -261,7 +261,7 @@ function save(){
   if(C.owner===undefined)return;              // not known yet who is signed in
   try{
     const rows=C.rows.filter(done).slice(0,LS_CAP).map(r=>({id:r.id,name:r.name,rel:r.rel,size:r.size,ext:r.ext,dur:r3(r.dur),lufs:r3(r.lufs),peak:r3(r.peak),
-      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{}),...(r.cues?{cues:r.cues}:{})}));
+      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{}),...(r.cues?{cues:r.cues}:{}),...(r.wv?{wv:r.wv}:{})}));
     localStorage.setItem(lsKey(),JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
   }catch(e){}
 }
@@ -340,6 +340,7 @@ async function analyzeRow(r){
     r.st='ana';renderRow(r);
     const res=await CR.analyzeTrack(buf,p=>setP(r,p*0.9));
     if(!C.rows.includes(r))return;
+    r.wv=packWave(res.wave);
     Object.assign(r,{dur:res.dur,lufs:isFinite(res.lufs)?res.lufs:null,peak:isFinite(res.peak)?res.peak:null,bpm:res.bpm,bpm0:res.bpm,offset:res.offset,down:res.down||0,key:res.key||null,flux:fluxOf(res.wave,res.dur)});
     if(window.CUES&&r.bpm>0){try{r.cues=await CUES.detect(buf,res)}catch(e){console.warn('cues',r.name,e);r.cues=null}}
     buf=null;
@@ -608,16 +609,50 @@ function exportNml(){
   if(folderSegs(C.folder).length)setMsg(t('crNmlDone'));else setMsg(t('crXmlNoFolder'),true);
   renderMsg();
 }
-function cueHTML(r){
-  const cs=cueList(r);if(!cs.length||!r.dur)return '';
-  const pc=x=>Math.max(0,Math.min(100,x/r.dur*100)).toFixed(2),fmt=x=>fmtLen(x);
-  let seg='',marks='';
-  cs.forEach((c,i)=>{const e=i+1<cs.length?cs[i+1].t:r.dur,[R,G,B]=CU.COL[c.k];
-    seg+=`<span class="cs" style="left:${pc(c.t)}%;width:${(pc(e)-pc(c.t)).toFixed(2)}%;background:rgb(${R} ${G} ${B}/.28)"></span>`;
-    const tip=esc(`${letter(c.k)} · ${CU.NAME[c.k]} · ${fmt(c.t)}`);
-    marks+=`<span class="cm" style="left:${pc(c.t)}%;--c:rgb(${R} ${G} ${B})" title="${tip}" role="img" aria-label="${tip}">${letter(c.k)}</span>`});
-  return `<div class="cuebar" dir="ltr">${seg}${marks}</div>`;
+/* ---------- rekordbox-style overview: RGB waveform, bar grid, coloured hot cue flags ---------- */
+const WN=300;
+const b64=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const unb64=s=>{try{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}catch(e){return null}};
+function packWave(w){
+  if(!w||!w.amp||!w.len)return null;
+  const a=new Uint8Array(WN),c=new Uint8Array(WN*3),n=w.len;
+  for(let i=0;i<WN;i++){const s0=Math.floor(i*n/WN),s1=Math.max(s0+1,Math.floor((i+1)*n/WN));let mx=0,R=0,G=0,B=0,k=0;
+    for(let j=s0;j<s1&&j<n;j++){const v=w.amp[j];if(v>mx)mx=v;R+=w.col[j*3];G+=w.col[j*3+1];B+=w.col[j*3+2];k++}
+    a[i]=Math.round(mx*255);if(k){c[i*3]=R/k;c[i*3+1]=G/k;c[i*3+2]=B/k}}
+  return {a:b64(a),c:b64(c)};
 }
+const WV=new Map();   // row id → decoded overview
+function wvOf(r){if(!r.wv)return null;let x=WV.get(r.id);if(x&&x.src===r.wv)return x;const a=unb64(r.wv.a),c=unb64(r.wv.c);if(!a||!c)return null;x={a,c,src:r.wv};WV.set(r.id,x);return x}
+function cueHTML(r){
+  const cs=cueList(r);if(!done(r)||!r.dur||(!cs.length&&!r.wv))return '';
+  const pc=x=>Math.max(0,Math.min(100,x/r.dur*100)).toFixed(2);
+  const flags=cs.map(c=>{const [R,G,B]=CU.COL[c.k],tip=esc(`${letter(c.k)} · ${CU.NAME[c.k]} · ${fmtLen(c.t)}`);
+    return `<span class="cuef" style="left:${pc(c.t)}%;--c:rgb(${R} ${G} ${B})" title="${tip}" role="img" aria-label="${tip}">${letter(c.k)}</span>`}).join('');
+  return `<div class="rbov" dir="ltr"><canvas data-ov="${r.id}" aria-hidden="true"></canvas>${flags}</div>`;
+}
+function drawOverviews(root){
+  (root||document).querySelectorAll('canvas[data-ov]').forEach(cv=>{const r=byId(cv.dataset.ov);if(r)drawOverview(cv,r)});
+}
+function drawOverview(cv,r){
+  const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
+  const top=12,H=h-top,mid=top+H/2,x=t=>t/r.dur*w,cs=cueList(r);
+  // sections: a faint wash of the cue colour until the next cue
+  cs.forEach((c,i)=>{const e=i+1<cs.length?cs[i+1].t:r.dur,[R,G,B]=CU.COL[c.k];g.fillStyle=`rgba(${R},${G},${B},.13)`;g.fillRect(x(c.t),top,x(e)-x(c.t),H)});
+  // bar grid: a thin line every 4 bars, brighter every 16 (phrases), from the first downbeat
+  if(r.bpm>0){const gs=gridStart(r),B4=4*60/r.bpm*4;let k=0;
+    for(let t=gs.ini;t<r.dur;t+=B4,k++){const px=Math.round(x(t))+.5;g.fillStyle=k%4===0?'rgba(255,255,255,.28)':'rgba(255,255,255,.1)';g.fillRect(px,top,1,H)}}
+  // waveform (RGB like rekordbox's 3-band view), mirrored around the middle
+  const wv=wvOf(r);
+  if(wv){const bw=w/WN;for(let i=0;i<WN;i++){const v=wv.a[i]/255;if(!v)continue;const hh=Math.max(1,v*(H/2-1));
+    g.fillStyle=`rgb(${wv.c[i*3]},${wv.c[i*3+1]},${wv.c[i*3+2]})`;g.fillRect(i*bw,mid-hh,Math.max(1,bw-.2),hh*2)}}
+  else{g.fillStyle='rgba(255,255,255,.12)';g.fillRect(0,mid-.5,w,1)}
+  // hot cues: full-height line + the flag strip on top
+  for(const c of cs){const [R,G,B]=CU.COL[c.k],px=Math.round(x(c.t));g.fillStyle=`rgb(${R},${G},${B})`;g.fillRect(px,0,2,h);g.fillRect(px,0,14,top-1)}
+}
+let ovRO=null;
+function watchOverviews(){if(ovRO||!window.ResizeObserver)return;ovRO=new ResizeObserver(()=>drawOverviews($('#crBody')));const b=$('#crBody');if(b)ovRO.observe(b)}
 function legendHTML(){
   if(!CU)return '';
   return CU.KINDS.map(k=>{const [R,G,B]=CU.COL[k];return `<span class="cl" dir="ltr"><i style="background:rgb(${R} ${G} ${B})">${letter(k)}</i>${esc(CU.NAME[k])}</span>`}).join('');
@@ -925,6 +960,7 @@ function renderTable(){
   const list=view(),body=$('#crBody');
   body.innerHTML=list.map((r,i)=>rowHTML(r,i,i?list[i-1]:null)).join('');
   list.forEach(r=>{if(!done(r)||!r.key)return;const b=body.querySelector(`tr[data-id="${r.id}"] .kbb`);if(b)b.appendChild(CR.keyBadge(r.key))});
+  requestAnimationFrame(()=>drawOverviews(body));watchOverviews();
   const none=$('#crNone');none.hidden=!!list.length||!C.rows.length;none.textContent=t('crNoMatch');
   renderExp();
   if(foc){const n=$(foc);if(n)n.focus()}
@@ -934,7 +970,7 @@ function renderRow(r){
   const list=view(),i=list.indexOf(r);if(i<0)return;
   const tmp=document.createElement('tbody');tmp.innerHTML=rowHTML(r,i,i?list[i-1]:null);const n=tmp.firstElementChild;
   if(done(r)&&r.key){const b=n.querySelector('.kbb');if(b)b.appendChild(CR.keyBadge(r.key))}
-  tr.replaceWith(n);
+  tr.replaceWith(n);drawOverviews(n);
 }
 function renderExp(){
   if(!C.built)return;

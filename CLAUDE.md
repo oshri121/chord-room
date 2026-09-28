@@ -83,6 +83,9 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Auto cue points (`assets/cues.js`, `CUES.detect(buffer, grid)`): intro/vocal/break/build/drop/outro = hot cues A–F with fixed
   colours, found from per-bar band energies. Crate stores them per row, draws a structure strip, and exports them:
   rekordbox XML POSITION_MARK (hot + memory), Serato `GEOB "Serato Markers2"` inside MP3 copies, Traktor NML (CUE_V2).
+  Each row shows a rekordbox-style overview (`.rbov` canvas: RGB waveform packed to 300 columns in `r.wv`, 4/16-bar grid,
+  coloured hot cue flags). rekordbox can't read cues from files (they live in its database) → XML; Serato/VirtualDJ read the
+  GEOB inside the downloaded MP3 copies.
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
