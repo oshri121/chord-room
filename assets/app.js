@@ -729,7 +729,7 @@ function applyFx(){
     if(!P.fx){restart();return}
     const c=ac(),tt=now();if(!P.playing)return;
     P.srcs.forEach(x=>x.playbackRate.setTargetAtTime(S.rate,c.currentTime,0.01));
-    FX.node.schedule({semitones:fxSemis(),output:c.currentTime});
+    FX.node.schedule({semitones:fxSemis(),output:c.currentTime+FX.lat});
     P.startPos=tt;P.startCtx=c.currentTime;P.rate=S.rate;
   }).catch(e=>{console.warn(e);showNotice(t('fxFail'))});
 }
@@ -988,26 +988,26 @@ async function analyze(buffer,name,demo,nosave){
 function recompute(){S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
 function regrid(){buildBeats();S.chords=detectChords();detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
 
-async function synthDemo(){
-  const sr=44100,T=0.5,lead=0.3,barsN=16,dur=lead+barsN*4*T+1;
+async function synthDemo(o){
+  o=o||{};const sr=44100,T=60/(o.bpm||120),lead=0.3,barsN=o.bars||16,dur=lead+barsN*4*T+1,sh=o.shift||0,intro=o.intro||0;
   const oc=new OfflineAudioContext(2,Math.ceil(dur*sr),sr);
   const master=oc.createGain();master.gain.value=0.55;master.connect(oc.destination);
   const nb=oc.createBuffer(1,sr,sr),nd=nb.getChannelData(0);for(let i=0;i<sr;i++)nd[i]=Math.random()*2-1;
   const mtof=m=>440*Math.pow(2,(m-69)/12);
-  const prog=[[57,60,64,45],[53,57,60,41],[55,60,64,48],[55,59,62,43]];
+  const prog=(o.prog||[[57,60,64,45],[53,57,60,41],[55,60,64,48],[55,59,62,43]]).map(c=>c.map(m=>m+sh));
   for(let i=0;i<barsN;i++){
-    const ch=prog[i%4],t0=lead+i*4*T,t1=t0+4*T;
+    const ch=prog[i%4],t0=lead+i*4*T,t1=t0+4*T,drumsOnly=i<intro;
     const lp=oc.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1700;lp.connect(master);
-    for(const m of ch.slice(0,3))for(const det of [-6,6]){
+    if(!drumsOnly)for(const m of ch.slice(0,3))for(const det of [-6,6]){
       const o=oc.createOscillator();o.type='sawtooth';o.frequency.value=mtof(m);o.detune.value=det;
       const g=oc.createGain();g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(0.035,t0+0.03);g.gain.setValueAtTime(0.035,t1-0.06);g.gain.linearRampToValueAtTime(0,t1);
       o.connect(g).connect(lp);o.start(t0);o.stop(t1+0.02);
     }
     for(let k=0;k<4;k++){
       const tb=t0+k*T;
-      const b=oc.createOscillator();b.type='triangle';b.frequency.value=mtof(ch[3]);
-      const bg=oc.createGain();bg.gain.setValueAtTime(0.0001,tb);bg.gain.exponentialRampToValueAtTime(0.4,tb+0.01);bg.gain.exponentialRampToValueAtTime(0.001,tb+0.42);
-      b.connect(bg).connect(master);b.start(tb);b.stop(tb+0.45);
+      if(!drumsOnly){const b=oc.createOscillator();b.type='triangle';b.frequency.value=mtof(ch[3]);
+      const bg=oc.createGain();bg.gain.setValueAtTime(0.0001,tb);bg.gain.exponentialRampToValueAtTime(0.4,tb+0.01);bg.gain.exponentialRampToValueAtTime(0.001,tb+Math.min(0.42,T*0.84));
+      b.connect(bg).connect(master);b.start(tb);b.stop(tb+0.45)}
       const kk=oc.createOscillator();kk.frequency.setValueAtTime(150,tb);kk.frequency.exponentialRampToValueAtTime(48,tb+0.12);
       const kg=oc.createGain();kg.gain.setValueAtTime(1,tb);kg.gain.exponentialRampToValueAtTime(0.001,tb+0.32);
       kk.connect(kg).connect(master);kk.start(tb);kk.stop(tb+0.35);
@@ -1022,6 +1022,26 @@ async function synthDemo(){
 }
 
 
+
+/* full analysis of any buffer without touching the tool's song (used by the DJ decks).
+   hint = a saved library item with bpm/offset/key → skip the slow beat/chord passes */
+async function analyzeTrack(buffer,prog,hint){
+  prog=prog||(()=>{});
+  const x=await toMono(buffer);prog(0.06);await tick();
+  const wave=computeWave(x);prog(0.12);
+  let L={lufs:null,peak:null};try{L=await measureLoudness(buffer)}catch(e){}
+  const base={wave,dur:buffer.duration,lufs:L.lufs,peak:L.peak};
+  if(hint&&hint.bpm&&hint.key&&hint.offset!=null){prog(1);return {...base,bpm:hint.bpm,offset:hint.offset,down:hint.down||0,key:hint.key}}
+  const on=await computeOnset(x,p=>prog(0.14+p*0.3));
+  const chroma=await computeChroma(x,p=>prog(0.44+p*0.52));
+  const genv=new Float32Array(on.env.length);for(let i=0;i<genv.length;i++)genv[i]=on.env[i]+2*on.low[i];
+  const g=fitGrid(genv,estimateTempo(on.env));
+  const saved=S;let out;
+  S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0,transpose:0,capo:0};
+  try{buildBeats();S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
+  finally{S=saved}
+  prog(1);return {...base,...out};
+}
 
 /* ---------- stems ---------- */
 const AI={w:null,ready:false,ep:'',busy:false,job:0};
@@ -1837,11 +1857,13 @@ $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
 function showView(v){
-  const d=v==='discover';$('#discover').hidden=!d;$('#toolView').hidden=d;
-  $('#navDisc').classList.toggle('on',d);$('#navTool').classList.toggle('on',!d);
-  if(d){if(P.playing)stop();if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
-  else{stopPreview();requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
-  try{history.replaceState(null,'',d?'#discover':location.pathname+location.search)}catch(e){}
+  const d=v==='discover',j=v==='dj';$('#discover').hidden=!d;$('#toolView').hidden=d||j;$('#djView').hidden=!j;
+  $('#navDisc').classList.toggle('on',d);$('#navDj').classList.toggle('on',j);$('#navTool').classList.toggle('on',!d&&!j);
+  if(d||j){if(P.playing)stop()}
+  if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
+  else{stopPreview();if(!j)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  if(window.DJ)j?DJ.show():DJ.hide();
+  try{history.replaceState(null,'',d?'#discover':j?'#dj':location.pathname+location.search)}catch(e){}
   window.scrollTo(0,0);
 }
 function renderDiscControls(){
@@ -1858,8 +1880,10 @@ $('#dBpmMin').oninput=e=>{DC.bpmMin=e.target.value;renderList()};
 $('#dBpmMax').oninput=e=>{DC.bpmMax=e.target.value;renderList()};
 $('#navDisc').onclick=()=>showView('discover');
 $('#navTool').onclick=()=>showView('tool');
+$('#navDj').onclick=()=>showView('dj');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
-window.addEventListener('hashchange',()=>showView(location.hash==='#discover'?'discover':'tool'));
+const viewOfHash=()=>location.hash==='#discover'?'discover':location.hash==='#dj'?'dj':'tool';
+window.addEventListener('hashchange',()=>showView(viewOfHash()));
 
 /* ---------- events ---------- */
 async function loadFile(file){
@@ -1900,7 +1924,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();if(window.DJ)DJ.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -1944,6 +1968,7 @@ $('#editBtn').onclick=()=>{S.editing=!S.editing;$('#pop').hidden=true;renderShee
 $('#libBtn').onclick=()=>{renderLib();$('#lib').hidden=false};$('#libClose').onclick=()=>$('#lib').hidden=true;
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(!$('#djView').hidden)return; // the DJ view has its own keys
   if(e.key!=='Escape'&&(!$('#authDlg').hidden||!$('#acc').hidden||!$('#admin').hidden||!$('#discover').hidden))return;
   const onBtn=e.target.closest('button,label');
   if(e.code==='Space'){if(onBtn)return;e.preventDefault();toggle()}
@@ -1963,10 +1988,10 @@ const endDrag=()=>{if(!drag)return;zm.classList.remove('drag');const w=drag.was;
 zm.addEventListener('pointerup',endDrag);zm.addEventListener('pointercancel',endDrag);
 zm.addEventListener('wheel',e=>{if(!S.dur)return;e.preventDefault();if(Math.abs(e.deltaY)>Math.abs(e.deltaX))zoom(e.deltaY>0?1:-1);else seek(now()+e.deltaX/400*S.win)},{passive:false});
 let dd=0;
-window.addEventListener('dragenter',e=>{if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
+window.addEventListener('dragenter',e=>{if($('#djView')&&!$('#djView').hidden)return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
 window.addEventListener('dragleave',()=>{dd=Math.max(0,dd-1);if(!dd)$('#drop').hidden=true});
 window.addEventListener('dragover',e=>e.preventDefault());
-window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
+window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;if($('#djView')&&!$('#djView').hidden)return;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{sizeCanvases();renderMixer()},120)});
 
 /* ---------- theme (light / dark) ---------- */
@@ -1975,8 +2000,19 @@ function resolvedTheme(){const t=document.documentElement.dataset.theme;return t
 function applyTheme(){const r=resolvedTheme();document.documentElement.dataset.themeResolved=r;$('#themeBtn').title=r==='dark'?t('themeLight'):t('themeDark');$('#themeBtn').setAttribute('aria-label',$('#themeBtn').title)}
 $('#themeBtn').onclick=()=>{const next=resolvedTheme()==='dark'?'light':'dark';document.documentElement.dataset.theme=next;try{localStorage.setItem('chordroom.theme',next)}catch(e){}applyTheme();renderChips();lastBeat=-2;dirty=true};
 if(mqDark&&mqDark.addEventListener)mqDark.addEventListener('change',()=>{applyTheme();dirty=true});
+/* ---------- bridge for the DJ view (assets/dj.js) ---------- */
+window.CR={
+  t,$,esc,tick,mod,ac,applyLang,getLang:()=>LANG,addStrings:tb=>{for(const k in tb)Object.assign(I[k],tb[k])},
+  analyzeTrack,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,
+  camelot,camOf,camRel,bpmFit,camColor,keyText,keyBadge,CAM_MAJ,HC_COL,SHARP,FLAT,FLAT_MAJ,
+  readLib,libItem:name=>readLib().find(x=>x.name===name)||null,ACC,DC,dz,freshPreview,rowFromCatalog,
+  signedIn:()=>!!(ACC.on&&ACC.user),
+  songFileUrl:p=>Backend.songFileUrl(p),
+  toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur}:null,
+  stopTool:()=>{if(P.playing)stop();stopPreview()}
+};
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();requestAnimationFrame(loop);initAccount();
-if(location.hash==='#discover')showView('discover');
+if(location.hash==='#discover'||location.hash==='#dj')showView(viewOfHash());
 (async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

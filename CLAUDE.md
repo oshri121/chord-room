@@ -29,6 +29,15 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   loaded on first use) sits on the master bus and shifts pitch by `transpose - 12*log2(rate)`; bypassed when unchanged.
   Its ~120 ms latency is folded into `P.startCtx`. WAV export renders through the same chain offline (`fxRender`);
   MIDI keeps its ticks and only writes the new tempo. Controls: − / value / + in the stats bar (BPM value is typeable).
+- DJ view (`#djView`, hash `#dj`): `assets/dj.js` (+ strings in `assets/dj-i18n.js`, styles in `assets/dj.css`), talks to the
+  app only through `window.CR` (bridge at the end of app.js; `analyzeTrack` analyses a buffer without touching `S`).
+  Two decks, each: source → Signalsmith Stretch (key lock / key shift, always in the path so both decks share the same
+  latency) → trim/EQ/filter/gate → fader → crossfader → bus → limiter. Positions are source-time segments (`srcAt`);
+  "heard" = `srcAt(now - lat)`. SYNC matches tempo (½×/2× aware) and bar phase; a synced PLAY waits for the bar.
+  Beat FX (echo/reverb/flanger sends, gate, roll with slip, brake), synthesized sampler, auto transition (bar-aligned
+  start, bass swap, crossfader), recording to 16-bit WAV via an AudioWorklet, match score (Camelot + tempo) with advice,
+  next-song picks from My Songs (cloud files) and the Discover catalog (30 s previews). Hardware labels stay English.
+  Verified sync by panning A/B hard left/right and cross-correlating a recording: ≤1 ms offset.
 - Theme: `data-theme` on <html> (light/dark, saved in localStorage; no attribute = follow the system). Colours come
   from CSS tokens; the dark block redefines them. Use `currentColor`/tokens, never hard-coded light colours.
 - `assets/backend.js` – `window.Backend`: every Supabase call lives here. The app never touches `supabase` directly.
