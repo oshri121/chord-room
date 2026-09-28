@@ -39,10 +39,12 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   next-song picks from My Songs (cloud files) and the Discover catalog (30 s previews). Hardware labels stay English.
   Verified sync by panning A/B hard left/right and cross-correlating a recording: ≤1 ms offset.
 - Points & plans: `profiles.credits/plan/plan_until/last_refill`, `credit_ledger`, `site_config.billing` (costs, signup gift,
-  plans with price/points/payment link). Changed ONLY by security-definer RPCs: `spend_credits` (error `insufficient_credits`),
+  plans with price/points/payment link). Changed ONLY by security-definer RPCs: `spend_credits(kind, ref)` → {balance,id} — the PRICE is read on the server from
+  `billing.costs[kind]` (old `(amount,reason,ref)` signature kept only as a wrapper that ignores the amount; error
+  `insufficient_credits`), `refund_credits(id)` (own 'sep' charge, ≤20 min, once, max 2 refunds/day),
   `refill_credits` (lazy monthly refill, called on sign-in), `admin_grant_credits`, `admin_set_plan`. In app.js
   (`/* ---------- points & plans ---------- */`): `payFor(kind)` checks before, `charge(kind,ref)` spends — separation is
-  charged after it succeeds, stems once per song on download (`S.stemsPaid`). Admins and `billing.on=false` are free.
+  charged BEFORE it runs and refunded if it fails or is cancelled, stems once per song on download (`S.stemsPaid`). Admins and `billing.on=false` are free.
   No payment provider yet: plan "Subscribe" opens the plan's payment link; the admin activates plans from user details.
   Separation runs in the browser, so the gate is honest-user level; the ledger is authoritative.
 - Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from

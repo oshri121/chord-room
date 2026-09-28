@@ -333,10 +333,16 @@ drop policy if exists "ledger: own or admin read" on public.credit_ledger;
 create policy "ledger: own or admin read" on public.credit_ledger
   for select to authenticated using (user_id = auth.uid() or public.is_admin());
 
+-- integer from a jsonb text value, null when it isn't a plain whole number (a bad setting must never break sign-ups)
+create or replace function public.safe_int(v text) returns integer
+language sql immutable set search_path = public as $$
+  select case when v ~ '^\s*-?\d{1,7}\s*$' then btrim(v)::int end;
+$$;
+
 -- points of a plan id from site_config.billing.plans (null = unknown plan)
 create or replace function public.plan_points(p_plan text) returns integer
 language sql stable security definer set search_path = public as $$
-  select greatest(0, (p->>'points')::int)
+  select greatest(0, coalesce(public.safe_int(p->>'points'), 0))
     from public.site_config c, jsonb_array_elements(coalesce(c.billing->'plans', '[]'::jsonb)) p
    where c.id = 1 and p->>'id' = p_plan
    limit 1;
@@ -349,7 +355,7 @@ create or replace function public.handle_signup_credits() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare bonus integer;
 begin
-  select greatest(0, coalesce((billing->>'signup')::int, 0)) into bonus from public.site_config where id = 1;
+  select greatest(0, coalesce(public.safe_int(billing->>'signup'), 0)) into bonus from public.site_config where id = 1;
   bonus := coalesce(bonus, 0);
   update public.profiles set credits = credits + bonus where id = new.id;
   insert into public.credit_ledger (user_id, delta, balance, reason, ref)
@@ -365,7 +371,7 @@ create trigger on_profile_created_credits after insert on public.profiles
 do $$
 declare r record; bonus integer;
 begin
-  select greatest(0, coalesce((billing->>'signup')::int, 0)) into bonus from public.site_config where id = 1;
+  select greatest(0, coalesce(public.safe_int(billing->>'signup'), 0)) into bonus from public.site_config where id = 1;
   bonus := coalesce(bonus, 0);
   for r in select p.id from public.profiles p
             where not exists (select 1 from public.credit_ledger l where l.user_id = p.id)
@@ -376,30 +382,70 @@ begin
   end loop;
 end $$;
 
--- spend points (AI separation, stem downloads). Returns the new balance.
--- Raises 'insufficient_credits' when the balance is too low. Admins and billing.on=false → free.
-create or replace function public.spend_credits(p_amount integer, p_reason text, p_ref text default null)
-returns integer language plpgsql security definer set search_path = public as $$
-declare me public.profiles; b jsonb; label text;
+-- spend points for a paid action. The PRICE COMES FROM THE SERVER (site_config.billing.costs), never from
+-- the browser. Returns {"balance": n, "id": ledger id or null when free}. Raises 'insufficient_credits'.
+-- Admins and billing.on=false → free.
+create or replace function public.spend_credits(p_kind text, p_ref text default null)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare me public.profiles; b jsonb; cost integer; lid bigint;
 begin
   if auth.uid() is null then raise exception 'not allowed'; end if;
+  if p_kind is null or p_kind not in ('sep', 'stems') then raise exception 'bad kind'; end if;
   select * into me from public.profiles where id = auth.uid() for update;
   if not found or me.blocked then raise exception 'not allowed'; end if;
-  if p_amount is null or p_amount < 1 or p_amount > 1000 then raise exception 'bad amount'; end if;
   select billing into b from public.site_config where id = 1;
+  cost := public.safe_int(b->'costs'->>p_kind);
+  if cost is null or cost < 1 then cost := case p_kind when 'sep' then 5 else 2 end; end if;   -- broken setting → default price
   if not coalesce((b->>'on')::boolean, true) or me.role = 'admin' then
-    return me.credits;
+    return jsonb_build_object('balance', me.credits, 'id', null);
   end if;
-  if me.credits < p_amount then raise exception 'insufficient_credits'; end if;
-  label := left(coalesce(nullif(btrim(p_reason), ''), 'spend')
-                || coalesce(': ' || nullif(btrim(p_ref), ''), ''), 300);
-  update public.profiles set credits = credits - p_amount where id = me.id;
+  if me.credits < cost then raise exception 'insufficient_credits'; end if;
+  update public.profiles set credits = credits - cost where id = me.id;
   insert into public.credit_ledger (user_id, delta, balance, reason, ref)
-    values (me.id, -p_amount, me.credits - p_amount, 'spend', label);
-  return me.credits - p_amount;
+    values (me.id, -cost, me.credits - cost, 'spend', left(p_kind || coalesce(':' || nullif(btrim(p_ref), ''), ''), 300))
+    returning id into lid;
+  return jsonb_build_object('balance', me.credits - cost, 'id', lid);
+end $$;
+revoke execute on function public.spend_credits(text, text) from public, anon;
+grant execute on function public.spend_credits(text, text) to authenticated;
+
+-- old signature, kept only so browser tabs still running the previous app.js keep paying.
+-- The amount the browser sends is IGNORED; the price comes from the server like above.
+create or replace function public.spend_credits(p_amount integer, p_reason text, p_ref text default null)
+returns integer language plpgsql security definer set search_path = public as $$
+begin
+  return (public.spend_credits(p_reason, p_ref)->>'balance')::integer;
 end $$;
 revoke execute on function public.spend_credits(integer, text, text) from public, anon;
 grant execute on function public.spend_credits(integer, text, text) to authenticated;
+
+-- give back the points of a separation that failed or was cancelled: own charge only, within 20 minutes, once
+create or replace function public.refund_credits(p_id bigint) returns integer
+language plpgsql security definer set search_path = public as $$
+declare me public.profiles; row public.credit_ledger;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;       -- serialises refunds per user
+  if not found then raise exception 'not allowed'; end if;
+  select * into row from public.credit_ledger
+   where id = p_id and user_id = me.id and reason = 'spend' and delta < 0
+     and ref like 'sep%' and created_at > now() - interval '20 minutes';
+  if not found then raise exception 'not refundable'; end if;
+  if exists (select 1 from public.credit_ledger where user_id = me.id and reason = 'refund' and ref = 'refund:' || p_id) then
+    return me.credits;
+  end if;
+  -- separation runs in the browser, so cap refunds to keep "refund after success" from making it free
+  if (select count(*) from public.credit_ledger where user_id = me.id and reason = 'refund'
+        and created_at > now() - interval '1 day') >= 2 then
+    raise exception 'refund limit';
+  end if;
+  update public.profiles set credits = credits - row.delta where id = me.id;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (me.id, -row.delta, me.credits - row.delta, 'refund', 'refund:' || p_id);
+  return me.credits - row.delta;
+end $$;
+revoke execute on function public.refund_credits(bigint) from public, anon;
+grant execute on function public.refund_credits(bigint) to authenticated;
 
 -- lazy monthly refill, called by the app after sign-in. Returns the balance.
 create or replace function public.refill_credits() returns integer

@@ -256,7 +256,7 @@ he:{navPricing:'מחירים',navAbout:'אודות',creditsL:'נקודות',cred
   needSignIn:'כדי להשתמש בזה צריך להתחבר. נרשמים בחינם ומקבלים {n} נקודות מתנה.',noPoints:'אין מספיק נקודות: הפעולה עולה {n} ויש לך {b}.',charged:'ירדו {n} נקודות. נשארו {b}.',
   dlCostNote:'הורדת הסטמים עולה {n} נקודות (פעם אחת לשיר)',chargeFail:'לא הצלחנו לחייב נקודות. נסה שוב.',subNoLink:'כדי להצטרף למסלול כתבו לנו: {c}',subSoon:'ההצטרפות למסלולים תיפתח בקרוב.',
   planUntil:'בתוקף עד {d}',planFreeL:'מסלול חינמי',lr_signup:'מתנת הרשמה',lr_spend:'שימוש',lr_grant:'עדכון ידני',lr_refill:'חידוש חודשי',lr_plan:'הפעלת מסלול',lr_refund:'החזר',
-  fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.'},
+  fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.',lk_sep:'הפרדת ערוצים',lk_stems:'הורדת סטמים',refunded:'ההפרדה לא הושלמה, הנקודות הוחזרו.'},
 en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
   grantNote:'Note (optional)',grantBtn:'Add / remove points',setPlanBtn:'Activate plan',grantDone:'Updated. Balance: {b}',planDone:'Plan updated.',months:'months',
   billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = your payment provider\'s checkout page; after payment, activate the plan from the user\'s details.',
@@ -265,7 +265,7 @@ en:{navPricing:'Pricing',navAbout:'About',creditsL:'points',creditsBal:'Points b
   needSignIn:'Sign in to use this. Signing up is free and you get {n} points as a gift.',noPoints:'Not enough points: this costs {n} and you have {b}.',charged:'{n} points used. {b} left.',
   dlCostNote:'Downloading the stems costs {n} points (once per song)',chargeFail:'Couldn\'t charge points. Try again.',subNoLink:'To join a plan, write to us: {c}',subSoon:'Plans open for sign-up soon.',
   planUntil:'Valid until {d}',planFreeL:'Free plan',lr_signup:'Signup gift',lr_spend:'Used',lr_grant:'Manual update',lr_refill:'Monthly refill',lr_plan:'Plan activated',lr_refund:'Refund',
-  fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.'},
+  fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.',lk_sep:'Stem separation',lk_stems:'Stems download',refunded:'The separation didn\'t finish, your points were returned.'},
 ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
   grantNote:'ملاحظة (اختياري)',grantBtn:'إضافة / خصم نقاط',setPlanBtn:'تفعيل الخطة',grantDone:'تم التحديث. الرصيد: {b}',planDone:'تم تحديث الخطة.',months:'أشهر',
   billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = صفحة الدفع لدى مزوّد الدفع؛ بعد الدفع فعّل الخطة من تفاصيل المستخدم.',
@@ -274,7 +274,7 @@ ar:{navPricing:'الأسعار',navAbout:'حول',creditsL:'نقاط',creditsBal
   needSignIn:'سجّل الدخول لاستخدام هذه الميزة. التسجيل مجاني وتحصل على {n} نقطة هدية.',noPoints:'النقاط غير كافية: العملية تكلف {n} ولديك {b}.',charged:'تم خصم {n} نقاط. المتبقي {b}.',
   dlCostNote:'تنزيل المسارات يكلف {n} نقاط (مرة واحدة لكل أغنية)',chargeFail:'تعذّر خصم النقاط. حاول مجددًا.',subNoLink:'للاشتراك في خطة راسلنا: {c}',subSoon:'سيُفتح الاشتراك في الخطط قريبًا.',
   planUntil:'سارية حتى {d}',planFreeL:'الخطة المجانية',lr_signup:'هدية التسجيل',lr_spend:'استخدام',lr_grant:'تحديث يدوي',lr_refill:'تجديد شهري',lr_plan:'تفعيل خطة',lr_refund:'استرداد',
-  fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.'},
+  fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.',lk_sep:'فصل المسارات',lk_stems:'تنزيل المسارات',refunded:'لم يكتمل الفصل، أُعيدت نقاطك.'},
 ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
   grantNote:'Заметка (необязательно)',grantBtn:'Начислить / списать баллы',setPlanBtn:'Включить тариф',grantDone:'Готово. Баланс: {b}',planDone:'Тариф обновлён.',months:'мес.',
   billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = страница оплаты вашего платёжного сервиса; после оплаты включите тариф в карточке пользователя.',
@@ -283,7 +283,7 @@ ru:{navPricing:'Тарифы',navAbout:'О проекте',creditsL:'балло�
   needSignIn:'Войдите, чтобы пользоваться этим. Регистрация бесплатна, и вы получите {n} баллов в подарок.',noPoints:'Недостаточно баллов: действие стоит {n}, у вас {b}.',charged:'Списано {n} баллов. Осталось {b}.',
   dlCostNote:'Скачивание дорожек стоит {n} баллов (один раз на песню)',chargeFail:'Не удалось списать баллы. Попробуйте ещё раз.',subNoLink:'Чтобы подключить тариф, напишите нам: {c}',subSoon:'Подключение тарифов скоро откроется.',
   planUntil:'Действует до {d}',planFreeL:'Бесплатный тариф',lr_signup:'Подарок за регистрацию',lr_spend:'Использовано',lr_grant:'Ручное изменение',lr_refill:'Ежемесячное пополнение',lr_plan:'Тариф включён',lr_refund:'Возврат',
-  fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.'},
+  fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.',lk_sep:'Разделение на стемы',lk_stems:'Скачивание стемов',refunded:'Разделение не завершилось, баллы возвращены.'},
 es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
   grantNote:'Nota (opcional)',grantBtn:'Sumar / restar puntos',setPlanBtn:'Activar plan',grantDone:'Actualizado. Saldo: {b}',planDone:'Plan actualizado.',months:'meses',
   billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = la página de pago de tu proveedor; tras el pago, activa el plan desde los detalles del usuario.',
@@ -292,7 +292,7 @@ es:{navPricing:'Precios',navAbout:'Acerca de',creditsL:'puntos',creditsBal:'Sald
   needSignIn:'Inicia sesión para usar esto. Registrarte es gratis y recibes {n} puntos de regalo.',noPoints:'No tienes puntos suficientes: esto cuesta {n} y tienes {b}.',charged:'Se usaron {n} puntos. Quedan {b}.',
   dlCostNote:'Descargar las pistas cuesta {n} puntos (una vez por canción)',chargeFail:'No se pudieron cobrar los puntos. Inténtalo de nuevo.',subNoLink:'Para unirte a un plan, escríbenos: {c}',subSoon:'Los planes se abrirán pronto.',
   planUntil:'Válido hasta {d}',planFreeL:'Plan gratis',lr_signup:'Regalo de registro',lr_spend:'Uso',lr_grant:'Ajuste manual',lr_refill:'Recarga mensual',lr_plan:'Plan activado',lr_refund:'Reembolso',
-  fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.'}};
+  fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.',lk_sep:'Separación de pistas',lk_stems:'Descarga de pistas',refunded:'La separación no terminó, te devolvimos los puntos.'}};
 for(const k in IP)Object.assign(I[k],IP[k]);
 
 
@@ -1165,7 +1165,8 @@ const fmtEta=s=>s>=90?Math.round(s/60)+' '+t('min_'):Math.max(5,Math.round(s/5)*
 async function aiSeparate(){
   if(!S.buffer||AI.busy)return;
   if(!(await payFor('sep')))return;
-  AI.busy=true;const job=++AI.job;renderStemsUI();
+  const pay=await charge('sep',S.name);if(!pay)return;
+  AI.busy=true;const job=++AI.job;AI.pay=pay;renderStemsUI();
   const token=S.buffer;
   try{
     if(!AI.ready){
@@ -1194,16 +1195,17 @@ async function aiSeparate(){
       AI.w.postMessage({type:'run',L,R},[L.buffer,R.buffer]);
     });
     if(job!==AI.job||S.buffer!==token)return;
-    setStems(res,len,'ai');sepEnd(null);bumpSeps();charge('sep',S.name);S.stemsPaid=false;
+    AI.pay=null;setStems(res,len,'ai');sepEnd(null);bumpSeps();S.stemsPaid=false;
   }catch(e){
     console.error(e);if(job!==AI.job)return;
+    refund(AI.pay);AI.pay=null;
     if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
     sepEnd(t('aiErr',{m:String(e.message||e).slice(0,80)}),true);
   }
 }
 const AI_BYTES=78767446;
 function cancelSep(silent){
-  if(!AI.busy)return;AI.job++;
+  if(!AI.busy)return;AI.job++;if(AI.pay){refund(AI.pay);AI.pay=null}
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
   else if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
   sepEnd(silent?null:t('canceled'));
@@ -1366,11 +1368,11 @@ async function download(){
       if(!mp3)return wav(a,b,sr);
       const kp=S.key?mod(S.key.pc+S.transpose,12):null;
       return MP3.encode(a,b,sr,{kbps:320,tags:{title:part?`${S.name} (${part})`:S.name,artist:'Chord Room',bpm:S.bpm?ebpm():undefined,key:kp!=null?keyName(kp,S.key.mode,true):undefined},
-        onProgress:p=>{msg.textContent=t('encoding',{p:Math.round(p*100)})}});
+        onProgress:p=>{msg.textContent=t('encoding',{p:Math.round(p*100)})}}).catch(e=>{(e=e instanceof Error?e:new Error(String(e))).mp3=true;throw e});
     };
     if(pick.some(e=>typeof e.st==='number'||e.st==='inst')&&!S.stemsPaid){
-      if(!(await payFor('stems')))return;
-      if(!(await charge('stems',S.name)))return;
+      if(!(await payFor('stems'))){msg.textContent='';return}
+      if(!(await charge('stems',S.name))){msg.textContent='';return}
       S.stemsPaid=true;renderDlCost();
     }
     if(pick.some(e=>e.st==='mbass'||e.st==='mmel'))await transcribe(p=>{msg.textContent=t('transcribing',{p:Math.round(p*100)})});
@@ -1389,7 +1391,7 @@ async function download(){
     saveBlob(blob,`${safe} - Chord Room.zip`);
     if(ACC.on&&ACC.user)Backend.logDownload({song_name:S.name,files:pick.map(e=>e.id),size:blob.size}).catch(()=>{});
     msg.textContent=t('dlDone',{s:(blob.size/1048576).toFixed(1)});
-  }catch(err){const c=err&&err.code;msg.textContent=c==='declined'?t('dlDeclined'):c==='rate_limited'?t('dlBusy'):expFmt==='mp3'?t('mp3Fail'):t('dlFail');msg.classList.add('err');console.error(err)}
+  }catch(err){const c=err&&err.code;msg.textContent=c==='declined'?t('dlDeclined'):c==='rate_limited'?t('dlBusy'):err&&err.mp3?t('mp3Fail'):t('dlFail');msg.classList.add('err');console.error(err)}
   finally{btn.disabled=false}
 }
 
@@ -1734,16 +1736,26 @@ async function payFor(kind){
   if(have<need){toast(t('noPoints',{n:need,b:have}),[[t('seePlans'),()=>showView('pricing')]]);return false}
   return true;
 }
+// spend points now (the server sets the price). Returns false when refused, else {id} of the ledger row (null = free)
 async function charge(kind,ref){
-  if(!billingOn()||ACC.admin||!ACC.user)return true;
+  if(!billingOn()||ACC.admin||!ACC.user)return {id:null};
   const n=costOf(kind);
-  try{const b=await Backend.spendCredits(n,kind,String(ref||'').slice(0,200));if(ACC.cred)ACC.cred.credits=b;renderCredits();toast(t('charged',{n,b}));return true}
-  catch(e){if(missingDb(e)){ACC.credMissing=true;renderCredits();return true}if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
+  try{const r=await Backend.spendCredits(kind,String(ref||'').slice(0,200)),b=r&&r.balance;
+    if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();if(r&&r.id)toast(t('charged',{n,b}));return {id:(r&&r.id)||null}}
+  catch(e){if(missingDb(e)&&ACC.credMissing)return {id:null}; /* points not installed at all → free; anything else → refuse */if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
+}
+async function refund(pay){
+  if(!pay||!pay.id)return;
+  try{const b=await Backend.refundCredits(pay.id);if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();toast(t('refunded'))}catch(e){console.warn(e)}
+}
+function ledgerRef(r){
+  if(!r.ref||r.reason==='refund')return '';
+  const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);return m?t('lk_'+m[1])+(m[2]?` · ${m[2]}`:''):r.ref;
 }
 async function renderLedger(ul,rows){
   ul.innerHTML='';if(!rows||!rows.length){ul.innerHTML=`<li class="snote">${esc(t('noLedger'))}</li>`;return}
   for(const r of rows){const li=document.createElement('li');li.innerHTML=`<span class="lr"></span><span class="lt snote"></span><b class="mono" dir="ltr"></b>`;
-    li.querySelector('.lr').textContent=t('lr_'+r.reason)+(r.ref?` · ${r.ref}`:'');li.querySelector('.lt').textContent=fmtDate(r.created_at);
+    const rf=ledgerRef(r);li.querySelector('.lr').textContent=t('lr_'+r.reason)+(rf?` · ${rf}`:'');li.querySelector('.lt').textContent=fmtDate(r.created_at);
     const d=li.querySelector('b');d.textContent=(r.delta>0?'+':'')+r.delta;d.classList.toggle('neg',r.delta<0);ul.appendChild(li)}
 }
 $('#creditsChip').onclick=()=>showView('pricing');
@@ -1752,7 +1764,8 @@ $('#ptsBox').querySelector('details').addEventListener('toggle',async e=>{if(e.t
 function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null}}
 function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState())}
 function renderAboutPage(){if(window.PAGES)PAGES.renderAbout($('#aboutView'),BILL())}
-if(window.PAGES){
+function hookPages(){
+  if(!window.PAGES||PAGES.__hooked)return;PAGES.__hooked=true;
   PAGES.onNav=v=>showView(v);
   PAGES.onSignup=()=>{if(ACC.on)openDlg('up')};
   PAGES.onSubscribe=id=>{
@@ -2190,6 +2203,7 @@ window.CR={
 };
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
-if(location.hash.length>1)routeHash();
+// pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
+document.addEventListener('DOMContentLoaded',()=>{hookPages();if(location.hash.length>1)routeHash()});
 (async()=>{try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

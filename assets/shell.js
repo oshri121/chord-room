@@ -128,7 +128,8 @@
     /* class/hidden on tabs & tools (app.js), text of the data-i labels (language switch) */
     new MutationObserver(schedule).observe(topIn,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','hidden']});
   }
-  new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['lang','dir']});
+  new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['lang','dir','class','style']});
+  document.addEventListener('a11y-change',schedule); /* text size / font from the accessibility panel */
   window.addEventListener('resize',schedule);
   if(mq.addEventListener)mq.addEventListener('change',schedule);else if(mq.addListener)mq.addListener(schedule);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);

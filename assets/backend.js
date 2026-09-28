@@ -115,9 +115,16 @@
       if (error) throw error;
       return data;
     },
-    async spendCredits(amount, reason, ref) {
-      const { data, error } = await sb.rpc('spend_credits', { p_amount: amount, p_reason: reason || '', p_ref: ref == null ? null : String(ref).slice(0, 300) });
+    // the server decides the price from site_config.billing.costs[kind]; returns { balance, id }
+    async spendCredits(kind, ref) {
+      const { data, error } = await sb.rpc('spend_credits', { p_kind: kind, p_ref: ref == null ? null : String(ref).slice(0, 250) });
       if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      return data || { balance: null, id: null };
+    },
+    // give back a separation charge that failed or was cancelled (own charge, within 20 minutes, once)
+    async refundCredits(id) {
+      const { data, error } = await sb.rpc('refund_credits', { p_id: id });
+      if (error) throw error;
       return data;
     },
     async ledger(limit = 30) {
