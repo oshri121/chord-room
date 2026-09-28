@@ -140,6 +140,29 @@ es:{navCrate:'Biblioteca DJ',crEyebrow:'Análisis por lotes · en tu navegador',
   crNoMatch:'Ningún tema coincide con el filtro.',crNothing:'Analiza algunos temas primero.'}
 });
 
+CR.addStrings({
+he:{crUsb:'USB לפיוניר · שמות באנגלית',crUsbT:'עותקים ששמם כתוב באותיות אנגליות לפי ההגייה (עופר לוי – אני חוזר ← \u2066Ofer Levi – Ani Chozer\u2069), כדי שיופיעו בנגנים ובקונטרולרים של Pioneer. ב־MP3 וב־FLAC מתורגמים גם שם השיר והאמן שבתוך הקובץ.',
+  crUsbH:'השמות באנגלית מופיעים מתחת לכל שיר בעברית. אפשר לתקן כל שם (✎), והאתר זוכר את התיקון לפעם הבאה.',crPrefix:'להוסיף בתחילת השם סולם ו־BPM \u2066(8A - 124 - …)\u2069',
+  crLatEdit:'עריכת השם באנגלית',crLatP:'Artist - Title',crLatSave:'שמירה',crLatCancel:'ביטול',crLatReset:'חזרה לתרגום האוטומטי',crLatLook:'מחפש את השמות הרשמיים של האמנים…',
+  crUsbDone:'ה־ZIP מוכן ({s} MB). מחלצים ומעתיקים את הקבצים ל־USB (FAT32 או exFAT) ומכניסים לנגן.',crUsbOther:'{n} קבצים שאינם MP3/FLAC: רק שם הקובץ תורגם (התגיות שבתוכם נשארו).'},
+en:{crUsb:'USB for Pioneer · English names',crUsbT:'Copies named in Latin letters by pronunciation (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer) so they show on Pioneer players and controllers. In MP3 and FLAC the title and artist inside the file are converted too.',
+  crUsbH:'The Latin name appears under every Hebrew track. Fix any name (✎) and it is remembered next time.',crPrefix:'Start the name with key and BPM (8A - 124 - …)',
+  crLatEdit:'Edit the Latin name',crLatP:'Artist - Title',crLatSave:'Save',crLatCancel:'Cancel',crLatReset:'Back to the automatic name',crLatLook:'Looking up the artists\' official names…',
+  crUsbDone:'ZIP ready ({s} MB). Unzip, copy the files to a USB stick (FAT32 or exFAT) and plug it into the player.',crUsbOther:'{n} files aren\'t MP3/FLAC: only their file name was converted (the tags inside stay).'},
+ar:{crUsb:'USB لأجهزة Pioneer · أسماء بالإنجليزية',crUsbT:'نسخ بأسماء بالحروف اللاتينية حسب النطق (עופר לוי – אני חוזר ← \u2066Ofer Levi – Ani Chozer\u2069) لتظهر في مشغلات وأجهزة تحكم Pioneer. في MP3 وFLAC يُحوَّل أيضًا اسم الأغنية والفنان داخل الملف.',
+  crUsbH:'يظهر الاسم اللاتيني تحت كل أغنية عبرية. يمكنك تصحيح أي اسم (✎) وسيُحفظ للمرة القادمة.',crPrefix:'ابدأ الاسم بالمقام وBPM \u2066(8A - 124 - …)\u2069',
+  crLatEdit:'تعديل الاسم اللاتيني',crLatP:'Artist - Title',crLatSave:'حفظ',crLatCancel:'إلغاء',crLatReset:'العودة إلى الاسم التلقائي',crLatLook:'البحث عن الأسماء الرسمية للفنانين…',
+  crUsbDone:'ملف ZIP جاهز ({s} MB). فك الضغط وانسخ الملفات إلى USB (FAT32 أو exFAT) وضعه في المشغل.',crUsbOther:'{n} ملفات ليست MP3/FLAC: حُوِّل اسم الملف فقط (بقيت الوسوم داخلها).'},
+ru:{crUsb:'USB для Pioneer · латиницей',crUsbT:'Копии с названиями латиницей по произношению (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer), чтобы они отображались на плеерах и контроллерах Pioneer. В MP3 и FLAC также переводятся название и исполнитель внутри файла.',
+  crUsbH:'Латинское название показано под каждым треком на иврите. Любое можно исправить (✎) — исправление запомнится.',crPrefix:'Начинать имя с тональности и BPM (8A - 124 - …)',
+  crLatEdit:'Изменить латинское название',crLatP:'Artist - Title',crLatSave:'Сохранить',crLatCancel:'Отмена',crLatReset:'Вернуть автоматическое название',crLatLook:'Ищем официальные имена исполнителей…',
+  crUsbDone:'ZIP готов ({s} MB). Распакуйте, скопируйте файлы на USB (FAT32 или exFAT) и вставьте в плеер.',crUsbOther:'Файлов не MP3/FLAC: {n} — у них переведено только имя файла (теги внутри остались).'},
+es:{crUsb:'USB para Pioneer · nombres en latín',crUsbT:'Copias con el nombre en letras latinas según la pronunciación (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer) para que se vean en reproductores y controladores Pioneer. En MP3 y FLAC también se convierten el título y el artista dentro del archivo.',
+  crUsbH:'El nombre en latín aparece bajo cada tema en hebreo. Puedes corregir cualquiera (✎) y se recordará.',crPrefix:'Empezar el nombre con tonalidad y BPM (8A - 124 - …)',
+  crLatEdit:'Editar el nombre en latín',crLatP:'Artist - Title',crLatSave:'Guardar',crLatCancel:'Cancelar',crLatReset:'Volver al nombre automático',crLatLook:'Buscando los nombres oficiales de los artistas…',
+  crUsbDone:'ZIP listo ({s} MB). Descomprime, copia los archivos a un USB (FAT32 o exFAT) y conéctalo al reproductor.',crUsbOther:'{n} archivos no son MP3/FLAC: solo se convirtió el nombre del archivo (las etiquetas internas quedan).'}
+});
+
 /* ---------- constants & state ---------- */
 const LS_K='chordroom.crate.v1',MAX=300,MAX_BYTES=250*1024*1024,BIG_ZIP=500*1024*1024,LS_CAP=1000;
 const AUDIO_EXT=['mp3','wav','m4a','aac','mp4','flac','ogg','oga','opus','aif','aiff'];
@@ -150,7 +173,7 @@ const RB_B=[,'B','F#','Db','Ab','Eb','Bb','F','C','G','D','A','E'];
 const KIND={mp3:'MP3 File',wav:'WAV File',m4a:'M4A File',aac:'M4A File',mp4:'M4A File',flac:'FLAC File',aif:'AIFF File',aiff:'AIFF File',ogg:'OGG File',oga:'OGG File',opus:'OGG File'};
 const COLS=[['n','#'],['name','colName'],['bpm','BPM'],['key','colKey'],['dur','colLen'],['lufs','LUFS'],['energy','colEnergy'],['st','colStatus']];
 const SORTABLE=new Set(['n','name','bpm','key','dur','lufs','energy']);
-const C={built:false,visible:false,rows:[],sort:null,q:'',key:'',compat:null,sel:null,folder:'',running:false,cancel:false,cur:null,curP:0,
+const C={usbPre:(()=>{try{return localStorage.getItem('chordroom.crate.usbpre')==='1'}catch(e){return false}})(),editLat:null,built:false,visible:false,rows:[],sort:null,q:'',key:'',compat:null,sel:null,folder:'',running:false,cancel:false,cur:null,curP:0,
   msg:'',msgErr:false,msgAct:null,clearArm:0,seq:0,zipBusy:false};
 
 const IC={
@@ -160,6 +183,8 @@ const IC={
   smart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18c3 0 4-12 8-12s5 8 8 8"/><circle cx="4" cy="18" r="1.5"/><circle cx="20" cy="14" r="1.5"/></svg>',
   open:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  usb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v6H8zM6 9h12v8a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M10 5.5h.01M14 5.5h.01"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>'
 };
 
@@ -208,7 +233,7 @@ const r3=x=>x==null?null:Math.round(x*1000)/1000;
 function save(){
   try{
     const rows=C.rows.filter(done).slice(0,LS_CAP).map(r=>({id:r.id,name:r.name,rel:r.rel,size:r.size,ext:r.ext,dur:r3(r.dur),lufs:r3(r.lufs),peak:r3(r.peak),
-      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux)}));
+      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{})}));
     localStorage.setItem(LS_K,JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
   }catch(e){}
 }
@@ -270,7 +295,7 @@ async function pump(){
       const r=C.rows.find(x=>x.st==='q'&&x.file);if(!r)break;
       await analyzeRow(r);save();renderAll();await CR.tick();
     }
-  }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save()}
+  }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save();lookupArtists()}
 }
 async function analyzeRow(r){
   C.cur=r.id;C.curP=0;r.st='dec';r.p=0;renderRow(r);renderDeck();
@@ -464,17 +489,26 @@ function parseComm(d){
 }
 const u16=s=>{const a=[0xFF,0xFE];for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a.push(c&255,c>>8)}return a};
 const latin=s=>[...s].map(c=>c.charCodeAt(0)&255);
-function tagMp3(u,{bpm,key,cam}){
+const encText=s=>/^[\x20-\x7E]*$/.test(s)?[0,...latin(s)]:[1,...u16(s)];
+function tagMp3(u,{bpm,key,cam,lat}){
   const T=readTag(u),ver=T.ver,keep=[];let old=null;
-  for(const f of T.frames){
+  const plain=f=>(f.f2&(ver===4?0x0F:0xC0))===0;   // not compressed / encrypted / unsynchronised
+  for(let f of T.frames){
     if(f.id==='TBPM'||f.id==='TKEY')continue;
-    if(f.id==='COMM'){const c=parseComm(f.data);if(c.desc==='Camelot')continue;if(c.desc===''&&!old){old=c;continue}}
+    if(lat&&((f.id==='TIT2'&&lat.title)||(f.id==='TPE1'&&lat.artist)))continue;
+    if(f.id==='COMM'&&plain(f)){const c=parseComm(f.data);if(c.desc==='Camelot')continue;if(c.desc===''&&!old){old=c;continue}
+      if(lat&&hasHeb(c.text+c.desc)){const x=HL.translit(c.text);f={...f,data:new Uint8Array([1,...latin(/^[A-Za-z]{3}$/.test(c.lang)?c.lang:'eng'),...u16(HL.translit(c.desc)),0,0,...u16(x)])}}}
+    else if(lat&&f.id[0]==='T'&&f.id!=='TXXX'&&plain(f)&&f.data.length>1){const x=decStr(f.data[0],f.data.subarray(1)).replace(/\0+$/,'');
+      if(hasHeb(x))f={...f,data:new Uint8Array(encText(x.split('\0').map(v=>HL.translit(v)).join(' / ')))}}
     keep.push(f);
   }
+  if(lat&&old&&hasHeb(old.text))old={...old,text:HL.translit(old.text)};
   let com=cam;
   if(old&&old.text){const rest=old.text.replace(/^\d{1,2}[AB](?:\s*·\s*|\s*$)/,'').trim();if(rest)com=cam+' · '+rest}
   const lang=old&&/^[A-Za-z]{3}$/.test(old.lang)?old.lang:'eng';
   const add=[{id:'TBPM',data:[0,...latin(bpm)]}];
+  if(lat&&lat.title)add.push({id:'TIT2',data:encText(lat.title)});
+  if(lat&&lat.artist)add.push({id:'TPE1',data:encText(lat.artist)});
   if(key)add.push({id:'TKEY',data:[0,...latin(key)]});
   if(com)add.push({id:'COMM',data:[1,...latin(lang),...u16(''),0,0,...u16(com)]});
   const parts=[];let size=0;
@@ -485,6 +519,112 @@ function tagMp3(u,{bpm,key,cam}){
   const out=new Uint8Array(10+size+audio.length);let o=0;
   out.set(head,0);o=10;for(const p of parts){out.set(p,o);o+=p.length}out.set(audio,o);
   return out;
+}
+
+/* ---------- Latin names for Pioneer players (assets/heblat.js) ---------- */
+const HL=window.HEBLAT;
+const AK='chordroom.dzartist.v1';
+let DZA=(()=>{try{return JSON.parse(localStorage.getItem(AK)||'{}')||{}}catch(e){return {}}})();
+const hasHeb=s=>!!HL&&HL.has(s);
+function artistLat(a){
+  if(!a||!hasHeb(a))return a||'';
+  const k=HL.known(a);if(k)return k;
+  const d=DZA[a.trim()];if(d)return d;
+  return HL.translit(a);
+}
+/* {artist,title} in Latin letters for a row (a name the user typed wins) */
+function latOf(r){
+  if(r.lat)return {artist:r.lat.artist||'',title:r.lat.title||''};
+  const p=parseName(r.name);
+  return {artist:artistLat(p.artist),title:hasHeb(p.title)&&HL?HL.translit(p.title):p.title};
+}
+const latStr=l=>(l.artist?l.artist+' - ':'')+l.title;
+/* official artist spellings from Deezer ("עופר לוי" → "Ofer Levi"), only when the spelling looks like the same name */
+function sim(a,b){a=HL.skeleton(a);b=HL.skeleton(b);if(!a||!b)return 0;
+  const m=a.length,n=b.length,d=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=a[i-1]===b[j-1]?d[i-1][j-1]+1:Math.max(d[i-1][j],d[i][j-1]);
+  return 2*d[m][n]/(m+n)}
+let looking=false;
+async function lookupArtists(){
+  if(looking||!HL||!CR.dz)return;
+  const todo=[...new Set(C.rows.map(r=>parseName(r.name).artist.trim()).filter(a=>a&&hasHeb(a)&&!HL.known(a)&&!(a in DZA)))].slice(0,40);
+  if(!todo.length)return;
+  looking=true;setMsg(t('crLatLook'));renderMsg();
+  try{
+    for(const a of todo){
+      let best='';
+      try{const d=await CR.dz('search/artist',{q:a,limit:5});const guess=HL.translit(a);
+        for(const x of (d&&d.data)||[]){const nm=String(x.name||'').trim();if(!nm||hasHeb(nm))continue;if(sim(nm,guess)>=0.6){best=nm;break}}}catch(e){if(!DZA.__fail)console.warn('deezer artist',e);continue}
+      DZA[a]=best;
+    }
+    try{localStorage.setItem(AK,JSON.stringify(DZA))}catch(e){}
+  }finally{looking=false;if(C.msg===t('crLatLook'))setMsg('');renderTable();renderMsg()}
+}
+function saveLat(r,val){
+  const v=String(val||'').replace(/\s+/g,' ').trim();
+  if(!v){delete r.lat}
+  else{const m=/^(.+?)\s+[-–—]\s+(.+)$/.exec(v),l=m?{artist:m[1].trim(),title:m[2].trim()}:{artist:'',title:v};
+    const p=parseName(r.name);
+    if(HL){if(p.artist&&l.artist&&hasHeb(p.artist))HL.learnArtist(p.artist,l.artist);if(hasHeb(p.title)&&l.title)HL.learn(p.title,l.title)}
+    r.lat=l}
+  C.editLat=null;save();renderTable();
+}
+/* file names that FAT32 USB sticks and CDJs accept */
+const fatName=s=>String(s).normalize('NFC').replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').replace(/[. ]+$/,'').trim();
+function usbName(r){
+  const l=latOf(r),pre=C.usbPre?`${camStr(r.key)||'--'} - ${Math.round(r.bpm)} - `:'';
+  return fatName(pre+latStr(l)).slice(0,120)+(r.ext?'.'+r.ext:'');
+}
+/* FLAC: Vorbis comments — Hebrew values converted, TITLE / ARTIST set, BPM / INITIALKEY written */
+function tagFlac(u,{lat,bpm,key}){
+  if(u.length<8||u[0]!==0x66||u[1]!==0x4C||u[2]!==0x61||u[3]!==0x43)return u;
+  const blocks=[];let p=4,last=false;
+  while(!last&&p+4<=u.length){const h=u[p];last=!!(h&128);const type=h&127,len=(u[p+1]<<16)|(u[p+2]<<8)|u[p+3];if(p+4+len>u.length)return u;blocks.push({type,data:u.subarray(p+4,p+4+len)});p+=4+len}
+  const audio=u.subarray(p),dv=d=>new DataView(d.buffer,d.byteOffset,d.byteLength),te=new TextEncoder(),td=new TextDecoder();
+  let vendor='Chord Room',com=[];const vi=blocks.findIndex(b=>b.type===4);
+  if(vi>=0){const d=blocks[vi].data,v=dv(d);let q=0;const vl=v.getUint32(q,true);q+=4;vendor=td.decode(d.subarray(q,q+vl));q+=vl;const n=v.getUint32(q,true);q+=4;
+    for(let i=0;i<n&&q+4<=d.length;i++){const l=v.getUint32(q,true);q+=4;com.push(td.decode(d.subarray(q,q+l)));q+=l}}
+  const drop=new Set(['TITLE','ARTIST','BPM','INITIALKEY','KEY']);
+  com=com.filter(c=>!drop.has(c.split('=')[0].toUpperCase())).map(c=>{const i=c.indexOf('=');if(i<0)return c;const v=c.slice(i+1);return hasHeb(v)?c.slice(0,i+1)+HL.translit(v):c});
+  if(lat.title)com.push('TITLE='+lat.title);if(lat.artist)com.push('ARTIST='+lat.artist);if(bpm)com.push('BPM='+bpm);if(key)com.push('INITIALKEY='+key);
+  const parts=[te.encode(vendor),...com.map(c=>te.encode(c))];
+  const size=4+parts[0].length+4+com.length*4+parts.slice(1).reduce((a,x)=>a+x.length,0),vc=new Uint8Array(size),w=dv(vc);let q=0;
+  w.setUint32(q,parts[0].length,true);q+=4;vc.set(parts[0],q);q+=parts[0].length;w.setUint32(q,com.length,true);q+=4;
+  for(const x of parts.slice(1)){w.setUint32(q,x.length,true);q+=4;vc.set(x,q);q+=x.length}
+  if(vi>=0)blocks[vi]={type:4,data:vc};else blocks.splice(1,0,{type:4,data:vc});
+  const keep=blocks.filter(b=>b.type!==1);   // PADDING dropped (the whole file is rewritten anyway)
+  const total=4+keep.reduce((a,b)=>a+4+b.data.length,0)+audio.length,out=new Uint8Array(total);out.set([0x66,0x4C,0x61,0x43]);let o=4;
+  keep.forEach((b,i)=>{const L=b.data.length;out.set([(i===keep.length-1?128:0)|b.type,(L>>16)&255,(L>>8)&255,L&255],o);o+=4;out.set(b.data,o);o+=L});
+  out.set(audio,o);return out;
+}
+async function exportUsb(force){
+  if(C.zipBusy)return;
+  const all=exportRows(),rows=all.filter(r=>r.file),miss=all.length-rows.length;
+  if(!rows.length){setMsg(all.length?t('crZipNone'):t('crNothing'),true);renderMsg();return}
+  const total=rows.reduce((a,r)=>a+r.size,0);
+  if(total>BIG_ZIP&&!force){setMsg(t('crZipBig',{s:mb(total)}),true,[t('crZipGo'),()=>exportUsb(true)]);renderMsg();return}
+  C.zipBusy=true;renderExp();
+  try{
+    await lookupArtists();
+    const files=[],used=new Set();let i=0,other=0;
+    for(const r of rows){
+      setMsg(t('crZipBusy',{p:Math.round(i/rows.length*100)}));renderMsg();await CR.tick();
+      let nm=usbName(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
+      used.add(nm.toLowerCase());r._zn=nm;
+      const lat=latOf(r),bpm=String(Math.round(r.bpm)),key=rbKey(r.key);
+      let data=new Uint8Array(await r.file.arrayBuffer());
+      if(r.ext==='mp3'){try{data=tagMp3(data,{bpm,key,cam:camStr(r.key),lat})}catch(e){console.warn('id3',r.name,e)}}
+      else if(r.ext==='flac'){try{data=tagFlac(data,{lat,bpm,key})}catch(e){console.warn('flac',r.name,e)}}
+      else if(hasHeb(r.name))other++;
+      files.push({name:nm,data});i++;
+    }
+    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...rows.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${latStr(latOf(r))}`,r._zn])].join('\n')+'\n')});
+    setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
+    const blob=CR.zip(files);
+    CR.saveBlob(blob,'chord-room-usb.zip');
+    setMsg(t('crUsbDone',{s:mb(blob.size)})+(other?' '+t('crUsbOther',{n:other}):'')+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
+  }catch(e){console.error(e);setMsg(t('stErr'),true)}
+  finally{C.zipBusy=false;renderExp();renderMsg()}
 }
 
 /* ---------- messages ---------- */
@@ -537,6 +677,11 @@ function build(){
       <button type="button" class="btn" id="crM3u">${IC.dl}<span data-i="crM3u"></span></button>
       <button type="button" class="btn" id="crZip">${IC.dl}<span data-i="crZip"></span></button>
     </div>
+    <div class="crusb">
+      <div class="crusbh"><button type="button" class="btn solid" id="crUsb">${IC.usb}<span data-i="crUsb"></span></button>
+        <label class="crchk"><input type="checkbox" id="crUsbPre"><span data-i="crPrefix"></span></label></div>
+      <p class="snote" id="crUsbT" data-i="crUsbT"></p><p class="snote" data-i="crUsbH"></p>
+    </div>
   </section>
 </div>
 <input type="file" id="crIn" multiple accept="${ACCEPT}">
@@ -554,7 +699,8 @@ function wire(){
   $('#crKey').onchange=e=>{C.key=e.target.value;renderTable()};
   $('#crSortM').onchange=e=>{const [k,d]=e.target.value.split(':');C.sort=k==='n'?null:{k,dir:+d};save();renderTable();renderSortM()};
   $('#crSmart').onclick=smartOrder;
-  $('#crCsv').onclick=exportCsv;$('#crXml').onclick=exportXml;$('#crM3u').onclick=exportM3u;$('#crZip').onclick=()=>exportZip(false);
+  $('#crCsv').onclick=exportCsv;$('#crXml').onclick=exportXml;$('#crM3u').onclick=exportM3u;$('#crZip').onclick=()=>exportZip(false);$('#crUsb').onclick=()=>exportUsb(false);
+  const up=$('#crUsbPre');up.checked=C.usbPre;up.onchange=()=>{C.usbPre=up.checked;try{localStorage.setItem('chordroom.crate.usbpre',C.usbPre?'1':'0')}catch(e){}};
   const fi=$('#crFolderIn');fi.value=C.folder;fi.oninput=e=>{C.folder=e.target.value;save()};
   $('#crHead').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;
     if(k==='n')C.sort=null;else if(!C.sort||C.sort.k!==k)C.sort={k,dir:k==='energy'||k==='lufs'?-1:1};else if(C.sort.dir===(k==='energy'||k==='lufs'?-1:1))C.sort.dir*=-1;else C.sort=null;
@@ -567,12 +713,18 @@ function wire(){
       else{C.clearArm=Date.now();renderDeck();const nb=$('#crDeck [data-act="clear"]');if(nb)nb.focus();setTimeout(()=>{if(C.clearArm&&Date.now()-C.clearArm>=4000){C.clearArm=0;renderDeck()}},4100)}
     }};
 }
+function focusLat(r){const b=$(`#crBody tr[data-id="${r.id}"] [data-act="lat"]`);if(b)b.focus()}
 function act(a,r){
   const keep=`#crBody tr[data-id="${r.id}"] [data-act="${a}"]`;
   if(a==='sel'){C.sel=C.sel===r.id?null:r.id;save()}
   else if(a==='compat'){C.compat=C.compat===r.id?null:r.id}
   else if(a==='half'||a==='dbl'){if(!done(r))return;r.bpm=a==='half'?r.bpm/2:r.bpm*2;r.energy=energyOf(r);save();renderDeck()}
   else if(a==='open'){if(r.file)CR.openFile(r.file);return}
+  else if(a==='lat'){C.editLat=r.id;renderTable();const inp=$(`#crBody tr[data-id="${r.id}"] input.latin`);if(inp){inp.focus();inp.select();
+      inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveLat(r,inp.value);focusLat(r)}else if(e.key==='Escape'){e.preventDefault();C.editLat=null;renderTable();focusLat(r)}}}return}
+  else if(a==='latok'){const inp=$(`#crBody tr[data-id="${r.id}"] input.latin`);saveLat(r,inp?inp.value:'');focusLat(r);return}
+  else if(a==='latx'){C.editLat=null;renderTable();focusLat(r);return}
+  else if(a==='latreset'){delete r.lat;C.editLat=null;save();renderTable();focusLat(r);return}
   else if(a==='rm'){const i=view().indexOf(r);C.rows=C.rows.filter(x=>x!==r);if(C.sel===r.id)C.sel=null;if(C.compat===r.id)C.compat=null;save();renderAll();
     const tr=$('#crBody').children[Math.max(0,Math.min(i,$('#crBody').children.length-1))],f=tr&&tr.querySelector('[data-act="rm"]');if(f)f.focus();else{const s=$('#crFilesB2');if(s&&!$('#crDrop').hidden)s.focus()}return}
   renderTable();const n=$(keep);if(n)n.focus();
@@ -636,6 +788,12 @@ function renderHead(){
     const inner=SORTABLE.has(k)?`<button type="button" data-k="${k}"${k==='energy'?` title="${esc(t('crEnergyT'))}"`:''}${k==='n'?` title="${esc(t('crSetOrder'))}"`:''}><span>${esc(lab)}</span><i class="sa" aria-hidden="true">${on&&dir?dir>0?'▲':'▼':on?'•':''}</i></button>`:`<span class="th">${esc(lab)}</span>`;
     return `<th scope="col" class="c-${k}"${aria}>${inner}</th>`}).join('');
 }
+function latHTML(r){
+  if(!HL||!(hasHeb(r.name)||r.lat))return '';
+  const v=latStr(latOf(r));
+  if(C.editLat===r.id)return `<div class="lat edit" dir="ltr"><input type="text" class="latin" value="${esc(v)}" placeholder="${esc(t('crLatP'))}" aria-label="${esc(t('crLatEdit'))}" spellcheck="false" autocomplete="off"><button type="button" class="btn solid" data-act="latok">${esc(t('crLatSave'))}</button><button type="button" class="ib" data-act="latx" title="${esc(t('crLatCancel'))}" aria-label="${esc(t('crLatCancel'))}">${IC.x}</button>${r.lat?`<button type="button" class="btn ghost" data-act="latreset">${esc(t('crLatReset'))}</button>`:''}</div>`;
+  return `<div class="lat" dir="ltr"><span class="en">EN</span><span class="lv">${esc(v)}</span><button type="button" class="ib" data-act="lat" title="${esc(t('crLatEdit'))}" aria-label="${esc(t('crLatEdit'))} · ${esc(v)}">${IC.edit}</button></div>`;
+}
 function rowHTML(r,i,prev){
   const p=parseName(r.name),ok=done(r),mx=prev?mixOf(prev,r):null;
   const sub=[p.artist,r.rel&&r.rel!==r.name?r.rel:''].filter(Boolean);
@@ -648,7 +806,7 @@ function rowHTML(r,i,prev){
   const nm=esc(p.title);
   return `<tr data-id="${r.id}" class="${C.sel===r.id?'sel ':''}${C.compat===r.id?'anchor ':''}st-${r.st}">
 <td class="c-n">${mx?`<span class="mx ${mx.k}" role="img" title="${esc(mxT)}" aria-label="${esc(mxT)}">${mx.k==='good'?'':mx.k==='tempo'?'~':'×'}</span>`:''}<button type="button" class="rn mono" data-act="sel" aria-pressed="${C.sel===r.id}" title="${esc(t('crStartT'))}" aria-label="${i+1} · ${esc(t('crStartT'))}">${i+1}</button></td>
-<td class="c-name"><div class="tt" dir="auto" title="${esc(r.name)}">${nm}${C.sel===r.id?` <span class="tag">${esc(t('crStartTag'))}</span>`:''}</div>${sub.length?`<div class="ar" dir="auto">${esc(sub.join(' · '))}</div>`:''}</td>
+<td class="c-name"><div class="tt" dir="auto" title="${esc(r.name)}">${nm}${C.sel===r.id?` <span class="tag">${esc(t('crStartTag'))}</span>`:''}</div>${sub.length?`<div class="ar" dir="auto">${esc(sub.join(' · '))}</div>`:''}${latHTML(r)}</td>
 <td class="c-bpm"><div class="bw"><b class="mono" dir="ltr">${ok?fmtB(r.bpm):'—'}</b>${ok?`<span class="hx" dir="ltr"><button type="button" data-act="half" title="${esc(t('crHalf'))}" aria-label="${esc(t('crHalf'))} · ${nm}">½</button><button type="button" data-act="dbl" title="${esc(t('crDouble'))}" aria-label="${esc(t('crDouble'))} · ${nm}">2×</button></span>`:''}</div></td>
 <td class="c-key">${ok&&r.key?`<button type="button" class="kbb" data-act="compat" aria-pressed="${C.compat===r.id}" title="${esc(t('crCompatT'))}" aria-label="${esc(camStr(r.key)+' '+CR.keyText(r.key))} · ${esc(t('crCompatT'))}"></button>`:'<span class="mono dim">—</span>'}</td>
 <td class="c-dur" data-l="${esc(t('colLen'))}"><span class="mono" dir="ltr">${fmtLen(r.dur)}</span></td>
@@ -679,7 +837,7 @@ function renderExp(){
   const rows=exportRows(),n=rows.length;
   $('#crExpN').textContent=t('crExportN',{n});
   ['#crCsv','#crXml','#crM3u'].forEach(s=>$(s).disabled=!n);
-  $('#crZip').disabled=!rows.some(r=>r.file)||C.zipBusy;
+  $('#crZip').disabled=!rows.some(r=>r.file)||C.zipBusy;$('#crUsb').disabled=!rows.some(r=>r.file)||C.zipBusy;
   const restored=C.rows.some(r=>done(r)&&!r.file);
   let rn=$('#crRest');
   if(restored&&!rn){rn=document.createElement('p');rn.id='crRest';rn.className='snote crrest';$('#crMain').insertBefore(rn,$('#crMain').querySelector('.crtools'))}
@@ -696,10 +854,10 @@ window.addEventListener('drop',e=>{if(!C.visible)return;e.preventDefault();e.sto
 /* ---------- public ---------- */
 load();
 window.CRATE={
-  show(){if(!C.built)build();C.visible=true;renderAll()},
+  show(){if(!C.built)build();C.visible=true;renderAll();lookupArtists()},
   hide(){C.visible=false;dd=0;const o=$('#crOver');if(o)o.hidden=true},
   lang(){if(C.built)renderAll()},
-  _C:C,_tagMp3:tagMp3,_parseName:parseName // for tests
+  _C:C,_tagMp3:tagMp3,_tagFlac:tagFlac,_latOf:latOf,_usbName:usbName,_parseName:parseName // for tests
 };
 CR.applyLang();
 if($('#crateView')&&!$('#crateView').hidden)CRATE.show();

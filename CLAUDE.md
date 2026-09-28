@@ -60,6 +60,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Batch BPM/key/Camelot/LUFS/energy for many files (sequential `CR.analyzeTrack`), sortable/filterable table, smart set order,
   exports CSV / rekordbox XML (Location from the folder path the user types, TEMPO beatgrid) / M3U8 / renamed-copies ZIP with ID3 TBPM+TKEY.
   Results (not audio) persist in localStorage `chordroom.crate.v1`.
+  "USB for Pioneer": copies named in Latin letters by pronunciation (`assets/heblat.js` = `window.HEBLAT`: artist list →
+  word dictionary + prefixes → rule-based vowels; user fixes are learnt in `chordroom.translit.v1`), official artist spellings
+  from Deezer `search/artist` (cached in `chordroom.dzartist.v1`, accepted only when the consonant skeleton matches).
+  MP3: Hebrew ID3 text frames converted + TIT2/TPE1 set; FLAC: Vorbis comments; other formats: file name only.
+  Each Hebrew row shows its Latin name under the title, editable (✎) and saved in the row (`r.lat`).
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
 - Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,
