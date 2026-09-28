@@ -186,6 +186,19 @@ es:{crNml:'Traktor NML',crNmlDone:'NML guardado. En Traktor, arrástralo al pane
   crCuesOld:'Los temas analizados antes de esta actualización no tienen cue points: añádelos otra vez.',crCueAt:'{k} · {t}'}
 });
 
+CR.addStrings({
+he:{ovPlay:'ניגון',ovPause:'השהיה',ovGrid:'גריד',ovBeatM:'הזזת הגריד פעימה אחורה',ovBeatP:'הזזת הגריד פעימה קדימה',ovFineM:'הזזה עדינה אחורה (10ms)',ovFineP:'הזזה עדינה קדימה (10ms)',
+  ovBarHere:'כאן מתחילה תיבה',ovReset:'איפוס',ovHint:'לחיצה על הגל מנגנת משם · גוררים דגל כדי להזיז נקודת קיו (נצמד לתיבות, Alt = חופשי)',ovDragT:'אפשר לגרור'},
+en:{ovPlay:'Play',ovPause:'Pause',ovGrid:'Grid',ovBeatM:'Move the grid one beat back',ovBeatP:'Move the grid one beat forward',ovFineM:'Nudge back (10 ms)',ovFineP:'Nudge forward (10 ms)',
+  ovBarHere:'A bar starts here',ovReset:'Reset',ovHint:'Click the waveform to play from there · drag a flag to move a cue (snaps to bars, Alt = free)',ovDragT:'drag to move'},
+ar:{ovPlay:'تشغيل',ovPause:'إيقاف مؤقت',ovGrid:'الشبكة',ovBeatM:'تحريك الشبكة نبضة للخلف',ovBeatP:'تحريك الشبكة نبضة للأمام',ovFineM:'تحريك دقيق للخلف (10ms)',ovFineP:'تحريك دقيق للأمام (10ms)',
+  ovBarHere:'هنا يبدأ مازورة',ovReset:'إعادة ضبط',ovHint:'انقر على الموجة للتشغيل من هناك · اسحب علمًا لتحريك نقطة Cue (تلتصق بالمازورات، Alt = حر)',ovDragT:'يمكن السحب'},
+ru:{ovPlay:'Играть',ovPause:'Пауза',ovGrid:'Сетка',ovBeatM:'Сдвинуть сетку на долю назад',ovBeatP:'Сдвинуть сетку на долю вперёд',ovFineM:'Точно назад (10 мс)',ovFineP:'Точно вперёд (10 мс)',
+  ovBarHere:'Здесь начинается такт',ovReset:'Сброс',ovHint:'Клик по волне — играть оттуда · перетащите флажок, чтобы сдвинуть cue (прилипает к тактам, Alt — свободно)',ovDragT:'можно перетащить'},
+es:{ovPlay:'Reproducir',ovPause:'Pausa',ovGrid:'Rejilla',ovBeatM:'Mover la rejilla un tiempo atrás',ovBeatP:'Mover la rejilla un tiempo adelante',ovFineM:'Ajuste fino atrás (10 ms)',ovFineP:'Ajuste fino adelante (10 ms)',
+  ovBarHere:'Aquí empieza un compás',ovReset:'Restablecer',ovHint:'Haz clic en la onda para sonar desde ahí · arrastra una bandera para mover un cue (se ajusta a compases, Alt = libre)',ovDragT:'se puede arrastrar'}
+});
+
 /* ---------- constants & state ---------- */
 const LS_K='chordroom.crate.v1',MAX=300,MAX_BYTES=250*1024*1024,BIG_ZIP=500*1024*1024,LS_CAP=1000;
 const AUDIO_EXT=['mp3','wav','m4a','aac','mp4','flac','ogg','oga','opus','aif','aiff'];
@@ -208,6 +221,8 @@ const IC={
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   usb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v6H8zM6 9h12v8a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z"/><path d="M10 5.5h.01M14 5.5h.01"/></svg>',
   edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>'
 };
 
@@ -261,7 +276,7 @@ function save(){
   if(C.owner===undefined)return;              // not known yet who is signed in
   try{
     const rows=C.rows.filter(done).slice(0,LS_CAP).map(r=>({id:r.id,name:r.name,rel:r.rel,size:r.size,ext:r.ext,dur:r3(r.dur),lufs:r3(r.lufs),peak:r3(r.peak),
-      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{}),...(r.cues?{cues:r.cues}:{}),...(r.wv?{wv:r.wv}:{})}));
+      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{}),...(r.cues?{cues:r.cues}:{}),...(r.wv?{wv:r.wv}:{}),...(r.gsh?{gsh:r3(r.gsh)}:{})}));
     localStorage.setItem(lsKey(),JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
   }catch(e){}
 }
@@ -428,7 +443,7 @@ function locOf(r){
 }
 /* first downbeat of the grid, re-anchored if the user halved/doubled the BPM */
 function gridStart(r){
-  const T0=60/(r.bpm0||r.bpm),Tn=60/r.bpm,td=mod(r.offset||0,T0)+(r.down||0)*T0;
+  const T0=60/(r.bpm0||r.bpm),Tn=60/r.bpm,td=mod(r.offset||0,T0)+(r.down||0)*T0+(r.gsh||0);   // gsh = the user's grid move
   const ini=mod(td,Tn),k=Math.round((td-ini)/Tn);return {ini,beat:mod(-k,4)+1};
 }
 function exportXml(){
@@ -626,9 +641,16 @@ function wvOf(r){if(!r.wv)return null;let x=WV.get(r.id);if(x&&x.src===r.wv)retu
 function cueHTML(r){
   const cs=cueList(r);if(!done(r)||!r.dur||(!cs.length&&!r.wv))return '';
   const pc=x=>Math.max(0,Math.min(100,x/r.dur*100)).toFixed(2);
-  const flags=cs.map(c=>{const [R,G,B]=CU.COL[c.k],tip=esc(`${letter(c.k)} · ${CU.NAME[c.k]} · ${fmtLen(c.t)}`);
-    return `<span class="cuef" style="left:${pc(c.t)}%;--c:rgb(${R} ${G} ${B})" title="${tip}" role="img" aria-label="${tip}">${letter(c.k)}</span>`}).join('');
-  return `<div class="rbov" dir="ltr"><canvas data-ov="${r.id}" aria-hidden="true"></canvas>${flags}</div>`;
+  const cs2=cs;
+  const flags=cs2.map(c=>{const [R,G,B]=CU.COL[c.k],tip=esc(`${letter(c.k)} · ${CU.NAME[c.k]} · ${fmtLen(c.t)} · ${t('ovDragT')}`);
+    return `<span class="cuef" data-cue="${c.k}" style="left:${pc(c.t)}%;--c:rgb(${R} ${G} ${B})" title="${tip}" role="img" aria-label="${tip}">${letter(c.k)}</span>`}).join('');
+  const on=PL.id===r.id,playing=on&&PL.audio&&!PL.audio.paused;
+  const pb=r.file?`<button type="button" class="ovp" data-act="ovplay" title="${esc(t(playing?'ovPause':'ovPlay'))}" aria-label="${esc(t(playing?'ovPause':'ovPlay'))}">${playing?IC.pause:IC.play}</button>`:'';
+  const bar=on&&r.file?`<div class="ovbar" dir="ltr"><span class="ovt mono" data-ovt="${r.id}">${fmtLen(PL.audio?PL.audio.currentTime:0)} / ${fmtLen(r.dur)}</span>
+    <span class="ovg"><span class="ovl">${esc(t('ovGrid'))}</span><button type="button" data-act="gbeatm" title="${esc(t('ovBeatM'))}" aria-label="${esc(t('ovBeatM'))}">◀◀</button><button type="button" data-act="gfinem" title="${esc(t('ovFineM'))}" aria-label="${esc(t('ovFineM'))}">◀</button><button type="button" data-act="gfinep" title="${esc(t('ovFineP'))}" aria-label="${esc(t('ovFineP'))}">▶</button><button type="button" data-act="gbeatp" title="${esc(t('ovBeatP'))}" aria-label="${esc(t('ovBeatP'))}">▶▶</button></span>
+    <button type="button" class="ovb" data-act="gbar">${esc(t('ovBarHere'))}</button>${r.gsh?`<button type="button" class="ovb ghost" data-act="greset">${esc(t('ovReset'))}</button>`:''}
+    <span class="snote ovh" dir="auto">${esc(t('ovHint'))}</span></div>`:'';
+  return `<div class="rbov${on?' on':''}" dir="ltr" data-ovr="${r.id}"><canvas data-ov="${r.id}" aria-hidden="true"></canvas>${flags}${pb}</div>${bar}`;
 }
 function drawOverviews(root){
   (root||document).querySelectorAll('canvas[data-ov]').forEach(cv=>{const r=byId(cv.dataset.ov);if(r)drawOverview(cv,r)});
@@ -641,8 +663,8 @@ function drawOverview(cv,r){
   // sections: a faint wash of the cue colour until the next cue
   cs.forEach((c,i)=>{const e=i+1<cs.length?cs[i+1].t:r.dur,[R,G,B]=CU.COL[c.k];g.fillStyle=`rgba(${R},${G},${B},.13)`;g.fillRect(x(c.t),top,x(e)-x(c.t),H)});
   // bar grid: a thin line every 4 bars, brighter every 16 (phrases), from the first downbeat
-  if(r.bpm>0){const gs=gridStart(r),B4=4*60/r.bpm*4;let k=0;
-    for(let t=gs.ini;t<r.dur;t+=B4,k++){const px=Math.round(x(t))+.5;g.fillStyle=k%4===0?'rgba(255,255,255,.28)':'rgba(255,255,255,.1)';g.fillRect(px,top,1,H)}}
+  if(r.bpm>0){const {db,bar}=bars(r);let k=0;
+    for(let t=db;t<r.dur;t+=bar*4,k++){const px=Math.round(x(t))+.5;g.fillStyle=k%4===0?'rgba(255,255,255,.3)':'rgba(255,255,255,.11)';g.fillRect(px,top,1,H)}}
   // waveform (RGB like rekordbox's 3-band view), mirrored around the middle
   const wv=wvOf(r);
   if(wv){const bw=w/WN;for(let i=0;i<WN;i++){const v=wv.a[i]/255;if(!v)continue;const hh=Math.max(1,v*(H/2-1));
@@ -650,6 +672,55 @@ function drawOverview(cv,r){
   else{g.fillStyle='rgba(255,255,255,.12)';g.fillRect(0,mid-.5,w,1)}
   // hot cues: full-height line + the flag strip on top
   for(const c of cs){const [R,G,B]=CU.COL[c.k],px=Math.round(x(c.t));g.fillStyle=`rgb(${R},${G},${B})`;g.fillRect(px,0,2,h);g.fillRect(px,0,14,top-1)}
+  // playhead (and what has been played, dimmed)
+  if(PL.id===r.id&&PL.audio){const tp=PL.audio.currentTime||0,px=x(tp);g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,top,px,H);g.fillStyle='#fff';g.fillRect(Math.round(px),0,2,h)}
+}
+/* ---------- listening + moving the grid / cues on the overview ---------- */
+const PL={id:null,audio:null,url:null,raf:0};
+function bars(r){const gs=gridStart(r),T=60/r.bpm;return {db:gs.ini+mod(1-gs.beat,4)*T,bar:4*T,T}}
+function snapBar(r,t){const {db,bar}=bars(r);return db+Math.round((t-db)/bar)*bar}
+function plStop(){if(PL.audio){PL.audio.pause()}cancelAnimationFrame(PL.raf);const id=PL.id;PL.id=null;if(PL.url){URL.revokeObjectURL(PL.url);PL.url=null}if(id){const r=byId(id);if(r)renderRow(r)}}
+async function plPlay(r,at){
+  if(!r.file)return;
+  if(PL.id!==r.id){plStop();PL.id=r.id;PL.url=URL.createObjectURL(r.file);
+    if(!PL.audio){PL.audio=new Audio();PL.audio.preload='auto';PL.audio.onended=()=>{const x=byId(PL.id);if(x)renderRow(x)};PL.audio.onpause=PL.audio.onplay=()=>{const x=byId(PL.id);if(x)renderRow(x)}}
+    PL.audio.src=PL.url}
+  if(CR.stopTool)CR.stopTool();
+  if(at!=null&&isFinite(at))try{PL.audio.currentTime=Math.max(0,Math.min(r.dur-0.05,at))}catch(e){}
+  try{await PL.audio.play()}catch(e){console.warn(e)}
+  loop();
+}
+function loop(){cancelAnimationFrame(PL.raf);const tick=()=>{const r=PL.id&&byId(PL.id);if(!r){return}
+  const cv=document.querySelector(`canvas[data-ov="${r.id}"]`);if(cv)drawOverview(cv,r);
+  const tt=document.querySelector(`[data-ovt="${r.id}"]`);if(tt)tt.textContent=`${fmtLen(PL.audio.currentTime)} / ${fmtLen(r.dur)}`;
+  if(!PL.audio.paused)PL.raf=requestAnimationFrame(tick)};PL.raf=requestAnimationFrame(tick)}
+/* move grid AND cues together (cues sit on bar lines) */
+function shiftGrid(r,d){
+  if(!d||!isFinite(d))return;r.gsh=(r.gsh||0)+d;
+  if(Array.isArray(r.cues))r.cues=r.cues.map(c=>({...c,t:Math.max(0,Math.round((c.t+d)*1000)/1000)}));
+  save();renderRow(r);
+}
+function gridAct(a,r){
+  const T=60/r.bpm;
+  if(a==='gbeatm')shiftGrid(r,-T);else if(a==='gbeatp')shiftGrid(r,T);
+  else if(a==='gfinem')shiftGrid(r,-0.01);else if(a==='gfinep')shiftGrid(r,0.01);
+  else if(a==='gbar'){const p=PL.audio?PL.audio.currentTime:0,{db,bar}=bars(r),near=db+Math.round((p-db)/bar)*bar;shiftGrid(r,p-near)}
+  else if(a==='greset'){shiftGrid(r,-(r.gsh||0));delete r.gsh;save();renderRow(r)}
+}
+/* pointer on the overview: click = listen from there, drag a flag = move that cue (snaps to bars, Alt = free) */
+function ovPointer(e){
+  const box=e.target.closest('.rbov');if(!box||e.button>0)return;
+  if(e.target.closest('.ovp'))return;
+  const r=byId(box.dataset.ovr);if(!r||!r.dur)return;
+  const rect=box.getBoundingClientRect(),tAt=cx=>Math.max(0,Math.min(r.dur,(cx-rect.left)/rect.width*r.dur));
+  const flag=e.target.closest('.cuef'),cue=flag&&cueList(r).find(c=>c.k===flag.dataset.cue);
+  if(!cue){plPlay(r,tAt(e.clientX));return}
+  e.preventDefault();const x0=e.clientX,t0=cue.t;let moved=false;
+  const mv=ev=>{if(Math.abs(ev.clientX-x0)>3)moved=true;if(!moved)return;let tn=tAt(ev.clientX);if(!ev.altKey&&r.bpm>0)tn=snapBar(r,tn);cue.t=Math.max(0,Math.round(tn*1000)/1000);
+    flag.style.left=(cue.t/r.dur*100).toFixed(2)+'%';const cv=box.querySelector('canvas');if(cv)drawOverview(cv,r)};
+  const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);
+    if(moved){r.cues.sort((a,b)=>CU.slot(a.k)-CU.slot(b.k));save();renderRow(r)}else plPlay(r,t0)};
+  window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);
 }
 let ovRO=null;
 function watchOverviews(){if(ovRO||!window.ResizeObserver)return;ovRO=new ResizeObserver(()=>drawOverviews($('#crBody')));const b=$('#crBody');if(b)ovRO.observe(b)}
@@ -844,6 +915,7 @@ function wire(){
   $('#crHead').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;
     if(k==='n')C.sort=null;else if(!C.sort||C.sort.k!==k)C.sort={k,dir:k==='energy'||k==='lufs'?-1:1};else if(C.sort.dir===(k==='energy'||k==='lufs'?-1:1))C.sort.dir*=-1;else C.sort=null;
     save();renderTable();renderSortM();const nb=$(`#crHead button[data-k="${k}"]`);if(nb)nb.focus()};
+  $('#crBody').addEventListener('pointerdown',ovPointer);
   $('#crBody').onclick=e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const tr=b.closest('tr'),r=tr&&byId(tr.dataset.id);if(!r)return;act(b.dataset.act,r)};
   $('#crDeck').onclick=e=>{const b=e.target.closest('[data-act]');if(!b)return;
     if(b.dataset.act==='stop')stop();else if(b.dataset.act==='resume')resume();
@@ -858,13 +930,15 @@ function act(a,r){
   if(a==='sel'){C.sel=C.sel===r.id?null:r.id;save()}
   else if(a==='compat'){C.compat=C.compat===r.id?null:r.id}
   else if(a==='half'||a==='dbl'){if(!done(r))return;r.bpm=a==='half'?r.bpm/2:r.bpm*2;r.energy=energyOf(r);save();renderDeck()}
-  else if(a==='open'){if(r.file)CR.openFile(r.file);return}
+  else if(a==='open'){if(r.file){plStop();CR.openFile(r.file)}return}
+  else if(a==='ovplay'){if(PL.id===r.id&&PL.audio&&!PL.audio.paused){PL.audio.pause();return}plPlay(r,PL.id===r.id?null:0);return}
+  else if(/^g(beat|fine)[mp]$|^gbar$|^greset$/.test(a)){gridAct(a,r);const n=$(keep);if(n)n.focus();return}
   else if(a==='lat'){C.editLat=r.id;renderTable();const inp=$(`#crBody tr[data-id="${r.id}"] input.latin`);if(inp){inp.focus();inp.select();
       inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveLat(r,inp.value);focusLat(r)}else if(e.key==='Escape'){e.preventDefault();C.editLat=null;renderTable();focusLat(r)}}}return}
   else if(a==='latok'){const inp=$(`#crBody tr[data-id="${r.id}"] input.latin`);saveLat(r,inp?inp.value:'');focusLat(r);return}
   else if(a==='latx'){C.editLat=null;renderTable();focusLat(r);return}
   else if(a==='latreset'){delete r.lat;C.editLat=null;save();renderTable();focusLat(r);return}
-  else if(a==='rm'){const i=view().indexOf(r);C.rows=C.rows.filter(x=>x!==r);if(C.sel===r.id)C.sel=null;if(C.compat===r.id)C.compat=null;save();renderAll();
+  else if(a==='rm'){if(PL.id===r.id)plStop();const i=view().indexOf(r);C.rows=C.rows.filter(x=>x!==r);if(C.sel===r.id)C.sel=null;if(C.compat===r.id)C.compat=null;save();renderAll();
     const tr=$('#crBody').children[Math.max(0,Math.min(i,$('#crBody').children.length-1))],f=tr&&tr.querySelector('[data-act="rm"]');if(f)f.focus();else{const s=$('#crFilesB2');if(s&&!$('#crDrop').hidden)s.focus()}return}
   renderTable();const n=$(keep);if(n)n.focus();
 }
@@ -1000,6 +1074,7 @@ function setOwner(uid){
     if(!mine){C.owner=uid;save();try{localStorage.removeItem(LS_K+':guest')}catch(e){}return}}
   const early=C.owner===undefined?C.rows.slice():[];   // files added before we knew who is signed in stay
   if(C.running)C.cancel=true;
+  plStop();
   C.owner=uid;load();
   for(const r of early)if(!C.rows.some(x=>x.name===r.name&&x.size===r.size))C.rows.push(r);
   if(early.length){save();setTimeout(pump,0)}
@@ -1011,7 +1086,7 @@ document.addEventListener('cr-user',e=>setOwner(e.detail&&e.detail.uid));
 /* ---------- public ---------- */
 window.CRATE={
   show(){if(!C.built)build();C.visible=true;renderAll();lookupArtists()},
-  hide(){C.visible=false;dd=0;const o=$('#crOver');if(o)o.hidden=true},
+  hide(){C.visible=false;dd=0;plStop();const o=$('#crOver');if(o)o.hidden=true},
   lang(){if(C.built)renderAll()},
   _C:C,_tagMp3:tagMp3,_tagFlac:tagFlac,_latOf:latOf,_usbName:usbName,_parseName:parseName // for tests
 };

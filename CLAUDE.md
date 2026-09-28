@@ -86,6 +86,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Each row shows a rekordbox-style overview (`.rbov` canvas: RGB waveform packed to 300 columns in `r.wv`, 4/16-bar grid,
   coloured hot cue flags). rekordbox can't read cues from files (they live in its database) → XML; Serato/VirtualDJ read the
   GEOB inside the downloaded MP3 copies.
+- Crate overview is interactive: ▶ / click = listen from there (one shared <audio>, `PL`), drag a flag = move that cue
+  (snaps to bars, Alt = free), grid moves (±1 beat, ±10 ms, "a bar starts here") shift grid AND cues via `r.gsh`
+  (added in `gridStart`, so XML/NML exports follow).
+- Discover player bar (`#dPlayer`, built by `dpEl`/`dpRender`): play/pause, previous/next through the visible list
+  (auto-next at the end), stop, seek, volume/mute (saved in `chordroom.dvol`); hidden when leaving Discover.
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.

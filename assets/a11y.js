@@ -532,6 +532,7 @@
   function updLift() {
     if (!ui.root) return;
     var fb = document.getElementById('fullbar'), lift = fb && !fb.hidden ? fb.offsetHeight : 0;
+    var dp = document.getElementById('dPlayer'); if (dp && !dp.hidden) lift = Math.max(lift, dp.offsetHeight);   /* Discover player bar */
     if (toast && !toast.hidden && document.contains(toast)) {
       var r = toast.getBoundingClientRect(), f = ui.fab.getBoundingClientRect();
       var fl = f.left, fr = f.right, H = window.innerHeight;
@@ -556,6 +557,7 @@
     document.addEventListener('animationstart', function (e) { if (e.target && e.target.classList && e.target.classList.contains('djnote')) { hookToast(e.target); updLift(); } }, true);
     document.addEventListener('animationend', function (e) { if (e.target === toast) updLift(); }, true);
     window.addEventListener('resize', updLift);
+    new MutationObserver(function () { requestAnimationFrame(updLift); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });   /* body.hasdp = Discover player bar */
     updLift();
   }
 

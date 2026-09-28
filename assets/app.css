@@ -756,3 +756,24 @@ html[dir="rtl"] .lib,html[dir="rtl"] .acc,html[dir="rtl"] .mix{animation-name:cr
 
 /* the About page is the home page: no flash of the tool before the router runs */
 html.home #toolView{display:none}
+
+/* Discover player bar */
+.dplayer{position:fixed;inset-inline:0;bottom:0;z-index:43;background:var(--ink);color:var(--paper);box-shadow:0 -12px 32px -12px var(--shadow);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.dplayer[hidden]{display:none}
+.dplayer::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--acc-grad)}
+.dpin{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:12px 16px}
+.dpc{width:44px;height:44px;border-radius:6px;object-fit:cover;flex:none;background:#222}
+.dpt{min-width:0;flex:1 1 160px}.dpt .tt{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dpt .ar{font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dpk{display:flex;align-items:center;gap:8px;flex:none}.dpbpm{font-size:12px;opacity:.8}
+.dpctl{display:flex;align-items:center;gap:4px;flex:none}
+.dpb{width:34px;height:34px;border-radius:50%;border:0;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;padding:0}
+.dpb svg{width:17px;height:17px}.dpb:hover{background:rgba(255,255,255,.12)}.dpb:disabled{opacity:.35;cursor:default;background:transparent}
+.dpb.big{width:42px;height:42px;background:var(--paper);color:var(--ink)}.dpb.big:hover{background:var(--paper);transform:scale(1.05)}
+.dpseek{display:flex;align-items:center;gap:8px;flex:2 1 220px;min-width:160px;font-size:12px}
+.dpseek input,.dpvol input{flex:1;accent-color:var(--acc-p);min-width:0}
+.dpvol{display:flex;align-items:center;gap:4px;flex:0 1 150px;min-width:110px}
+.dpx{display:flex;gap:6px;flex:none}.dpx .btn{height:32px;padding:0 12px;font-size:12.5px;color:var(--paper);border-color:rgba(255,255,255,.3);background:transparent}
+.dpx .btn:hover{background:rgba(255,255,255,.12);border-color:var(--paper)}.dpx .btn .ic{width:15px;height:15px}
+body.hasdp{padding-bottom:84px}
+@media (max-width:900px){.dpin{flex-wrap:wrap}.dpseek{order:5;flex-basis:100%}.dpx{display:none}.dpvol{flex-basis:120px}body.hasdp{padding-bottom:132px}}
+@media (max-width:520px){.dpk{display:none}.dpvol{display:none}}

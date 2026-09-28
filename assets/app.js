@@ -398,6 +398,13 @@ es:{roleOwner:'Propietario',admRoles:'Roles y permisos',changeRole:'Rol…',role
   perm_users:'Ver usuarios',perm_block:'Bloquear usuarios',perm_credits:'Puntos y planes',perm_songs:'Todas las canciones y archivos',perm_activity:'Registro de actividad',perm_settings:'Ajustes del sitio y pagos',perm_payments:'Eventos de pago',perm_catalog:'Catálogo de Descubrir',
   act_role_change:'Cambio de rol',act_roles_password:'Cambio de contraseña de roles'}};
 for(const k in IROLE)Object.assign(I[k],IROLE[k]);
+const IDP={
+he:{dpBar:'נגן השירים',dpPrev:'הקודם',dpNext:'הבא',dpPlay:'ניגון',dpPause:'השהיה',dpStop:'עצירה',dpMute:'השתקה',dpUnmute:'ביטול השתקה',dpVol:'עוצמה',dpSeek:'מיקום בשיר'},
+en:{dpBar:'Song player',dpPrev:'Previous',dpNext:'Next',dpPlay:'Play',dpPause:'Pause',dpStop:'Stop',dpMute:'Mute',dpUnmute:'Unmute',dpVol:'Volume',dpSeek:'Position'},
+ar:{dpBar:'مشغل الأغاني',dpPrev:'السابق',dpNext:'التالي',dpPlay:'تشغيل',dpPause:'إيقاف مؤقت',dpStop:'إيقاف',dpMute:'كتم',dpUnmute:'إلغاء الكتم',dpVol:'الصوت',dpSeek:'الموضع'},
+ru:{dpBar:'Плеер',dpPrev:'Предыдущая',dpNext:'Следующая',dpPlay:'Играть',dpPause:'Пауза',dpStop:'Стоп',dpMute:'Без звука',dpUnmute:'Включить звук',dpVol:'Громкость',dpSeek:'Позиция'},
+es:{dpBar:'Reproductor',dpPrev:'Anterior',dpNext:'Siguiente',dpPlay:'Reproducir',dpPause:'Pausa',dpStop:'Detener',dpMute:'Silenciar',dpUnmute:'Activar sonido',dpVol:'Volumen',dpSeek:'Posición'}};
+for(const k in IDP)Object.assign(I[k],IDP[k]);
 
 
 
@@ -2408,22 +2415,87 @@ async function pump(){
         if(ACC.on&&ACC.user&&!r.inCat){Backend.catalogAdd({id:r.id,ext_id:r.ext,title:r.title.slice(0,300),artist:r.artist.slice(0,300),album:(r.album||'').slice(0,300),cover:r.cover||'',link:r.link||'',
           release_date:r.release||null,duration:r.dur||null,bpm:Math.min(300,Math.max(30,r.a.bpm)),key_pc:r.a.pc,key_mode:r.a.mode,chords:r.a.chords}).then(()=>{r.inCat=true}).catch(e=>console.warn(e))}
       }catch(e){console.warn(e);r.status='err'}
-      refreshRow(r);if(DC.mixFor)renderMix();
+      refreshRow(r);if(DC.mixFor)renderMix();if(r.id===DC.cur)dpRender();
       await tick();
     }
   }finally{DC.working=false}
 }
 
 /* preview player */
-async function togglePreview(r){
-  if(!DC.audio){DC.audio=new Audio();DC.audio.onended=()=>{const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p])}}
-  const prev=DC.playing;
-  if(prev===r.id){DC.audio.pause();DC.playing=null;refreshRow(r);return}
-  if(P.playing)stop();
-  try{DC.audio.src=await freshPreview(r);await DC.audio.play();DC.playing=r.id;if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{})}catch(e){setDiscMsg(t('dNoPreview'))}
-  if(prev&&DC.rows[prev])refreshRow(DC.rows[prev]);refreshRow(r);
+function dcAudio(){
+  if(!DC.audio){DC.audio=new Audio();
+    try{const v=parseFloat(localStorage.getItem('chordroom.dvol'));if(isFinite(v))DC.audio.volume=Math.max(0,Math.min(1,v))}catch(e){}
+    DC.audio.onended=()=>{const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p]);if(!dpStep(1,true))dpRender()};
+    DC.audio.ontimeupdate=dpProgress;DC.audio.onplay=DC.audio.onpause=dpRender;DC.audio.onvolumechange=dpRender}
+  return DC.audio;
 }
-function stopPreview(){if(DC.audio){DC.audio.pause()}const p=DC.playing;DC.playing=null;if(p&&DC.rows[p])refreshRow(DC.rows[p])}
+async function togglePreview(r){
+  const au=dcAudio(),prev=DC.playing;
+  if(prev===r.id){au.pause();DC.playing=null;refreshRow(r);dpRender();return}
+  if(!prev&&DC.cur===r.id&&au.src&&au.currentTime>0&&!au.ended){try{await au.play();DC.playing=r.id}catch(e){}refreshRow(r);dpRender();return}   // resume
+  if(P.playing)stop();
+  try{au.src=await freshPreview(r);await au.play();DC.playing=r.id;DC.cur=r.id;if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{})}catch(e){setDiscMsg(t('dNoPreview'))}
+  if(prev&&DC.rows[prev])refreshRow(DC.rows[prev]);refreshRow(r);dpRender();
+}
+function stopPreview(){if(DC.audio){DC.audio.pause()}const p=DC.playing;DC.playing=null;DC.cur=null;if(p&&DC.rows[p])refreshRow(DC.rows[p]);dpRender()}
+/* ---------- Discover player bar: play/pause, previous/next, volume, seek, stop ---------- */
+function dpList(){return (DC.lists[DC.tab+':'+DC.genre]||[]).map(id=>DC.rows[id]).filter(r=>r&&passesFilter(r))}
+function dpStep(dir,auto){
+  const list=dpList(),i=list.findIndex(r=>r.id===DC.cur);if(i<0&&!list.length)return false;
+  const n=list[i<0?0:i+dir];if(!n)return false;
+  DC.playing=null;togglePreview(n);
+  const el=document.querySelector(`.drow[data-id="${CSS.escape(n.id)}"]`);if(el&&!auto)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+  return true;
+}
+const DP_IC={prev:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>',next:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>',
+  stop:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>',
+  vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
+  mute:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>'};
+function dpEl(){
+  let d=$('#dPlayer');if(d)return d;
+  d=document.createElement('div');d.id='dPlayer';d.className='dplayer';d.hidden=true;d.setAttribute('role','region');
+  d.innerHTML=`<div class="dpin"><img class="dpc" alt=""><div class="dpt"><div class="tt"></div><div class="ar"></div></div><div class="dpk"></div>
+    <div class="dpctl" dir="ltr"><button type="button" class="dpb" data-dp="prev">${DP_IC.prev}</button><button type="button" class="dpb big" data-dp="play"></button><button type="button" class="dpb" data-dp="next">${DP_IC.next}</button><button type="button" class="dpb" data-dp="stop">${DP_IC.stop}</button></div>
+    <div class="dpseek" dir="ltr"><span class="mono dpcur">0:00</span><input type="range" class="dpr" min="0" max="1000" value="0" step="1"><span class="mono dpdur">0:30</span></div>
+    <div class="dpvol" dir="ltr"><button type="button" class="dpb" data-dp="mute"></button><input type="range" class="dpv" min="0" max="100" step="1"></div>
+    <div class="dpx"><button type="button" class="btn ghost" data-dp="tool"></button><button type="button" class="btn ghost" data-dp="full">${FULL_IC}<span></span></button></div></div>`;
+  document.body.appendChild(d);
+  d.addEventListener('click',e=>{const b=e.target.closest('[data-dp]');if(!b)return;const k=b.dataset.dp,r=DC.rows[DC.cur];
+    if(k==='prev'){const au=DC.audio;if(au&&au.currentTime>3){au.currentTime=0;return}dpStep(-1)}
+    else if(k==='next')dpStep(1);
+    else if(k==='play'){if(r)togglePreview(r)}
+    else if(k==='stop')stopPreview();
+    else if(k==='mute'){const au=dcAudio();au.muted=!au.muted}
+    else if(k==='tool'){if(r){stopPreview();openInTool(r)}}
+    else if(k==='full'){if(r)openFull(r)}});
+  const rg=d.querySelector('.dpr');rg.oninput=()=>{const au=DC.audio;if(au&&isFinite(au.duration))au.currentTime=rg.value/1000*au.duration};
+  const vv=d.querySelector('.dpv');vv.oninput=()=>{const au=dcAudio();au.volume=vv.value/100;au.muted=false;try{localStorage.setItem('chordroom.dvol',String(au.volume))}catch(e){}};
+  return d;
+}
+function dpRender(){
+  const r=DC.cur&&DC.rows[DC.cur],show=!!r&&!$('#discover').hidden;
+  const d=show?dpEl():$('#dPlayer');document.body.classList.toggle('hasdp',show);if(!d)return;d.hidden=!show;if(!show)return;
+  const au=DC.audio,playing=!!(au&&!au.paused);
+  d.setAttribute('aria-label',t('dpBar'));
+  d.querySelector('.dpc').src=r.cover||'assets/icon.svg';d.querySelector('.tt').textContent=r.title;d.querySelector('.ar').textContent=r.artist;
+  const k=d.querySelector('.dpk');k.innerHTML='';k.appendChild(keyBadge(r.a,r.status));if(r.a){const b=document.createElement('span');b.className='mono dpbpm';b.textContent=Math.round(r.a.bpm)+' BPM';k.appendChild(b)}
+  const pb=d.querySelector('[data-dp="play"]');pb.innerHTML=playing?DP_IC.pause:DP_IC.play;
+  const lab={prev:'dpPrev',next:'dpNext',stop:'dpStop',mute:au&&au.muted?'dpUnmute':'dpMute'};
+  for(const [kk,l] of Object.entries(lab)){const b=d.querySelector(`[data-dp="${kk}"]`);b.title=t(l);b.setAttribute('aria-label',t(l))}
+  pb.title=t(playing?'dpPause':'dpPlay');pb.setAttribute('aria-label',pb.title);
+  d.querySelector('[data-dp="mute"]').innerHTML=au&&(au.muted||au.volume===0)?DP_IC.mute:DP_IC.vol;
+  const vv=d.querySelector('.dpv');vv.value=Math.round((au?au.volume:1)*100);vv.setAttribute('aria-label',t('dpVol'));
+  d.querySelector('.dpr').setAttribute('aria-label',t('dpSeek'));
+  d.querySelector('[data-dp="tool"]').textContent=t('dOpen');d.querySelector('[data-dp="full"] span').textContent=t('fullPlay');
+  const list=dpList(),i=list.findIndex(x=>x.id===r.id);d.querySelector('[data-dp="next"]').disabled=i<0||i>=list.length-1;
+  dpProgress();
+}
+function dpProgress(){
+  const d=$('#dPlayer'),au=DC.audio;if(!d||d.hidden||!au)return;
+  const dur=isFinite(au.duration)?au.duration:30;d.querySelector('.dpcur').textContent=fmtS(au.currentTime||0);d.querySelector('.dpdur').textContent=fmtS(dur);
+  const rg=d.querySelector('.dpr');if(document.activeElement!==rg)rg.value=Math.round((au.currentTime||0)/dur*1000);
+}
 const FULL_IC='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 12v5a2 2 0 0 0 2 2h1v-6H4"/></svg>';
 // Full songs play inside Deezer's official player: complete for listeners signed in to Deezer, 30 s otherwise.
 function openFull(r){
@@ -2613,7 +2685,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
