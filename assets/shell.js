@@ -143,6 +143,12 @@
   if(mq.addEventListener)mq.addEventListener('change',schedule);else if(mq.addListener)mq.addListener(schedule);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
   if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',schedule);
+  /* anything that changes the size of the bar's parts (web fonts arriving late after a browser restart, the account
+     chip/avatar appearing when the session is restored, a tab restored in the background) → fit again */
+  if(window.ResizeObserver&&topIn){var ro=new ResizeObserver(schedule);Array.prototype.forEach.call(topIn.querySelectorAll('.mark,.tabs,.tools,.quick'),function(el){ro.observe(el)})}
+  window.addEventListener('load',schedule);
+  window.addEventListener('pageshow',schedule);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){if(ind)ind.classList.remove('ready');schedule()}});
 
   /* first pass synchronously, before the first paint */
   applyLabels();fit();place();setInert();

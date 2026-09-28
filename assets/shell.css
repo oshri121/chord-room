@@ -35,7 +35,7 @@ body{background:transparent}
 :root[data-theme-resolved="dark"] .top.scrolled .top-glow{opacity:.5}
 @keyframes crLine{to{background-position:-200% 0}}
 
-.top-in{max-width:1240px;margin:0 auto;height:var(--topH);display:flex;align-items:center;gap:16px}
+.top-in{max-width:1440px;margin:0 auto;height:var(--topH);display:flex;align-items:center;gap:16px}
 
 /* brand: logo + wordmark with the tagline stacked under it */
 .top .mark{cursor:pointer;border-radius:10px;display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:12px;row-gap:3px;align-items:center;flex:none;min-width:0;gap:3px 12px}
@@ -119,10 +119,17 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.c1 .tools,.top.c1 .quick{gap:6px}
 .top.c2 #libBtn,.top.c2 #adminBtn,.top.c2 #signInBtn{width:38px;padding:0}
 .top.c2 .credits{padding-inline-end:11px}
-.top.c3 .mark .tl,.top.m .mark .tl{display:none}
-.top.c3 .mark .wm,.top.m .mark .wm{grid-row:1/3;align-self:center}
+.top.c1 .mark .tl,.top.m .mark .tl{display:none}
+.top.c1 .mark .wm,.top.m .mark .wm{grid-row:1/3;align-self:center}
 .top.c3 .mark .wm{letter-spacing:.13em}
 .top.c4 #upLbl{width:38px;padding:0}
+/* c3: the language picker shrinks to its globe (the list still shows the names), c4: tab labels without icons */
+.top.c3 .langw .sel{width:38px;padding:0;color:transparent;background-image:none}
+.top.c3 .langw .lgl{inset-inline-start:11px;color:var(--ink)}
+.top.c3 .langw .sel option{color:var(--ink)}
+.top.c4 .tab svg{display:none}
+.top.c4 .tab{padding:0 10px}
+.top.c4 .mark .wm{letter-spacing:.08em}
 .top.m2 .mark .wm{font-size:14px;letter-spacing:.08em}
 .top.m3 .mark .wm{display:none}
 
