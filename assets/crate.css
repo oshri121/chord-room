@@ -169,3 +169,15 @@ html[dir="rtl"] .lat{justify-content:flex-end}
   .sw{justify-content:flex-start;flex-wrap:wrap;white-space:normal}
   .mx{top:-12px}
 }
+
+/* automatic cue points: structure strip under each track + legend */
+.cuebar{position:relative;height:16px;margin-top:6px;border-radius:4px;background:var(--soft);max-width:420px;overflow:visible}
+html[dir="rtl"] .cuebar{margin-inline-start:auto}
+.cuebar .cs{position:absolute;top:0;bottom:0;border-radius:3px}
+.cuebar .cm{position:absolute;top:1px;width:14px;height:14px;margin-left:-1px;border-radius:3px;background:var(--c);color:#fff;font:700 9px/14px var(--mono);text-align:center;box-shadow:0 0 0 1px var(--paper)}
+.crcues{display:grid;gap:6px}
+.crcues b{font-size:13px}
+.crcues .snote{margin:0;max-width:760px;text-wrap:pretty}
+.clg{display:flex;flex-wrap:wrap;gap:6px 14px}
+.clg .cl{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.clg i{display:inline-block;width:18px;height:18px;border-radius:4px;color:#fff;font:700 10px/18px var(--mono);text-align:center;font-style:normal}

@@ -12,9 +12,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script>try{var t=localStorage.getItem("chordroom.theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
-<link rel="stylesheet" href="assets/app.css?v=12">
+<link rel="stylesheet" href="assets/app.css?v=13">
 <link rel="stylesheet" href="assets/dj.css?v=3">
-<link rel="stylesheet" href="assets/crate.css?v=2">
+<link rel="stylesheet" href="assets/crate.css?v=3">
 <link rel="stylesheet" href="assets/shell.css?v=3">
 <link rel="stylesheet" href="assets/pages.css?v=2">
 <link rel="stylesheet" href="assets/a11y.css?v=2">
@@ -70,7 +70,7 @@
     <div class="stats">
       <div class="stat adj" id="stBpm"><span class="k" data-i="bpmL"></span><span class="v vrow"><button type="button" class="nud" id="tmM" data-it="tempoDown">−</button><input class="vin" id="sBpm" value="—" inputmode="decimal" autocomplete="off" spellcheck="false" data-it="bpmEdit"><button type="button" class="nud" id="tmP" data-it="tempoUp">+</button></span><span class="s" id="sBpmS"></span></div>
       <div class="stat adj" id="stKey"><span class="k" data-i="key"></span><span class="v vrow"><button type="button" class="nud" id="kyM" data-it="keyDown">−</button><span class="vk" id="sKey">—</span><button type="button" class="nud" id="kyP" data-it="keyUp">+</button></span><span class="s" id="sKeyS"></span></div>
-      <div class="stat"><span class="k" data-i="camelot"></span><span class="v"><span class="cam" id="sCam">—</span></span><span class="s"></span></div>
+      <div class="stat" hidden><span class="k" data-i="camelot"></span><span class="v"><span class="cam" id="sCam">—</span></span><span class="s"></span></div>
       <div class="stat"><span class="k" data-i="length"></span><span class="v" id="sDur">—</span><span class="s"></span></div>
       <div class="stat"><span class="k" data-i="loudness"></span><span class="v" id="sLufs">—</span><span class="s" id="sPeak"></span></div>
     </div>
@@ -268,11 +268,13 @@
   <div class="in">
     <div class="ah"><h2 data-i="admin"></h2><button class="btn ghost" id="adminClose" type="button" data-i="close"></button></div>
     <div class="kpis" id="kpis"></div>
-    <div class="admtabs" id="admTabs"><button type="button" data-v="users" data-i="users"></button><button type="button" data-v="songs" data-i="allSongs"></button></div>
+    <div class="admtabs" id="admTabs"><button type="button" data-v="users" data-i="users"></button><button type="button" data-v="songs" data-i="allSongs"></button><button type="button" data-v="activity" data-i="admActivity"></button></div>
     <div class="asec" id="admUsers"><div class="bhead"><h3 data-i="users"></h3><input type="search" id="uSearch" class="srch" data-ip="search"></div>
       <div class="tblw"><table class="ut"><thead><tr><th data-i="colUser"></th><th data-i="role"></th><th data-i="joined"></th><th data-i="lastSeen"></th><th data-i="uploads"></th><th data-i="downloadsL"></th><th data-i="seps"></th><th data-i="creditsCol"></th><th data-i="colStatus"></th><th></th></tr></thead><tbody id="uBody"></tbody></table></div></div>
     <div class="asec" id="admSongs" hidden><div class="bhead"><h3 data-i="allSongs"></h3><div class="row2"><input type="search" id="sSearch" class="srch" data-ip="searchSongs"><span class="snote mono" id="sInfo"></span><button class="btn solid" type="button" id="sAll" data-i="dlAll"></button><span class="snote" id="sMsg"></span></div></div>
       <div class="tblw"><table class="ut st"><thead><tr><th data-i="songCol"></th><th data-i="colUser"></th><th data-i="genre"></th><th>BPM</th><th data-i="key"></th><th data-i="length"></th><th data-i="size"></th><th data-i="joinedSong"></th><th></th></tr></thead><tbody id="sBody"></tbody></table></div></div>
+    <div class="asec" id="admAct" hidden><div class="bhead"><h3 data-i="admActivity"></h3><div class="row2"><select id="aFilter" class="sel" aria-label="filter"></select><input type="search" id="aSearch" class="srch" data-ip="actSearch"><button class="btn ghost" type="button" id="aRefresh" data-i="actRefresh"></button></div></div>
+      <div class="tblw"><table class="ut st"><thead><tr><th data-i="date"></th><th data-i="colUser"></th><th data-i="actWhat"></th><th data-i="actDetail"></th></tr></thead><tbody id="aBody"></tbody></table></div></div>
     <div class="asec" id="admUser" hidden>
       <button class="lnk" type="button" id="udBack" data-i="back"></button>
       <div class="udh"><img id="udImg" alt=""><div style="min-width:0"><h3 id="udName"></h3><div class="snote" id="udMeta"></div><p class="snote" id="udBio"></p></div></div>
@@ -286,6 +288,8 @@
       <div class="tblw"><table class="ut st"><thead><tr><th data-i="songCol"></th><th data-i="genre"></th><th>BPM</th><th data-i="key"></th><th data-i="length"></th><th data-i="size"></th><th data-i="joinedSong"></th><th></th></tr></thead><tbody id="udSongs"></tbody></table></div>
       <div class="bhead" style="margin-top:22px"><h3 data-i="userDownloads"></h3></div>
       <div class="tblw"><table class="ut st"><thead><tr><th data-i="songCol"></th><th data-i="files"></th><th data-i="size"></th><th data-i="date"></th></tr></thead><tbody id="udDls"></tbody></table></div>
+      <div class="bhead" style="margin-top:22px"><h3 data-i="userActivity"></h3></div>
+      <div class="tblw"><table class="ut st"><thead><tr><th data-i="date"></th><th data-i="actWhat"></th><th data-i="actDetail"></th></tr></thead><tbody id="udAct"></tbody></table></div>
     </div>
     <div class="asec"><div class="bhead"><h3 data-i="settings"></h3></div>
       <div class="sgrid">
@@ -319,12 +323,13 @@
 
 <script src="config.js?v=1"></script>
 <script src="vendor/supabase.js"></script>
-<script src="assets/backend.js?v=7"></script>
-<script src="assets/app.js?v=16"></script>
+<script src="assets/backend.js?v=8"></script>
+<script src="assets/app.js?v=17"></script>
 <script src="assets/dj-i18n.js?v=2"></script>
-<script src="assets/dj.js?v=4"></script>
+<script src="assets/dj.js?v=5"></script>
 <script src="assets/heblat.js?v=1"></script>
-<script src="assets/crate.js?v=2"></script>
+<script src="assets/cues.js?v=1"></script>
+<script src="assets/crate.js?v=3"></script>
 <script src="assets/mp3.js?v=1"></script>
 <script src="assets/pages.js?v=2"></script>
 <script src="assets/shell.js?v=4"></script>

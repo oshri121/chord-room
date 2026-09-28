@@ -65,6 +65,16 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   from Deezer `search/artist` (cached in `chordroom.dzartist.v1`, accepted only when the consonant skeleton matches).
   MP3: Hebrew ID3 text frames converted + TIT2/TPE1 set; FLAC: Vorbis comments; other formats: file name only.
   Each Hebrew row shows its Latin name under the title, editable (✎) and saved in the row (`r.lat`).
+- Per user: the Crate is stored per account (`chordroom.crate.v1:<uid|guest>`, the old shared key goes to the first account
+  that signs in; a guest's rows move to the account on sign-in when it has none). The remembered tool song carries the uid and
+  is shown only to that account; switching account resets the tool (`authChanged` → `cr-user` event → `userSwitched`).
+- Activity log: `activity` table written only by `log_activity(action, detail)` (rate limited, admins read). `logAct(a,d)` in
+  app.js (`CR.log` for dj.js/crate.js): visit, sign_in, view, song_upload/open, discover_open, separate, export, dj_load,
+  crate_analyze/export, subscribe_click, invite_copy. Admin panel tab "Activity" + per-user activity in the details view.
+- Auto cue points (`assets/cues.js`, `CUES.detect(buffer, grid)`): intro/vocal/break/build/drop/outro = hot cues A–F with fixed
+  colours, found from per-bar band energies. Crate stores them per row, draws a structure strip, and exports them:
+  rekordbox XML POSITION_MARK (hot + memory), Serato `GEOB "Serato Markers2"` inside MP3 copies, Traktor NML (CUE_V2).
+- Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
 - Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,

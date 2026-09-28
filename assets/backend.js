@@ -133,6 +133,19 @@
       if (error) throw error;
       return data;
     },
+    // activity log: the user's own actions (written only through log_activity); admins read everyone's
+    async logActivity(action, detail) {
+      if (!B.user) return;
+      const { error } = await sb.rpc('log_activity', { p_action: action, p_detail: detail == null ? null : String(detail).slice(0, 300) });
+      if (error) throw error;
+    },
+    async adminActivity(uid, limit = 300) {
+      let q = sb.from('activity').select('id,user_id,action,detail,created_at').order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
+      if (uid) q = q.eq('user_id', uid);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data;
+    },
     // invite a friend: my code + stats ({code, invited, earned}); claim = the new user joined through a code
     async myReferral() {
       const { data, error } = await sb.rpc('my_referral');

@@ -733,3 +733,4 @@ html[dir="rtl"] .lib,html[dir="rtl"] .acc,html[dir="rtl"] .mix{animation-name:cr
 .refcard::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--acc-grad)}
 .refcard .refbox{margin:0;padding:0;border:0}
 .refcard .refh b{font-size:18px}
+.kb.kn{min-width:38px;justify-content:center}

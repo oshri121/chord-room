@@ -394,6 +394,7 @@ const bpmEff=d=>d.track.bpm*d.rate;
 async function loadInto(d,getBuf,name,hint,meta){
   await init();
   if(d.loading)return;d.loading=true;
+  if(CR.log)CR.log('dj_load',name);
   if(d.playing)stopDeck(d);
   if(D.auto)autoCancel();
   busyDeck(d,t('djDecoding'),0.03);
@@ -760,7 +761,7 @@ function renderMatch(){
   if(ks<86){const b0=s.semis;s.semis=0;const best=bestShift(s,m);s.semis=b0;if(best!=null&&best!==s.semis)adv.push([t('djAdvKey',{d:LET[s.i],s:(best-s.semis>0?'+':'')+(best-s.semis)}),()=>{s.semis=best;applyKey(s)}])}
   if(!adv.length)adv.push([t('djAdvReady'),()=>autoStart()]);
   box.innerHTML=`<div class="mgrid"><div class="mwheel">${wheelSVG(ka,kb)}<div class="mscore" style="--sc:${score}"><b class="mono">${score}</b><span>${esc(t(lvl))}</span></div></div>
-    <div class="minfo"><div class="mline"><span>${esc(t('djKeyL'))}</span><b>${esc(relName)}</b><em class="mono">${esc(CR.camelot(ka.pc,ka.mode))} → ${esc(CR.camelot(kb.pc,kb.mode))}</em></div>
+    <div class="minfo"><div class="mline"><span>${esc(t('djKeyL'))}</span><b>${esc(relName)}</b><em class="mono">${esc(CR.keyText(ka))} → ${esc(CR.keyText(kb))}</em></div>
     <div class="mline"><span>${esc(t('djTempoL'))}</span><b class="mono">${bpmEff(a).toFixed(1)} / ${bpmEff(b).toFixed(1)}</b><em class="mono">${fit<0.0005?'✓':(fit*100).toFixed(1)+'%'}</em></div>
     <ul class="madv"></ul></div></div>`;
   const ul=box.querySelector('.madv');

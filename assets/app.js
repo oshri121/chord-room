@@ -339,6 +339,18 @@ es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se regi
   refGot:'Te uniste con la invitación de un amigo: se añadieron {n} puntos gratis.',lr_referral:'Invitación de amigo',refJoinedL:'registro por invitación',refInviterL:'se unió un amigo',
   billRef:'Puntos por invitación (cada lado)',billRefMax:'Máx. recompensas por invitador en 30 días'}};
 for(const k in IREF)Object.assign(I[k],IREF[k]);
+const IACT={
+he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
+  act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה'},
+en:{admActivity:'Activity',actAll:'All actions',actNone:'No activity yet.',actMissing:'The activity log isn\'t installed yet: run the "Activity log" SQL in Supabase.',actRefresh:'Refresh',actSearch:'Search user or detail',actWhat:'Action',actDetail:'Details',userActivity:'Recent activity',
+  act_visit:'Visit',act_sign_in:'Sign in',act_view:'Opened page',act_song_upload:'Uploaded song',act_song_open:'Opened song',act_discover_open:'Song from Discover',act_separate:'Stem separation',act_export:'Tool download',act_dj_load:'DJ Mix load',act_crate_analyze:'Crate analysis',act_crate_export:'Crate export',act_subscribe_click:'Subscribe click',act_invite_copy:'Copied invite link'},
+ar:{admActivity:'النشاط',actAll:'كل الإجراءات',actNone:'لا يوجد نشاط بعد.',actMissing:'سجل النشاط غير مثبت بعد: شغّل كود SQL الخاص بـ "Activity log" في Supabase.',actRefresh:'تحديث',actSearch:'ابحث عن مستخدم أو تفصيل',actWhat:'الإجراء',actDetail:'التفاصيل',userActivity:'النشاط الأخير',
+  act_visit:'زيارة',act_sign_in:'تسجيل دخول',act_view:'فتح صفحة',act_song_upload:'رفع أغنية',act_song_open:'فتح أغنية',act_discover_open:'أغنية من اكتشف',act_separate:'فصل المسارات',act_export:'تنزيل من الأداة',act_dj_load:'تحميل في مزج DJ',act_crate_analyze:'تحليل المكتبة',act_crate_export:'تصدير المكتبة',act_subscribe_click:'نقر على الاشتراك',act_invite_copy:'نسخ رابط الدعوة'},
+ru:{admActivity:'Активность',actAll:'Все действия',actNone:'Активности пока нет.',actMissing:'Журнал активности ещё не установлен: выполните SQL "Activity log" в Supabase.',actRefresh:'Обновить',actSearch:'Поиск по пользователю или деталям',actWhat:'Действие',actDetail:'Детали',userActivity:'Последняя активность',
+  act_visit:'Визит',act_sign_in:'Вход',act_view:'Открыл страницу',act_song_upload:'Загрузил песню',act_song_open:'Открыл песню',act_discover_open:'Песня из «Обзора»',act_separate:'Разделение на стемы',act_export:'Скачивание из инструмента',act_dj_load:'Загрузка в DJ-микс',act_crate_analyze:'Анализ библиотеки',act_crate_export:'Экспорт библиотеки',act_subscribe_click:'Нажал «Подписка»',act_invite_copy:'Скопировал приглашение'},
+es:{admActivity:'Actividad',actAll:'Todas las acciones',actNone:'Aún no hay actividad.',actMissing:'El registro de actividad aún no está instalado: ejecuta el SQL "Activity log" en Supabase.',actRefresh:'Actualizar',actSearch:'Buscar usuario o detalle',actWhat:'Acción',actDetail:'Detalles',userActivity:'Actividad reciente',
+  act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación'}};
+for(const k in IACT)Object.assign(I[k],IACT[k]);
 
 
 
@@ -926,7 +938,7 @@ function renderHarm(){
   const box=$('#harm');box.innerHTML='';if(!S.key)return;
   const pc=mod(S.key.pc+S.transpose,12),m=S.key.mode;
   const items=[[t('same'),pc,m],[t('down'),mod(pc-7,12),m],[t('up'),mod(pc+7,12),m],[t('rel'),m?mod(pc+3,12):mod(pc+9,12),1-m]];
-  for(const [lb,p,md] of items){const s=document.createElement('span');s.innerHTML=`<b>${camelot(p,md)}</b>`;s.append(keyName(p,md));s.title=lb;box.appendChild(s)}
+  for(const [lb,p,md] of items){const s=document.createElement('span');s.innerHTML=`<b>${esc(keyName(p,md))}</b>`;s.append(lb);s.title=lb;box.appendChild(s)}
 }
 function renderLoop(){document.querySelectorAll('[data-lb]').forEach(b=>b.classList.toggle('on',+b.dataset.lb===S.loopBars));$('#loopBtn').classList.toggle('on',!!S.loop)}
 function renderCues(){
@@ -1211,6 +1223,7 @@ async function aiSeparate(){
   if(!S.buffer||AI.busy)return;
   if(!(await payFor('sep')))return;
   const pay=await charge('sep',S.name);if(!pay)return;
+  logAct('separate',S.name);
   AI.busy=true;const job=++AI.job;AI.pay=pay;renderStemsUI();
   const token=S.buffer;
   try{
@@ -1474,6 +1487,7 @@ async function download(){
       if(!(await charge('stems',S.name))){msg.textContent='';return}
       S.stemsPaid=true;renderDlCost();
     }
+    logAct('export',`${S.name} · ${pick.map(e=>e.id).join(',')} · ${EXT}`);
     if(pick.some(e=>e.st==='mbass'||e.st==='mmel'))await transcribe(p=>{msg.textContent=t('transcribing',{p:Math.round(p*100)})});
     msg.textContent=t('packing');await tick();
     for(const e of pick){
@@ -1514,7 +1528,7 @@ function renderLib(){
   l.forEach((it,i)=>{
     const li=document.createElement('li'),o=document.createElement('button');o.type='button';o.className='op';
     const kn=(FLAT_MAJ.has(it.key.mode?mod(it.key.pc+3,12):it.key.pc)?FLAT:SHARP)[it.key.pc]+(it.key.mode?'m':'');
-    o.innerHTML=`<span class="t"></span><span class="m"><span class="lt" dir="ltr">${fmtBpm(it.bpm)} BPM · ${kn} · ${camelot(it.key.pc,it.key.mode)} · ${fmtS(it.dur)}</span>${it.genre?`<span class="g"></span>`:''}${it.file_path?`<span class="cl" title="${esc(t('cloudTag'))}">${CLOUD_IC}</span>`:''}</span>`;
+    o.innerHTML=`<span class="t"></span><span class="m"><span class="lt" dir="ltr">${fmtBpm(it.bpm)} BPM · ${kn} · ${fmtS(it.dur)}</span>${it.genre?`<span class="g"></span>`:''}${it.file_path?`<span class="cl" title="${esc(t('cloudTag'))}">${CLOUD_IC}</span>`:''}</span>`;
     if(it.genre)o.querySelector('.g').textContent=it.genre;
     o.querySelector('.t').textContent=it.name;o.onclick=()=>openLib(it);
     const d=document.createElement('button');d.type='button';d.className='del';d.textContent=t('del');
@@ -1536,7 +1550,7 @@ async function openLib(it){
       const ab=await (await fetch(url)).arrayBuffer();busy(t('bCloud'),0.3);
       const blob=new Blob([ab],{type:it.file_type||''});   // copy before decodeAudioData detaches the buffer
       const buf=await ac().decodeAudioData(ab);
-      await analyze(buf,it.name,false,true);restoreSaved(it);rememberSong(blob,{name:it.name});
+      await analyze(buf,it.name,false,true);restoreSaved(it);rememberSong(blob,{name:it.name});logAct('song_open',it.name);
       S.fileMeta={file_path:it.file_path,file_size:it.file_size,file_type:it.file_type};S.genre=it.genre||'';setSaveState('saved');
       $('#notice').hidden=true;return;
     }catch(e){console.warn(e);busy(null)}
@@ -1551,6 +1565,24 @@ async function openLib(it){
 
 /* ---------- accounts, profiles, admin (Supabase) ---------- */
 const ACC={on:!!(window.Backend&&Backend.enabled),user:null,profile:null,admin:false,config:{},users:[],lib:null};
+/* who is signed in is known only after the first auth callback: per-user data (crate, last song) waits for it */
+const AUTH={known:!ACC.on,uid:null,wait:null};
+AUTH.ready=new Promise(ok=>{AUTH.wait=ok;if(AUTH.known)ok()});
+// the account service is slow or unreachable → carry on as a guest (a later sign-in still switches over)
+setTimeout(()=>{if(!AUTH.known)authChanged(null,'TIMEOUT')},4000);
+function authChanged(uid,event){
+  const first=!AUTH.known,prev=AUTH.uid;AUTH.known=true;AUTH.uid=uid;AUTH.wait();
+  if(first||prev!==uid)document.dispatchEvent(new CustomEvent('cr-user',{detail:{uid,prev,first,event}}));
+  if(!first&&prev!==uid)userSwitched(uid,prev);
+}
+/* ---------- activity log (admin panel → Activity; log_activity in schema.sql) ---------- */
+const ACT={off:false,last:{}};
+function logAct(action,detail){
+  if(!ACC.on||!ACC.user||ACT.off||!Backend.logActivity)return;
+  const d=detail==null?'':String(detail).replace(/\s+/g,' ').trim().slice(0,300),k=action+'|'+d,now=Date.now();
+  if(ACT.last[k]&&now-ACT.last[k]<30000)return;ACT.last[k]=now;          // the same thing twice within 30 s → once
+  Backend.logActivity(action,d).catch(e=>{if(missingDb(e))ACT.off=true});
+}
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtDate=v=>{if(!v)return '—';const d=new Date(v);return isNaN(d)?'—':d.toLocaleString(LANG==='he'?'he-IL':LANG==='ar'?'ar':LANG,{dateStyle:'medium',timeStyle:'short'})};
 const initials=n=>{const s=String(n||'?').trim();return s?s[0].toUpperCase():'?'};
@@ -1570,6 +1602,9 @@ async function initAccount(){
   await Backend.init(async(event,user)=>{
     if(event==='PASSWORD_RECOVERY'){openDlg('reset');}
     const changed=(user&&user.id)!==(ACC.user&&ACC.user.id);ACC.user=user;
+    authChanged(user?user.id:null,event);
+    if(user&&changed&&event==='SIGNED_IN')setTimeout(()=>logAct('sign_in',navigator.language||''),0);
+    else if(user&&changed){try{const k='chordroom.visit.'+user.id,d=new Date().toDateString();if(sessionStorage.getItem(k)!==d){sessionStorage.setItem(k,d);setTimeout(()=>logAct('visit',location.hash.slice(1)||'tool'),1500)}}catch(e){}}
     if(!user){ACC.profile=null;ACC.admin=false;ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
     if(changed||event==='USER_UPDATED'||event==='INITIAL'){await loadProfile(true);loadCloudLib()}
   });
@@ -1681,7 +1716,7 @@ const CLOUD_IC='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentC
 const fmtMB=b=>b?(b/1048576).toFixed(1)+' MB':'—';
 const mbCell=b=>`<span dir="ltr" class="ltr">${fmtMB(b)}</span>`;
 const ltr=x=>`<span dir="ltr" class="ltr">${esc(x)}</span>`;
-function keyCell(pc,mode){if(pc==null)return '—';const a={pc,mode},c=camOf(a);return `<span class="kb" style="background:${camColor(c.n,c.l)}"><b>${c.n}${c.l}</b><i>${esc(keyText(a))}</i></span>`}
+function keyCell(pc,mode){if(pc==null)return '—';const a={pc,mode},c=camOf(a);return `<span class="kb kn" style="background:${camColor(c.n,c.l)}"><b>${esc(keyText(a))}</b></span>`}
 ACC.admView='users';
 function renderAdmin(){
   if(!ACC.admin||$('#admin').hidden)return;
@@ -1689,11 +1724,12 @@ function renderAdmin(){
   const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('downloadsL'),dl.length],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
   $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
   document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
-  $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;
-  const setSec=$('#cTitle').closest('.asec');const bSec=$('#bOn');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView==='songs';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;$('#admAct').hidden=ACC.admView!=='activity'||!!ACC.admUser;
+  const setSec=$('#cTitle').closest('.asec');const bSec=$('#bOn');if(setSec)setSec.hidden=!!ACC.admUser||ACC.admView!=='users';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
   renderPayEvents();
   if(ACC.admUser){renderAdminUser();return}
   if(ACC.admView==='songs'){renderAdminSongs();return}
+  if(ACC.admView==='activity'){renderAdminAct();return}
   const dlc={};for(const d of dl)dlc[d.user_id]=(dlc[d.user_id]||0)+1;
   const q=$('#uSearch').value.trim().toLowerCase();
   const rows=M.filter(m=>!q||[m.username,m.display_name,m.email].some(x=>String(x||'').toLowerCase().includes(q)));
@@ -1732,6 +1768,24 @@ function wireSongRows(tbody,list){
   tbody.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>busyBtn(b,()=>adminOpen(list[+b.dataset.op])));
 }
 async function loadAdminSongs(){try{ACC.songsAll=await Backend.adminSongs()}catch(e){ACC.songsAll=[]}renderAdmin()}
+/* activity (admin): everyone's recent actions, or one user's in the details view */
+const ACT_KEYS=['visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
+const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
+async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
+function actRows(list,withUser){
+  const users={};for(const m of ACC.users||[])users[m.id]=m;
+  if(!list)return `<tr><td colspan="4" class="snote">${esc(t('actMissing'))}</td></tr>`;
+  if(!list.length)return `<tr><td colspan="4" class="snote">${esc(t('actNone'))}</td></tr>`;
+  return list.map(r=>{const u=users[r.user_id]||{};return `<tr><td>${esc(fmtDate(r.created_at))}</td>${withUser?`<td class="usr">${ltr(u.username?'@'+u.username:(u.email||String(r.user_id).slice(0,8)))}</td>`:''}<td><span class="pill act-${esc(r.action)}">${esc(actName(r.action))}</span></td><td class="adet" dir="auto">${esc(r.detail||'')}</td></tr>`}).join('');
+}
+async function loadAdminAct(){ACC.actAll=await loadActivity(null);renderAdmin()}
+function renderAdminAct(){
+  const list=ACC.actAll,sel=$('#aFilter'),q=$('#aSearch').value.trim().toLowerCase();
+  if(!sel.options.length){sel.innerHTML=`<option value="">${esc(t('actAll'))}</option>`+ACT_KEYS.map(k=>`<option value="${k}">${esc(actName(k))}</option>`).join('')}
+  const users={};for(const m of ACC.users||[])users[m.id]=m;
+  const f=list&&list.filter(r=>(!sel.value||r.action===sel.value)&&(!q||[r.detail,(users[r.user_id]||{}).username,(users[r.user_id]||{}).email].some(x=>String(x||'').toLowerCase().includes(q))));
+  $('#aBody').innerHTML=actRows(f,true);
+}
 function renderAdminSongs(){
   const list=ACC.songsAll||[],q=$('#sSearch').value.trim().toLowerCase();
   const f=list.filter(r=>!q||[r.name,r.genre].some(x=>String(x||'').toLowerCase().includes(q)));
@@ -1741,7 +1795,9 @@ function renderAdminSongs(){
 }
 async function loadAdminUser(m){
   $('#udSongs').innerHTML=`<tr><td colspan="8" class="snote">${esc(t('dLoading'))}</td></tr>`;
+  $('#udAct').innerHTML=`<tr><td colspan="3" class="snote">${esc(t('dLoading'))}</td></tr>`;
   try{const [songs,dls]=await Promise.all([Backend.adminSongs(m.id),Backend.adminDownloads(m.id)]);if(ACC.admUser!==m)return;ACC.admUserSongs=songs;ACC.admUserDls=dls}catch(e){ACC.admUserSongs=[];ACC.admUserDls=[]}
+  ACC.admUserAct=await loadActivity(m.id);if(ACC.admUser!==m)return;
   renderAdminUser();
 }
 function renderAdminUser(){
@@ -1758,6 +1814,7 @@ function renderAdminUser(){
   $('#udDls').innerHTML=dls.length?dls.map(d=>`<tr><td class="sn2"></td><td class="mono">${Array.isArray(d.files)?d.files.length:0}</td><td class="mono">${mbCell(d.size)}</td><td>${esc(fmtDate(d.created_at))}</td></tr>`).join(''):`<tr><td colspan="4" class="snote">${esc(t('noDownloads'))}</td></tr>`;
   $('#udDls').querySelectorAll('tr').forEach((tr,i)=>{const c=tr.querySelector('.sn2');if(c&&dls[i])c.textContent=dls[i].song_name});
   $('#udAll').disabled=!songs.some(r=>r.file_path);
+  $('#udAct').innerHTML=actRows(ACC.admUserAct===undefined?[]:ACC.admUserAct,false);
 }
 async function fetchSongFile(r){const url=await Backend.songFileUrl(r.file_path);return new Uint8Array(await (await fetch(url)).arrayBuffer())}
 const fileNameOf=r=>`${String(r.name).replace(/[\\/:*?"<>|]/g,'_').slice(0,100)}.${(r.file_path.match(/\.([a-z0-9]+)$/i)||[,'mp3'])[1]}`;
@@ -1781,7 +1838,8 @@ async function adminOpen(r){
     showNotice(t('adminOpened'));
   }catch(e){console.warn(e);busy(null)}
 }
-document.querySelectorAll('#admTabs button').forEach(b=>b.onclick=()=>{ACC.admView=b.dataset.v;ACC.admUser=null;if(b.dataset.v==='songs'&&!ACC.songsAll)loadAdminSongs();renderAdmin()});
+document.querySelectorAll('#admTabs button').forEach(b=>b.onclick=()=>{ACC.admView=b.dataset.v;ACC.admUser=null;if(b.dataset.v==='songs'&&!ACC.songsAll)loadAdminSongs();if(b.dataset.v==='activity')loadAdminAct();renderAdmin()});
+$('#aFilter').onchange=()=>renderAdmin();$('#aSearch').addEventListener('input',()=>renderAdmin());$('#aRefresh').onclick=()=>busyBtn($('#aRefresh'),loadAdminAct);
 $('#udBack').onclick=()=>{ACC.admUser=null;renderAdmin()};
 $('#udAll').onclick=()=>busyBtn($('#udAll'),()=>adminZip(ACC.admUserSongs||[],ACC.admUser.username||'user',$('#udMsg')));
 $('#sAll').onclick=()=>busyBtn($('#sAll'),()=>adminZip(ACC.songsAll||[],'',$('#sMsg')));
@@ -1848,7 +1906,7 @@ function fillRef(el){
   el.querySelector('p').textContent=t('refText',{n});
   const inp=el.querySelector('.refurl');inp.value=url;inp.setAttribute('aria-label',t('refTitle'));inp.onfocus=()=>inp.select();
   const cp=el.querySelector('.refcopy');cp.textContent=t('refCopy');
-  cp.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(e){inp.focus();inp.select();try{ok=document.execCommand('copy')}catch(x){}}
+  cp.onclick=async()=>{logAct('invite_copy','');let ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(e){inp.focus();inp.select();try{ok=document.execCommand('copy')}catch(x){}}
     if(ok){cp.textContent=t('refCopied');clearTimeout(cp._t);cp._t=setTimeout(()=>{cp.textContent=t('refCopy')},2000)}};
   el.querySelector('.refwa').href='https://wa.me/?text='+encodeURIComponent(msg+' '+url);
   const sh=el.querySelector('.refsh');sh.hidden=!navigator.share;sh.textContent=t('refShare');sh.onclick=()=>navigator.share({title:'Chord Room',text:msg,url}).catch(()=>{});
@@ -1929,6 +1987,7 @@ function hookPages(){
   PAGES.onNav=v=>showView(v);
   PAGES.onSignup=()=>{if(ACC.on)openDlg('up')};
   PAGES.onSubscribe=id=>{
+    logAct('subscribe_click',id);
     const b=BILL(),p=b.plans.find(x=>x.id===id);
     if(p&&/^https:\/\//.test(p.link||'')){
       if(!ACC.user){if(ACC.on)openDlg('up');return}                       // the payment must know whose account to fill
@@ -2148,7 +2207,7 @@ function renderList(){
 }
 function keyBadge(a,status){
   const s=document.createElement('span');s.className='kb';
-  if(a){const c=camOf(a);s.style.background=camColor(c.n,c.l);s.innerHTML=`<b>${c.n}${c.l}</b><i>${esc(keyText(a))}</i>`}
+  if(a){const c=camOf(a);s.style.background=camColor(c.n,c.l);s.classList.add('kn');s.innerHTML=`<b>${esc(keyText(a))}</b>`}
   else{s.classList.add('pending');s.textContent=status==='err'?'—':status==='busy'?t('dAnalyzing'):'···'}
   return s;
 }
@@ -2259,7 +2318,7 @@ async function openInTool(r){
     const ab=await (await fetch(await freshPreview(r))).arrayBuffer(),blob=new Blob([ab],{type:'audio/mpeg'});
     const buf=await ac().decodeAudioData(ab);
     setDiscMsg('');showView('tool');await analyze(buf,`${r.artist} – ${r.title}`,false,true);
-    rememberSong(blob,{name:S.name,catRef:r});
+    rememberSong(blob,{name:S.name,catRef:r});logAct('discover_open',`${r.artist} – ${r.title}`);
     S.catRef=r;showNotice(t('dPreviewNote'),[[t('fullPlay'),()=>openFull(r),FULL_IC],[t('uploadFullBtn'),()=>$('#file').click()]]);
     if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{});
   }catch(e){console.warn(e);setDiscMsg(t('dNoPreview'))}
@@ -2299,6 +2358,7 @@ $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout']};
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
+  logAct('view',v);
   for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=k!==v;$(nav).classList.toggle('on',k===v)}
   const d=v==='discover',j=v==='dj';
   if(v!=='tool'&&P.playing)stop();
@@ -2318,7 +2378,7 @@ function renderDiscControls(){
   const gOk=DC.tab==='trend'||DC.tab==='new';$('#dGenres').hidden=!gOk;$('#dGenres').innerHTML='';
   DISC_GENRES.forEach(([id,name])=>{const b=document.createElement('button');b.type='button';b.textContent=t(name);if(id===-1)b.classList.add('il');b.classList.toggle('on',DC.genre===id);b.onclick=()=>{DC.genre=id;renderDiscControls();loadTab()};$('#dGenres').appendChild(b)});
   const sel=$('#dKey'),cur=DC.keyF;sel.innerHTML=`<option value="">${esc(t('dAllKeys'))}</option><option value="match">${esc(t('dMatchCur'))}</option>`;
-  for(let n=1;n<=12;n++)for(const l of ['A','B']){const pc=l==='B'?CAM_MAJ.indexOf(n):mod(CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=n+l;o.textContent=`${n}${l} · ${keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
+  for(let n=1;n<=12;n++)for(const l of ['A','B']){const pc=l==='B'?CAM_MAJ.indexOf(n):mod(CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=n+l;o.textContent=`${keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
   sel.value=cur;
 }
 $('#dKey').onchange=e=>{DC.keyF=e.target.value;renderList()};
@@ -2344,25 +2404,37 @@ const LastDB=(()=>{let p=null;
 const POS_K='chordroom.lastpos';
 function rememberSong(blob,info){
   if(blob&&blob.size>200*1024*1024)return;
-  let rec={...info,blob:blob||null,at:Date.now()};
+  let rec={...info,blob:blob||null,at:Date.now(),uid:AUTH.uid||null};S.owner=AUTH.uid||null;
   const put=r=>LastDB.set('audio',r);
   put(rec).catch(()=>{if(rec.catRef){rec={...rec,catRef:{id:rec.catRef.id,ext:rec.catRef.ext,title:rec.catRef.title,artist:rec.catRef.artist,inCat:!!rec.catRef.inCat}};put(rec).catch(()=>{})}});
   try{localStorage.removeItem(POS_K)}catch(e){}
 }
-function rememberState(item){if(!S.demo)LastDB.set('state',item).catch(()=>{})}
+function rememberState(item){if(!S.demo)LastDB.set('state',{...item,uid:AUTH.uid||null}).catch(()=>{})}
 function rememberPos(){if(!S.buffer||S.demo)return;try{localStorage.setItem(POS_K,JSON.stringify({name:S.name,pos:P.playing?now():P.pos}))}catch(e){}}
 window.addEventListener('pagehide',rememberPos);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)rememberPos()});
+// signed in as someone else (or out): the tool must not keep showing the previous user's song
+async function userSwitched(uid,prev){
+  if(S.demo){if(uid)restoreLast().catch(()=>{});return}      // demo on screen → this account's last song, if any
+  if((S.owner||null)===(uid||null))return;
+  // signing in right after working as a guest keeps that song: it becomes the new account's
+  if(!prev&&uid&&!S.owner){S.owner=uid;for(const k of ['audio','state'])try{const v=await LastDB.get(k);if(v&&!v.uid)await LastDB.set(k,{...v,uid})}catch(e){}return}
+  try{cancelSep(true);stop();closeFull&&closeFull()}catch(e){}
+  if(await restoreLast())return;
+  try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);S.owner=null}catch(e){console.error(e);busy(null)}
+}
 async function restoreLast(){
+  await AUTH.ready;
   let a=null;try{a=await LastDB.get('audio')}catch(e){}
   if(!a||!a.name)return false;
+  if((a.uid||null)!==(AUTH.uid||null))return false;          // another user's song on this browser → not shown
   if(!a.blob){if(!a.meta)return false;try{await openLib(a.meta);return true}catch(e){return false}}
   try{
     busy(t('bReading'),0.01);
     const buf=await ac().decodeAudioData(await a.blob.arrayBuffer());
-    await analyze(buf,a.name,false,true);
+    await analyze(buf,a.name,false,true);S.owner=a.uid||null;
     let st=null;try{st=await LastDB.get('state')}catch(e){}
-    if(!st||st.name!==a.name)st=readLib().find(x=>x.name===a.name)||null;
+    if(!st||st.name!==a.name||(st.uid||null)!==(AUTH.uid||null))st=readLib().find(x=>x.name===a.name)||null;
     if(st&&st.chords&&Math.abs((st.dur||0)-buf.duration)<0.5){
       restoreSaved(st);S.genre=st.genre||'';
       if(st.file_path){S.fileMeta={file_path:st.file_path,file_size:st.file_size,file_type:st.file_type};setSaveState('saved')}
@@ -2383,6 +2455,7 @@ async function loadFile(file){
     await analyze(buf,name,false);S.genre=(saved&&saved.genre)||'';
     if(saved&&Math.abs(saved.dur-buf.duration)<0.5)restoreSaved(saved);
     rememberSong(file,{name});
+    logAct('song_upload',`${name} · ${fmtS(buf.duration)}`);
     storeUpload(file,name);
   }catch(e){console.error(e);busy(null);showNotice(t('readErr'))}
 }
@@ -2501,7 +2574,8 @@ window.CR={
   songFileUrl:p=>Backend.songFileUrl(p),
   toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur}:null,
   stopTool:()=>{if(P.playing)stop();stopPreview()},
-  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName
+  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName,
+  log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid})
 };
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();

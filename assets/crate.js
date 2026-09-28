@@ -33,7 +33,7 @@ he:{navCrate:'ניתוח ספרייה',crEyebrow:'ניתוח מרוכז · בד�
   stQ:'ממתין',stDec:'טוען…',stAna:'מנתח…',stErr:'לא הצלחנו לקרוא את הקובץ',stBig:'גדול מדי (מעל 250 MB)',stPause:'נעצר',stSaved:'תוצאה שמורה · הקובץ לא טעון',
   crDup:'{n} כפולים דולגו.',crBad:'{n} קבצים שאינם אודיו דולגו.',crLim:'הגעת למגבלה: עד {n} קבצים.',crReatt:'{n} שורות שמורות קיבלו את הקובץ בחזרה.',
   mxGood:'מתחבר טוב לשיר הקודם',mxTempo:'הסולמות מתאימים, פער קצב {p}%',mxBad:'הסולם מתנגש עם השיר הקודם',
-  crExport:'ייצוא',crExportN:'{n} שירים, בסדר שמוצג',crCsv:'CSV (אקסל)',crXml:'rekordbox XML',crM3u:'פלייליסט M3U8',crZip:'עותקים עם שם חדש (ZIP)',crZipT:'עותקים בשם "8A - 124 - שם", ולקובצי MP3 נכתבים תגי BPM וסולם',
+  crExport:'ייצוא',crExportN:'{n} שירים, בסדר שמוצג',crCsv:'CSV (אקסל)',crXml:'rekordbox XML',crM3u:'פלייליסט M3U8',crZip:'עותקים עם שם חדש (ZIP)',crZipT:'עותקים בשם "Am - 124 - שם", ולקובצי MP3 נכתבים תגי BPM וסולם',
   crFolderL:'התיקייה במחשב שלך',crFolderP:'למשל C:\\Music\\My set או /Users/me/Music/My set',
   crFolderH:'rekordbox צריך לדעת איפה הקבצים נמצאים: הקלד את הנתיב המלא של התיקייה שבחרת (או של התיקייה שבה הקבצים). שמות הקבצים מתווספים אחריו.',
   crXmlDone:'קובץ ה־XML נשמר. ב־rekordbox: Preferences › Advanced › rekordbox xml, בוחרים את הקובץ ומייבאים את הפלייליסט "Chord Room".',
@@ -57,7 +57,7 @@ en:{navCrate:'Crate',crEyebrow:'Batch analysis · in your browser',crTitle:'Anal
   stQ:'Waiting',stDec:'Loading…',stAna:'Analysing…',stErr:'Couldn\'t read this file',stBig:'Too large (over 250 MB)',stPause:'Stopped',stSaved:'Saved result · file not loaded',
   crDup:'{n} duplicates skipped.',crBad:'{n} non-audio files skipped.',crLim:'Limit reached: up to {n} files.',crReatt:'{n} saved rows got their file back.',
   mxGood:'Mixes well with the previous track',mxTempo:'Keys mix, tempo gap {p} %',mxBad:'Key clashes with the previous track',
-  crExport:'Export',crExportN:'{n} tracks, in the order shown',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'M3U8 playlist',crZip:'Renamed copies (ZIP)',crZipT:'Copies named "8A - 124 - name"; MP3s also get BPM and key tags',
+  crExport:'Export',crExportN:'{n} tracks, in the order shown',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'M3U8 playlist',crZip:'Renamed copies (ZIP)',crZipT:'Copies named "Am - 124 - name"; MP3s also get BPM and key tags',
   crFolderL:'Folder on your computer',crFolderP:'e.g. C:\\Music\\My set or /Users/me/Music/My set',
   crFolderH:'rekordbox needs the real location of the files: type the full path of the folder you chose (or the one the files are in). File names are added after it.',
   crXmlDone:'rekordbox XML saved. In rekordbox: Preferences › Advanced › rekordbox xml, pick this file, then import the "Chord Room" playlist.',
@@ -81,7 +81,7 @@ ar:{navCrate:'تحليل المكتبة',crEyebrow:'تحليل دفعة واحد
   stQ:'في الانتظار',stDec:'تحميل…',stAna:'تحليل…',stErr:'تعذّرت قراءة الملف',stBig:'كبير جدًا (أكثر من 250 MB)',stPause:'متوقف',stSaved:'نتيجة محفوظة · الملف غير محمّل',
   crDup:'تم تخطي {n} ملفات مكررة.',crBad:'تم تخطي {n} ملفات ليست صوتية.',crLim:'بلغت الحد: حتى {n} ملف.',crReatt:'استعادت {n} صفوف محفوظة ملفاتها.',
   mxGood:'يمتزج جيدًا مع الأغنية السابقة',mxTempo:'المقامات متوافقة، فرق الإيقاع {p}%',mxBad:'المقام يتعارض مع الأغنية السابقة',
-  crExport:'تصدير',crExportN:'{n} أغانٍ، بالترتيب المعروض',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'قائمة تشغيل M3U8',crZip:'نسخ بأسماء جديدة (ZIP)',crZipT:'نسخ باسم "8A - 124 - الاسم"، وتُكتب في ملفات MP3 وسوم BPM والمقام',
+  crExport:'تصدير',crExportN:'{n} أغانٍ، بالترتيب المعروض',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'قائمة تشغيل M3U8',crZip:'نسخ بأسماء جديدة (ZIP)',crZipT:'نسخ باسم "Am - 124 - الاسم"، وتُكتب في ملفات MP3 وسوم BPM والمقام',
   crFolderL:'المجلد على جهازك',crFolderP:'مثلًا C:\\Music\\My set أو /Users/me/Music/My set',
   crFolderH:'يحتاج rekordbox إلى المكان الحقيقي للملفات: اكتب المسار الكامل للمجلد الذي اخترته (أو الذي توجد فيه الملفات). تُضاف أسماء الملفات بعده.',
   crXmlDone:'تم حفظ ملف XML. في rekordbox: Preferences › Advanced › rekordbox xml، اختر الملف ثم استورد قائمة "Chord Room".',
@@ -105,7 +105,7 @@ ru:{navCrate:'Анализ библиотеки',crEyebrow:'Пакетный а�
   stQ:'В очереди',stDec:'Загрузка…',stAna:'Анализ…',stErr:'Не удалось прочитать файл',stBig:'Слишком большой (более 250 MB)',stPause:'Остановлено',stSaved:'Сохранённый результат · файл не загружен',
   crDup:'Пропущено дубликатов: {n}.',crBad:'Пропущено файлов не аудио: {n}.',crLim:'Достигнут предел: до {n} файлов.',crReatt:'Сохранённым строкам возвращены файлы: {n}.',
   mxGood:'Хорошо сводится с предыдущим треком',mxTempo:'Тональности сочетаются, разница темпа {p} %',mxBad:'Тональность конфликтует с предыдущим треком',
-  crExport:'Экспорт',crExportN:'Треков: {n}, в показанном порядке',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Плейлист M3U8',crZip:'Переименованные копии (ZIP)',crZipT:'Копии с именами "8A - 124 - название", в MP3 записываются теги BPM и тональности',
+  crExport:'Экспорт',crExportN:'Треков: {n}, в показанном порядке',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Плейлист M3U8',crZip:'Переименованные копии (ZIP)',crZipT:'Копии с именами "Am - 124 - название", в MP3 записываются теги BPM и тональности',
   crFolderL:'Папка на вашем компьютере',crFolderP:'например C:\\Music\\My set или /Users/me/Music/My set',
   crFolderH:'rekordbox нужно настоящее расположение файлов: введите полный путь к выбранной папке (или к папке с файлами). Имена файлов добавляются после него.',
   crXmlDone:'XML сохранён. В rekordbox: Preferences › Advanced › rekordbox xml, выберите файл и импортируйте плейлист "Chord Room".',
@@ -129,7 +129,7 @@ es:{navCrate:'Biblioteca DJ',crEyebrow:'Análisis por lotes · en tu navegador',
   stQ:'En espera',stDec:'Cargando…',stAna:'Analizando…',stErr:'No se pudo leer el archivo',stBig:'Demasiado grande (más de 250 MB)',stPause:'Detenido',stSaved:'Resultado guardado · archivo no cargado',
   crDup:'{n} duplicados omitidos.',crBad:'{n} archivos que no son audio omitidos.',crLim:'Límite alcanzado: hasta {n} archivos.',crReatt:'{n} filas guardadas recuperaron su archivo.',
   mxGood:'Mezcla bien con el tema anterior',mxTempo:'Las tonalidades encajan, diferencia de tempo {p} %',mxBad:'La tonalidad choca con el tema anterior',
-  crExport:'Exportar',crExportN:'{n} temas, en el orden mostrado',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Playlist M3U8',crZip:'Copias renombradas (ZIP)',crZipT:'Copias con nombre "8A - 124 - nombre"; en los MP3 se escriben etiquetas de BPM y tonalidad',
+  crExport:'Exportar',crExportN:'{n} temas, en el orden mostrado',crCsv:'CSV (Excel)',crXml:'rekordbox XML',crM3u:'Playlist M3U8',crZip:'Copias renombradas (ZIP)',crZipT:'Copias con nombre "Am - 124 - nombre"; en los MP3 se escriben etiquetas de BPM y tonalidad',
   crFolderL:'Carpeta en tu equipo',crFolderP:'p. ej. C:\\Music\\My set o /Users/me/Music/My set',
   crFolderH:'rekordbox necesita la ubicación real de los archivos: escribe la ruta completa de la carpeta que elegiste (o donde están los archivos). Los nombres se añaden después.',
   crXmlDone:'XML guardado. En rekordbox: Preferences › Advanced › rekordbox xml, elige el archivo e importa la playlist "Chord Room".',
@@ -142,25 +142,48 @@ es:{navCrate:'Biblioteca DJ',crEyebrow:'Análisis por lotes · en tu navegador',
 
 CR.addStrings({
 he:{crUsb:'USB לפיוניר · שמות באנגלית',crUsbT:'עותקים ששמם כתוב באותיות אנגליות לפי ההגייה (עופר לוי – אני חוזר ← \u2066Ofer Levi – Ani Chozer\u2069), כדי שיופיעו בנגנים ובקונטרולרים של Pioneer. ב־MP3 וב־FLAC מתורגמים גם שם השיר והאמן שבתוך הקובץ.',
-  crUsbH:'השמות באנגלית מופיעים מתחת לכל שיר בעברית. אפשר לתקן כל שם (✎), והאתר זוכר את התיקון לפעם הבאה.',crPrefix:'להוסיף בתחילת השם סולם ו־BPM \u2066(8A - 124 - …)\u2069',
+  crUsbH:'השמות באנגלית מופיעים מתחת לכל שיר בעברית. אפשר לתקן כל שם (✎), והאתר זוכר את התיקון לפעם הבאה.',crPrefix:'להוסיף בתחילת השם סולם ו־BPM \u2066(Am - 124 - …)\u2069',
   crLatEdit:'עריכת השם באנגלית',crLatP:'Artist - Title',crLatSave:'שמירה',crLatCancel:'ביטול',crLatReset:'חזרה לתרגום האוטומטי',crLatLook:'מחפש את השמות הרשמיים של האמנים…',
   crUsbDone:'ה־ZIP מוכן ({s} MB). מחלצים ומעתיקים את הקבצים ל־USB (FAT32 או exFAT) ומכניסים לנגן.',crUsbOther:'{n} קבצים שאינם MP3/FLAC: רק שם הקובץ תורגם (התגיות שבתוכם נשארו).'},
 en:{crUsb:'USB for Pioneer · English names',crUsbT:'Copies named in Latin letters by pronunciation (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer) so they show on Pioneer players and controllers. In MP3 and FLAC the title and artist inside the file are converted too.',
-  crUsbH:'The Latin name appears under every Hebrew track. Fix any name (✎) and it is remembered next time.',crPrefix:'Start the name with key and BPM (8A - 124 - …)',
+  crUsbH:'The Latin name appears under every Hebrew track. Fix any name (✎) and it is remembered next time.',crPrefix:'Start the name with key and BPM (Am - 124 - …)',
   crLatEdit:'Edit the Latin name',crLatP:'Artist - Title',crLatSave:'Save',crLatCancel:'Cancel',crLatReset:'Back to the automatic name',crLatLook:'Looking up the artists\' official names…',
   crUsbDone:'ZIP ready ({s} MB). Unzip, copy the files to a USB stick (FAT32 or exFAT) and plug it into the player.',crUsbOther:'{n} files aren\'t MP3/FLAC: only their file name was converted (the tags inside stay).'},
 ar:{crUsb:'USB لأجهزة Pioneer · أسماء بالإنجليزية',crUsbT:'نسخ بأسماء بالحروف اللاتينية حسب النطق (עופר לוי – אני חוזר ← \u2066Ofer Levi – Ani Chozer\u2069) لتظهر في مشغلات وأجهزة تحكم Pioneer. في MP3 وFLAC يُحوَّل أيضًا اسم الأغنية والفنان داخل الملف.',
-  crUsbH:'يظهر الاسم اللاتيني تحت كل أغنية عبرية. يمكنك تصحيح أي اسم (✎) وسيُحفظ للمرة القادمة.',crPrefix:'ابدأ الاسم بالمقام وBPM \u2066(8A - 124 - …)\u2069',
+  crUsbH:'يظهر الاسم اللاتيني تحت كل أغنية عبرية. يمكنك تصحيح أي اسم (✎) وسيُحفظ للمرة القادمة.',crPrefix:'ابدأ الاسم بالمقام وBPM \u2066(Am - 124 - …)\u2069',
   crLatEdit:'تعديل الاسم اللاتيني',crLatP:'Artist - Title',crLatSave:'حفظ',crLatCancel:'إلغاء',crLatReset:'العودة إلى الاسم التلقائي',crLatLook:'البحث عن الأسماء الرسمية للفنانين…',
   crUsbDone:'ملف ZIP جاهز ({s} MB). فك الضغط وانسخ الملفات إلى USB (FAT32 أو exFAT) وضعه في المشغل.',crUsbOther:'{n} ملفات ليست MP3/FLAC: حُوِّل اسم الملف فقط (بقيت الوسوم داخلها).'},
 ru:{crUsb:'USB для Pioneer · латиницей',crUsbT:'Копии с названиями латиницей по произношению (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer), чтобы они отображались на плеерах и контроллерах Pioneer. В MP3 и FLAC также переводятся название и исполнитель внутри файла.',
-  crUsbH:'Латинское название показано под каждым треком на иврите. Любое можно исправить (✎) — исправление запомнится.',crPrefix:'Начинать имя с тональности и BPM (8A - 124 - …)',
+  crUsbH:'Латинское название показано под каждым треком на иврите. Любое можно исправить (✎) — исправление запомнится.',crPrefix:'Начинать имя с тональности и BPM (Am - 124 - …)',
   crLatEdit:'Изменить латинское название',crLatP:'Artist - Title',crLatSave:'Сохранить',crLatCancel:'Отмена',crLatReset:'Вернуть автоматическое название',crLatLook:'Ищем официальные имена исполнителей…',
   crUsbDone:'ZIP готов ({s} MB). Распакуйте, скопируйте файлы на USB (FAT32 или exFAT) и вставьте в плеер.',crUsbOther:'Файлов не MP3/FLAC: {n} — у них переведено только имя файла (теги внутри остались).'},
 es:{crUsb:'USB para Pioneer · nombres en latín',crUsbT:'Copias con el nombre en letras latinas según la pronunciación (עופר לוי – אני חוזר → Ofer Levi – Ani Chozer) para que se vean en reproductores y controladores Pioneer. En MP3 y FLAC también se convierten el título y el artista dentro del archivo.',
-  crUsbH:'El nombre en latín aparece bajo cada tema en hebreo. Puedes corregir cualquiera (✎) y se recordará.',crPrefix:'Empezar el nombre con tonalidad y BPM (8A - 124 - …)',
+  crUsbH:'El nombre en latín aparece bajo cada tema en hebreo. Puedes corregir cualquiera (✎) y se recordará.',crPrefix:'Empezar el nombre con tonalidad y BPM (Am - 124 - …)',
   crLatEdit:'Editar el nombre en latín',crLatP:'Artist - Title',crLatSave:'Guardar',crLatCancel:'Cancelar',crLatReset:'Volver al nombre automático',crLatLook:'Buscando los nombres oficiales de los artistas…',
   crUsbDone:'ZIP listo ({s} MB). Descomprime, copia los archivos a un USB (FAT32 o exFAT) y conéctalo al reproductor.',crUsbOther:'{n} archivos no son MP3/FLAC: solo se convirtió el nombre del archivo (las etiquetas internas quedan).'}
+});
+
+CR.addStrings({
+he:{crNml:'Traktor NML',crNmlDone:'קובץ ה־NML נשמר. ב־Traktor: לגרור אותו לחלון ה־Playlists (או File › Import Collection). נקודות הקיו נכנסות יחד עם השירים.',
+  crCuesH:'נקודות קיו אוטומטיות',crCuesT:'לכל שיר מנותח מסומנים קטעי השיר כנקודות קיו בצבעים קבועים, כדי לקפוץ לחלק הנכון בלי לזכור איפה הוא:',
+  crCuesHow:'rekordbox: דרך קובץ ה־XML (ומשם ל־USB ול־CDJ) · Serato: כתוב בתוך עותקי ה־MP3 שב־ZIP · Traktor: דרך קובץ ה־NML',
+  crCuesOld:'לשירים שנותחו לפני העדכון אין נקודות קיו: מוסיפים אותם שוב.',crCueAt:'{k} · {t}'},
+en:{crNml:'Traktor NML',crNmlDone:'NML saved. In Traktor, drag it onto the Playlists panel (or File › Import Collection). The cue points come in with the tracks.',
+  crCuesH:'Automatic cue points',crCuesT:'Every analysed track gets its sections marked as cue points in fixed colours, so you jump to the right part without remembering where it is:',
+  crCuesHow:'rekordbox: through the XML (then to USB and the CDJ) · Serato: written inside the MP3 copies in the ZIP · Traktor: through the NML',
+  crCuesOld:'Tracks analysed before this update have no cue points: add them again.',crCueAt:'{k} · {t}'},
+ar:{crNml:'Traktor NML',crNmlDone:'تم حفظ NML. في Traktor اسحبه إلى لوحة Playlists (أو File › Import Collection). تدخل نقاط الـ Cue مع الأغاني.',
+  crCuesH:'نقاط Cue تلقائية',crCuesT:'تُعلَّم أجزاء كل أغنية محلَّلة كنقاط Cue بألوان ثابتة، لتقفز إلى الجزء الصحيح دون أن تتذكر مكانه:',
+  crCuesHow:'rekordbox: عبر ملف XML (ثم إلى USB والـ CDJ) · Serato: مكتوبة داخل نسخ MP3 في ملف ZIP · Traktor: عبر ملف NML',
+  crCuesOld:'الأغاني التي حُلِّلت قبل هذا التحديث بلا نقاط Cue: أضفها مرة أخرى.',crCueAt:'{k} · {t}'},
+ru:{crNml:'Traktor NML',crNmlDone:'NML сохранён. В Traktor перетащите его на панель Playlists (или File › Import Collection). Cue-точки придут вместе с треками.',
+  crCuesH:'Автоматические cue-точки',crCuesT:'У каждого проанализированного трека части отмечены cue-точками постоянных цветов — прыгайте к нужной части, не запоминая, где она:',
+  crCuesHow:'rekordbox: через XML (дальше на USB и CDJ) · Serato: записаны внутрь копий MP3 в ZIP · Traktor: через NML',
+  crCuesOld:'У треков, проанализированных до обновления, cue-точек нет: добавьте их снова.',crCueAt:'{k} · {t}'},
+es:{crNml:'Traktor NML',crNmlDone:'NML guardado. En Traktor, arrástralo al panel Playlists (o File › Import Collection). Los cue points llegan con los temas.',
+  crCuesH:'Cue points automáticos',crCuesT:'Cada tema analizado lleva sus partes marcadas como cue points en colores fijos, para saltar a la parte justa sin recordar dónde está:',
+  crCuesHow:'rekordbox: con el XML (luego a USB y al CDJ) · Serato: escritos dentro de las copias MP3 del ZIP · Traktor: con el NML',
+  crCuesOld:'Los temas analizados antes de esta actualización no tienen cue points: añádelos otra vez.',crCueAt:'{k} · {t}'}
 });
 
 /* ---------- constants & state ---------- */
@@ -195,16 +218,17 @@ const extOf=n=>{const m=/\.([^./\\]+)$/.exec(n||'');return m?m[1].toLowerCase():
 const baseOf=n=>String(n||'').replace(/\.[^./\\]+$/,'');
 const fmtB=b=>b==null?'—':Math.abs(b-Math.round(b))<0.05?String(Math.round(b)):b.toFixed(1);
 const fmtLen=s=>{if(s==null)return '—';s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s/60)%60,x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')};
-const camStr=k=>k?CR.camelot(k.pc,k.mode):'';
+const camStr=k=>k?CR.camelot(k.pc,k.mode):'';            // internal only (matching / filter values)
+const keyStr=k=>k?CR.keyText(k):'';                          // what people see: Am, F#m, Db
 const camO=k=>k?CR.camOf(k):null;
 const rbKey=k=>{if(!k)return '';const c=CR.camOf(k);return (c.l==='A'?RB_A:RB_B)[c.n]};
 const mb=b=>(b/1048576).toFixed(b>=1048576*10?0:1);
 const done=r=>r.st==='ok'&&r.bpm>0;
 function nid(){return 'r'+Date.now().toString(36)+(C.seq++).toString(36)}
-/* "01 - Artist - Title (Mix).mp3" → {artist,title}; also strips our own "8A - 124 - " prefix */
+/* "01 - Artist - Title (Mix).mp3" → {artist,title}; also strips our own "Am - 124 - " prefix */
 function parseName(fn){
   let b=baseOf(fn).trim();if(!/\s/.test(b))b=b.replace(/_/g,' ');
-  b=b.replace(/^\d{1,2}[AB] - \d{2,3}(?:\.\d)? - /,'').replace(/^\d{1,3}\s*[-.)_]\s*(?=\S)/,'').trim();
+  b=b.replace(/^(?:\d{1,2}[AB]|[A-G][b#]?m?) - \d{2,3}(?:\.\d)? - /,'').replace(/^\d{1,3}\s*[-.)_]\s*(?=\S)/,'').trim();
   const m=/^(.+?)\s+[-–—]\s+(.+)$/.exec(b);
   return m?{artist:m[1].trim(),title:m[2].trim()}:{artist:'',title:b};
 }
@@ -230,16 +254,24 @@ function compatible(a,b){return a===b||(done(a)&&done(b)&&a.key&&b.key&&CR.camRe
 
 /* ---------- persistence (results only, never audio) ---------- */
 const r3=x=>x==null?null:Math.round(x*1000)/1000;
+/* every account keeps its own crate on this browser (guest = signed out) */
+C.owner=undefined;
+const lsKey=()=>LS_K+':'+(C.owner||'guest');
 function save(){
+  if(C.owner===undefined)return;              // not known yet who is signed in
   try{
     const rows=C.rows.filter(done).slice(0,LS_CAP).map(r=>({id:r.id,name:r.name,rel:r.rel,size:r.size,ext:r.ext,dur:r3(r.dur),lufs:r3(r.lufs),peak:r3(r.peak),
-      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{})}));
-    localStorage.setItem(LS_K,JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
+      bpm:r3(r.bpm),bpm0:r3(r.bpm0),offset:r3(r.offset),down:r.down||0,key:r.key,flux:r3(r.flux),...(r.lat?{lat:r.lat}:{}),...(r.cues?{cues:r.cues}:{})}));
+    localStorage.setItem(lsKey(),JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
   }catch(e){}
 }
 function load(){
+  C.rows=[];C.sel=null;C.compat=null;C.sort=null;C.folder='';C.q='';C.key='';C.editLat=null;
   try{
-    const o=JSON.parse(localStorage.getItem(LS_K)||'null');if(!o||o.v!==1||!Array.isArray(o.rows))return;
+    // the crate used to be shared by everyone on the browser: it goes to the first account that signs in here
+    if(C.owner&&localStorage.getItem(LS_K)!=null&&localStorage.getItem(lsKey())==null){localStorage.setItem(lsKey(),localStorage.getItem(LS_K))}
+    if(C.owner)localStorage.removeItem(LS_K);
+    const o=JSON.parse(localStorage.getItem(lsKey())||'null');if(!o||o.v!==1||!Array.isArray(o.rows))return;
     C.folder=typeof o.folder==='string'?o.folder:'';
     C.sort=o.sort&&SORTABLE.has(o.sort.k)?{k:o.sort.k,dir:o.sort.dir<0?-1:1}:null;
     C.rows=o.rows.filter(r=>r&&r.name&&r.bpm>0).map(r=>{const x={...r,st:'ok',file:null,p:1};x.energy=energyOf(x);return x});
@@ -257,6 +289,7 @@ function addFiles(list){
     const ex=C.rows.find(x=>x.name===file.name&&x.size===file.size);
     if(ex){if(!ex.file){ex.file=file;if(rel)ex.rel=rel;if(!done(ex))ex.st='q';re++}else dup++;continue}
     if(C.rows.length>=MAX){lim++;continue}
+    C._batch=(C._batch||0)+1;
     C.rows.push({id:nid(),name:file.name,rel:rel||file.name,size:file.size,ext:extOf(file.name),file,st:'q',p:0});
   }
   const m=[];if(re)m.push(t('crReatt',{n:re}));if(dup)m.push(t('crDup',{n:dup}));if(bad)m.push(t('crBad',{n:bad}));if(lim)m.push(t('crLim',{n:MAX}));
@@ -288,14 +321,14 @@ function collect(dt){
 
 /* ---------- analysis queue: one file at a time, buffer dropped after each ---------- */
 async function pump(){
-  if(C.running)return;C.running=true;C.cancel=false;
+  if(C.running||C.owner===undefined)return;C.running=true;C.cancel=false;const owner=C.owner;
   try{
     for(;;){
-      if(C.cancel)break;
+      if(C.cancel||C.owner!==owner)break;
       const r=C.rows.find(x=>x.st==='q'&&x.file);if(!r)break;
       await analyzeRow(r);save();renderAll();await CR.tick();
     }
-  }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save();lookupArtists()}
+  }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save();lookupArtists();if(C.owner===owner&&C._batch){CR.log&&CR.log('crate_analyze',`${C._batch} tracks`);C._batch=0}}
 }
 async function analyzeRow(r){
   C.cur=r.id;C.curP=0;r.st='dec';r.p=0;renderRow(r);renderDeck();
@@ -305,10 +338,11 @@ async function analyzeRow(r){
     buf=await CR.ac().decodeAudioData(await r.file.arrayBuffer());
     if(!C.rows.includes(r))return;
     r.st='ana';renderRow(r);
-    const res=await CR.analyzeTrack(buf,p=>setP(r,p));
-    buf=null;
+    const res=await CR.analyzeTrack(buf,p=>setP(r,p*0.9));
     if(!C.rows.includes(r))return;
     Object.assign(r,{dur:res.dur,lufs:isFinite(res.lufs)?res.lufs:null,peak:isFinite(res.peak)?res.peak:null,bpm:res.bpm,bpm0:res.bpm,offset:res.offset,down:res.down||0,key:res.key||null,flux:fluxOf(res.wave,res.dur)});
+    if(window.CUES&&r.bpm>0){try{r.cues=await CUES.detect(buf,res)}catch(e){console.warn('cues',r.name,e);r.cues=null}}
+    buf=null;
     r.energy=energyOf(r);r.st=r.bpm>0?'ok':'err';r.err=r.st==='err'?'stErr':null;r.p=1;
   }catch(e){console.warn('crate',r.name,e);r.st='err';r.err='stErr'}
   finally{buf=null;if(C.cur===r.id)C.cur=null}
@@ -375,13 +409,14 @@ function smartOrder(){
 }
 
 /* ---------- exports ---------- */
+const logExp=(kind,n)=>{if(CR.log)CR.log('crate_export',`${kind} · ${n} tracks`)};
 function csvCell(v){let s=String(v??'');if(/^[=+\-@]/.test(s)&&!/^-?\d/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
 function exportCsv(){
   const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
-  const L=[[t('colName'),t('colFile'),'BPM',t('colKey'),'Camelot',t('colLen'),'LUFS',t('colEnergy')].map(csvCell).join(',')];
+  const L=[[t('colName'),t('colFile'),'BPM',t('colKey'),t('colLen'),'LUFS',t('colEnergy')].map(csvCell).join(',')];
   for(const r of rows){const p=parseName(r.name);
-    L.push([p.artist?p.artist+' - '+p.title:p.title,r.rel||r.name,fmtB(r.bpm),r.key?CR.keyText(r.key):'',camStr(r.key),fmtLen(r.dur),r.lufs!=null?r.lufs.toFixed(1):'',r.energy??''].map(csvCell).join(','))}
-  CR.saveBlob(new Blob(['\uFEFF'+L.join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'}),'chord-room-crate.csv');
+    L.push([p.artist?p.artist+' - '+p.title:p.title,r.rel||r.name,fmtB(r.bpm),r.key?CR.keyText(r.key):'',fmtLen(r.dur),r.lufs!=null?r.lufs.toFixed(1):'',r.energy??''].map(csvCell).join(','))}
+  CR.saveBlob(new Blob(['\uFEFF'+L.join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'}),'chord-room-crate.csv');logExp('csv',rows.length);
   setMsg('');renderMsg();
 }
 const xa=s=>String(s??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g,'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
@@ -399,12 +434,12 @@ function exportXml(){
   const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
   const day=new Date().toISOString().slice(0,10),L=['<?xml version="1.0" encoding="UTF-8"?>','<DJ_PLAYLISTS Version="1.0.0">','  <PRODUCT Name="Chord Room" Version="1.0" Company="Chord Room"/>',`  <COLLECTION Entries="${rows.length}">`];
   rows.forEach((r,i)=>{const p=parseName(r.name),g=gridStart(r),bpm=r.bpm.toFixed(2);
-    L.push(`    <TRACK TrackID="${i+1}" Name="${xa(p.title)}" Artist="${xa(p.artist)}" Composer="" Album="" Grouping="" Genre="" Kind="${xa(KIND[r.ext]||(r.ext||'').toUpperCase()+' File')}" Size="${r.size|0}" TotalTime="${Math.round(r.dur||0)}" DiscNumber="0" TrackNumber="0" Year="0" AverageBpm="${bpm}" DateAdded="${day}" BitRate="0" SampleRate="0" Comments="${xa(camStr(r.key))}" PlayCount="0" Rating="0" Location="${xa(locOf(r))}" Remixer="" Tonality="${xa(rbKey(r.key))}" Label="" Mix="">`,
-      `      <TEMPO Inizio="${g.ini.toFixed(3)}" Bpm="${bpm}" Metro="4/4" Battito="${g.beat}"/>`,'    </TRACK>')});
+    L.push(`    <TRACK TrackID="${i+1}" Name="${xa(p.title)}" Artist="${xa(p.artist)}" Composer="" Album="" Grouping="" Genre="" Kind="${xa(KIND[r.ext]||(r.ext||'').toUpperCase()+' File')}" Size="${r.size|0}" TotalTime="${Math.round(r.dur||0)}" DiscNumber="0" TrackNumber="0" Year="0" AverageBpm="${bpm}" DateAdded="${day}" BitRate="0" SampleRate="0" Comments="${xa(keyStr(r.key))}" PlayCount="0" Rating="0" Location="${xa(locOf(r))}" Remixer="" Tonality="${xa(rbKey(r.key))}" Label="" Mix="">`,
+      `      <TEMPO Inizio="${g.ini.toFixed(3)}" Bpm="${bpm}" Metro="4/4" Battito="${g.beat}"/>`,...rbMarks(r),'    </TRACK>')});
   L.push('  </COLLECTION>','  <PLAYLISTS>','    <NODE Type="0" Name="ROOT" Count="1">',`      <NODE Name="Chord Room" Type="1" KeyType="0" Entries="${rows.length}">`);
   rows.forEach((r,i)=>L.push(`        <TRACK Key="${i+1}"/>`));
   L.push('      </NODE>','    </NODE>','  </PLAYLISTS>','</DJ_PLAYLISTS>');
-  CR.saveBlob(new Blob([L.join('\n')+'\n'],{type:'application/xml'}),'chord-room-rekordbox.xml');
+  CR.saveBlob(new Blob([L.join('\n')+'\n'],{type:'application/xml'}),'chord-room-rekordbox.xml');logExp('rekordbox',rows.length);
   if(folderSegs(C.folder).length)setMsg(t('crXmlDone'));else setMsg(t('crXmlNoFolder'),true);
   renderMsg();
 }
@@ -415,12 +450,12 @@ function m3u(rows,nameOf){
 }
 function exportM3u(){
   const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
-  CR.saveBlob(new Blob([m3u(rows,r=>r.rel||r.name)],{type:'audio/x-mpegurl'}),'chord-room-set.m3u8');setMsg('');renderMsg();
+  CR.saveBlob(new Blob([m3u(rows,r=>r.rel||r.name)],{type:'audio/x-mpegurl'}),'chord-room-set.m3u8');logExp('m3u',rows.length);setMsg('');renderMsg();
 }
 function renamed(r){
   const safe=s=>s.replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').trim();
-  const base=baseOf(r.name).replace(/^\d{1,2}[AB] - \d{2,3}(?:\.\d)? - /,'');
-  return safe(`${camStr(r.key)||'--'} - ${Math.round(r.bpm)} - ${base}`).slice(0,180)+(r.ext?'.'+r.ext:'');
+  const base=baseOf(r.name).replace(/^(?:\d{1,2}[AB]|[A-G][b#]?m?) - \d{2,3}(?:\.\d)? - /,'');
+  return safe(`${keyStr(r.key)||'--'} - ${Math.round(r.bpm)} - ${base}`).slice(0,180)+(r.ext?'.'+r.ext:'');
 }
 async function exportZip(force){
   if(C.zipBusy)return;
@@ -436,13 +471,13 @@ async function exportZip(force){
       let nm=renamed(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
       used.add(nm.toLowerCase());r._zn=nm;
       let data=new Uint8Array(await r.file.arrayBuffer());
-      if(r.ext==='mp3')try{data=tagMp3(data,{bpm:String(Math.round(r.bpm)),key:rbKey(r.key),cam:camStr(r.key)})}catch(e){console.warn('id3',r.name,e)}
+      if(r.ext==='mp3')try{data=tagMp3(data,{bpm:String(Math.round(r.bpm)),key:rbKey(r.key),cam:keyStr(r.key),cues:cueList(r)})}catch(e){console.warn('id3',r.name,e)}
       files.push({name:nm,data});i++;
     }
     files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(m3u(rows,r=>r._zn))});
     setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
     const blob=CR.zip(files);
-    CR.saveBlob(blob,'chord-room-renamed.zip');
+    CR.saveBlob(blob,'chord-room-renamed.zip');logExp('zip',rows.length);
     setMsg(t('crZipDone',{s:mb(blob.size)})+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
   }catch(e){console.error(e);setMsg(t('stErr'),true)}
   finally{C.zipBusy=false;renderExp();renderMsg()}
@@ -490,11 +525,12 @@ function parseComm(d){
 const u16=s=>{const a=[0xFF,0xFE];for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a.push(c&255,c>>8)}return a};
 const latin=s=>[...s].map(c=>c.charCodeAt(0)&255);
 const encText=s=>/^[\x20-\x7E]*$/.test(s)?[0,...latin(s)]:[1,...u16(s)];
-function tagMp3(u,{bpm,key,cam,lat}){
+function tagMp3(u,{bpm,key,cam,lat,cues}){
   const T=readTag(u),ver=T.ver,keep=[];let old=null;
   const plain=f=>(f.f2&(ver===4?0x0F:0xC0))===0;   // not compressed / encrypted / unsynchronised
   for(let f of T.frames){
     if(f.id==='TBPM'||f.id==='TKEY')continue;
+    if(cues&&cues.length&&isSeratoM2(f))continue;
     if(lat&&((f.id==='TIT2'&&lat.title)||(f.id==='TPE1'&&lat.artist)))continue;
     if(f.id==='COMM'&&plain(f)){const c=parseComm(f.data);if(c.desc==='Camelot')continue;if(c.desc===''&&!old){old=c;continue}
       if(lat&&hasHeb(c.text+c.desc)){const x=HL.translit(c.text);f={...f,data:new Uint8Array([1,...latin(/^[A-Za-z]{3}$/.test(c.lang)?c.lang:'eng'),...u16(HL.translit(c.desc)),0,0,...u16(x)])}}}
@@ -504,13 +540,14 @@ function tagMp3(u,{bpm,key,cam,lat}){
   }
   if(lat&&old&&hasHeb(old.text))old={...old,text:HL.translit(old.text)};
   let com=cam;
-  if(old&&old.text){const rest=old.text.replace(/^\d{1,2}[AB](?:\s*·\s*|\s*$)/,'').trim();if(rest)com=cam+' · '+rest}
+  if(old&&old.text){const rest=old.text.replace(/^(?:\d{1,2}[AB]|[A-G][b#]?m?)(?:\s*·\s*|\s*$)/,'').trim();if(rest)com=cam+' · '+rest}
   const lang=old&&/^[A-Za-z]{3}$/.test(old.lang)?old.lang:'eng';
   const add=[{id:'TBPM',data:[0,...latin(bpm)]}];
   if(lat&&lat.title)add.push({id:'TIT2',data:encText(lat.title)});
   if(lat&&lat.artist)add.push({id:'TPE1',data:encText(lat.artist)});
   if(key)add.push({id:'TKEY',data:[0,...latin(key)]});
   if(com)add.push({id:'COMM',data:[1,...latin(lang),...u16(''),0,0,...u16(com)]});
+  if(cues&&cues.length)add.push({id:'GEOB',data:seratoGeob(cues)});
   const parts=[];let size=0;
   const push=(id,f1,f2,data)=>{const h=[...latin(id),...(ver===4?ssEnc(data.length):beEnc(data.length)),f1,f2];parts.push(new Uint8Array(h),data instanceof Uint8Array?data:new Uint8Array(data));size+=10+data.length};
   for(const f of keep)push(f.id,f.f1,f.f2,f.data);
@@ -519,6 +556,71 @@ function tagMp3(u,{bpm,key,cam,lat}){
   const out=new Uint8Array(10+size+audio.length);let o=0;
   out.set(head,0);o=10;for(const p of parts){out.set(p,o);o+=p.length}out.set(audio,o);
   return out;
+}
+
+/* ---------- automatic cue points (assets/cues.js): A Intro · B Vocal · C Break · D Build · E Drop · F Outro ---------- */
+const CU=window.CUES;
+const cueList=r=>(CU&&Array.isArray(r.cues)?r.cues.filter(c=>CU.KINDS.includes(c.k)&&isFinite(c.t)):[]);
+const letter=k=>String.fromCharCode(65+CU.slot(k));
+function rbMarks(r){
+  const L=[];
+  for(const c of cueList(r)){const [R,G,B]=CU.COL[c.k],nm=xa(CU.NAME[c.k]),st=c.t.toFixed(3);
+    L.push(`      <POSITION_MARK Name="${nm}" Type="0" Start="${st}" Num="${CU.slot(c.k)}" Red="${R}" Green="${G}" Blue="${B}"/>`,
+      `      <POSITION_MARK Name="${nm}" Type="0" Start="${st}" Num="-1"/>`)}
+  return L;
+}
+/* Serato reads its cues from the file: ID3 GEOB "Serato Markers2" (layout as documented by the serato-tags project) */
+function seratoGeob(cues){
+  const enc=new TextEncoder(),d=[1,1];
+  const entry=(name,data)=>{d.push(...enc.encode(name),0,...beEnc(data.length),...data)};
+  entry('COLOR',[0,0xFF,0xFF,0xFF]);
+  for(const c of cues){const ms=Math.max(0,Math.round(c.t*1000));entry('CUE',[0,CU.slot(c.k),...beEnc(ms),0,...CU.SERATO[c.k],0,0,...enc.encode(CU.NAME[c.k]),0])}
+  entry('BPMLOCK',[0]);d.push(0);
+  let b64='';for(let i=0;i<d.length;i+=0x8000)b64+=String.fromCharCode.apply(null,d.slice(i,i+0x8000));
+  b64=btoa(b64).replace(/=+$/,'').replace(/(.{72})/g,'$1\n').replace(/\n$/,'');
+  const body=[1,1,...latin(b64),0];while(body.length<470)body.push(0);
+  return [0,...latin('application/octet-stream'),0,0,...latin('Serato Markers2'),0,...body];
+}
+const isSeratoM2=f=>f.id==='GEOB'&&new TextDecoder('latin1').decode(f.data.subarray(0,Math.min(80,f.data.length))).includes('Serato Markers2');
+/* Traktor: collection NML with the tracks, their grid, key and hot cues */
+function nmlLoc(r){
+  const segs=[...folderSegs(C.folder),...String(r.rel||r.name).split('/').filter(Boolean)],file=segs.pop()||r.name;let vol='';
+  if(segs.length&&/^[A-Za-z]:$/.test(segs[0]))vol=segs.shift().toUpperCase();
+  else if(segs[0]==='Volumes'&&segs.length>1){segs.shift();vol=segs.shift()}
+  else vol='Macintosh HD';
+  return {vol,dir:'/:'+segs.map(x=>x+'/:').join(''),file};
+}
+function exportNml(){
+  const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
+  const d=new Date(),day=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`,L=['<?xml version="1.0" encoding="UTF-8" standalone="no" ?>','<NML VERSION="19"><HEAD COMPANY="www.native-instruments.com" PROGRAM="Traktor"></HEAD>','<MUSICFOLDERS></MUSICFOLDERS>',`<COLLECTION ENTRIES="${rows.length}">`];
+  const keys=[];
+  for(const r of rows){const p=parseName(r.name),lc=nmlLoc(r),g=gridStart(r);keys.push(lc.vol+lc.dir+lc.file);
+    L.push(`<ENTRY TITLE="${xa(p.title)}" ARTIST="${xa(p.artist)}"><LOCATION DIR="${xa(lc.dir)}" FILE="${xa(lc.file)}" VOLUME="${xa(lc.vol)}" VOLUMEID=""></LOCATION>`,
+      `<INFO BITRATE="0" KEY="${xa(keyStr(r.key))}" PLAYTIME="${Math.round(r.dur||0)}" PLAYTIME_FLOAT="${(r.dur||0).toFixed(6)}" IMPORT_DATE="${day}" FILESIZE="${Math.round((r.size||0)/1024)}"></INFO>`,
+      `<TEMPO BPM="${r.bpm.toFixed(6)}" BPM_QUALITY="100.000000"></TEMPO>`+(r.key?`<MUSICAL_KEY VALUE="${(r.key.mode?12:0)+r.key.pc}"></MUSICAL_KEY>`:''),
+      `<CUE_V2 NAME="AutoGrid" DISPL_ORDER="0" TYPE="4" START="${(g.ini*1000).toFixed(6)}" LEN="0.000000" REPEATS="-1" HOTCUE="-1"></CUE_V2>`,
+      ...cueList(r).map(c=>`<CUE_V2 NAME="${xa(CU.NAME[c.k])}" DISPL_ORDER="0" TYPE="0" START="${(c.t*1000).toFixed(6)}" LEN="0.000000" REPEATS="-1" HOTCUE="${CU.slot(c.k)}"></CUE_V2>`),
+      '</ENTRY>')}
+  const uuid=[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  L.push('</COLLECTION>','<SETS ENTRIES="0"></SETS>','<PLAYLISTS><NODE TYPE="FOLDER" NAME="$ROOT"><SUBNODES COUNT="1">',`<NODE TYPE="PLAYLIST" NAME="Chord Room"><PLAYLIST ENTRIES="${rows.length}" TYPE="LIST" UUID="${uuid}">`,
+    ...keys.map(k=>`<ENTRY><PRIMARYKEY TYPE="TRACK" KEY="${xa(k)}"></PRIMARYKEY></ENTRY>`),'</PLAYLIST></NODE></SUBNODES></NODE></PLAYLISTS>','</NML>');
+  CR.saveBlob(new Blob([L.join('\n')+'\n'],{type:'application/xml'}),'chord-room-traktor.nml');logExp('traktor',rows.length);
+  if(folderSegs(C.folder).length)setMsg(t('crNmlDone'));else setMsg(t('crXmlNoFolder'),true);
+  renderMsg();
+}
+function cueHTML(r){
+  const cs=cueList(r);if(!cs.length||!r.dur)return '';
+  const pc=x=>Math.max(0,Math.min(100,x/r.dur*100)).toFixed(2),fmt=x=>fmtLen(x);
+  let seg='',marks='';
+  cs.forEach((c,i)=>{const e=i+1<cs.length?cs[i+1].t:r.dur,[R,G,B]=CU.COL[c.k];
+    seg+=`<span class="cs" style="left:${pc(c.t)}%;width:${(pc(e)-pc(c.t)).toFixed(2)}%;background:rgb(${R} ${G} ${B}/.28)"></span>`;
+    const tip=esc(`${letter(c.k)} · ${CU.NAME[c.k]} · ${fmt(c.t)}`);
+    marks+=`<span class="cm" style="left:${pc(c.t)}%;--c:rgb(${R} ${G} ${B})" title="${tip}" role="img" aria-label="${tip}">${letter(c.k)}</span>`});
+  return `<div class="cuebar" dir="ltr">${seg}${marks}</div>`;
+}
+function legendHTML(){
+  if(!CU)return '';
+  return CU.KINDS.map(k=>{const [R,G,B]=CU.COL[k];return `<span class="cl" dir="ltr"><i style="background:rgb(${R} ${G} ${B})">${letter(k)}</i>${esc(CU.NAME[k])}</span>`}).join('');
 }
 
 /* ---------- Latin names for Pioneer players (assets/heblat.js) ---------- */
@@ -572,7 +674,7 @@ function saveLat(r,val){
 /* file names that FAT32 USB sticks and CDJs accept */
 const fatName=s=>String(s).normalize('NFC').replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').replace(/[. ]+$/,'').trim();
 function usbName(r){
-  const l=latOf(r),pre=C.usbPre?`${camStr(r.key)||'--'} - ${Math.round(r.bpm)} - `:'';
+  const l=latOf(r),pre=C.usbPre?`${keyStr(r.key)||'--'} - ${Math.round(r.bpm)} - `:'';
   return fatName(pre+latStr(l)).slice(0,120)+(r.ext?'.'+r.ext:'');
 }
 /* FLAC: Vorbis comments — Hebrew values converted, TITLE / ARTIST set, BPM / INITIALKEY written */
@@ -613,7 +715,7 @@ async function exportUsb(force){
       used.add(nm.toLowerCase());r._zn=nm;
       const lat=latOf(r),bpm=String(Math.round(r.bpm)),key=rbKey(r.key);
       let data=new Uint8Array(await r.file.arrayBuffer());
-      if(r.ext==='mp3'){try{data=tagMp3(data,{bpm,key,cam:camStr(r.key),lat})}catch(e){console.warn('id3',r.name,e)}}
+      if(r.ext==='mp3'){try{data=tagMp3(data,{bpm,key,cam:keyStr(r.key),lat,cues:cueList(r)})}catch(e){console.warn('id3',r.name,e)}}
       else if(r.ext==='flac'){try{data=tagFlac(data,{lat,bpm,key})}catch(e){console.warn('flac',r.name,e)}}
       else if(hasHeb(r.name))other++;
       files.push({name:nm,data});i++;
@@ -621,7 +723,7 @@ async function exportUsb(force){
     files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...rows.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${latStr(latOf(r))}`,r._zn])].join('\n')+'\n')});
     setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
     const blob=CR.zip(files);
-    CR.saveBlob(blob,'chord-room-usb.zip');
+    CR.saveBlob(blob,'chord-room-usb.zip');logExp('usb',rows.length);
     setMsg(t('crUsbDone',{s:mb(blob.size)})+(other?' '+t('crUsbOther',{n:other}):'')+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
   }catch(e){console.error(e);setMsg(t('stErr'),true)}
   finally{C.zipBusy=false;renderExp();renderMsg()}
@@ -668,12 +770,14 @@ function build(){
   <p class="snote crmore" data-i="crMoreH"></p>
   <section class="crexp" aria-labelledby="crExpH">
     <div class="crexph"><h2 id="crExpH" data-i="crExport"></h2><span class="snote" id="crExpN"></span></div>
+    <div class="crcues"><b data-i="crCuesH"></b><p class="snote" data-i="crCuesT"></p><div class="clg" id="crLegend"></div><p class="snote" data-i="crCuesHow"></p><p class="snote" id="crCuesOld" data-i="crCuesOld" hidden></p></div>
     <div class="crfld"><label for="crFolderIn" data-i="crFolderL"></label>
       <input type="text" class="srch" id="crFolderIn" aria-describedby="crFolderH" dir="ltr" spellcheck="false" autocomplete="off" data-ip="crFolderP">
       <p class="snote" id="crFolderH" data-i="crFolderH"></p></div>
     <div class="crxb">
       <button type="button" class="btn" id="crCsv">${IC.dl}<span data-i="crCsv"></span></button>
       <button type="button" class="btn" id="crXml">${IC.dl}<span data-i="crXml"></span></button>
+      <button type="button" class="btn" id="crNml">${IC.dl}<span data-i="crNml"></span></button>
       <button type="button" class="btn" id="crM3u">${IC.dl}<span data-i="crM3u"></span></button>
       <button type="button" class="btn" id="crZip">${IC.dl}<span data-i="crZip"></span></button>
     </div>
@@ -699,7 +803,7 @@ function wire(){
   $('#crKey').onchange=e=>{C.key=e.target.value;renderTable()};
   $('#crSortM').onchange=e=>{const [k,d]=e.target.value.split(':');C.sort=k==='n'?null:{k,dir:+d};save();renderTable();renderSortM()};
   $('#crSmart').onclick=smartOrder;
-  $('#crCsv').onclick=exportCsv;$('#crXml').onclick=exportXml;$('#crM3u').onclick=exportM3u;$('#crZip').onclick=()=>exportZip(false);$('#crUsb').onclick=()=>exportUsb(false);
+  $('#crCsv').onclick=exportCsv;$('#crXml').onclick=exportXml;$('#crNml').onclick=exportNml;$('#crLegend').innerHTML=legendHTML();$('#crM3u').onclick=exportM3u;$('#crZip').onclick=()=>exportZip(false);$('#crUsb').onclick=()=>exportUsb(false);
   const up=$('#crUsbPre');up.checked=C.usbPre;up.onchange=()=>{C.usbPre=up.checked;try{localStorage.setItem('chordroom.crate.usbpre',C.usbPre?'1':'0')}catch(e){}};
   const fi=$('#crFolderIn');fi.value=C.folder;fi.oninput=e=>{C.folder=e.target.value;save()};
   $('#crHead').onclick=e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k;
@@ -765,7 +869,7 @@ function renderTools(){
   const o0=document.createElement('option');o0.value='';o0.textContent=t('crAllKeys');sel.appendChild(o0);
   const have=new Set(C.rows.filter(done).map(r=>camStr(r.key)));
   for(let n=1;n<=12;n++)for(const l of ['A','B']){const k=n+l;if(!have.has(k)&&k!==cur)continue;
-    const pc=l==='B'?CR.CAM_MAJ.indexOf(n):mod(CR.CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=k;o.textContent=`${k} · ${CR.keyText({pc,mode:l==='A'?1:0})}`;sel.appendChild(o)}
+    const pc=l==='B'?CR.CAM_MAJ.indexOf(n):mod(CR.CAM_MAJ.indexOf(n)-3,12);const o=document.createElement('option');o.value=k;o.textContent=CR.keyText({pc,mode:l==='A'?1:0});sel.appendChild(o)}
   sel.value=cur;renderSortM();renderChip();
 }
 function renderSortM(){
@@ -806,9 +910,9 @@ function rowHTML(r,i,prev){
   const nm=esc(p.title);
   return `<tr data-id="${r.id}" class="${C.sel===r.id?'sel ':''}${C.compat===r.id?'anchor ':''}st-${r.st}">
 <td class="c-n">${mx?`<span class="mx ${mx.k}" role="img" title="${esc(mxT)}" aria-label="${esc(mxT)}">${mx.k==='good'?'':mx.k==='tempo'?'~':'×'}</span>`:''}<button type="button" class="rn mono" data-act="sel" aria-pressed="${C.sel===r.id}" title="${esc(t('crStartT'))}" aria-label="${i+1} · ${esc(t('crStartT'))}">${i+1}</button></td>
-<td class="c-name"><div class="tt" dir="auto" title="${esc(r.name)}">${nm}${C.sel===r.id?` <span class="tag">${esc(t('crStartTag'))}</span>`:''}</div>${sub.length?`<div class="ar" dir="auto">${esc(sub.join(' · '))}</div>`:''}${latHTML(r)}</td>
+<td class="c-name"><div class="tt" dir="auto" title="${esc(r.name)}">${nm}${C.sel===r.id?` <span class="tag">${esc(t('crStartTag'))}</span>`:''}</div>${sub.length?`<div class="ar" dir="auto">${esc(sub.join(' · '))}</div>`:''}${latHTML(r)}${cueHTML(r)}</td>
 <td class="c-bpm"><div class="bw"><b class="mono" dir="ltr">${ok?fmtB(r.bpm):'—'}</b>${ok?`<span class="hx" dir="ltr"><button type="button" data-act="half" title="${esc(t('crHalf'))}" aria-label="${esc(t('crHalf'))} · ${nm}">½</button><button type="button" data-act="dbl" title="${esc(t('crDouble'))}" aria-label="${esc(t('crDouble'))} · ${nm}">2×</button></span>`:''}</div></td>
-<td class="c-key">${ok&&r.key?`<button type="button" class="kbb" data-act="compat" aria-pressed="${C.compat===r.id}" title="${esc(t('crCompatT'))}" aria-label="${esc(camStr(r.key)+' '+CR.keyText(r.key))} · ${esc(t('crCompatT'))}"></button>`:'<span class="mono dim">—</span>'}</td>
+<td class="c-key">${ok&&r.key?`<button type="button" class="kbb" data-act="compat" aria-pressed="${C.compat===r.id}" title="${esc(t('crCompatT'))}" aria-label="${esc(CR.keyText(r.key))} · ${esc(t('crCompatT'))}"></button>`:'<span class="mono dim">—</span>'}</td>
 <td class="c-dur" data-l="${esc(t('colLen'))}"><span class="mono" dir="ltr">${fmtLen(r.dur)}</span></td>
 <td class="c-lufs" data-l="LUFS"><span class="mono" dir="ltr">${r.lufs!=null?r.lufs.toFixed(1):'—'}</span></td>
 <td class="c-energy" data-l="${esc(t('colEnergy'))}">${r.energy?`<span class="eb" title="${esc(t('crEnergyT'))}"><span class="ebar" aria-hidden="true"><i style="width:${r.energy*10}%"></i></span><b class="mono" dir="ltr">${r.energy}</b></span>`:'<span class="mono dim">—</span>'}</td>
@@ -836,7 +940,8 @@ function renderExp(){
   if(!C.built)return;
   const rows=exportRows(),n=rows.length;
   $('#crExpN').textContent=t('crExportN',{n});
-  ['#crCsv','#crXml','#crM3u'].forEach(s=>$(s).disabled=!n);
+  ['#crCsv','#crXml','#crNml','#crM3u'].forEach(s=>$(s).disabled=!n);
+  $('#crCuesOld').hidden=!rows.some(r=>!cueList(r).length);
   $('#crZip').disabled=!rows.some(r=>r.file)||C.zipBusy;$('#crUsb').disabled=!rows.some(r=>r.file)||C.zipBusy;
   const restored=C.rows.some(r=>done(r)&&!r.file);
   let rn=$('#crRest');
@@ -851,8 +956,23 @@ window.addEventListener('dragenter',e=>{if(!C.visible||!hasFiles(e))return;e.sto
 window.addEventListener('dragleave',e=>{if(!C.visible||!hasFiles(e))return;e.stopImmediatePropagation();dd=Math.max(0,dd-1);if(!dd)$('#crOver').hidden=true},true);
 window.addEventListener('drop',e=>{if(!C.visible)return;e.preventDefault();e.stopImmediatePropagation();dd=0;$('#crOver').hidden=true;if(e.dataTransfer)collect(e.dataTransfer)},true);
 
+/* ---------- who owns the crate ---------- */
+function setOwner(uid){
+  uid=uid||null;if(C.owner===uid)return;
+  // guest → signing in with an empty crate: the guest's rows (and loaded files) move to the account
+  if(C.owner===null&&uid&&C.rows.length){let mine=null;try{mine=localStorage.getItem(LS_K+':'+uid)}catch(e){}
+    if(!mine){C.owner=uid;save();try{localStorage.removeItem(LS_K+':guest')}catch(e){}return}}
+  const early=C.owner===undefined?C.rows.slice():[];   // files added before we knew who is signed in stay
+  if(C.running)C.cancel=true;
+  C.owner=uid;load();
+  for(const r of early)if(!C.rows.some(x=>x.name===r.name&&x.size===r.size))C.rows.push(r);
+  if(early.length){save();setTimeout(pump,0)}
+  if(C.built){const fi=$('#crFolderIn');if(fi)fi.value=C.folder;const q=$('#crQ');if(q)q.value='';renderAll()}
+}
+document.addEventListener('cr-user',e=>setOwner(e.detail&&e.detail.uid));
+{const u=CR.user&&CR.user();if(u&&u.known)setOwner(u.uid)}
+
 /* ---------- public ---------- */
-load();
 window.CRATE={
   show(){if(!C.built)build();C.visible=true;renderAll();lookupArtists()},
   hide(){C.visible=false;dd=0;const o=$('#crOver');if(o)o.hidden=true},

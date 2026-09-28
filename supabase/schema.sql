@@ -901,3 +901,36 @@ begin
 end $$;
 revoke execute on function public.claim_referral(text) from public, anon;
 grant execute on function public.claim_referral(text) to authenticated;
+
+-- =====================================================================
+-- Activity log (admin panel → "Activity"): what signed-in users do on the site (views, uploads, separations,
+-- exports, DJ loads…). Written ONLY through log_activity (allow-listed name format, max 400 rows per user per hour,
+-- detail ≤ 300 chars); only admins can read it. Rows older than 180 days are removed now and then.
+-- =====================================================================
+create table if not exists public.activity (
+  id         bigserial primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  action     text not null check (action ~ '^[a-z_]{2,40}$'),
+  detail     text check (char_length(detail) <= 300),
+  created_at timestamptz not null default now()
+);
+create index if not exists activity_user_idx on public.activity (user_id, created_at desc);
+create index if not exists activity_time_idx on public.activity (created_at desc);
+alter table public.activity enable row level security;
+revoke all on public.activity from anon, authenticated, public;
+grant select on public.activity to authenticated;
+revoke all on sequence public.activity_id_seq from anon, authenticated, public;
+drop policy if exists "activity: admin read" on public.activity;
+create policy "activity: admin read" on public.activity for select to authenticated using (public.is_admin());
+
+create or replace function public.log_activity(p_action text, p_detail text default null) returns void
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null or p_action is null or p_action !~ '^[a-z_]{2,40}$' then return; end if;
+  if (select count(*) from public.activity where user_id = uid and created_at > now() - interval '1 hour') >= 400 then return; end if;
+  insert into public.activity (user_id, action, detail) values (uid, p_action, nullif(left(btrim(coalesce(p_detail, '')), 300), ''));
+  if random() < 0.005 then delete from public.activity where created_at < now() - interval '180 days'; end if;
+end $$;
+revoke execute on function public.log_activity(text, text) from public, anon;
+grant execute on function public.log_activity(text, text) to authenticated;
