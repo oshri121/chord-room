@@ -1746,7 +1746,7 @@ function setDiscMsg(m){$('#dMsg').textContent=m||''}
 /* preview URLs expire; refresh from the track endpoint when needed */
 async function freshPreview(r){
   if(r.preview&&!/exp=(\d+)/.test(r.preview))return r.preview;
-  const exp=+(r.preview.match(/exp=(\d+)/)||[])[1]||0;
+  const exp=+((r.preview||"").match(/exp=(\d+)/)||[])[1]||0;
   if(r.preview&&exp*1000>Date.now()+60e3)return r.preview;
   const d=await dz(`track/${r.ext}`);r.preview=d.preview||'';return r.preview;
 }
