@@ -25,6 +25,7 @@
 .djcon button{font-family:var(--mono);color:#DADADF;background:#19191d;border:1px solid #2c2c33;border-radius:6px;cursor:pointer;transition:background .12s,box-shadow .15s,border-color .12s,color .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .djcon button:hover:not(:disabled){border-color:#4a4a54;background:#202026}
 .djcon button:disabled{opacity:.35;cursor:default}
+.djcon button *,.djacts .btn *{pointer-events:none}
 .djcon :focus-visible{outline:2px solid #fff;outline-offset:2px}
 
 .djwv{position:relative}

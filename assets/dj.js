@@ -419,12 +419,13 @@ function loadFile(d,file){
 function loadTool(d){const s=CR.toolSong();if(!s){note(t('djNoTool'));return}loadInto(d,null,s.name,null,{analysis:s})}
 function loadDemo(d,n){
   const o=DEMOS[(n!=null?n:D.demoN++)%DEMOS.length],name=t('djDemoName',{n:(DEMOS.indexOf(o)+1),b:o.bpm});
-  loadInto(d,()=>demoBuf(o),name);
+  // tempo, grid and key of the demos are known (same progression as the tool's demo), so skip the slow analysis
+  loadInto(d,()=>demoBuf(o),name,{bpm:o.bpm,offset:0.3,down:0,key:{pc:mod(o.shift,12),mode:0}});
 }
-// render 16 bars (fast) and repeat bars 5–16 twice → ~40 bars, with a short crossfade at each seam
+// render 8 bars (4 drum intro + the 4-chord loop, fast) and repeat the loop → 40 bars, with a short crossfade at each seam
 async function demoBuf(o){
-  const b=await CR.synthDemo({bpm:o.bpm,shift:o.shift,bars:16,intro:4}),sr=b.sampleRate,bar=4*60/o.bpm,lead=0.3,reps=2;
-  const at=x=>Math.round((lead+x*bar)*sr),s0=at(4),s1=at(16),tail=b.length-s1,xf=256;
+  const b=await CR.synthDemo({bpm:o.bpm,shift:o.shift,bars:8,intro:4}),sr=b.sampleRate,bar=4*60/o.bpm,lead=0.3,reps=8;
+  const at=x=>Math.round((lead+x*bar)*sr),s0=at(4),s1=at(8),tail=b.length-s1,xf=256;
   const out=c.createBuffer(2,s1+reps*(s1-s0)+tail,sr);
   for(let ch=0;ch<2;ch++){
     const src=b.getChannelData(Math.min(ch,b.numberOfChannels-1)),dst=out.getChannelData(ch);
@@ -679,7 +680,7 @@ function renderDeck(d){
   const pct=(d.rate-1)*100;bp.querySelector('i').textContent=tr?(Math.abs(pct)<0.05?'0.0%':(pct>0?'+':'')+pct.toFixed(1)+'%'):'';
   const kk=el.querySelector('.dkkey');kk.innerHTML='';
   if(tr){const ke=keyEff(d);kk.append(CR.keyBadge(ke));if(ke.pc!==tr.key.pc)kk.insertAdjacentHTML('beforeend',`<s class="mono">${esc(CR.keyText(tr.key))}</s>`)}
-  const pb=el.querySelector('.bplay');pb.innerHTML=d.playing?IC.pause:IC.play;pb.classList.toggle('on',d.playing);pb.classList.toggle('wait',d.playing&&d.waitUntil>0);
+  const pb=el.querySelector('.bplay');if(pb.dataset.st!==String(d.playing)){pb.dataset.st=String(d.playing);pb.innerHTML=d.playing?IC.pause:IC.play}pb.classList.toggle('on',d.playing);pb.classList.toggle('wait',d.playing&&d.waitUntil>0);
   el.querySelector('.bcue').classList.toggle('on',!!tr&&!d.playing&&Math.abs(d.pos-d.cue)<0.02);
   el.querySelector('.bsync').classList.toggle('on',d.sync);el.querySelector('.bmst').classList.toggle('on',!!tr&&D.masterI===d.i);
   el.querySelector('.bkl').classList.toggle('on',d.keyLock&&!D.noStretch);el.querySelector('.bkl').disabled=D.noStretch;
