@@ -7,8 +7,10 @@
 .djauto .btn{border-start-end-radius:0;border-end-end-radius:0;position:relative;overflow:hidden}
 .djauto select{height:var(--ctl-h);border-start-start-radius:0;border-end-start-radius:0;border-inline-start:0;padding:0 8px;font-size:13px;min-width:0}
 .djauto .btn{border-color:var(--line2)}
+.djauto select{background-color:var(--btn-bg);border-color:var(--line2)}
+.djauto select option{background:var(--elev);color:var(--ink)}
 #djAuto .aprog{position:absolute;inset-inline-start:0;bottom:0;height:3px;width:0;background:var(--acc-grad);transition:width .2s linear}
-#djAuto.on{background:var(--ink);color:var(--paper)}
+#djAuto.on{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
 .btn.rec{border-color:var(--line2)}
 .btn.rec .rdot{width:10px;height:10px;border-radius:50%;background:var(--signal);flex:none}
 .btn.rec.on,.btn.rec.on:hover:not([disabled]){background:var(--signal);border-color:var(--signal);color:#fff}
@@ -234,17 +236,17 @@ html[dir="rtl"] .djlow h2{letter-spacing:.01em}
 .rrow .tt{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
 .rrow .ar{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rtag{font-size:10.5px;border-radius:10px;padding:2px 8px;background:var(--soft2);color:var(--muted);white-space:nowrap}
-.rtag.mine{background:var(--ink);color:var(--paper)}
+.rtag.mine{background:var(--sel-bg);color:var(--sel-fg)}
 .rrow .btn{height:30px;padding:0 10px;font-size:12.5px}
 .rnone{color:var(--muted);font-size:14px;padding:6px 0}
 html[dir="rtl"] .rrow .tt,html[dir="rtl"] .dkt{text-align:right}
 
 /* menus, picker, toast */
-.djmenu{position:fixed;z-index:60;min-width:220px;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r-md);box-shadow:var(--sh-2);padding:5px;display:flex;flex-direction:column}
+.djmenu{position:fixed;z-index:60;min-width:220px;background:var(--elev2);border:1px solid var(--line2);border-radius:var(--r-md);box-shadow:var(--sh-2);padding:5px;display:flex;flex-direction:column}
 .djmenu button{text-align:start;border:0;background:transparent;padding:10px 12px;border-radius:var(--r-sm);font-size:14px;color:var(--ink)}
-.djmenu button:hover{background:var(--soft)}
+.djmenu button:hover{background:var(--btn-hover)}
 .djpick{position:fixed;inset:0;z-index:80;background:rgba(8,8,10,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px}
-.pkin{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r-lg);box-shadow:var(--sh-3);width:min(560px,100%);max-height:80vh;display:flex;flex-direction:column;padding:16px;gap:10px}
+.pkin{background:var(--elev);color:var(--ink);border:1px solid var(--line2);border-radius:var(--r-lg);box-shadow:var(--sh-3);width:min(560px,100%);max-height:80vh;display:flex;flex-direction:column;padding:16px;gap:10px}
 .pkh{display:flex;justify-content:space-between;align-items:center}
 .pkh b{font-size:17px}
 #djPickQ{height:var(--ctl-h);padding:0 12px}

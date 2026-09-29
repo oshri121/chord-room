@@ -323,6 +323,24 @@
       const { data, error } = await sb.from('pay_events').select('id,key,event,user_id,test,result,created_at').order('id', { ascending: false }).limit(limit);
       if (error) throw error;
       return data;
+    },
+
+    // the assistant (assets/assistant.js → functions/api/assistant.js) sends the session's access token; the Function
+    // checks it with Supabase Auth and spends one message of the daily quota (supabase/assistant.sql)
+    async accessToken() {
+      if (!sb) return null;
+      let { data } = await sb.auth.getSession();
+      let s = data && data.session;
+      if (s && s.expires_at && s.expires_at * 1000 < Date.now() + 60000) {
+        try { const r = await sb.auth.refreshSession(); if (r.data && r.data.session) s = r.data.session; } catch (e) {}
+      }
+      return s ? s.access_token : null;
+    },
+    // today's messages left without spending one: {ok, left, limit} (left/limit null = unlimited)
+    async assistantStatus() {
+      const { data, error } = await sb.rpc('assistant_status');
+      if (error) throw error;
+      return data;
     }
   };
 

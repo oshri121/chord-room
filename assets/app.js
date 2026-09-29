@@ -2604,7 +2604,7 @@ const cacheRead=()=>{try{return JSON.parse(localStorage.getItem(CACHE_K)||'{}')}
 const cacheWrite=c=>{try{localStorage.setItem(CACHE_K,JSON.stringify(c))}catch(e){}};
 const camNum=(pc,mode)=>mode?CAM_MAJ[mod(pc+3,12)]:CAM_MAJ[pc];
 const camOf=a=>a?{n:camNum(a.pc,a.mode),l:a.mode?'A':'B'}:null;
-function camColor(n,l){const h=mod((n-1)*30+170,360);return l==='A'?`hsl(${h},55%,42%)`:`hsl(${h},62%,34%)`}
+function camColor(n,l){const h=mod((n-1)*30+170,360);return l==='A'?`oklch(56% 0.14 ${h})`:`oklch(46% 0.13 ${h})`}
 function keyText(a){const fl=FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[a.pc]+(a.mode?'m':'')}
 function chordText(c,a){if(c<0)return '';const fl=a&&FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[c%12]+(c>=12?'m':'')}
 
@@ -3146,6 +3146,7 @@ window.CR={
   toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur}:null,
   stopTool:()=>{if(P.playing)stop();stopPreview()},
   showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName,
+  setLang:(l,c)=>setLang(l,c),
   log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid})
 };
 /* ---------- boot ---------- */

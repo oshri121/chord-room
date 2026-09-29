@@ -59,9 +59,9 @@ body{background:transparent}
 .tab svg{width:16px;height:16px;flex:none;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
 .tab:hover{color:var(--ink)}
 .tab:hover svg{transform:translateY(-1px) scale(1.1)}
-.tab.on,.tab.on:hover{color:var(--paper)}
+.tab.on,.tab.on:hover{color:var(--sel-fg)}
 .tab:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-.tab-ind{position:absolute;z-index:0;top:0;left:0;width:0;height:0;border-radius:999px;background:var(--ink);box-shadow:0 8px 20px -10px var(--shadow);opacity:0;pointer-events:none}
+.tab-ind{position:absolute;z-index:0;top:0;left:0;width:0;height:0;border-radius:999px;background:var(--sel-bg);box-shadow:0 8px 20px -10px var(--shadow);opacity:0;pointer-events:none}
 .tab-ind::after{content:"";position:absolute;left:24%;right:24%;bottom:-6px;height:2px;border-radius:2px;background:var(--acc-grad);box-shadow:0 0 10px rgba(182,109,255,.75)}
 .tab-ind.ready{transition:transform .45s cubic-bezier(.6,.05,.25,1.15),width .45s cubic-bezier(.6,.05,.25,1.15),height .3s,opacity .2s}
 
@@ -69,21 +69,21 @@ body{background:transparent}
 .quick{display:flex;align-items:center;gap:8px;flex:none}
 .quick:not(:has(>:not([hidden]):not(.burger))){display:none}
 .top .btn{height:38px;border-radius:999px;padding:0 15px;background:transparent;border-color:var(--line2);transition:background .15s,border-color .15s,color .15s,box-shadow .2s,transform .15s}
-.top .btn:hover{background:var(--soft);border-color:var(--ink)}
+.top .btn:hover{background:var(--btn-hover);border-color:var(--bd-hover)}
 .top .btn:active{transform:translateY(1px)}
 .top .btn.thm{width:38px;padding:0}
 .top .btn.thm svg{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
 .top .btn.thm:hover svg{transform:rotate(40deg)}
-.top .btn.solid.up{position:relative;background:var(--ink);color:var(--paper);border-color:var(--ink);isolation:isolate}
+.top .btn.solid.up{position:relative;background:var(--pri-bg);color:var(--pri-fg);border-color:var(--pri-bg);isolation:isolate}
 .top .btn.solid.up::before{content:"";position:absolute;inset:-2px;border-radius:inherit;background:linear-gradient(90deg,var(--acc-a),var(--acc-p),var(--acc-b),var(--acc-a));background-size:300% 100%;z-index:-1;opacity:0;transition:opacity .25s;animation:crLine 4s linear infinite}
-.top .btn.solid.up:hover{background:var(--ink);box-shadow:0 10px 24px -12px var(--acc-p)}
+.top .btn.solid.up:hover{background:var(--pri-bg);box-shadow:0 10px 24px -12px var(--acc-p)}
 .top .btn.solid.up:hover::before{opacity:1}
 .langw{position:relative;display:inline-flex;align-items:center}
 .langw .lgl{position:absolute;inset-inline-start:11px;width:15px;height:15px;color:var(--muted);pointer-events:none}
 .langw .sel{-webkit-appearance:none;appearance:none;height:38px;border-radius:999px;border-color:var(--line2);background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A8A91' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center/13px;padding-inline:32px 30px;cursor:pointer;transition:border-color .15s,background-color .15s}
 html[dir="rtl"] .langw .sel{background-position:left 11px center}
-.langw .sel:hover{border-color:var(--ink);background-color:var(--soft)}
-.langw .sel option{background:var(--paper);color:var(--ink)}
+.langw .sel:hover{border-color:var(--bd-hover);background-color:var(--btn-hover)}
+.langw .sel option{background:var(--elev);color:var(--ink)}
 
 /* sign up (signed out): solid with the brand gradient; darkened accents keep white text readable */
 .top .btn.au-up{position:relative;isolation:isolate;color:#fff;border-color:transparent;background:linear-gradient(100deg,color-mix(in srgb,var(--acc-a) 78%,#000),color-mix(in srgb,var(--acc-p) 72%,#000) 55%,color-mix(in srgb,var(--acc-b) 64%,#000));background-size:180% 100%;background-position:0 0;font-weight:600;transition:background-position .5s var(--ease),box-shadow .2s,transform .15s}
@@ -105,7 +105,7 @@ html[dir="rtl"] .langw .sel{background-position:left 11px center}
 
 /* hamburger (drawer mode only) */
 .burger{display:none;width:40px;height:40px;border:1px solid var(--line2);border-radius:12px;background:transparent;padding:0;flex:none;position:relative}
-.burger:hover{background:var(--soft)}
+.burger:hover{background:var(--btn-hover)}
 .burger span{position:absolute;left:11px;right:11px;height:2px;border-radius:2px;background:currentColor;transition:transform .3s,opacity .2s,top .3s,left .3s,right .3s}
 .burger span:nth-child(1){top:13px}.burger span:nth-child(2){top:19px}.burger span:nth-child(3){top:25px;right:17px}
 html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
@@ -147,7 +147,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.m .credits{padding-inline-end:11px}
 .top.m #signInBtn{width:38px;padding:0}
 .top.m #signUpBtn{padding:0 14px}
-.top.m .navwrap{position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:2;width:min(360px,88vw);flex-direction:column;align-items:stretch;gap:18px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));background:var(--paper);border-inline-start:1px solid var(--line);box-shadow:0 0 60px var(--shadow);overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden}
+.top.m .navwrap{position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:2;width:min(360px,88vw);flex-direction:column;align-items:stretch;gap:18px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));background:var(--elev);border-inline-start:1px solid var(--line);box-shadow:0 0 60px var(--shadow);overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden}
 html[dir="rtl"] .top.m .navwrap{transform:translateX(-105%)}
 .top.m.anim .navwrap{transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s linear .38s}
 .top.m .navwrap::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:var(--acc-grad)}
@@ -158,7 +158,7 @@ html[dir="rtl"] .top.m .navwrap{transform:translateX(-105%)}
 html[dir="rtl"] .dhd-t{letter-spacing:.02em}
 .dclose{width:40px;height:40px;border-radius:12px;border:1px solid var(--line2);background:transparent;display:grid;place-items:center;padding:0}
 .dclose svg{width:18px;height:18px}
-.dclose:hover{background:var(--soft)}
+.dclose:hover{background:var(--btn-hover)}
 .top.m .tabs{flex-direction:column;align-items:stretch;gap:4px;border-radius:16px;padding:6px;margin:0}
 .top.m .tab{height:50px;padding:0 14px;border-radius:12px;font-size:16px;gap:12px}
 .top.m .tab svg{width:20px;height:20px}

@@ -133,6 +133,16 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (demucs-js apply/dsp with our fixes: correct istft length, faster FFT). Rebuild: see `tools/README.md`.
 - `ai/model/` – runtime wasm (gz), graph (gz) and fp16 weights (byte-shuffled, gz, split <25 MB for Cloudflare's per-file limit).
 
+- First visit: `assets/welcome.js/css` shows a 5-language picker (suggested from `navigator.languages`) when no
+  `chordroom.lang` is saved; skipped under `navigator.webdriver` (tests). Uses `CR.setLang(lang, true)`.
+- Assistant (`assets/assistant.js/css`, `functions/api/assistant.js`, `supabase/assistant.sql`, owner guide `ASSISTANT.md`):
+  Roomy/רומי chat, signed-in only, daily quota via `assistant_use()` (`billing.assistant_daily` / `assistant_daily_plan`),
+  Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
+  answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
+  the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
+- Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
+  defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
+
 ## Rules of thumb
 - Keep it build-free: plain scripts, no bundler for the app itself.
 - Cache busting: bump the `?v=` query on the `<script>`/`<link>` tags in `index.html` when changing `assets/*`.
