@@ -140,6 +140,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
   answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
   the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
+- Sign-in gate: the tools (#tool, #discover, #dj, #crate) need an account; signed out they show `#gateView` (`renderGate`,
+  class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. Upload/drag-drop/`loadFile`
+  ask for an account too (`needAccount`/`askAccount`). `regate()` re-routes on auth changes. Only when accounts are on
+  (tests that exercise the tools without the mock stub `vendor/supabase.js` → local mode). The old `require_login` overlay
+  (`#gate`) is retired and its admin toggle hidden. Client-side (honest-user) gate; paid/server things are checked server-side.
 - Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
   defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
 

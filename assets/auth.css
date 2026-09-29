@@ -219,3 +219,44 @@ html.a11y-noanim .au-eq i,html.a11y-noanim .au-okc circle,html.a11y-noanim .au-o
 html.a11y-noanim .au-okc circle,html.a11y-noanim .au-okc path{stroke-dashoffset:0}
 :root.a11y-contrast .au .audlg{border-color:var(--ink)}
 :root.a11y-contrast .au-in input,:root.a11y-contrast .au-cells i,:root.a11y-contrast .au-cb{border-color:var(--ink)}
+
+/* ---------- sign-in gate (#gateView): shown instead of a tool while signed out ---------- */
+.signgate{display:flex;justify-content:center;padding-block:clamp(28px,7vh,80px) 56px}
+.gate-card{position:relative;width:100%;max-width:600px;margin-inline:auto;padding:clamp(28px,5vw,48px);border-radius:var(--r-lg);background:var(--deck);color:var(--decktext);
+  border:1px solid var(--deckline);box-shadow:var(--sh-3);overflow:hidden;text-align:center;color-scheme:dark}
+.gate-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--acc-grad)}
+.gate-card::after{content:"";position:absolute;inset:-40% -20% auto;height:70%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(130,110,255,.22),transparent);filter:blur(10px)}
+.gate-card>*{position:relative;z-index:1}
+.gate-ic{width:64px;height:64px;margin:0 auto 18px;border-radius:20px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#2F8CFF,#B66DFF 55%,#FF7A1A);box-shadow:0 10px 30px rgba(130,90,255,.35)}
+.gate-ic svg{width:30px;height:30px}
+.gate-eb{display:inline-flex;gap:8px;align-items:center;margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--deckmuted)}
+html[dir="rtl"] .gate-eb{letter-spacing:.02em}
+.gate-card h1{margin:0 0 12px;font-size:clamp(24px,4.4vw,34px);line-height:1.15;font-weight:700;color:#fff;outline:none}
+.gate-p{margin:0 auto 22px;max-width:460px;font-size:16px;line-height:1.6;color:#D8D8DE}
+.gate-wait{display:inline-flex;align-items:center;gap:10px;color:var(--deckmuted)}
+.gate-spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;animation:gateSpin .8s linear infinite}
+@keyframes gateSpin{to{transform:rotate(360deg)}}
+.gate-ben{list-style:none;margin:0 auto 26px;padding:0;display:grid;gap:10px;max-width:420px;text-align:start}
+.gate-ben li{display:flex;align-items:center;gap:10px;font-size:14.5px;line-height:1.4;color:#D8D8DE}
+.gate-ben li::before{content:"";flex:none;width:18px;height:18px;border-radius:50%;
+  background:rgba(255,255,255,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/11px no-repeat;border:1px solid rgba(255,255,255,.16)}
+.gate-ben li.gift{padding:8px 12px;border-radius:14px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,.1);
+  background:linear-gradient(100deg,rgba(47,140,255,.16),rgba(182,109,255,.14),rgba(255,122,26,.18))}
+.gate-ben li.gift::before{background-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='8' width='17' height='4' rx='1'/%3E%3Cpath d='M12 8v12.5M5.5 12v8.5h13V12M12 8S10.5 3.5 8 4.5 9 8 12 8zm0 0s1.5-4.5 4-3.5S15 8 12 8z'/%3E%3C/svg%3E");
+  background-size:14px;border:0;background-color:rgba(255,255,255,.12)}
+.gate-act{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px}
+.gate-act .btn{min-height:46px;padding:0 22px;font-size:15px;border-radius:var(--r-pill)}
+.gate-card .gate-up{background:linear-gradient(100deg,#2F8CFF,#8B6DFF 50%,#B66DFF);color:#fff;border:0;box-shadow:0 8px 24px rgba(110,100,255,.35)}
+.gate-card .gate-up:hover{filter:brightness(1.08)}
+.gate-card .btn.ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.22)}
+.gate-card .btn.ghost:hover{background:rgba(255,255,255,.12)}
+.gate-card .btn.solid:not(.gate-up){background:#fff;color:#0B0B0C;border-color:#fff}
+.gate-card :focus-visible{outline:2px solid #fff;outline-offset:3px}
+.gate-foot{display:flex;justify-content:center;gap:10px;margin:0;font-size:14px;color:var(--deckmuted)}
+.gate-foot .lnk{color:#C9C9D2;background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gate-foot .lnk:hover{color:#fff}
+@media (max-width:520px){.gate-act .btn{flex:1 1 100%}}
+@media (prefers-reduced-motion:reduce){.gate-spin{animation:none}}
+html.a11y-noanim .gate-spin{animation:none}

@@ -499,6 +499,14 @@ auDoneH:'¡Te damos la bienvenida, {u}!',auDoneP:'Tu cuenta está lista y has in
 auErrRate:'Demasiados intentos. Vuelve a intentarlo en {s} segundos.',auErrRate0:'Demasiados intentos. Vuelve a intentarlo en unos minutos.',auErrExists:'Ya existe una cuenta con este email. Entra o restablece la contraseña.',auErrWeak:'Esa contraseña es demasiado débil o apareció en una filtración. Elige otra.',auErrSame:'La contraseña nueva debe ser distinta de la anterior.',auErrNet:'No se puede conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.',
 auLegal:'Términos de uso',auPrivacy:'Privacidad',auWorking:'Un momento…',auFooterIn:'Al entrar aceptas los {t} y la {p}.',adTerms:'Términos aceptados',adTermsV:'Versión {v} · {d}',adTermsNone:'Sin registro'}};
 for(const k in IAU)Object.assign(I[k],IAU[k]);
+/* sign-in gate (the tools need an account) */
+const IGATE={
+he:{gateH:'כדי להשתמש בכלים צריך חשבון',gateP:'ההרשמה חינמית ולוקחת פחות מדקה. אחרי הכניסה הכל פתוח לכם, והשירים והניתוחים נשמרים בחשבון שלכם.',gatePClosed:'ההרשמה סגורה כרגע. אם יש לכם חשבון, היכנסו כדי להמשיך.',gateUp:'הרשמה בחינם',gateIn:'כבר יש לי חשבון · כניסה',gateHome:'חזרה לדף הבית',gatePricing:'מחירים ומסלולים',gateWait:'בודקים את החשבון…',gateLock:'נדרשת כניסה'},
+en:{gateH:'You need an account to use the tools',gateP:'Signing up is free and takes less than a minute. Once you\'re in, everything is open and your songs and analyses are saved to your account.',gatePClosed:'Sign-up is closed right now. If you have an account, sign in to continue.',gateUp:'Sign up free',gateIn:'I have an account · Sign in',gateHome:'Back to home',gatePricing:'Pricing & plans',gateWait:'Checking your account…',gateLock:'Sign-in required'},
+ar:{gateH:'تحتاج إلى حساب لاستخدام الأدوات',gateP:'التسجيل مجاني ويستغرق أقل من دقيقة. بعد الدخول يصبح كل شيء متاحًا، وتُحفظ أغانيك وتحليلاتك في حسابك.',gatePClosed:'التسجيل مغلق حاليًا. إذا كان لديك حساب، سجّل الدخول للمتابعة.',gateUp:'سجّل مجانًا',gateIn:'لدي حساب · تسجيل الدخول',gateHome:'العودة إلى الرئيسية',gatePricing:'الأسعار والخطط',gateWait:'جارٍ التحقق من حسابك…',gateLock:'يلزم تسجيل الدخول'},
+ru:{gateH:'Для работы с инструментами нужен аккаунт',gateP:'Регистрация бесплатна и занимает меньше минуты. После входа всё открыто, а ваши песни и анализы сохраняются в аккаунте.',gatePClosed:'Регистрация сейчас закрыта. Если у вас есть аккаунт, войдите, чтобы продолжить.',gateUp:'Зарегистрироваться бесплатно',gateIn:'У меня есть аккаунт · Войти',gateHome:'На главную',gatePricing:'Цены и тарифы',gateWait:'Проверяем аккаунт…',gateLock:'Нужен вход'},
+es:{gateH:'Necesitas una cuenta para usar las herramientas',gateP:'Registrarte es gratis y lleva menos de un minuto. Al entrar, todo queda abierto y tus canciones y análisis se guardan en tu cuenta.',gatePClosed:'El registro está cerrado por ahora. Si tienes cuenta, inicia sesión para continuar.',gateUp:'Regístrate gratis',gateIn:'Ya tengo cuenta · Entrar',gateHome:'Volver al inicio',gatePricing:'Precios y planes',gateWait:'Comprobando tu cuenta…',gateLock:'Requiere iniciar sesión'}};
+for(const k in IGATE)Object.assign(I[k],IGATE[k]);
 
 
 
@@ -1722,6 +1730,7 @@ function authChanged(uid,event){
   const first=!AUTH.known,prev=AUTH.uid;AUTH.known=true;AUTH.uid=uid;AUTH.wait();
   if(first||prev!==uid)document.dispatchEvent(new CustomEvent('cr-user',{detail:{uid,prev,first,event}}));
   if(!first&&prev!==uid)userSwitched(uid,prev);
+  if(typeof regate==='function')regate();
 }
 /* ---------- activity log (admin panel → Activity; log_activity in schema.sql) ---------- */
 const ACT={off:false,last:{}};
@@ -2057,7 +2066,7 @@ $('#fReset').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   auRun($('#fReset .au-cta'),async()=>{try{await Backend.setPassword(p1.value);p1.value=p2.value='';AU.done='pass';auShow('done')}
     catch(err){const k=err&&err.code;if(k==='same'||k==='weak'||k==='short'){auFe(p1,authErr(err));p1.focus();return}auMsg(authErr(err),'err')}})});
 // header buttons: signed out → "sign in" + "sign up" (sign up hidden while registration is closed)
-function renderAuthBtns(){const on=ACC.on,user=ACC.user;$('#signInBtn').hidden=!on||!!user;$('#signUpBtn').hidden=!on||!!user||!signupOpen()}
+function renderAuthBtns(){const on=ACC.on,user=ACC.user;$('#signInBtn').hidden=!on||!!user;$('#signUpBtn').hidden=!on||!!user||!signupOpen();if(typeof regate==='function')regate()}
 // initial paint of the idle texts (the language switch repaints them through auLang)
 function auLang(){
   userCheck(false);['upPass','rcPass','rsPass'].forEach(id=>pwPaint(id));auCoolPaint();auTermsState();
@@ -2102,7 +2111,7 @@ function applyConfig(){
   const ann=(c.announce||'').trim();$('#banner').hidden=!ann;$('#bannerT').textContent=ann;
   if(c.lang&&I[c.lang]&&!LANG_CHOSEN&&!(ACC.profile&&ACC.profile.lang)&&c.lang!==LANG)setLang(c.lang,false);
   $('#blocked').hidden=!(ACC.profile&&ACC.profile.blocked);
-  $('#gate').hidden=!(ACC.on&&c.require_login&&!ACC.user);
+  $('#gate').hidden=true;   // the old "require sign-in" overlay: the tools always need an account now (#gateView), home/pricing/terms stay open
   renderAuthBtns();if(!$('#authDlg').hidden&&(AU.mode==='in'||AU_UP.includes(AU.mode)))auShow(AU.mode,true);
   if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);
   renderStemsUI();renderCredits();
@@ -2905,15 +2914,17 @@ $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null]};
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
+  const lock=gated(v);GATE.v=v;GATE.locked=lock;
   logAct('view',v);
-  const cur=VIEWS[v][0];
+  const cur=lock?'#gateView':VIEWS[v][0];
   for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=sec!==cur;if(nav)$(nav).classList.toggle('on',k===v)}
-  const d=v==='discover',j=v==='dj';
-  if(v!=='tool'&&P.playing)stop();
+  $('#gateView').hidden=!lock;if(lock)renderGate(v);else $('#gateView').innerHTML='';
+  const d=v==='discover'&&!lock,j=v==='dj'&&!lock;
+  if((v!=='tool'||lock)&&P.playing)stop();
   if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
-  else{stopPreview();if(v==='tool')requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  else{stopPreview();if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(window.DJ)j?DJ.show():DJ.hide();
-  if(window.CRATE)v==='crate'?CRATE.show():CRATE.hide();
+  if(window.CRATE)v==='crate'&&!lock?CRATE.show():CRATE.hide();
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
   if(v==='terms'||v==='privacy')renderLegal(v);else LEGAL_V.kind=null;
@@ -2922,6 +2933,33 @@ function showView(v,anchor){
   const tgt=anchor&&document.getElementById(anchor);
   if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
 }
+/* ---------- sign-in gate: the tools (tool, Discover, DJ, Crate) need an account; home, pricing, terms and privacy stay open.
+   Only when accounts are on (no backend configured = local file, everything open). Honest-user level: the tools run in the
+   browser; what costs us (uploads, stems, catalog, assistant) is checked on the server anyway. ---------- */
+const GATED={tool:1,discover:1,dj:1,crate:1},GATE={v:null,locked:false};
+const gated=v=>!!GATED[v]&&ACC.on&&!ACC.user;
+const needAccount=()=>ACC.on&&!ACC.user;
+function regate(){if(!GATE.v)return;const l=gated(GATE.v);if(l!==GATE.locked)showView(GATE.v);else if(l)renderGate(GATE.v)}
+function renderGate(v){
+  const el=$('#gateView'),wait=!AUTH.known,up=signupOpen(),b=BILL(),gift=billingOn()&&+b.signup>0?+b.signup:0;
+  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),name=navEl?navEl.textContent.trim():'';
+  const ben=[gift?t('auBenGift').replace('{n}',gift):null,t('auBen1'),t('auBen2'),t('auBen3'),t('auBen4')].filter(Boolean);
+  el.innerHTML=`<div class="gate-card" role="region" aria-labelledby="gateH">
+    <div class="gate-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.3"/></svg></div>
+    <p class="gate-eb"><span>${esc(name)}</span><span aria-hidden="true">·</span><span>${esc(t('gateLock'))}</span></p>
+    <h1 id="gateH" tabindex="-1">${esc(t('gateH'))}</h1>
+    ${wait?`<p class="gate-p gate-wait" role="status"><span class="gate-spin" aria-hidden="true"></span>${esc(t('gateWait'))}</p>`:
+    `<p class="gate-p">${esc(t(up?'gateP':'gatePClosed'))}</p>
+    ${up?`<ul class="gate-ben">${ben.map((x,i)=>`<li${i===0&&gift?' class="gift"':''}>${esc(x)}</li>`).join('')}</ul>`:''}
+    <div class="gate-act">${up?`<button type="button" class="btn solid gate-up" data-g="up">${esc(t('gateUp'))}</button>`:''}<button type="button" class="btn${up?' ghost':' solid'}" data-g="in">${esc(t('gateIn'))}</button></div>`}
+    <p class="gate-foot"><button type="button" class="lnk" data-g="home">${esc(t('gateHome'))}</button><span aria-hidden="true">·</span><button type="button" class="lnk" data-g="pricing">${esc(t('gatePricing'))}</button></p>
+  </div>`;
+}
+$('#gateView').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;
+  if(g==='up'||g==='in')openDlg(g);else showView(g==='home'?'about':'pricing')});
+// uploading a song needs an account too (header button, drag & drop)
+function askAccount(){openDlg(signupOpen()?'up':'in')}
+$('#upLbl').addEventListener('click',e=>{if(needAccount()){e.preventDefault();askAccount()}});
 function renderDiscControls(){
   const tabs=[['trend','dTrend'],['new','dNew'],['played','dPlayed'],['recent','dRecent']];
   $('#dTabs').innerHTML='';tabs.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=t(l);b.classList.toggle('on',DC.tab===k);b.setAttribute('role','tab');b.setAttribute('aria-selected',String(DC.tab===k));b.onclick=()=>{DC.tab=k;renderDiscControls();loadTab()};$('#dTabs').appendChild(b)});
@@ -3017,6 +3055,7 @@ async function restoreLast(){
 
 /* ---------- events ---------- */
 async function loadFile(file){
+  if(file&&needAccount()){askAccount();return}
   if(!file)return;
   if($('#toolView').hidden)showView('tool');
   const name=file.name.replace(/\.[^.]+$/,'');
@@ -3054,7 +3093,7 @@ async function lookupGenre(name){
   }catch(e){return ''}
 }
 $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value=''});
-$('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
+$('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(needAccount())askAccount();else $('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
 function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
@@ -3122,10 +3161,10 @@ zm.addEventListener('pointerup',endDrag);zm.addEventListener('pointercancel',end
 zm.addEventListener('wheel',e=>{if(!S.dur)return;e.preventDefault();if(Math.abs(e.deltaY)>Math.abs(e.deltaX))zoom(e.deltaY>0?1:-1);else seek(now()+e.deltaX/400*S.win)},{passive:false});
 let dd=0;
 const otherDrop=()=>['#djView','#crateView'].some(q=>$(q)&&!$(q).hidden);
-window.addEventListener('dragenter',e=>{if(otherDrop())return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
+window.addEventListener('dragenter',e=>{if(otherDrop()||needAccount())return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
 window.addEventListener('dragleave',()=>{dd=Math.max(0,dd-1);if(!dd)$('#drop').hidden=true});
 window.addEventListener('dragover',e=>e.preventDefault());
-window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;if(otherDrop())return;const f=e.dataTransfer.files[0];if(f)loadFile(f)});
+window.addEventListener('drop',e=>{e.preventDefault();dd=0;$('#drop').hidden=true;if(otherDrop())return;if(needAccount()){askAccount();return}const f=e.dataTransfer.files[0];if(f)loadFile(f)});
 let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{sizeCanvases();renderMixer()},120)});
 
 /* ---------- theme (light / dark) ---------- */
