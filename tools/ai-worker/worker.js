@@ -1,5 +1,5 @@
 import * as ort from 'onnxruntime-web/webgpu';
-import { separateTracks } from './lib/apply.js';
+import { applyInference, TensorChunk } from './lib/apply.js';
 
 ort.env.wasm.numThreads = 1;
 ort.env.wasm.proxy = false;
@@ -98,26 +98,46 @@ const model = {
   }
 };
 
+/* Streaming separation: the song stays in the worker once (planar [L…,R…]), the model runs on 7.8 s
+   segments, and every finished stride of the 4 stems is posted to the page at once and freed here.
+   Peak memory ≈ the song (2n floats) + a few segments, instead of ~10× the song like the original
+   applySplits (which kept all stems for the whole song twice). Phones survive 4–6-minute songs this way. */
 async function run(msg) {
-  const L = msg.L, R = msg.R, n = L.length;
-  // Demucs normalisation: centre and scale by the mono reference, undone afterwards
+  const LR = msg.LR, n = msg.n, L = LR.subarray(0, n), R = LR.subarray(n, 2 * n);
+  // Demucs normalisation: centre and scale by the mono reference, undone on the way out
   let mean = 0; for (let i = 0; i < n; i++) mean += (L[i] + R[i]) * 0.5; mean /= n;
   let v = 0; for (let i = 0; i < n; i++) { const d = (L[i] + R[i]) * 0.5 - mean; v += d * d; }
   const std = Math.sqrt(v / n) || 1;
-  for (let i = 0; i < n; i++) { L[i] = (L[i] - mean) / std; R[i] = (R[i] - mean) / std; }
-  const t0 = performance.now();
-  const tracks = await separateTracks(model, { channelData: [L, R], sampleRate: 44100 }, (i, tot) => {
-    post({ type: 'p', i, tot, el: (performance.now() - t0) / 1000 });
-  }, msg.overlap ?? 0.25);
-  const res = [];
-  for (const s of ['vocals', 'drums', 'bass', 'other']) {
-    for (const ch of tracks[s].channelData) {
-      const o = new Float32Array(n);
-      for (let i = 0; i < n; i++) o[i] = ch[i] * std + mean * 0.25;
-      res.push(o);
+  for (let i = 0; i < 2 * n; i++) LR[i] = (LR[i] - mean) / std;
+  const mix = { data: LR, shape: [1, 2, n] };
+  const overlap = Math.min(0.5, Math.max(0.05, msg.overlap ?? 0.25));
+  const segment = Math.floor(model.samplerate * model.segment), stride = Math.floor((1 - overlap) * segment);
+  const weight = new Float32Array(segment), half = Math.floor(segment / 2) + 1;
+  for (let i = 0; i < half; i++) weight[i] = i + 1;
+  for (let i = half; i < segment; i++) weight[i] = segment - i;
+  const wmax = Math.max(half, segment - half); for (let i = 0; i < segment; i++) weight[i] /= wmax;
+  const S = 4, C = 2, K = S * C, ORDER = [6, 7, 0, 1, 2, 3, 4, 5]; // model order drums,bass,other,vocals → app order vocals,drums,bass,other (L,R each)
+  const acc = Array.from({ length: K }, () => new Float32Array(segment)), wsum = new Float32Array(segment);
+  const total = Math.ceil(n / stride), t0 = performance.now();
+  post({ type: 'p', i: 0, tot: total, el: 0 });
+  let offset = 0, k = 0;
+  while (offset < n) {
+    if (k > 0) { // slide the accumulation window forward by one stride
+      for (const a of acc) { a.copyWithin(0, stride); a.fill(0, segment - stride); }
+      wsum.copyWithin(0, stride); wsum.fill(0, segment - stride);
     }
+    const chunk = new TensorChunk(mix, offset, segment);
+    const out = await applyInference(model, chunk), len = out.shape[out.shape.length - 1], od = out.data;
+    for (let j = 0; j < K; j++) { const a = acc[j], base = j * len; for (let t = 0; t < len; t++) a[t] += weight[t] * od[base + t]; }
+    for (let t = 0; t < len; t++) wsum[t] += weight[t];
+    // samples [offset, offset+stride) get no more contributions → normalise, de-normalise and ship them
+    const blen = Math.min(stride, n - offset), res = [];
+    for (const j of ORDER) { const a = acc[j], o = new Float32Array(blen); for (let t = 0; t < blen; t++) o[t] = (a[t] / (wsum[t] || 1)) * std + mean * 0.25; res.push(o); }
+    post({ type: 'blk', off: offset, len: blen, res }, res.map(a => a.buffer));
+    offset += stride; k++;
+    post({ type: 'p', i: k, tot: total, el: (performance.now() - t0) / 1000 });
   }
-  post({ type: 'done', res }, res.map(a => a.buffer));
+  post({ type: 'done' });
 }
 
 self.onmessage = async e => {

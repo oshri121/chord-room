@@ -9,7 +9,7 @@ const I={
 he:{tagline:'קצב, סולם, אקורדים וערוצי AI מכל שיר',library:'השירים שלי',upload:'העלאת שיר',loaded:'טעון עכשיו',demo:'דוגמה',key:'סולם',length:'משך',loudness:'עוצמה',loop:'לופ',click:'קליק',wave:'גל',zoom:'זום',grid:'גריד',
 now:'עכשיו',next:'הבא',inBeats:'בעוד {n} פעמות',end:'סוף',playAlong:'נגינה',transpose:'טרנספוזיציה',transposeH:'הזזת כל האקורדים בחצאי טונים',capo:'קאפו',capo0:'בלי קאפו',capoN:'צורות לנגינה עם קאפו בשריג {n}',diagrams:'דיאגרמות',guitar:'גיטרה',piano:'פסנתר',names:'שמות תווים',auto:'אוטו',harmonic:'מיקס הרמוני',harmonicH:'סולמות שמתחברים לשיר הזה',
 stems:'ערוצים',stemsH:'שירה, תופים, בס ושאר הכלים. ההפרדה נעשית במודל הבינה המלאכותית Demucs v4, ישירות בדפדפן שלך.',aiSep:'הפרדה ב־AI',quickSep:'הפרדה מהירה',cancel:'ביטול',engGpu:'מנוע: GPU',engCpu:'מנוע: CPU (איטי יותר)',
-aiFirst:'בפעם הראשונה המודל יורד (כ־100MB), ואחר כך נשמר בדפדפן. ב־GPU שיר של 4 דקות לוקח בערך 1–3 דקות, ב־CPU יותר.',aiDl:'מוריד את מודל ה־AI… {p}%',aiPrep:'מכין את המודל…',aiRun:'מפריד… {p}%',aiEta:' · עוד כ־{t}',aiDone:'הערוצים מוכנים. הנגן מנגן מהם עכשיו.',aiErr:'מודל ה־AI לא נטען במכשיר הזה ({m}). אפשר להשתמש בהפרדה המהירה.',
+aiFirst:'בפעם הראשונה המודל יורד (כ־100MB), ואחר כך נשמר בדפדפן. ב־GPU שיר של 4 דקות לוקח בערך 1–3 דקות, ב־CPU יותר.',aiCrash:'ההפרדה נעצרה באמצע: הדפדפן נגמר לו הזיכרון והעמוד נטען מחדש (קורה בעיקר בטלפונים עם שירים ארוכים). הנקודות הוחזרו. נסו שיר קצר יותר, סגרו לשוניות אחרות, או הפרידו במחשב.',aiDl:'מוריד את מודל ה־AI… {p}%',aiPrep:'מכין את המודל…',aiRun:'מפריד… {p}%',aiEta:' · עוד כ־{t}',aiDone:'הערוצים מוכנים. הנגן מנגן מהם עכשיו.',aiErr:'מודל ה־AI לא נטען במכשיר הזה ({m}). אפשר להשתמש בהפרדה המהירה.',
 quickDone:'הפרדה מהירה מוכנה. האיכות נמוכה מההפרדה ב־AI.',quickRun:'מפריד (מהיר)… {p}%',needAudio:'צריך קובץ שמע טעון כדי להפריד ערוצים.',canceled:'ההפרדה בוטלה.',mono:'השיר מוקלט במונו.',
 vocals:'שירה',drums:'תופים',bass:'בס',other:'שאר הכלים',karaoke:'קריוקי',
 export:'ייצוא ל־FL Studio',exportH:'הכול נארז ב־ZIP: קובץ WAV לכל ערוץ, קובצי MIDI לפסנתר, וקובץ מידע עם BPM וסולם. מניחים הכול בתחילת תיבה 1 והכול מסונכרן.',
@@ -23,7 +23,7 @@ major:'מז׳ור',minor:'מינור',same:'אותו',rel:'מקביל',up:'+1',d
 en:{tagline:'Tempo, key, chords and AI stems from any song',library:'My songs',upload:'Upload song',loaded:'Loaded',demo:'Demo',key:'Key',length:'Length',loudness:'Loudness',loop:'Loop',click:'Click',wave:'Wave',zoom:'Zoom',grid:'Grid',
 now:'Now',next:'Next',inBeats:'in {n} beats',end:'End',playAlong:'Play along',transpose:'Transpose',transposeH:'Shift every chord by semitones',capo:'Capo',capo0:'No capo',capoN:'Shapes for capo on fret {n}',diagrams:'Diagrams',guitar:'Guitar',piano:'Piano',names:'Note names',auto:'Auto',harmonic:'Harmonic mixing',harmonicH:'Keys that mix smoothly with this track',
 stems:'Stems',stemsH:'Vocals, drums, bass and everything else, separated by the Demucs v4 AI model right in your browser.',aiSep:'Separate with AI',quickSep:'Quick separation',cancel:'Cancel',engGpu:'Engine: GPU',engCpu:'Engine: CPU (slower)',
-aiFirst:'The first run downloads the model (about 100 MB); after that it stays in your browser. On a GPU a 4-minute song takes about 1–3 minutes; on CPU longer.',aiDl:'Downloading the AI model… {p}%',aiPrep:'Preparing the model…',aiRun:'Separating… {p}%',aiEta:' · about {t} left',aiDone:'Stems are ready. The player now plays from them.',aiErr:'The AI model could not start on this device ({m}). Quick separation still works.',
+aiFirst:'The first run downloads the model (about 100 MB); after that it stays in your browser. On a GPU a 4-minute song takes about 1–3 minutes; on CPU longer.',aiCrash:'Separation stopped half-way: the browser ran out of memory and reloaded the page (mostly on phones with long songs). Your points were refunded. Try a shorter song, close other tabs, or separate on a computer.',aiDl:'Downloading the AI model… {p}%',aiPrep:'Preparing the model…',aiRun:'Separating… {p}%',aiEta:' · about {t} left',aiDone:'Stems are ready. The player now plays from them.',aiErr:'The AI model could not start on this device ({m}). Quick separation still works.',
 quickDone:'Quick separation ready. Quality is lower than the AI separation.',quickRun:'Separating (quick)… {p}%',needAudio:'Load an audio file to separate stems.',canceled:'Separation canceled.',mono:'This song is mono.',
 vocals:'Vocals',drums:'Drums',bass:'Bass',other:'Other',karaoke:'Karaoke',
 export:'Export for FL Studio',exportH:'Everything is packed in a ZIP: a WAV per stem, piano MIDI files and an info file with BPM and key. Drop it all at bar 1 and it lines up.',
@@ -37,7 +37,7 @@ major:'major',minor:'minor',same:'Same',rel:'Relative',up:'+1',down:'−1',sol:n
 ar:{tagline:'الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي',library:'أغانيّ',upload:'رفع أغنية',loaded:'المحمّلة الآن',demo:'تجريبي',key:'المقام',length:'المدة',loudness:'الشدة',loop:'تكرار',click:'نقرة',wave:'الموجة',zoom:'تكبير',grid:'الشبكة',
 now:'الآن',next:'التالي',inBeats:'بعد {n} نبضات',end:'النهاية',playAlong:'العزف',transpose:'تحويل',transposeH:'نقل كل الكوردات بأنصاف الدرجات',capo:'كابو',capo0:'بدون كابو',capoN:'أشكال للعزف مع كابو على الدستان {n}',diagrams:'المخططات',guitar:'غيتار',piano:'بيانو',names:'أسماء النوتات',auto:'تلقائي',harmonic:'مزج متناغم',harmonicH:'مقامات تمتزج بسلاسة مع هذه الأغنية',
 stems:'المسارات',stemsH:'الغناء والطبول والباص وباقي الآلات، يفصلها نموذج الذكاء الاصطناعي Demucs v4 داخل متصفحك.',aiSep:'فصل بالذكاء الاصطناعي',quickSep:'فصل سريع',cancel:'إلغاء',engGpu:'المحرك: GPU',engCpu:'المحرك: CPU (أبطأ)',
-aiFirst:'في المرة الأولى يُحمَّل النموذج (نحو 100MB) ثم يبقى في المتصفح. على GPU تستغرق أغنية من 4 دقائق نحو 1–3 دقائق، وعلى CPU أكثر.',aiDl:'تحميل نموذج الذكاء الاصطناعي… {p}%',aiPrep:'تجهيز النموذج…',aiRun:'جارٍ الفصل… {p}%',aiEta:' · متبقٍّ نحو {t}',aiDone:'المسارات جاهزة، والمشغّل يعزف منها الآن.',aiErr:'تعذّر تشغيل النموذج على هذا الجهاز ({m}). الفصل السريع ما زال متاحًا.',
+aiFirst:'في المرة الأولى يُحمَّل النموذج (نحو 100MB) ثم يبقى في المتصفح. على GPU تستغرق أغنية من 4 دقائق نحو 1–3 دقائق، وعلى CPU أكثر.',aiCrash:'توقّف الفصل في المنتصف: نفدت ذاكرة المتصفح وأُعيد تحميل الصفحة (يحدث غالبًا على الهواتف مع الأغاني الطويلة). أُعيدت نقاطك. جرّب أغنية أقصر، أو أغلق التبويبات الأخرى، أو افصل على الحاسوب.',aiDl:'تحميل نموذج الذكاء الاصطناعي… {p}%',aiPrep:'تجهيز النموذج…',aiRun:'جارٍ الفصل… {p}%',aiEta:' · متبقٍّ نحو {t}',aiDone:'المسارات جاهزة، والمشغّل يعزف منها الآن.',aiErr:'تعذّر تشغيل النموذج على هذا الجهاز ({m}). الفصل السريع ما زال متاحًا.',
 quickDone:'الفصل السريع جاهز، وجودته أقل من الفصل بالذكاء الاصطناعي.',quickRun:'جارٍ الفصل السريع… {p}%',needAudio:'حمّل ملفًا صوتيًا لفصل المسارات.',canceled:'أُلغي الفصل.',mono:'هذه الأغنية أحادية القناة.',
 vocals:'الغناء',drums:'الطبول',bass:'الباص',other:'باقي الآلات',karaoke:'كاريوكي',
 export:'تصدير إلى FL Studio',exportH:'كل شيء في ملف ZIP: ملف WAV لكل مسار، وملفات MIDI للبيانو، وملف معلومات بالإيقاع والمقام. ضعها كلها عند المازورة 1 فتتزامن.',
@@ -51,7 +51,7 @@ major:'ماجور',minor:'مينور',same:'نفسه',rel:'المقابل',up:'+
 ru:{tagline:'Темп, тональность, аккорды и AI-разделение любой песни',library:'Мои песни',upload:'Загрузить песню',loaded:'Загружено',demo:'Демо',key:'Тональность',length:'Длина',loudness:'Громкость',loop:'Луп',click:'Клик',wave:'Волна',zoom:'Зум',grid:'Сетка',
 now:'Сейчас',next:'Далее',inBeats:'через {n} долей',end:'Конец',playAlong:'Игра',transpose:'Транспонирование',transposeH:'Сдвиг всех аккордов на полутоны',capo:'Каподастр',capo0:'Без каподастра',capoN:'Аппликатуры с каподастром на {n} ладу',diagrams:'Схемы',guitar:'Гитара',piano:'Фортепиано',names:'Названия нот',auto:'Авто',harmonic:'Гармоничное сведение',harmonicH:'Тональности, которые хорошо сводятся с этим треком',
 stems:'Стемы',stemsH:'Вокал, барабаны, бас и остальное — разделяет нейросеть Demucs v4 прямо в браузере.',aiSep:'Разделить с AI',quickSep:'Быстрое разделение',cancel:'Отмена',engGpu:'Движок: GPU',engCpu:'Движок: CPU (медленнее)',
-aiFirst:'При первом запуске модель загружается (около 100 МБ), потом хранится в браузере. На GPU 4-минутная песня занимает 1–3 минуты, на CPU дольше.',aiDl:'Загрузка AI-модели… {p}%',aiPrep:'Подготовка модели…',aiRun:'Разделение… {p}%',aiEta:' · осталось около {t}',aiDone:'Стемы готовы, плеер играет из них.',aiErr:'AI-модель не запустилась на этом устройстве ({m}). Быстрое разделение доступно.',
+aiFirst:'При первом запуске модель загружается (около 100 МБ), потом хранится в браузере. На GPU 4-минутная песня занимает 1–3 минуты, на CPU дольше.',aiCrash:'Разделение прервалось: браузеру не хватило памяти и страница перезагрузилась (чаще на телефонах с длинными песнями). Баллы возвращены. Попробуйте песню короче, закройте другие вкладки или разделяйте на компьютере.',aiDl:'Загрузка AI-модели… {p}%',aiPrep:'Подготовка модели…',aiRun:'Разделение… {p}%',aiEta:' · осталось около {t}',aiDone:'Стемы готовы, плеер играет из них.',aiErr:'AI-модель не запустилась на этом устройстве ({m}). Быстрое разделение доступно.',
 quickDone:'Быстрое разделение готово. Качество ниже, чем у AI.',quickRun:'Быстрое разделение… {p}%',needAudio:'Загрузите аудиофайл, чтобы разделить стемы.',canceled:'Разделение отменено.',mono:'Песня записана в моно.',
 vocals:'Вокал',drums:'Барабаны',bass:'Бас',other:'Остальное',karaoke:'Караоке',
 export:'Экспорт для FL Studio',exportH:'Всё в ZIP: WAV для каждого стема, MIDI-файлы для фортепиано и файл с BPM и тональностью. Поставьте всё на такт 1 — и всё совпадёт.',
@@ -65,7 +65,7 @@ major:'мажор',minor:'минор',same:'Та же',rel:'Параллельн
 es:{tagline:'Tempo, tonalidad, acordes y pistas separadas con IA de cualquier canción',library:'Mis canciones',upload:'Subir canción',loaded:'Cargada',demo:'Demo',key:'Tonalidad',length:'Duración',loudness:'Sonoridad',loop:'Bucle',click:'Clic',wave:'Onda',zoom:'Zoom',grid:'Rejilla',
 now:'Ahora',next:'Siguiente',inBeats:'en {n} tiempos',end:'Fin',playAlong:'Tocar',transpose:'Transponer',transposeH:'Mueve todos los acordes por semitonos',capo:'Cejilla',capo0:'Sin cejilla',capoN:'Posiciones con cejilla en el traste {n}',diagrams:'Diagramas',guitar:'Guitarra',piano:'Piano',names:'Nombres de notas',auto:'Auto',harmonic:'Mezcla armónica',harmonicH:'Tonalidades que mezclan bien con esta pista',
 stems:'Pistas',stemsH:'Voz, batería, bajo y el resto, separados por el modelo de IA Demucs v4 en tu navegador.',aiSep:'Separar con IA',quickSep:'Separación rápida',cancel:'Cancelar',engGpu:'Motor: GPU',engCpu:'Motor: CPU (más lento)',
-aiFirst:'La primera vez se descarga el modelo (unos 100 MB) y luego queda en el navegador. Con GPU una canción de 4 minutos tarda 1–3 minutos; con CPU, más.',aiDl:'Descargando el modelo de IA… {p}%',aiPrep:'Preparando el modelo…',aiRun:'Separando… {p}%',aiEta:' · faltan unos {t}',aiDone:'Pistas listas. El reproductor ya suena desde ellas.',aiErr:'El modelo de IA no pudo iniciar en este equipo ({m}). La separación rápida sigue disponible.',
+aiFirst:'La primera vez se descarga el modelo (unos 100 MB) y luego queda en el navegador. Con GPU una canción de 4 minutos tarda 1–3 minutos; con CPU, más.',aiCrash:'La separación se detuvo a mitad: el navegador se quedó sin memoria y recargó la página (sobre todo en teléfonos con canciones largas). Tus puntos fueron devueltos. Prueba una canción más corta, cierra otras pestañas o sepárala en un ordenador.',aiDl:'Descargando el modelo de IA… {p}%',aiPrep:'Preparando el modelo…',aiRun:'Separando… {p}%',aiEta:' · faltan unos {t}',aiDone:'Pistas listas. El reproductor ya suena desde ellas.',aiErr:'El modelo de IA no pudo iniciar en este equipo ({m}). La separación rápida sigue disponible.',
 quickDone:'Separación rápida lista. La calidad es menor que con IA.',quickRun:'Separando (rápido)… {p}%',needAudio:'Carga un archivo de audio para separar pistas.',canceled:'Separación cancelada.',mono:'La canción está en mono.',
 vocals:'Voz',drums:'Batería',bass:'Bajo',other:'Resto',karaoke:'Karaoke',
 export:'Exportar a FL Studio',exportH:'Todo va en un ZIP: un WAV por pista, archivos MIDI de piano y un archivo con BPM y tonalidad. Colócalo todo en el compás 1 y queda sincronizado.',
@@ -1352,14 +1352,29 @@ function drawStem(cv,i,color){
 }
 function sepProgress(p,msg){$('#sprog').hidden=false;$('#sbar').style.width=Math.round(p*100)+'%';$('#smsg').textContent=msg}
 function sepEnd(note,err){$('#sprog').hidden=true;AI.busy=false;renderStemsUI();if(note){const n=$('#snote');n.textContent=note;n.classList.toggle('err',!!err)}}
+// the song as one planar Float32Array [L…, R…] at 44.1 kHz (what the worker wants; one allocation, no copies)
 async function stereo44(){
-  const sr=44100,len=Math.ceil(S.buffer.duration*sr);
+  const sr=44100,len=Math.ceil(S.buffer.duration*sr),LR=new Float32Array(2*len);
+  if(S.buffer.sampleRate===sr){S.buffer.copyFromChannel(LR.subarray(0,len),0);S.buffer.copyFromChannel(LR.subarray(len),Math.min(1,S.buffer.numberOfChannels-1));return [LR,len]}
   const oc=new OfflineAudioContext(2,len,sr);const src=oc.createBufferSource();src.buffer=S.buffer;src.connect(oc.destination);src.start();
-  const r=await oc.startRendering();return [r.getChannelData(0).slice(0),r.getChannelData(1).slice(0),len];
+  const r=await oc.startRendering();r.copyFromChannel(LR.subarray(0,len),0);r.copyFromChannel(LR.subarray(len),1);return [LR,len];
+}
+// phones: less overlap = fewer model passes (faster, cooler); low-memory hint for the notice
+const lowMem=()=>(navigator.deviceMemory&&navigator.deviceMemory<=4)||/iPhone|iPad|Android/i.test(navigator.userAgent);
+/* if the browser kills the page during separation (out of memory on phones), the points were already charged:
+   remember the charge, and on the next boot refund it and explain (refund_credits allows own 'sep' charges ≤ 20 min) */
+const SEP_K='chordroom.sep.inflight';
+const sepMark=pay=>{try{localStorage.setItem(SEP_K,JSON.stringify({id:pay&&pay.id||null,uid:AUTH.uid,name:S.name,t:Date.now()}))}catch(e){}};
+const sepUnmark=()=>{try{localStorage.removeItem(SEP_K)}catch(e){}};
+async function sepCrashCheck(){
+  let m=null;try{m=JSON.parse(localStorage.getItem(SEP_K)||'null')}catch(e){}
+  if(!m)return;sepUnmark();
+  if(m.id&&m.uid&&m.uid===AUTH.uid&&Date.now()-m.t<19*60000)await refund({id:m.id});
+  showNotice(t('aiCrash'));const n=$('#snote');n.textContent=t('aiCrash');n.classList.add('err');
 }
 function setStems(res,len,kind){
   const c=ac(),was=P.playing;if(was)stop();
-  S.stems=STEMS.map((st,i)=>{const b=c.createBuffer(2,len,44100);b.copyToChannel(res[i*2],0);b.copyToChannel(res[i*2+1],1);return b});
+  S.stems=res.length===STEMS.length&&res[0]instanceof AudioBuffer?res:STEMS.map((st,i)=>{const b=c.createBuffer(2,len,44100);b.copyToChannel(res[i*2],0);b.copyToChannel(res[i*2+1],1);return b});
   S.stemKind=kind;S.notes=null;S.drumHits=null;
   S.stemEnv=stemEnvelopes();S.wmode='stems';buildOverview();renderStats();
   if(was)play();
@@ -1385,7 +1400,7 @@ async function aiSeparate(){
   try{
     if(!AI.ready){
       sepProgress(0,t('aiDl',{p:0}));
-      if(!AI.w)AI.w=new Worker('ai/worker.js');
+      if(!AI.w)AI.w=new Worker('ai/worker.js?v=2');
       const man=await (await fetch('ai/model/wman.json')).json();
       const abs=f=>new URL(f,location.href).href;
       await new Promise((ok,fail)=>{
@@ -1401,17 +1416,21 @@ async function aiSeparate(){
       renderStemsUI();
     }
     sepProgress(0,t('aiRun',{p:0}));
-    const [L,R,len]=await stereo44();
-    const res=await new Promise((ok,fail)=>{
+    const [LR,len]=await stereo44();
+    const c=ac(),bufs=STEMS.map(()=>c.createBuffer(2,len,44100));   // filled block by block as the worker streams them
+    sepMark(pay);
+    await new Promise((ok,fail)=>{
       AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
         if(d.type==='p'){const p=d.tot?d.i/d.tot:0;let m=t('aiRun',{p:Math.round(p*100)});if(d.i>0)m+=t('aiEta',{t:fmtEta(d.el/d.i*(d.tot-d.i))});sepProgress(p,m)}
-        else if(d.type==='done')ok(d.res);else if(d.type==='error')fail(new Error(d.message))};
-      AI.w.postMessage({type:'run',L,R},[L.buffer,R.buffer]);
+        else if(d.type==='blk'){for(let i=0;i<4;i++){bufs[i].copyToChannel(d.res[i*2],0,d.off);bufs[i].copyToChannel(d.res[i*2+1],1,d.off)}}
+        else if(d.type==='done')ok();else if(d.type==='error')fail(new Error(d.message))};
+      AI.w.postMessage({type:'run',LR,n:len,overlap:lowMem()?0.15:0.25},[LR.buffer]);
     });
+    sepUnmark();
     if(job!==AI.job||S.buffer!==token)return;
-    AI.pay=null;setStems(res,len,'ai');sepEnd(null);bumpSeps();S.stemsPaid=false;
+    AI.pay=null;setStems(bufs,len,'ai');sepEnd(null);bumpSeps();S.stemsPaid=false;
   }catch(e){
-    console.error(e);if(job!==AI.job)return;
+    sepUnmark();console.error(e);if(job!==AI.job)return;
     refund(AI.pay);AI.pay=null;
     if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
     sepEnd(t('aiErr',{m:String(e.message||e).slice(0,80)}),true);
@@ -1419,7 +1438,7 @@ async function aiSeparate(){
 }
 const AI_BYTES=78767446;
 function cancelSep(silent){
-  if(!AI.busy)return;AI.job++;if(AI.pay){refund(AI.pay);AI.pay=null}
+  if(!AI.busy)return;AI.job++;sepUnmark();if(AI.pay){refund(AI.pay);AI.pay=null}
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
   else if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
   sepEnd(silent?null:t('canceled'));
@@ -3192,5 +3211,6 @@ window.CR={
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
 document.addEventListener('DOMContentLoaded',()=>{hookPages();routeHash()});
+AUTH.ready.then(()=>setTimeout(sepCrashCheck,1500));
 (async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
 })();

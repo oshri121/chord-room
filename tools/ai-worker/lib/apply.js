@@ -1,6 +1,6 @@
 import { spec, magnitude, ispec } from "./dsp.js";
 import { planarize } from "./wav-utils.js";
-class TensorChunk {
+export class TensorChunk {
     tensor;
     offset;
     length;
@@ -184,7 +184,7 @@ function centerTrim(tensor, reference) {
     }
     return { data: out, shape: shape };
 }
-async function applyInference(model, mix) {
+export async function applyInference(model, mix) {
     const length = mix.length;
     const validLength = model.validLength(length);
     const paddedMix = mix.padded(validLength);

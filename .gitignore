@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 *.log
 tools/ai-worker/node_modules/
+.claude/
+tools/ai-worker/package-lock.json
