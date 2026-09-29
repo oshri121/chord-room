@@ -341,15 +341,15 @@ es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se regi
 for(const k in IREF)Object.assign(I[k],IREF[k]);
 const IACT={
 he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
-  act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה'},
+  act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה',act_voice_test:'בדיקת טווח קול'},
 en:{admActivity:'Activity',actAll:'All actions',actNone:'No activity yet.',actMissing:'The activity log isn\'t installed yet: run the "Activity log" SQL in Supabase.',actRefresh:'Refresh',actSearch:'Search user or detail',actWhat:'Action',actDetail:'Details',userActivity:'Recent activity',
-  act_visit:'Visit',act_sign_in:'Sign in',act_view:'Opened page',act_song_upload:'Uploaded song',act_song_open:'Opened song',act_discover_open:'Song from Discover',act_separate:'Stem separation',act_export:'Tool download',act_dj_load:'DJ Mix load',act_crate_analyze:'Crate analysis',act_crate_export:'Crate export',act_subscribe_click:'Subscribe click',act_invite_copy:'Copied invite link'},
+  act_visit:'Visit',act_sign_in:'Sign in',act_view:'Opened page',act_song_upload:'Uploaded song',act_song_open:'Opened song',act_discover_open:'Song from Discover',act_separate:'Stem separation',act_export:'Tool download',act_dj_load:'DJ Mix load',act_crate_analyze:'Crate analysis',act_crate_export:'Crate export',act_subscribe_click:'Subscribe click',act_invite_copy:'Copied invite link',act_voice_test:'Voice range test'},
 ar:{admActivity:'النشاط',actAll:'كل الإجراءات',actNone:'لا يوجد نشاط بعد.',actMissing:'سجل النشاط غير مثبت بعد: شغّل كود SQL الخاص بـ "Activity log" في Supabase.',actRefresh:'تحديث',actSearch:'ابحث عن مستخدم أو تفصيل',actWhat:'الإجراء',actDetail:'التفاصيل',userActivity:'النشاط الأخير',
-  act_visit:'زيارة',act_sign_in:'تسجيل دخول',act_view:'فتح صفحة',act_song_upload:'رفع أغنية',act_song_open:'فتح أغنية',act_discover_open:'أغنية من اكتشف',act_separate:'فصل المسارات',act_export:'تنزيل من الأداة',act_dj_load:'تحميل في مزج DJ',act_crate_analyze:'تحليل المكتبة',act_crate_export:'تصدير المكتبة',act_subscribe_click:'نقر على الاشتراك',act_invite_copy:'نسخ رابط الدعوة'},
+  act_visit:'زيارة',act_sign_in:'تسجيل دخول',act_view:'فتح صفحة',act_song_upload:'رفع أغنية',act_song_open:'فتح أغنية',act_discover_open:'أغنية من اكتشف',act_separate:'فصل المسارات',act_export:'تنزيل من الأداة',act_dj_load:'تحميل في مزج DJ',act_crate_analyze:'تحليل المكتبة',act_crate_export:'تصدير المكتبة',act_subscribe_click:'نقر على الاشتراك',act_invite_copy:'نسخ رابط الدعوة',act_voice_test:'اختبار مدى الصوت'},
 ru:{admActivity:'Активность',actAll:'Все действия',actNone:'Активности пока нет.',actMissing:'Журнал активности ещё не установлен: выполните SQL "Activity log" в Supabase.',actRefresh:'Обновить',actSearch:'Поиск по пользователю или деталям',actWhat:'Действие',actDetail:'Детали',userActivity:'Последняя активность',
-  act_visit:'Визит',act_sign_in:'Вход',act_view:'Открыл страницу',act_song_upload:'Загрузил песню',act_song_open:'Открыл песню',act_discover_open:'Песня из «Обзора»',act_separate:'Разделение на стемы',act_export:'Скачивание из инструмента',act_dj_load:'Загрузка в DJ-микс',act_crate_analyze:'Анализ библиотеки',act_crate_export:'Экспорт библиотеки',act_subscribe_click:'Нажал «Подписка»',act_invite_copy:'Скопировал приглашение'},
+  act_visit:'Визит',act_sign_in:'Вход',act_view:'Открыл страницу',act_song_upload:'Загрузил песню',act_song_open:'Открыл песню',act_discover_open:'Песня из «Обзора»',act_separate:'Разделение на стемы',act_export:'Скачивание из инструмента',act_dj_load:'Загрузка в DJ-микс',act_crate_analyze:'Анализ библиотеки',act_crate_export:'Экспорт библиотеки',act_subscribe_click:'Нажал «Подписка»',act_invite_copy:'Скопировал приглашение',act_voice_test:'Тест диапазона голоса'},
 es:{admActivity:'Actividad',actAll:'Todas las acciones',actNone:'Aún no hay actividad.',actMissing:'El registro de actividad aún no está instalado: ejecuta el SQL "Activity log" en Supabase.',actRefresh:'Actualizar',actSearch:'Buscar usuario o detalle',actWhat:'Acción',actDetail:'Detalles',userActivity:'Actividad reciente',
-  act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación'}};
+  act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación',act_voice_test:'Prueba de registro vocal'}};
 for(const k in IACT)Object.assign(I[k],IACT[k]);
 const IROLE={
 he:{roleOwner:'בעלים',admRoles:'רולים והרשאות',changeRole:'רול…',roleSel:'רול',rolePw:'סיסמת הרשאות',rolePwH:'נדרשת כדי לתת גישה לניהול. רק הבעלים קובע אותה.',roleApply:'עדכון',roleDlgT:'שינוי רול · {u}',
@@ -2270,7 +2270,7 @@ function openRoleDlg(m){
   d.hidden=false;sel.focus();
 }
 /* activity (admin): everyone's recent actions, or one user's in the details view */
-const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
+const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy','voice_test'];
 const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
 async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
 function actRows(list,withUser){
@@ -3207,6 +3207,12 @@ window.CR={
   setLang:(l,c)=>setLang(l,c),
   log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid})
 };
+/* ---------- bridge for "My key" (assets/voice.js): the tool song for the melody-range estimate + its transpose ---------- */
+Object.assign(window.CR,{
+  voiceSong:()=>S.buffer&&S.key?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,vocals:S.stems?S.stems[0]:null,stemKind:S.stemKind,key:S.key,dur:S.dur}:null,
+  getTranspose:()=>S.transpose,
+  setTranspose:v=>{if(!S.key)return false;v=Math.max(-12,Math.min(12,Math.round(v)));if(v!==S.transpose)setT(v===0?0:v-S.transpose);return S.transpose===v}
+});
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
