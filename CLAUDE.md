@@ -65,6 +65,16 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   from Deezer `search/artist` (cached in `chordroom.dzartist.v1`, accepted only when the consonant skeleton matches).
   MP3: Hebrew ID3 text frames converted + TIT2/TPE1 set; FLAC: Vorbis comments; other formats: file name only.
   Each Hebrew row shows its Latin name under the title, editable (✎) and saved in the row (`r.lat`).
+- Mashup Studio (`#mashupView`, hash `#mashup`, nav "מאשאפ", gated): `assets/mashup.js/css` (strings inside), talks only through
+  `window.CR`. Slot A = vocals, B = instrumental (⇄ swap), loaded from a file / My Songs / `CR.toolSong()` (tool stems reused),
+  analysed with `CR.analyzeTrack` + `CUES.detect`. Stems: `CR.separateBuffer(buffer,{onProgress,signal,ref})` (app.js bridge: same
+  Demucs worker via `aiInit`/`aiRun`, payFor → charge 'sep' → refund on failure/abort; one separation at a time, `AI.ext`) or the
+  free quick DSP split `assets/quicksep-worker.js`; cached in memory per song for the session. Model (see the file header):
+  target T (B's/A's/typed), ½×/2× fit, rate r = T/(bpm·k), A shifted by `semis` (auto = same/relative Camelot key, or a neighbour
+  when much closer), A's vocal entry (vocals-stem energy → 'vocal' cue → intro) on bar `align` of B + `nudge`. Preview = live graph
+  (sources → stem gains → fade → Signalsmith Stretch, or a DelayNode of the same latency when a slot needs no change → level →
+  limiter); export renders the same `schedule()` offline → WAV / MP3 320 "A × B (Mashup) BPM Key", logs `mashup_export`.
+  Settings (not audio) per account in `chordroom.mashup.v1:<uid|guest>`. Verified: A downbeats on B downbeats ≤0.5 ms (export + preview).
 - Home = the About page (no hash); the tool is `#tool`. First nav tab "בית" is `#navAbout`; the brand mark goes home.
   `html.home` (set by an inline script before paint) hides the tool until the router runs.
 - Owner & roles (schema.sql "Owner & roles"): `profiles.owner` (the first account; can't be demoted/blocked). Only the owner
@@ -79,7 +89,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   is shown only to that account; switching account resets the tool (`authChanged` → `cr-user` event → `userSwitched`).
 - Activity log: `activity` table written only by `log_activity(action, detail)` (rate limited, admins read). `logAct(a,d)` in
   app.js (`CR.log` for dj.js/crate.js): visit, sign_in, view, song_upload/open, discover_open, separate, export, dj_load,
-  crate_analyze/export, subscribe_click, invite_copy. Admin panel tab "Activity" + per-user activity in the details view.
+  crate_analyze/export, subscribe_click, invite_copy, mashup_export. Admin panel tab "Activity" + per-user activity in the details view.
 - Auto cue points (`assets/cues.js`, `CUES.detect(buffer, grid)`): intro/vocal/break/build/drop/outro = hot cues A–F with fixed
   colours, found from per-bar band energies. Crate stores them per row, draws a structure strip, and exports them:
   rekordbox XML POSITION_MARK (hot + memory), Serato `GEOB "Serato Markers2"` inside MP3 copies, Traktor NML (CUE_V2).
@@ -140,7 +150,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
   answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
   the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
-- Sign-in gate: the tools (#tool, #discover, #dj, #crate) need an account; signed out they show `#gateView` (`renderGate`,
+- Sign-in gate: the tools (#tool, #discover, #dj, #crate, #mashup) need an account; signed out they show `#gateView` (`renderGate`,
   class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. Upload/drag-drop/`loadFile`
   ask for an account too (`needAccount`/`askAccount`). `regate()` re-routes on auth changes. Only when accounts are on
   (tests that exercise the tools without the mock stub `vendor/supabase.js` → local mode). The old `require_login` overlay

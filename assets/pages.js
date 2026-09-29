@@ -411,6 +411,9 @@ he: {
     'תצוגה בסגנון rekordbox: מאזינים מכל נקודה, גוררים קיו ומזיזים את הגריד',
     'ייצוא ל־rekordbox ‏(XML), ל־Traktor ‏(NML) ול־Serato (הקיו בתוך עותקי ה־MP3), וגם CSV ו־M3U8',
     'USB ל־Pioneer: עותקים עם שמות באותיות לטיניות לפי ההגייה העברית, ותגיות BPM וסולם בתוך הקבצים'],
+  f7k: 'מאשאפ', f7h: 'שירה משיר אחד, ביט משיר אחר',
+  f7p: 'טוענים שני שירים, ו־Chord Room מתאים ביניהם לבד: קצב, סולם ותיבות. מאזינים, מזיזים ומייצאים מאשאפ מוכן.',
+  f7l: ['הפרדה ב־AI של השירה והביט, או הפרדה מהירה בחינם', 'התאמת קצב עם שמירה על הסולם, והזזת השירה לסולם המתאים (או למקביל)', 'השירה נכנסת בדיוק על תיבה של הביט, עם הזזה בפעמה או ב־10 מילישניות', 'ציר זמן עם שני גלי קול, לופ וכניסה/יציאה הדרגתית, וייצוא ל־WAV או MP3'],
   f4l: ['WAV ו־MP3 ב־320 kbps: ערוצים, אינסטרומנטלי ומקור', 'MIDI לפסנתר: אקורדים, קו בס ומלודיית השירה',
     'תופים ל־MIDI: קיק, סנר והיי־האט מערוץ התופים, מיושרים ל־1/16', 'הכל בקצב ובסולם שבחרתם, ומתחיל בתיבה 1'],
   f5k: 'חשבון ונקודות', f5h: 'הספרייה שלכם, איתכם בכל מקום',
@@ -443,6 +446,9 @@ en: {
     'A rekordbox-style overview: listen from any point, drag a cue, move the grid',
     'Export to rekordbox (XML), Traktor (NML) and Serato (cues inside the MP3 copies), plus CSV and M3U8',
     'USB for Pioneer: copies named in Latin letters by Hebrew pronunciation, with BPM and key tags inside the files'],
+  f7k: 'Mashup', f7h: 'Vocals from one song, the beat from another',
+  f7p: 'Load two songs and Chord Room matches them for you: tempo, key and bars. Listen, nudge and export a finished mashup.',
+  f7l: ['AI separation of the vocals and the beat, or a free quick separation', 'Tempo matching with key lock, and the vocals moved to a matching key (or its relative)', 'The vocals land right on one of the beat\'s bars, nudge by a beat or 10 ms', 'Two-lane waveform timeline, loop and fades, export to WAV or MP3'],
   f4l: ['WAV and MP3 320 kbps: stems, instrumental and original', 'Piano MIDI: chords, bass line and vocal melody',
     'Drums to MIDI: kick, snare and hi-hat from the drums stem, quantised to 1/16', 'Everything in your chosen tempo and key, starting at bar 1'],
   f5k: 'Account & points', f5h: 'Your library, wherever you are',
@@ -475,6 +481,9 @@ ar: {
     'عرض بأسلوب rekordbox: استمع من أي نقطة، واسحب نقطة الإشارة، وحرّك الشبكة',
     'تصدير إلى rekordbox ‏(XML) وTraktor ‏(NML) وSerato (نقاط الإشارة داخل نسخ MP3)، إضافة إلى CSV وM3U8',
     'USB لأجهزة Pioneer: نسخ بأسماء بأحرف لاتينية حسب النطق العبري، مع وسوم BPM والمقام داخل الملفات'],
+  f7k: 'ماش أب', f7h: 'الغناء من أغنية والإيقاع من أخرى',
+  f7p: 'حمّل أغنيتين وسيطابق Chord Room بينهما تلقائيًا: الإيقاع والمقام والمازورات. استمع وحرّك وصدّر ماش أب جاهزًا.',
+  f7l: ['فصل الغناء والإيقاع بالذكاء الاصطناعي، أو فصل سريع مجاني', 'مطابقة الإيقاع مع الحفاظ على المقام، ونقل الغناء إلى مقام متوافق (أو نسبي)', 'يدخل الغناء تمامًا على مازورة من الإيقاع، مع تحريك بنبضة أو 10 ms', 'خط زمني بموجتين، تكرار ودخول/خروج تدريجي، وتصدير WAV أو MP3'],
   f4l: ['WAV وMP3 بجودة 320 kbps: المسارات والنسخة الموسيقية والأصل', 'MIDI للبيانو: الكوردات وخط الباص ولحن الغناء',
     'الطبول إلى MIDI: الكيك والسنير والهاي هات من مسار الطبول، مضبوطة على 1/16', 'كل شيء بالإيقاع والمقام اللذين اخترتهما، بدءًا من المازورة 1'],
   f5k: 'الحساب والنقاط', f5h: 'مكتبتك معك أينما كنت',
@@ -507,6 +516,9 @@ ru: {
     'Обзор в стиле rekordbox: слушайте с любого места, перетаскивайте кью, двигайте сетку',
     'Экспорт в rekordbox (XML), Traktor (NML) и Serato (кью внутри копий MP3), а также CSV и M3U8',
     'USB для Pioneer: копии с именами латиницей по ивритскому произношению и тегами BPM и тональности в файлах'],
+  f7k: 'Мэшап', f7h: 'Вокал из одной песни, бит из другой',
+  f7p: 'Загрузите две песни, и Chord Room сам сведёт их по темпу, тональности и тактам. Послушайте, подвиньте и экспортируйте готовый мэшап.',
+  f7l: ['AI-разделение вокала и бита или бесплатное быстрое разделение', 'Подгонка темпа с сохранением тональности и перенос вокала в подходящую (или параллельную) тональность', 'Вокал входит ровно на такт бита, сдвиг на долю или на 10 мс', 'Таймлайн с двумя волнами, луп и плавные вход/выход, экспорт в WAV или MP3'],
   f4l: ['WAV и MP3 320 kbps: стемы, инструментал и оригинал', 'Фортепианный MIDI: аккорды, бас-линия и вокальная мелодия',
     'Барабаны в MIDI: бочка, малый и хай-хэт из стема барабанов, с квантизацией 1/16', 'Всё в выбранном темпе и тональности, с первого такта'],
   f5k: 'Аккаунт и баллы', f5h: 'Ваша библиотека всегда с вами',
@@ -539,6 +551,9 @@ es: {
     'Vista estilo rekordbox: escucha desde cualquier punto, arrastra un cue y mueve la rejilla',
     'Exporta a rekordbox (XML), Traktor (NML) y Serato (cues dentro de las copias MP3), además de CSV y M3U8',
     'USB para Pioneer: copias con nombres en letras latinas según la pronunciación hebrea, con etiquetas de BPM y tonalidad en los archivos'],
+  f7k: 'Mashup', f7h: 'La voz de una canción, la base de otra',
+  f7p: 'Carga dos canciones y Chord Room las ajusta por ti: tempo, tonalidad y compases. Escucha, ajusta y exporta un mashup terminado.',
+  f7l: ['Separación con IA de la voz y la base, o una separación rápida gratis', 'Ajuste de tempo sin cambiar la tonalidad, y la voz movida a una tonalidad compatible (o su relativa)', 'La voz entra justo en un compás de la base; ajuste por tiempo o por 10 ms', 'Línea de tiempo con dos ondas, bucle y fundidos, exportación a WAV o MP3'],
   f4l: ['WAV y MP3 a 320 kbps: pistas, instrumental y original', 'MIDI de piano: acordes, línea de bajo y melodía vocal',
     'Batería a MIDI: bombo, caja y hi-hat desde la pista de batería, cuantizados a 1/16', 'Todo en el tempo y la tonalidad que elijas, desde el compás 1'],
   f5k: 'Cuenta y puntos', f5h: 'Tu biblioteca, donde estés',
@@ -621,6 +636,7 @@ const IP = {
   a11y: '<circle cx="12" cy="4.6" r="1.8"/><path d="M5 8.5l7 1.5 7-1.5M12 10v5M12 15l-3.5 6M12 15l3.5 6"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>',
   coin: '<circle cx="12" cy="12" r="9"/><path d="M12 7.2l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',
+  merge: '<path d="M3 6h2.5c4.5 0 5 6 9.5 6H21"/><path d="M3 18h2.5c4.5 0 5-6 9.5-6"/><path d="M18 9l3 3-3 3"/>',
   play: '<path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="none"/>'
 };
 function ic(n, cls) { return '<svg class="pg-ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + IP[n] + '</svg>'; }
@@ -706,6 +722,21 @@ function artDj() {
     '<text class="pg-am dim" x="112" y="238" text-anchor="middle">SYNC · 124.0</text><text class="pg-am dim" x="368" y="238" text-anchor="middle">SYNC · 124.0</text>' +
     '<rect x="170" y="254" width="140" height="6" rx="3" fill="#2a2a31"/><rect class="pg-xf" x="232" y="248" width="16" height="18" rx="3" fill="#fff"/>' +
     '<text class="pg-am" x="240" y="40" text-anchor="middle" fill="#2BD46A">MATCH 92</text></svg>';
+}
+function artMashup() {
+  /* two lanes (A vocals in blue, B beat in orange) on one bar grid, with the vocal entry marker and the match readout */
+  let g = '<text class="pg-am dim sm" x="40" y="34">A · VOCALS</text><text class="pg-am dim sm" x="40" y="124">B · BEAT</text>';
+  for (let k = 0; k <= 8; k++) g += '<rect x="' + (40 + k * 50) + '" y="42" width="1" height="150" fill="#2a2a31"/>';
+  for (let x = 0; x < 400; x += 4) {
+    const a = x < 100 ? 0 : (0.35 + 0.65 * Math.abs(Math.sin(x / 23) * Math.cos(x / 61))) * 26;
+    const b = (0.3 + 0.7 * Math.abs(Math.sin(x / 9)) * (x % 50 < 8 ? 1 : 0.55)) * 26;
+    if (a) g += '<rect x="' + (40 + x) + '" y="' + (72 - a).toFixed(1) + '" width="3" height="' + (2 * a).toFixed(1) + '" rx="1" fill="#2F8CFF" opacity=".9"/>';
+    g += '<rect x="' + (40 + x) + '" y="' + (162 - b).toFixed(1) + '" width="3" height="' + (2 * b).toFixed(1) + '" rx="1" fill="#FF7A1A" opacity=".85"/>';
+  }
+  g += '<path d="M140 42v150" stroke="#2F8CFF" stroke-width="2" stroke-dasharray="5 4"/><path d="M134 42h12l-6 8z" fill="#2F8CFF"/>' +
+    '<rect x="96" y="216" width="288" height="44" rx="10" fill="#141418" stroke="#2a2a31"/>' +
+    '<text class="pg-am" x="116" y="243">124 BPM</text><text class="pg-am" x="206" y="243" fill="#B66DFF">Am + 2</text><text class="pg-am" x="300" y="243" fill="#2BD46A">MATCH 94</text>';
+  return '<svg viewBox="0 0 480 290" aria-hidden="true" focusable="false">' + g + '</svg>';
 }
 function artCrate() {
   /* library table (title · BPM · key · energy) over a rekordbox-style overview with coloured hot cues */
@@ -846,7 +877,7 @@ function renderAbout(el, billing) {
   const payOn = !billing || billing.on !== false;
   const feats = [
     ['wave', 'blue', artTool(), 'tool', 1], ['compass', 'orange', artDisc(), 'discover', 2], ['decks', 'purple', artDj(), 'dj', 3],
-    ['layers', 'blue', artCrate(), 'crate', 6], ['export', 'orange', artExport(), null, 4], ['user', 'purple', artAcc(), null, 5]
+    ['layers', 'blue', artCrate(), 'crate', 6], ['merge', 'orange', artMashup(), 'mashup', 7], ['export', 'purple', artExport(), null, 4], ['user', 'blue', artAcc(), null, 5]
   ];
   const fList = k => k === 5 ? (payOn ? t('f5lPts') : []).concat(t('f5l')) : t('f' + k + 'l');
   const featHtml = '<section class="pg-sec" aria-labelledby="pgFeatH">' + sh(t('featEyebrow'), t('featH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFeatH">') +

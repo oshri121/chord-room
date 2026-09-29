@@ -31,7 +31,7 @@ const MAX_TOKENS = 900;
 const FIRST_BYTE_MS = 30000;   // Anthropic must start answering within 30 s
 const TOTAL_MS = 120000;       // and finish within 2 minutes
 const LANGS = ['he', 'en', 'ar', 'ru', 'es'];
-const VIEWS = ['home', 'tool', 'discover', 'dj', 'crate', 'pricing', 'terms', 'privacy', 'other'];
+const VIEWS = ['home', 'tool', 'discover', 'dj', 'crate', 'mashup', 'pricing', 'terms', 'privacy', 'other'];
 
 const json = (obj, status, extra) => new Response(JSON.stringify(obj), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...(extra || {}) }
@@ -166,11 +166,11 @@ function priceLines(b) {
 const LANG_NAME = { he: 'Hebrew', en: 'English', ar: 'Arabic', ru: 'Russian', es: 'Spanish' };
 // the navigation labels exactly as the site shows them in each language
 const NAV = {
-  he: 'בית (#), הכלי (#tool), גלה שירים (#discover), מיקס חי (#dj), ניתוח ספרייה (#crate), מחירים (#pricing)',
-  en: 'Home (#), Tool (#tool), Discover (#discover), DJ Mix (#dj), Crate (#crate), Pricing (#pricing)',
-  ar: 'الرئيسية (#), الأداة (#tool), اكتشف (#discover), مزج DJ (#dj), تحليل المكتبة (#crate), الأسعار (#pricing)',
-  ru: 'Главная (#), Инструмент (#tool), Обзор (#discover), DJ-микс (#dj), Анализ библиотеки (#crate), Тарифы (#pricing)',
-  es: 'Inicio (#), Herramienta (#tool), Descubrir (#discover), Mezcla DJ (#dj), Biblioteca DJ (#crate), Precios (#pricing)'
+  he: 'בית (#), הכלי (#tool), גלה שירים (#discover), מיקס חי (#dj), ניתוח ספרייה (#crate), מאשאפ (#mashup), מחירים (#pricing)',
+  en: 'Home (#), Tool (#tool), Discover (#discover), DJ Mix (#dj), Crate (#crate), Mashup (#mashup), Pricing (#pricing)',
+  ar: 'الرئيسية (#), الأداة (#tool), اكتشف (#discover), مزج DJ (#dj), تحليل المكتبة (#crate), ماش أب (#mashup), الأسعار (#pricing)',
+  ru: 'Главная (#), Инструмент (#tool), Обзор (#discover), DJ-микс (#dj), Анализ библиотеки (#crate), Мэшап (#mashup), Тарифы (#pricing)',
+  es: 'Inicio (#), Herramienta (#tool), Descubrir (#discover), Mezcla DJ (#dj), Biblioteca DJ (#crate), Mashup (#mashup), Precios (#pricing)'
 };
 const PLAN_NAMES = {
   he: 'basic = בסיסי, pro = מקצועי, studio = סטודיו, free = חינמי',
@@ -191,7 +191,7 @@ const SYSTEM = `You are Roomy (in Hebrew: רומי), the friendly assistant of C
 
 # Formatting (the chat renders only this)
 - **bold**, *italics*, \`inline code\`, "- " bullet lists, "1. " numbered lists, line breaks. No headings, tables, images, HTML or code blocks.
-- Links: ONLY internal links in the form [text](#hash) with one of these hashes: #tool #discover #dj #crate #pricing #terms #privacy or # (home). Never write external URLs or other link targets.
+- Links: ONLY internal links in the form [text](#hash) with one of these hashes: #tool #discover #dj #crate #mashup #pricing #terms #privacy or # (home). Never write external URLs or other link targets.
 - Always write keys as key names (Am, F#m, Db, C major). Mention Camelot codes (8A, 9B…) only when the user asks about Camelot or harmonic-mixing theory; the site itself shows key names.
 
 # Chord Room — what really exists (never invent features, buttons, prices or limits beyond this)
@@ -215,7 +215,9 @@ DJ Mix (#dj): two decks with SYNC (tempo and bar phase, half/double aware), Key 
 
 Crate (#crate, the "library analysis" tab): drop many files or a whole folder; all analysis stays on the computer, nothing is uploaded. For each track: BPM, key, length, LUFS, energy 1-10 and auto cue points (intro, vocal, break, build, drop, outro as hot cues A-F) with a rekordbox-style overview: click ▶ or the waveform to listen, drag a cue flag to move it (snaps to bars, Alt = free), grid tools (±1 beat, ±10 ms, "a bar starts here"). Sort, filter by name or key, "mixes with" filter, and "Smart order" that builds a harmonic set with a gentle energy rise. Exports: CSV (Excel), rekordbox XML (type the folder path on the computer; cue points go in as hot cues + memory cues; in rekordbox: Preferences › Advanced › rekordbox xml, then import the "Chord Room" playlist), Traktor NML (cues), M3U8 playlist, and renamed copies in a ZIP ("Am - 124 - name", MP3s get BPM/key tags and Serato cue markers readable by Serato and VirtualDJ). "USB for Pioneer" names the copies in Latin letters by pronunciation (Hebrew → Latin, with official artist spellings), and each Hebrew row shows its Latin name, editable with ✎. rekordbox cannot read cues from files, which is why the XML exists.
 
-Points & plans (#pricing): most things are free (analysis, chords, Discover, DJ Mix, Crate, MIDI export). Points are needed only for AI stem separation and for downloading stems. New accounts get a sign-up gift; monthly plans add points every month (subscribe on the Pricing page, signed in; managed through the payment provider's portal). Admins can grant points. "Invite a friend": a personal link in the points box and on the Pricing page; both sides get points after the friend signs up. For the user's balance, the account menu shows points and history.
+Mashup (#mashup, "Mashup Studio"): the vocals of song A over the instrumental of song B, matched automatically. Load each slot from a file (drag & drop), My Songs or the song open in the Tool; ⇄ swaps A and B. Each song is analysed (BPM, key, bars, structure cues). Stems: "Separate with AI" (the same Demucs separation and the same points as in the Tool, refunded if it fails or is cancelled; stems already separated in the Tool are reused for free) or a free, lower-quality "Quick separation"; per slot pick the parts to use (default: A = vocals, B = drums + bass + other) with a level and mute per part. Auto-match: target tempo = B's (or A's, or a typed BPM), half/double-time aware, time-stretched with key lock; A is moved to B's key or its relative major/minor (or a neighbour key when that needs a much smaller shift), with chips to choose and −/+ semitones; a match score with advice. Alignment: A's vocal entry lands on a bar of B (default: B's drop), choose the bar, nudge ±1 bar / ±1 beat / ±10 ms, or drag A on the timeline (snaps to bars, Shift = beats, Alt = free); A can start 1 bar before its vocals, right at them or from the beginning, with fade in/out. Timeline: two RGB waveforms on a shared bar grid, click to jump, drag on the ruler to loop, zoom; Space play/pause, ←/→ one bar, L loop. Export: WAV or MP3 320 (the whole mashup or only the loop range), named "A × B (Mashup) BPM Key". Settings (not audio) are remembered per account.
+
+Points & plans (#pricing): most things are free (analysis, chords, Discover, DJ Mix, Crate, Mashup matching and export, MIDI export). Points are needed only for AI stem separation and for downloading stems. New accounts get a sign-up gift; monthly plans add points every month (subscribe on the Pricing page, signed in; managed through the payment provider's portal). Admins can grant points. "Invite a friend": a personal link in the points box and on the Pricing page; both sides get points after the friend signs up. For the user's balance, the account menu shows points and history.
 {PRICES}
 Plan ids and their names on the site: {PLANS}.
 
