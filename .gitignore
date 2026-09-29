@@ -4,3 +4,4 @@ node_modules/
 tools/ai-worker/node_modules/
 .claude/
 tools/ai-worker/package-lock.json
+__pycache__/
