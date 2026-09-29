@@ -341,15 +341,15 @@ es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se regi
 for(const k in IREF)Object.assign(I[k],IREF[k]);
 const IACT={
 he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
-  act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה'},
+  act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה',act_mashup_export:'ייצוא מאשאפ'},
 en:{admActivity:'Activity',actAll:'All actions',actNone:'No activity yet.',actMissing:'The activity log isn\'t installed yet: run the "Activity log" SQL in Supabase.',actRefresh:'Refresh',actSearch:'Search user or detail',actWhat:'Action',actDetail:'Details',userActivity:'Recent activity',
-  act_visit:'Visit',act_sign_in:'Sign in',act_view:'Opened page',act_song_upload:'Uploaded song',act_song_open:'Opened song',act_discover_open:'Song from Discover',act_separate:'Stem separation',act_export:'Tool download',act_dj_load:'DJ Mix load',act_crate_analyze:'Crate analysis',act_crate_export:'Crate export',act_subscribe_click:'Subscribe click',act_invite_copy:'Copied invite link'},
+  act_visit:'Visit',act_sign_in:'Sign in',act_view:'Opened page',act_song_upload:'Uploaded song',act_song_open:'Opened song',act_discover_open:'Song from Discover',act_separate:'Stem separation',act_export:'Tool download',act_dj_load:'DJ Mix load',act_crate_analyze:'Crate analysis',act_crate_export:'Crate export',act_subscribe_click:'Subscribe click',act_invite_copy:'Copied invite link',act_mashup_export:'Mashup export'},
 ar:{admActivity:'النشاط',actAll:'كل الإجراءات',actNone:'لا يوجد نشاط بعد.',actMissing:'سجل النشاط غير مثبت بعد: شغّل كود SQL الخاص بـ "Activity log" في Supabase.',actRefresh:'تحديث',actSearch:'ابحث عن مستخدم أو تفصيل',actWhat:'الإجراء',actDetail:'التفاصيل',userActivity:'النشاط الأخير',
-  act_visit:'زيارة',act_sign_in:'تسجيل دخول',act_view:'فتح صفحة',act_song_upload:'رفع أغنية',act_song_open:'فتح أغنية',act_discover_open:'أغنية من اكتشف',act_separate:'فصل المسارات',act_export:'تنزيل من الأداة',act_dj_load:'تحميل في مزج DJ',act_crate_analyze:'تحليل المكتبة',act_crate_export:'تصدير المكتبة',act_subscribe_click:'نقر على الاشتراك',act_invite_copy:'نسخ رابط الدعوة'},
+  act_visit:'زيارة',act_sign_in:'تسجيل دخول',act_view:'فتح صفحة',act_song_upload:'رفع أغنية',act_song_open:'فتح أغنية',act_discover_open:'أغنية من اكتشف',act_separate:'فصل المسارات',act_export:'تنزيل من الأداة',act_dj_load:'تحميل في مزج DJ',act_crate_analyze:'تحليل المكتبة',act_crate_export:'تصدير المكتبة',act_subscribe_click:'نقر على الاشتراك',act_invite_copy:'نسخ رابط الدعوة',act_mashup_export:'تصدير ماش أب'},
 ru:{admActivity:'Активность',actAll:'Все действия',actNone:'Активности пока нет.',actMissing:'Журнал активности ещё не установлен: выполните SQL "Activity log" в Supabase.',actRefresh:'Обновить',actSearch:'Поиск по пользователю или деталям',actWhat:'Действие',actDetail:'Детали',userActivity:'Последняя активность',
-  act_visit:'Визит',act_sign_in:'Вход',act_view:'Открыл страницу',act_song_upload:'Загрузил песню',act_song_open:'Открыл песню',act_discover_open:'Песня из «Обзора»',act_separate:'Разделение на стемы',act_export:'Скачивание из инструмента',act_dj_load:'Загрузка в DJ-микс',act_crate_analyze:'Анализ библиотеки',act_crate_export:'Экспорт библиотеки',act_subscribe_click:'Нажал «Подписка»',act_invite_copy:'Скопировал приглашение'},
+  act_visit:'Визит',act_sign_in:'Вход',act_view:'Открыл страницу',act_song_upload:'Загрузил песню',act_song_open:'Открыл песню',act_discover_open:'Песня из «Обзора»',act_separate:'Разделение на стемы',act_export:'Скачивание из инструмента',act_dj_load:'Загрузка в DJ-микс',act_crate_analyze:'Анализ библиотеки',act_crate_export:'Экспорт библиотеки',act_subscribe_click:'Нажал «Подписка»',act_invite_copy:'Скопировал приглашение',act_mashup_export:'Экспорт мэшапа'},
 es:{admActivity:'Actividad',actAll:'Todas las acciones',actNone:'Aún no hay actividad.',actMissing:'El registro de actividad aún no está instalado: ejecuta el SQL "Activity log" en Supabase.',actRefresh:'Actualizar',actSearch:'Buscar usuario o detalle',actWhat:'Acción',actDetail:'Detalles',userActivity:'Actividad reciente',
-  act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación'}};
+  act_visit:'Visita',act_sign_in:'Inicio de sesión',act_view:'Abrió página',act_song_upload:'Subió canción',act_song_open:'Abrió canción',act_discover_open:'Canción de Descubrir',act_separate:'Separación de pistas',act_export:'Descarga de la herramienta',act_dj_load:'Carga en Mezcla DJ',act_crate_analyze:'Análisis de biblioteca',act_crate_export:'Exportación de biblioteca',act_subscribe_click:'Clic en suscribirse',act_invite_copy:'Copió enlace de invitación',act_mashup_export:'Exportación de mashup'}};
 for(const k in IACT)Object.assign(I[k],IACT[k]);
 const IROLE={
 he:{roleOwner:'בעלים',admRoles:'רולים והרשאות',changeRole:'רול…',roleSel:'רול',rolePw:'סיסמת הרשאות',rolePwH:'נדרשת כדי לתת גישה לניהול. רק הבעלים קובע אותה.',roleApply:'עדכון',roleDlgT:'שינוי רול · {u}',
@@ -1318,7 +1318,7 @@ function renderStemsUI(){
   eg.querySelector('span').textContent=isGpu?t('engGpu'):t('engCpu');eg.title=isGpu?t('engGpuT'):t('engCpuT');
   const running=AI.busy;
   const aiOk=typeof cfgOn!=='function'||cfgOn('ai');
-  $('#aiBtn').disabled=!S.buffer||running||S.stemKind==='ai'||!aiOk;
+  $('#aiBtn').disabled=!S.buffer||running||S.stemKind==='ai'||!aiOk||!!AI.ext;
   $('#cancelBtn').hidden=!running;
   if(!running){const n=$('#snote');n.classList.remove('err');n.textContent=!S.buffer?t('needAudio'):S.stemKind==='ai'?t('aiDone'):S.stemKind==='quick'?t('quickDone'):t('aiFirst')}
   if(!aiOk&&!running){$('#snote').textContent=t('offByAdmin')}
@@ -1353,10 +1353,10 @@ function drawStem(cv,i,color){
 function sepProgress(p,msg){$('#sprog').hidden=false;$('#sbar').style.width=Math.round(p*100)+'%';$('#smsg').textContent=msg}
 function sepEnd(note,err){$('#sprog').hidden=true;AI.busy=false;renderStemsUI();if(note){const n=$('#snote');n.textContent=note;n.classList.toggle('err',!!err)}}
 // the song as one planar Float32Array [L…, R…] at 44.1 kHz (what the worker wants; one allocation, no copies)
-async function stereo44(){
-  const sr=44100,len=Math.ceil(S.buffer.duration*sr),LR=new Float32Array(2*len);
-  if(S.buffer.sampleRate===sr){S.buffer.copyFromChannel(LR.subarray(0,len),0);S.buffer.copyFromChannel(LR.subarray(len),Math.min(1,S.buffer.numberOfChannels-1));return [LR,len]}
-  const oc=new OfflineAudioContext(2,len,sr);const src=oc.createBufferSource();src.buffer=S.buffer;src.connect(oc.destination);src.start();
+async function stereo44(buf){
+  buf=buf||S.buffer;const sr=44100,len=Math.ceil(buf.duration*sr),LR=new Float32Array(2*len);
+  if(buf.sampleRate===sr){buf.copyFromChannel(LR.subarray(0,len),0);buf.copyFromChannel(LR.subarray(len),Math.min(1,buf.numberOfChannels-1));return [LR,len]}
+  const oc=new OfflineAudioContext(2,len,sr);const src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
   const r=await oc.startRendering();r.copyFromChannel(LR.subarray(0,len),0);r.copyFromChannel(LR.subarray(len),1);return [LR,len];
 }
 // phones: less overlap = fewer model passes (faster, cooler); low-memory hint for the notice
@@ -1390,42 +1390,52 @@ function stemEnvelopes(){
   return {env,ref};
 }
 const fmtEta=s=>s>=90?Math.round(s/60)+' '+t('min_'):Math.max(5,Math.round(s/5)*5)+' '+t('sec_');
+// the Demucs worker: download/initialise once (aiInit), then separate one planar [L…,R…] 44.1 kHz track into 4 stereo
+// AudioBuffers filled block by block as the worker streams them (aiRun). Shared by the tool (aiSeparate, uses S) and
+// Mashup Studio (separateBuffer, any buffer). prog(p, message).
+function aiInit(job,prog){
+  if(AI.ready)return Promise.resolve();
+  prog(0,t('aiDl',{p:0}));
+  if(!AI.w)AI.w=new Worker('ai/worker.js?v=2');
+  return (async()=>{
+    const man=await (await fetch('ai/model/wman.json')).json();
+    const abs=f=>new URL(f,location.href).href;
+    await new Promise((ok,fail)=>{
+      AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
+        if(d.type==='dl')prog(d.p*0.9,t('aiDl',{p:Math.round(d.p*100)}));
+        else if(d.type==='stage'&&d.s!=='fail')prog(0.95,t('aiPrep'));
+        else if(d.type==='ready'){AI.ready=true;AI.ep=d.ep;ok()}
+        else if(d.type==='error')fail(new Error(d.message))};
+      AI.w.onerror=e=>fail(new Error(e.message||'worker'));
+      AI.w.postMessage({type:'init',man,bytes:AI_BYTES,base:abs('ai/'),gpu:!/cpu/.test(location.hash),
+        files:{ort:['ai/model/rt0.bin'].map(abs),graph:['ai/model/g0.bin'].map(abs),w:[0,1,2,3,4,5].map(i=>abs(`ai/model/w${i}.bin`))}});
+    });
+  })();
+}
+function aiRun(LR,len,job,prog){
+  const c=ac(),bufs=STEMS.map(()=>c.createBuffer(2,len,44100));
+  return new Promise((ok,fail)=>{
+    AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
+      if(d.type==='p'){const p=d.tot?d.i/d.tot:0;let m=t('aiRun',{p:Math.round(p*100)});if(d.i>0)m+=t('aiEta',{t:fmtEta(d.el/d.i*(d.tot-d.i))});prog(p,m)}
+      else if(d.type==='blk'){for(let i=0;i<4;i++){bufs[i].copyToChannel(d.res[i*2],0,d.off);bufs[i].copyToChannel(d.res[i*2+1],1,d.off)}}
+      else if(d.type==='done')ok(bufs);else if(d.type==='error')fail(new Error(d.message))};
+    AI.w.onerror=e=>fail(new Error(e.message||'worker'));
+    AI.w.postMessage({type:'run',LR,n:len,overlap:lowMem()?0.15:0.25},[LR.buffer]);
+  });
+}
 async function aiSeparate(){
-  if(!S.buffer||AI.busy)return;
+  if(!S.buffer||AI.busy||AI.ext)return;
   if(!(await payFor('sep')))return;
   const pay=await charge('sep',S.name);if(!pay)return;
   logAct('separate',S.name);
   AI.busy=true;const job=++AI.job;AI.pay=pay;renderStemsUI();
   const token=S.buffer;
   try{
-    if(!AI.ready){
-      sepProgress(0,t('aiDl',{p:0}));
-      if(!AI.w)AI.w=new Worker('ai/worker.js?v=2');
-      const man=await (await fetch('ai/model/wman.json')).json();
-      const abs=f=>new URL(f,location.href).href;
-      await new Promise((ok,fail)=>{
-        AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
-          if(d.type==='dl')sepProgress(d.p*0.9,t('aiDl',{p:Math.round(d.p*100)}));
-          else if(d.type==='stage'&&d.s!=='fail')sepProgress(0.95,t('aiPrep'));
-          else if(d.type==='ready'){AI.ready=true;AI.ep=d.ep;ok()}
-          else if(d.type==='error')fail(new Error(d.message))};
-        AI.w.onerror=e=>fail(new Error(e.message||'worker'));
-        AI.w.postMessage({type:'init',man,bytes:AI_BYTES,base:abs('ai/'),gpu:!/cpu/.test(location.hash),
-          files:{ort:['ai/model/rt0.bin'].map(abs),graph:['ai/model/g0.bin'].map(abs),w:[0,1,2,3,4,5].map(i=>abs(`ai/model/w${i}.bin`))}});
-      });
-      renderStemsUI();
-    }
+    if(!AI.ready){await aiInit(job,sepProgress);renderStemsUI()}
     sepProgress(0,t('aiRun',{p:0}));
     const [LR,len]=await stereo44();
-    const c=ac(),bufs=STEMS.map(()=>c.createBuffer(2,len,44100));   // filled block by block as the worker streams them
     sepMark(pay);
-    await new Promise((ok,fail)=>{
-      AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
-        if(d.type==='p'){const p=d.tot?d.i/d.tot:0;let m=t('aiRun',{p:Math.round(p*100)});if(d.i>0)m+=t('aiEta',{t:fmtEta(d.el/d.i*(d.tot-d.i))});sepProgress(p,m)}
-        else if(d.type==='blk'){for(let i=0;i<4;i++){bufs[i].copyToChannel(d.res[i*2],0,d.off);bufs[i].copyToChannel(d.res[i*2+1],1,d.off)}}
-        else if(d.type==='done')ok();else if(d.type==='error')fail(new Error(d.message))};
-      AI.w.postMessage({type:'run',LR,n:len,overlap:lowMem()?0.15:0.25},[LR.buffer]);
-    });
+    const bufs=await aiRun(LR,len,job,sepProgress);
     sepUnmark();
     if(job!==AI.job||S.buffer!==token)return;
     AI.pay=null;setStems(bufs,len,'ai');sepEnd(null);bumpSeps();S.stemsPaid=false;
@@ -1442,6 +1452,39 @@ function cancelSep(silent){
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
   else if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
   sepEnd(silent?null:t('canceled'));
+}
+/* ---------- Mashup Studio bridge: AI-separate ANY buffer without touching S (assets/mashup.js) ----------
+   Same points flow as the tool: payFor → charge BEFORE it runs → refund when it fails or is cancelled (signal), and the
+   in-flight mark (sepMark) so a page crash mid-separation is refunded on the next boot. Only one separation at a time
+   (the tool's or this one): a busy worker → error code 'busy'. → {vocals, drums, bass, other} stereo 44.1 kHz AudioBuffers. */
+const sepErr=(code,m)=>Object.assign(new Error(m||code),{code});
+async function separateBuffer(buffer,o){
+  o=o||{};const prog=o.onProgress||(()=>{}),sig=o.signal,ref=String(o.ref||'mashup').slice(0,200);
+  if(!buffer)throw sepErr('no_audio');
+  if(AI.busy||AI.ext)throw sepErr('busy');
+  if(typeof cfgOn==='function'&&!cfgOn('ai'))throw sepErr('off');
+  if(!(await payFor('sep')))throw sepErr('declined');
+  if(sig&&sig.aborted)throw sepErr('aborted');
+  if(AI.busy||AI.ext)throw sepErr('busy');
+  AI.ext=true;renderStemsUI();
+  let pay=null,onAbort=null;
+  try{
+    pay=await charge('sep',ref);if(!pay)throw sepErr('declined');
+    if(sig&&sig.aborted)throw sepErr('aborted');
+    logAct('separate',ref);
+    const job=++AI.job;
+    const aborted=new Promise((_,no)=>{onAbort=()=>no(sepErr('aborted'));if(sig)sig.addEventListener('abort',onAbort,{once:true})});
+    const work=(async()=>{await aiInit(job,prog);prog(0,t('aiRun',{p:0}));const [LR,len]=await stereo44(buffer);sepMark(pay);return aiRun(LR,len,job,prog)})();
+    work.catch(()=>{});
+    const bufs=await Promise.race([work,aborted]);
+    sepUnmark();pay=null;bumpSeps();
+    const out={};STEMS.forEach((st,i)=>{out[st.id]=bufs[i]});
+    return out;
+  }catch(e){
+    sepUnmark();
+    if(pay){AI.job++;if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}refund(pay)}
+    throw e.code?e:sepErr('failed',String(e.message||e).slice(0,120));
+  }finally{AI.ext=false;if(sig&&onAbort)sig.removeEventListener('abort',onAbort);renderStemsUI()}
 }
 
 /* ---------- note transcription (YIN) ---------- */
@@ -2270,7 +2313,7 @@ function openRoleDlg(m){
   d.hidden=false;sel.focus();
 }
 /* activity (admin): everyone's recent actions, or one user's in the details view */
-const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
+const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy','mashup_export'];
 const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
 async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
 function actRows(list,withUser){
@@ -2930,7 +2973,7 @@ function renderMix(){
 $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
-const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null]};
+const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],mashup:['#mashupView','#navMashup'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null]};
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
   const lock=gated(v);GATE.v=v;GATE.locked=lock;
@@ -2944,6 +2987,7 @@ function showView(v,anchor){
   else{stopPreview();if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(window.DJ)j?DJ.show():DJ.hide();
   if(window.CRATE)v==='crate'&&!lock?CRATE.show():CRATE.hide();
+  if(window.MASHUP)v==='mashup'&&!lock?MASHUP.show():MASHUP.hide();   // Mashup Studio (assets/mashup.js)
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
   if(v==='terms'||v==='privacy')renderLegal(v);else LEGAL_V.kind=null;
@@ -2955,7 +2999,7 @@ function showView(v,anchor){
 /* ---------- sign-in gate: the tools (tool, Discover, DJ, Crate) need an account; home, pricing, terms and privacy stay open.
    Only when accounts are on (no backend configured = local file, everything open). Honest-user level: the tools run in the
    browser; what costs us (uploads, stems, catalog, assistant) is checked on the server anyway. ---------- */
-const GATED={tool:1,discover:1,dj:1,crate:1},GATE={v:null,locked:false};
+const GATED={tool:1,discover:1,dj:1,crate:1,mashup:1},GATE={v:null,locked:false};
 const gated=v=>!!GATED[v]&&ACC.on&&!ACC.user;
 const needAccount=()=>ACC.on&&!ACC.user;
 function regate(){if(!GATE.v)return;const l=gated(GATE.v);if(l!==GATE.locked)showView(GATE.v);else if(l)renderGate(GATE.v)}
@@ -2995,6 +3039,7 @@ $('#navDisc').onclick=()=>showView('discover');
 $('#navTool').onclick=()=>showView('tool');
 $('#navDj').onclick=()=>showView('dj');
 $('#navCrate').onclick=()=>showView('crate');
+$('#navMashup').onclick=()=>showView('mashup');
 $('#navPricing').onclick=()=>showView('pricing');
 $('#navAbout').onclick=()=>showView('about');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
@@ -3115,7 +3160,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(needAccount())askAccount();else $('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.MASHUP)MASHUP.lang();if(window.PAGES)PAGES.lang();auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -3159,7 +3204,7 @@ $('#editBtn').onclick=()=>{S.editing=!S.editing;$('#pop').hidden=true;renderShee
 $('#libBtn').onclick=()=>{renderLib();$('#lib').hidden=false};$('#libClose').onclick=()=>$('#lib').hidden=true;
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
-  if(!$('#djView').hidden)return; // the DJ view has its own keys
+  if(!$('#djView').hidden||(!$('#mashupView').hidden&&e.key!=='Escape'))return; // the DJ and Mashup views have their own keys
   if(e.key!=='Escape'&&(!$('#authDlg').hidden||!$('#acc').hidden||!$('#admin').hidden||!$('#discover').hidden))return;
   const onBtn=e.target.closest('button,label');
   if(e.code==='Space'){if(onBtn)return;e.preventDefault();toggle()}
@@ -3179,7 +3224,7 @@ const endDrag=()=>{if(!drag)return;zm.classList.remove('drag');const w=drag.was;
 zm.addEventListener('pointerup',endDrag);zm.addEventListener('pointercancel',endDrag);
 zm.addEventListener('wheel',e=>{if(!S.dur)return;e.preventDefault();if(Math.abs(e.deltaY)>Math.abs(e.deltaX))zoom(e.deltaY>0?1:-1);else seek(now()+e.deltaX/400*S.win)},{passive:false});
 let dd=0;
-const otherDrop=()=>['#djView','#crateView'].some(q=>$(q)&&!$(q).hidden);
+const otherDrop=()=>['#djView','#crateView','#mashupView'].some(q=>$(q)&&!$(q).hidden);
 window.addEventListener('dragenter',e=>{if(otherDrop()||needAccount())return;if([...e.dataTransfer.types].includes('Files')){dd++;$('#drop').hidden=false}});
 window.addEventListener('dragleave',()=>{dd=Math.max(0,dd-1);if(!dd)$('#drop').hidden=true});
 window.addEventListener('dragover',e=>e.preventDefault());
@@ -3201,11 +3246,16 @@ window.CR={
   readLib,libItem:name=>readLib().find(x=>x.name===name)||null,ACC,DC,dz,freshPreview,rowFromCatalog,
   signedIn:()=>!!(ACC.on&&ACC.user),
   songFileUrl:p=>Backend.songFileUrl(p),
-  toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur}:null,
+  toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur,
+    stems:S.stems?{vocals:S.stems[0],drums:S.stems[1],bass:S.stems[2],other:S.stems[3]}:null,stemKind:S.stemKind||null}:null,
   stopTool:()=>{if(P.playing)stop();stopPreview()},
   showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName,
   setLang:(l,c)=>setLang(l,c),
-  log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid})
+  log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid}),
+  /* Mashup Studio (assets/mashup.js) */
+  separateBuffer,stereo44,STEMS,STEM_IC,toast:(m,a)=>toast(m,a),
+  sepInfo:()=>({cost:billingOn()&&!ACC.admin?costOf('sep'):0,on:typeof cfgOn!=='function'||cfgOn('ai'),busy:!!(AI.busy||AI.ext)}),
+  waveOf:async b=>computeWave(await toMono(b))
 };
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
