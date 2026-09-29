@@ -12,15 +12,26 @@
 
   const USERNAME_RE = /^[A-Za-z0-9_.-]{3,24}$/;
   const fail = (code, message) => { const e = new Error(message || code); e.code = code; throw e; };
+  // Supabase Auth error → a short code the app turns into a translated message (app.js authErr)
   function mapAuthError(err) {
-    const m = String(err && err.message || err || '');
-    if (/invalid login credentials/i.test(m)) return fail('login', m);
-    if (/email not confirmed/i.test(m)) return fail('confirm', m);
-    if (/signups not allowed|signup is disabled/i.test(m)) return fail('closed', m);
+    const m = String(err && err.message || err || ''), c = String(err && err.code || '');
+    if (/invalid login credentials/i.test(m) || c === 'invalid_credentials') return fail('login', m);
+    if (/email not confirmed/i.test(m) || c === 'email_not_confirmed') return fail('confirm', m);
+    if (/signups? not allowed|signup is disabled/i.test(m) || c === 'signup_disabled') return fail('closed', m);
+    if (/token has expired|token.*invalid|otp.*(expired|invalid)|invalid.*otp/i.test(m) || /^otp_/.test(c)) return fail('otp', m);
+    if (/should be different from the old/i.test(m) || c === 'same_password') return fail('same', m);
+    if (/weak|pwned|leaked|easy to guess/i.test(m) || c === 'weak_password') return fail('weak', m);
     if (/password should be at least/i.test(m)) return fail('short', m);
+    if (/already (been )?registered|user already exists/i.test(m) || c === 'user_already_exists' || c === 'email_exists') return fail('exists', m);
+    if (/rate limit|too many|only request this after|security purposes/i.test(m) || c === 'over_email_send_rate_limit' || c === 'over_request_rate_limit' || (err && err.status === 429)) {
+      const e = new Error(m); e.code = 'rate'; const sec = /after (\d+) seconds?/i.exec(m); e.wait = sec ? +sec[1] : 0; throw e;
+    }
+    if (/invalid format|validate email|email address.*invalid|invalid email/i.test(m) || c === 'email_address_invalid' || c === 'validation_failed') return fail('email', m);
     if (/profiles_username_key|username.*(taken|exists)|duplicate key/i.test(m)) return fail('taken', m);
+    if (/failed to fetch|network|load failed/i.test(m)) return fail('network', m);
     return fail('generic', m);
   }
+  const redirect = () => location.origin + location.pathname;
 
   const B = {
     enabled,
@@ -44,16 +55,33 @@
       if (error) return true;
       return !!data;
     },
-    async signUp({ username, email, password }) {
+    // terms = { version, at } — copied into profiles.terms_version / terms_at by handle_new_user (supabase/auth_consent.sql)
+    async signUp({ username, email, password, terms }) {
       if (!USERNAME_RE.test(username)) fail('user');
       if (password.length < 8) fail('short');
       if (!(await B.usernameFree(username))) fail('taken');
-      const { data, error } = await sb.auth.signUp({
-        email, password,
-        options: { data: { username }, emailRedirectTo: location.origin + location.pathname }
-      });
+      const meta = { username };
+      if (terms && terms.version) { meta.terms_version = String(terms.version).slice(0, 20); meta.terms_at = terms.at || new Date().toISOString(); }
+      const { data, error } = await sb.auth.signUp({ email, password, options: { data: meta, emailRedirectTo: redirect() } });
       if (error) mapAuthError(error);
+      // with "Confirm email" on, an address that already has a confirmed account comes back as a user without identities
+      if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) fail('exists');
       return { needsConfirm: !data.session };
+    },
+    // the 6-digit code from the confirmation email → signed in (fires SIGNED_IN)
+    async verifySignup(email, token) {
+      const { error } = await sb.auth.verifyOtp({ email, token: String(token).trim(), type: 'signup' });
+      if (error) mapAuthError(error);
+    },
+    async resendSignup(email) {
+      const { error } = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirect() } });
+      if (error) mapAuthError(error);
+    },
+    // password reset by code: the same email carries a code ({{ .Token }}) and the old link ({{ .ConfirmationURL }})
+    async sendRecoveryCode(email) { return B.sendReset(email); },
+    async verifyRecovery(email, token) {
+      const { error } = await sb.auth.verifyOtp({ email, token: String(token).trim(), type: 'recovery' });
+      if (error) mapAuthError(error);
     },
     async signIn({ email, password }) {
       const { error } = await sb.auth.signInWithPassword({ email, password });
@@ -61,7 +89,7 @@
     },
     async signOut() { await sb.auth.signOut(); },
     async sendReset(email) {
-      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirect() });
       if (error) mapAuthError(error);
     },
     async setPassword(password) {
@@ -97,10 +125,11 @@
       await sb.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', B.user.id);
     },
     async uploadAvatar(blob) {
-      const path = `${B.user.id}/avatar-${Date.now()}.jpg`;
+      // one fixed file per user (the storage quota counts files); ?v= busts caches after a change
+      const path = `${B.user.id}/avatar.jpg`;
       const { error } = await sb.storage.from('avatars').upload(path, blob, { contentType: 'image/jpeg', upsert: true });
       if (error) throw error;
-      return sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+      return sb.storage.from('avatars').getPublicUrl(path).data.publicUrl + '?v=' + Date.now();
     },
     async bumpSeps() { await sb.rpc('bump_seps'); },
 
@@ -166,7 +195,7 @@
     async listSongs() {
       const { data, error } = await sb.from('songs').select('name,data,updated_at,file_path,file_size,file_type,genre').eq('user_id', B.user.id).order('updated_at', { ascending: false });
       if (error) throw error;
-      return data.map(r => ({ ...r.data, file_path: r.file_path || r.data.file_path || null, file_size: r.file_size, file_type: r.file_type, genre: r.genre || r.data.genre || '' }));
+      return data.map(r => ({ ...r.data, file_path: r.file_path || null, file_size: r.file_size, file_type: r.file_type, genre: r.genre || r.data.genre || '' }));
     },
     async saveSong(item) {
       const row = { user_id: B.user.id, name: item.name, data: item, updated_at: new Date().toISOString(),
@@ -297,5 +326,7 @@
     }
   };
 
-  window.Backend = window.__MOCK_BACKEND || B;
+  // tests inject a mock backend — honoured only on localhost (an element with id="__MOCK_BACKEND" also shows up on window)
+  const mock = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && window.__MOCK_BACKEND;
+  window.Backend = mock && typeof mock === 'object' && !(mock instanceof Node) ? mock : B;
 })();

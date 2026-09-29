@@ -13,7 +13,9 @@
     phone: '',     // e.g. '050-0000000'
     reviewed: ''   // date of the last accessibility review, e.g. '28.09.2026'
   };
-  if (window.A11Y_CONTACT) for (var ck in window.A11Y_CONTACT) CONTACT[ck] = window.A11Y_CONTACT[ck];
+  // only a plain object with string values (an element with id="A11Y_CONTACT" would also appear on window)
+  var AC = window.A11Y_CONTACT;
+  if (AC && Object.prototype.toString.call(AC) === '[object Object]') for (var ck in CONTACT) if (typeof AC[ck] === 'string') CONTACT[ck] = AC[ck];
 
   var KEY = 'chordroom.a11y';
   var root = document.documentElement;

@@ -10,7 +10,23 @@ const SUPABASE_URL = 'https://ydyocusfrghsokjsectw.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_L7IuhkaBoV5BZNuX7ixmjw_3F3KdKdI';
 const MAX_BODY = 256 * 1024;
 
-const text = (body, status) => new Response(body, { status, headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' } });
+const text = (body, status) => new Response(body, { status, headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' } });
+
+async function readCapped(request, max) {
+  if (!request.body) return new Uint8Array(0);
+  const reader = request.body.getReader(), parts = [];
+  let n = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    n += value.byteLength;
+    if (n > max) { try { await reader.cancel(); } catch (e) {} return null; }
+    parts.push(value);
+  }
+  const out = new Uint8Array(n);
+  let o = 0; for (const p of parts) { out.set(p, o); o += p.byteLength; }
+  return out;
+}
 
 export async function onRequest({ request, env }) {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: { allow: 'POST' } });
@@ -20,9 +36,12 @@ export async function onRequest({ request, env }) {
   const sig = (request.headers.get('x-signature') || '').trim();
   if (!/^[0-9a-fA-F]{64}$/.test(sig)) return text('bad signature', 401);
 
-  // the signature covers the exact bytes, so read them raw and refuse anything that isn't valid UTF-8
-  const buf = await request.arrayBuffer();
-  if (buf.byteLength > MAX_BODY) return text('too large', 413);
+  if (!/json/i.test(request.headers.get('content-type') || '')) return text('bad request', 400);
+
+  // the signature covers the exact bytes, so read them raw and refuse anything that isn't valid UTF-8.
+  // Read as a stream with a cap, so a body without content-length can't make us buffer megabytes.
+  const buf = await readCapped(request, MAX_BODY);
+  if (!buf) return text('too large', 413);
   let body;
   try { body = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { return text('bad body', 400); }
 
@@ -38,7 +57,7 @@ export async function onRequest({ request, env }) {
   }
   if (res.ok) {
     let r = out; try { r = JSON.parse(out); } catch (e) {}
-    console.log('pay webhook:', request.headers.get('x-event-name') || '?', '→', String(r).slice(0, 120));
+    console.log('pay webhook:', String(request.headers.get('x-event-name') || 'unknown').replace(/[^\w.:-]/g, '').slice(0, 60), '→', String(r).slice(0, 120));
     return text('ok', 200);
   }
   let msg = ''; try { msg = String(JSON.parse(out).message || ''); } catch (e) {}

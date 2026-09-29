@@ -36,7 +36,7 @@
     if(tabs)tabs.setAttribute('aria-label',l.nav);
     var tl=document.querySelector('#navAbout span[data-i]');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
     /* icon-only tabs/tools (compact levels) still show their name on hover */
-    Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn'),function(b){
+    Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn,#signUpBtn'),function(b){
       var s=b.querySelector('span[data-i]');if(s&&s.textContent&&b.title!==s.textContent)b.title=s.textContent;
     });
   }

@@ -405,6 +405,100 @@ ar:{dpBar:'مشغل الأغاني',dpPrev:'السابق',dpNext:'التالي',
 ru:{dpBar:'Плеер',dpPrev:'Предыдущая',dpNext:'Следующая',dpPlay:'Играть',dpPause:'Пауза',dpStop:'Стоп',dpMute:'Без звука',dpUnmute:'Включить звук',dpVol:'Громкость',dpSeek:'Позиция'},
 es:{dpBar:'Reproductor',dpPrev:'Anterior',dpNext:'Siguiente',dpPlay:'Reproducir',dpPause:'Pausa',dpStop:'Detener',dpMute:'Silenciar',dpUnmute:'Activar sonido',dpVol:'Volumen',dpSeek:'Posición'}};
 for(const k in IDP)Object.assign(I[k],IDP[k]);
+const IADM={he:{act_adm_role:'מנהל: שינוי רול',act_adm_block:'מנהל: חסימה',act_adm_owner:'מנהל: פעולת בעלים',act_adm_plan:'מנהל: מסלול',act_adm_credits:'מנהל: נקודות'},
+en:{act_adm_role:'Admin: role change',act_adm_block:'Admin: block',act_adm_owner:'Admin: owner action',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: points'},
+ar:{act_adm_role:'مدير: تغيير دور',act_adm_block:'مدير: حظر',act_adm_owner:'مدير: إجراء المالك',act_adm_plan:'مدير: خطة',act_adm_credits:'مدير: نقاط'},
+ru:{act_adm_role:'Админ: смена роли',act_adm_block:'Админ: блокировка',act_adm_owner:'Админ: действие владельца',act_adm_plan:'Админ: тариф',act_adm_credits:'Админ: баллы'},
+es:{act_adm_role:'Admin: cambio de rol',act_adm_block:'Admin: bloqueo',act_adm_owner:'Admin: acción del propietario',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: puntos'}};
+for(const k in IADM)Object.assign(I[k],IADM[k]);
+/* auth dialog (sign-in / sign-up in steps / email code / password reset by code) */
+const IAU={
+he:{auTabs:'כניסה או הרשמה',auTabIn:'כניסה',auTabUp:'הרשמה',auBrandH:'האולפן שלכם, בתוך הדפדפן.',auBrandP:'חשבון אחד לכל הכלים, והשירים שלכם נשמרים באופן פרטי.',
+auBenGift:'{n} נקודות מתנה בהרשמה',auBen1:'BPM, סולם ואקורדים לכל שיר',auBen2:'הפרדת ערוצים ב־AI, ישירות בדפדפן',auBen3:'מיקס DJ חי על שני דקים',auBen4:'ניתוח ספרייה שלמה וייצוא ל־rekordbox, ‏Serato ו־Traktor',auBen5:'השירים והקבצים שלכם נשמרים בחשבון, באופן פרטי',
+auInH:'ברוכים השבים',auInP:'נכנסים עם האימייל והסיסמה של החשבון.',auUpH:'יצירת חשבון',auUpP:'שלושה צעדים קצרים ואתם בפנים.',
+auSteps:'שלבי ההרשמה',auStep1:'פרטים',auStep2:'תנאים',auStep3:'אימות',auStepOf:'שלב {n} מתוך 3',
+auShow:'הצגת הסיסמה',auHide:'הסתרת הסיסמה',auCaps:'Caps Lock פועל',auForgotQ:'שכחתם סיסמה?',auNext:'המשך',auBack:'חזרה',
+auUserChecking:'בודק אם השם פנוי…',auUserFree:'השם פנוי',auUserTaken:'השם הזה כבר תפוס',auEmailBad:'כתובת האימייל לא נראית תקינה.',
+auPwLen:'לפחות 8 תווים',auPwLvl:['חלשה מדי','חלשה','סבירה','חזקה','חזקה מאוד'],auPwStrength:'חוזק הסיסמה: {s}',auPwTip:'אפשר משפט קצר, או שילוב של אותיות, ספרות וסימנים.',auPwMatch:'הסיסמאות תואמות',auPwCommon:'הסיסמה הזאת נפוצה מדי. בחרו סיסמה אחרת.',
+auTermsH:'תנאי שימוש ופרטיות',auTermsP:'לפני יצירת החשבון, הנה עיקרי הדברים. הנוסח המלא הוא המחייב.',auTermsBox:'עיקרי התנאים',auTermsLink:'תנאי השימוש המלאים',auPrivLink:'מדיניות הפרטיות המלאה',auNewTab:'(נפתח בכרטיסייה חדשה)',
+auAgree:'קראתי ואני מסכים/ה לתנאי השימוש ולמדיניות הפרטיות',auAge:'אני בן/בת 16 ומעלה',auCreate:'יצירת החשבון',auNeedAgree:'כדי להמשיך צריך לסמן את שני האישורים.',
+auCodeH:'אימות האימייל',auCodeP:'שלחנו קוד בן 6 ספרות אל {e}',auCodeL:'קוד האימות',auCodeHint:'לא הגיע? חכו דקה ובדקו גם בספאם או בקידומי מכירות.',auVerify:'אימות וכניסה',
+auResend:'שליחת קוד חדש',auResendIn:'קוד חדש בעוד {s}',auResent:'שלחנו קוד חדש.',auChangeEmail:'שינוי האימייל',auCodeBad:'הקוד שגוי או שפג תוקפו. נסו שוב או בקשו קוד חדש.',auCodeShort:'הקוד צריך להכיל 6 ספרות.',
+auConfirmFirst:'צריך לאמת את האימייל לפני הכניסה. שלחנו אליכם קוד.',
+auForgotH:'שחזור סיסמה',auForgotP:'נשלח אליכם קוד בן 6 ספרות לאיפוס הסיסמה.',auSendCode:'שליחת קוד',auRecH:'בחירת סיסמה חדשה',auRecP:'הקלידו את הקוד שנשלח אל {e} ובחרו סיסמה חדשה.',auSavePass:'שמירה וכניסה',auBackIn:'חזרה לכניסה',
+auLinkH:'בחירת סיסמה חדשה',auLinkP:'הגעתם מקישור האיפוס. בחרו סיסמה חדשה לחשבון.',
+auDoneH:'ברוכים הבאים, {u}!',auDoneP:'החשבון מוכן ואתם מחוברים.',auDoneGift:'{n} נקודות מתנה כבר מחכות בחשבון.',auDoneGo:'בואו נתחיל',auPassDoneH:'הסיסמה עודכנה',auPassDoneP:'אתם מחוברים עם הסיסמה החדשה.',
+auErrRate:'יותר מדי ניסיונות. נסו שוב בעוד {s} שניות.',auErrRate0:'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.',auErrExists:'כבר יש חשבון עם האימייל הזה. אפשר להיכנס או לשחזר סיסמה.',auErrWeak:'הסיסמה חלשה מדי או שנחשפה בדליפת מידע. בחרו סיסמה אחרת.',auErrSame:'הסיסמה החדשה צריכה להיות שונה מהקודמת.',auErrNet:'אין חיבור לשרת. בדקו את החיבור לאינטרנט ונסו שוב.',
+auLegal:'תנאי שימוש',auPrivacy:'פרטיות',auWorking:'רגע…',auFooterIn:'בכניסה לחשבון אתם מאשרים את {t} ואת {p}.',adTerms:'תנאים שאושרו',adTermsV:'גרסה {v} · {d}',adTermsNone:'לא נרשם'},
+en:{auTabs:'Sign in or sign up',auTabIn:'Sign in',auTabUp:'Sign up',auBrandH:'Your studio, right in the browser.',auBrandP:'One account for every tool, and your songs stay private.',
+auBenGift:'{n} free points when you sign up',auBen1:'BPM, key and chords for every song',auBen2:'AI stem separation, right in the browser',auBen3:'Live DJ mix on two decks',auBen4:'Whole-library analysis with rekordbox, Serato and Traktor export',auBen5:'Your songs and files are saved privately in your account',
+auInH:'Welcome back',auInP:'Sign in with your account email and password.',auUpH:'Create your account',auUpP:'Three quick steps and you’re in.',
+auSteps:'Sign-up steps',auStep1:'Details',auStep2:'Terms',auStep3:'Verify',auStepOf:'Step {n} of 3',
+auShow:'Show password',auHide:'Hide password',auCaps:'Caps Lock is on',auForgotQ:'Forgot your password?',auNext:'Continue',auBack:'Back',
+auUserChecking:'Checking availability…',auUserFree:'Available',auUserTaken:'That username is taken',auEmailBad:'That email address doesn’t look right.',
+auPwLen:'At least 8 characters',auPwLvl:['Too weak','Weak','Fair','Strong','Very strong'],auPwStrength:'Password strength: {s}',auPwTip:'Try a short sentence, or mix letters, numbers and symbols.',auPwMatch:'Passwords match',auPwCommon:'That password is too common. Please pick another.',
+auTermsH:'Terms and privacy',auTermsP:'Before we create your account, here are the key points. The full text is what counts.',auTermsBox:'Key points',auTermsLink:'Full Terms of Use',auPrivLink:'Full Privacy Policy',auNewTab:'(opens in a new tab)',
+auAgree:'I have read and agree to the Terms of Use and the Privacy Policy',auAge:'I am 16 or older',auCreate:'Create account',auNeedAgree:'Please tick both boxes to continue.',
+auCodeH:'Verify your email',auCodeP:'We sent a 6-digit code to {e}',auCodeL:'Verification code',auCodeHint:'Nothing yet? Give it a minute and check spam or promotions.',auVerify:'Verify and sign in',
+auResend:'Send a new code',auResendIn:'New code in {s}',auResent:'We sent a new code.',auChangeEmail:'Change email',auCodeBad:'That code is wrong or has expired. Try again or ask for a new one.',auCodeShort:'The code has 6 digits.',
+auConfirmFirst:'Please verify your email before signing in. We sent you a code.',
+auForgotH:'Reset your password',auForgotP:'We’ll email you a 6-digit code to reset your password.',auSendCode:'Send code',auRecH:'Choose a new password',auRecP:'Enter the code we sent to {e} and choose a new password.',auSavePass:'Save and sign in',auBackIn:'Back to sign in',
+auLinkH:'Choose a new password',auLinkP:'You came from the reset link. Choose a new password for your account.',
+auDoneH:'Welcome, {u}!',auDoneP:'Your account is ready and you’re signed in.',auDoneGift:'{n} free points are waiting in your account.',auDoneGo:'Let’s go',auPassDoneH:'Password updated',auPassDoneP:'You’re signed in with your new password.',
+auErrRate:'Too many attempts. Try again in {s} seconds.',auErrRate0:'Too many attempts. Try again in a few minutes.',auErrExists:'An account with this email already exists. Sign in or reset your password.',auErrWeak:'That password is too weak or appeared in a data breach. Please pick another.',auErrSame:'The new password must be different from the old one.',auErrNet:'Can’t reach the server. Check your connection and try again.',
+auLegal:'Terms of Use',auPrivacy:'Privacy',auWorking:'One moment…',auFooterIn:'By signing in you accept the {t} and the {p}.',adTerms:'Terms accepted',adTermsV:'Version {v} · {d}',adTermsNone:'Not recorded'},
+ar:{auTabs:'الدخول أو التسجيل',auTabIn:'دخول',auTabUp:'تسجيل',auBrandH:'استوديوك، داخل المتصفح.',auBrandP:'حساب واحد لكل الأدوات، وتبقى أغانيك خاصة.',
+auBenGift:'{n} نقطة هدية عند التسجيل',auBen1:'BPM والمقام والكوردات لكل أغنية',auBen2:'فصل المسارات بالذكاء الاصطناعي داخل المتصفح',auBen3:'مزج DJ حيّ على منصّتين',auBen4:'تحليل مكتبة كاملة مع تصدير إلى rekordbox وSerato وTraktor',auBen5:'أغانيك وملفاتك محفوظة في حسابك بشكل خاص',
+auInH:'مرحبًا بعودتك',auInP:'ادخل بالبريد الإلكتروني وكلمة مرور حسابك.',auUpH:'إنشاء حساب',auUpP:'ثلاث خطوات قصيرة وتكون معنا.',
+auSteps:'خطوات التسجيل',auStep1:'البيانات',auStep2:'الشروط',auStep3:'التحقق',auStepOf:'الخطوة {n} من 3',
+auShow:'إظهار كلمة المرور',auHide:'إخفاء كلمة المرور',auCaps:'مفتاح Caps Lock مفعّل',auForgotQ:'نسيت كلمة المرور؟',auNext:'متابعة',auBack:'رجوع',
+auUserChecking:'جارٍ التحقق من التوفر…',auUserFree:'الاسم متاح',auUserTaken:'هذا الاسم مستخدم',auEmailBad:'عنوان البريد الإلكتروني لا يبدو صحيحًا.',
+auPwLen:'8 أحرف على الأقل',auPwLvl:['ضعيفة جدًا','ضعيفة','مقبولة','قوية','قوية جدًا'],auPwStrength:'قوة كلمة المرور: {s}',auPwTip:'جرّب جملة قصيرة، أو امزج الأحرف والأرقام والرموز.',auPwMatch:'كلمتا المرور متطابقتان',auPwCommon:'كلمة المرور هذه شائعة جدًا. اختر غيرها.',
+auTermsH:'الشروط والخصوصية',auTermsP:'قبل إنشاء الحساب، إليك أهم النقاط. النص الكامل هو المعتمد.',auTermsBox:'أهم النقاط',auTermsLink:'شروط الاستخدام الكاملة',auPrivLink:'سياسة الخصوصية الكاملة',auNewTab:'(تُفتح في علامة تبويب جديدة)',
+auAgree:'قرأت شروط الاستخدام وسياسة الخصوصية وأوافق عليهما',auAge:'عمري 16 عامًا أو أكثر',auCreate:'إنشاء الحساب',auNeedAgree:'للمتابعة يجب تحديد المربعين.',
+auCodeH:'تأكيد البريد الإلكتروني',auCodeP:'أرسلنا رمزًا من 6 أرقام إلى {e}',auCodeL:'رمز التحقق',auCodeHint:'لم يصل؟ انتظر دقيقة وتحقق من البريد العشوائي أو العروض.',auVerify:'تحقق وادخل',
+auResend:'إرسال رمز جديد',auResendIn:'رمز جديد بعد {s}',auResent:'أرسلنا رمزًا جديدًا.',auChangeEmail:'تغيير البريد',auCodeBad:'الرمز غير صحيح أو انتهت صلاحيته. حاول مجددًا أو اطلب رمزًا جديدًا.',auCodeShort:'الرمز مكوّن من 6 أرقام.',
+auConfirmFirst:'يجب تأكيد بريدك الإلكتروني قبل الدخول. أرسلنا إليك رمزًا.',
+auForgotH:'استعادة كلمة المرور',auForgotP:'سنرسل إليك رمزًا من 6 أرقام لإعادة تعيين كلمة المرور.',auSendCode:'إرسال الرمز',auRecH:'اختر كلمة مرور جديدة',auRecP:'أدخل الرمز الذي أرسلناه إلى {e} واختر كلمة مرور جديدة.',auSavePass:'حفظ والدخول',auBackIn:'العودة إلى الدخول',
+auLinkH:'اختر كلمة مرور جديدة',auLinkP:'وصلت من رابط إعادة التعيين. اختر كلمة مرور جديدة لحسابك.',
+auDoneH:'أهلًا بك، {u}!',auDoneP:'حسابك جاهز وقد سجّلت الدخول.',auDoneGift:'{n} نقطة هدية بانتظارك في حسابك.',auDoneGo:'لنبدأ',auPassDoneH:'تم تحديث كلمة المرور',auPassDoneP:'أنت مسجّل الدخول بكلمة المرور الجديدة.',
+auErrRate:'محاولات كثيرة. حاول مجددًا بعد {s} ثانية.',auErrRate0:'محاولات كثيرة. حاول مجددًا بعد بضع دقائق.',auErrExists:'يوجد حساب بهذا البريد الإلكتروني. ادخل أو استعد كلمة المرور.',auErrWeak:'كلمة المرور ضعيفة جدًا أو ظهرت في تسريب بيانات. اختر غيرها.',auErrSame:'يجب أن تختلف كلمة المرور الجديدة عن القديمة.',auErrNet:'تعذّر الوصول إلى الخادم. تحقق من اتصالك وحاول مجددًا.',
+auLegal:'شروط الاستخدام',auPrivacy:'الخصوصية',auWorking:'لحظة…',auFooterIn:'بتسجيل الدخول أنت توافق على {t} و{p}.',adTerms:'الشروط المقبولة',adTermsV:'الإصدار {v} · {d}',adTermsNone:'غير مسجّل'},
+ru:{auTabs:'Вход или регистрация',auTabIn:'Вход',auTabUp:'Регистрация',auBrandH:'Ваша студия — прямо в браузере.',auBrandP:'Один аккаунт для всех инструментов, а ваши песни остаются приватными.',
+auBenGift:'{n} баллов в подарок при регистрации',auBen1:'BPM, тональность и аккорды для любой песни',auBen2:'Разделение на стемы с AI прямо в браузере',auBen3:'Живой DJ-микс на двух деках',auBen4:'Анализ целой библиотеки с экспортом в rekordbox, Serato и Traktor',auBen5:'Песни и файлы хранятся в аккаунте приватно',
+auInH:'С возвращением',auInP:'Войдите по email и паролю аккаунта.',auUpH:'Создание аккаунта',auUpP:'Три коротких шага — и вы внутри.',
+auSteps:'Шаги регистрации',auStep1:'Данные',auStep2:'Условия',auStep3:'Проверка',auStepOf:'Шаг {n} из 3',
+auShow:'Показать пароль',auHide:'Скрыть пароль',auCaps:'Включён Caps Lock',auForgotQ:'Забыли пароль?',auNext:'Продолжить',auBack:'Назад',
+auUserChecking:'Проверяем, свободно ли имя…',auUserFree:'Имя свободно',auUserTaken:'Это имя уже занято',auEmailBad:'Похоже, email указан неверно.',
+auPwLen:'Не меньше 8 символов',auPwLvl:['Слишком слабый','Слабый','Средний','Надёжный','Очень надёжный'],auPwStrength:'Надёжность пароля: {s}',auPwTip:'Подойдёт короткая фраза или сочетание букв, цифр и символов.',auPwMatch:'Пароли совпадают',auPwCommon:'Этот пароль слишком распространён. Выберите другой.',
+auTermsH:'Условия и конфиденциальность',auTermsP:'Перед созданием аккаунта — главное. Обязательным является полный текст.',auTermsBox:'Главное',auTermsLink:'Полные условия использования',auPrivLink:'Полная политика конфиденциальности',auNewTab:'(откроется в новой вкладке)',
+auAgree:'Я прочитал(а) и принимаю Условия использования и Политику конфиденциальности',auAge:'Мне 16 лет или больше',auCreate:'Создать аккаунт',auNeedAgree:'Чтобы продолжить, отметьте оба пункта.',
+auCodeH:'Подтвердите email',auCodeP:'Мы отправили 6-значный код на {e}',auCodeL:'Код подтверждения',auCodeHint:'Не пришло? Подождите минуту и проверьте спам или «Промоакции».',auVerify:'Подтвердить и войти',
+auResend:'Отправить новый код',auResendIn:'Новый код через {s}',auResent:'Мы отправили новый код.',auChangeEmail:'Изменить email',auCodeBad:'Код неверный или устарел. Попробуйте ещё раз или запросите новый.',auCodeShort:'В коде 6 цифр.',
+auConfirmFirst:'Перед входом нужно подтвердить email. Мы отправили вам код.',
+auForgotH:'Восстановление пароля',auForgotP:'Мы пришлём 6-значный код для сброса пароля.',auSendCode:'Отправить код',auRecH:'Новый пароль',auRecP:'Введите код, отправленный на {e}, и выберите новый пароль.',auSavePass:'Сохранить и войти',auBackIn:'Назад ко входу',
+auLinkH:'Новый пароль',auLinkP:'Вы перешли по ссылке для сброса. Выберите новый пароль для аккаунта.',
+auDoneH:'Добро пожаловать, {u}!',auDoneP:'Аккаунт готов, вы вошли.',auDoneGift:'В аккаунте вас уже ждут {n} подарочных баллов.',auDoneGo:'Начнём',auPassDoneH:'Пароль обновлён',auPassDoneP:'Вы вошли с новым паролем.',
+auErrRate:'Слишком много попыток. Повторите через {s} с.',auErrRate0:'Слишком много попыток. Повторите через несколько минут.',auErrExists:'Аккаунт с этим email уже есть. Войдите или восстановите пароль.',auErrWeak:'Пароль слишком слабый или встречался в утечках данных. Выберите другой.',auErrSame:'Новый пароль должен отличаться от старого.',auErrNet:'Нет связи с сервером. Проверьте подключение и попробуйте снова.',
+auLegal:'Условия использования',auPrivacy:'Конфиденциальность',auWorking:'Секунду…',auFooterIn:'Входя в аккаунт, вы принимаете {t} и {p}.',adTerms:'Принятые условия',adTermsV:'Версия {v} · {d}',adTermsNone:'Не записано'},
+es:{auTabs:'Entrar o registrarse',auTabIn:'Entrar',auTabUp:'Registrarse',auBrandH:'Tu estudio, dentro del navegador.',auBrandP:'Una cuenta para todas las herramientas, y tus canciones siguen siendo privadas.',
+auBenGift:'{n} puntos de regalo al registrarte',auBen1:'BPM, tonalidad y acordes de cada canción',auBen2:'Separación de pistas con IA en el navegador',auBen3:'Mezcla DJ en vivo con dos platos',auBen4:'Análisis de bibliotecas completas con exportación a rekordbox, Serato y Traktor',auBen5:'Tus canciones y archivos se guardan en tu cuenta de forma privada',
+auInH:'Hola de nuevo',auInP:'Entra con el email y la contraseña de tu cuenta.',auUpH:'Crea tu cuenta',auUpP:'Tres pasos rápidos y listo.',
+auSteps:'Pasos del registro',auStep1:'Datos',auStep2:'Términos',auStep3:'Verificar',auStepOf:'Paso {n} de 3',
+auShow:'Mostrar contraseña',auHide:'Ocultar contraseña',auCaps:'Bloq Mayús está activado',auForgotQ:'¿Olvidaste la contraseña?',auNext:'Continuar',auBack:'Atrás',
+auUserChecking:'Comprobando disponibilidad…',auUserFree:'Disponible',auUserTaken:'Ese nombre ya está en uso',auEmailBad:'Ese email no parece correcto.',
+auPwLen:'Al menos 8 caracteres',auPwLvl:['Demasiado débil','Débil','Aceptable','Fuerte','Muy fuerte'],auPwStrength:'Seguridad de la contraseña: {s}',auPwTip:'Prueba con una frase corta, o mezcla letras, números y símbolos.',auPwMatch:'Las contraseñas coinciden',auPwCommon:'Esa contraseña es demasiado común. Elige otra.',
+auTermsH:'Términos y privacidad',auTermsP:'Antes de crear tu cuenta, estos son los puntos clave. Lo que vale es el texto completo.',auTermsBox:'Puntos clave',auTermsLink:'Términos de uso completos',auPrivLink:'Política de privacidad completa',auNewTab:'(se abre en una pestaña nueva)',
+auAgree:'He leído y acepto los Términos de uso y la Política de privacidad',auAge:'Tengo 16 años o más',auCreate:'Crear la cuenta',auNeedAgree:'Marca las dos casillas para continuar.',
+auCodeH:'Verifica tu email',auCodeP:'Enviamos un código de 6 dígitos a {e}',auCodeL:'Código de verificación',auCodeHint:'¿No llega? Espera un minuto y revisa spam o promociones.',auVerify:'Verificar y entrar',
+auResend:'Enviar un código nuevo',auResendIn:'Código nuevo en {s}',auResent:'Te enviamos un código nuevo.',auChangeEmail:'Cambiar email',auCodeBad:'El código es incorrecto o ha caducado. Inténtalo de nuevo o pide uno nuevo.',auCodeShort:'El código tiene 6 dígitos.',
+auConfirmFirst:'Verifica tu email antes de entrar. Te enviamos un código.',
+auForgotH:'Restablecer contraseña',auForgotP:'Te enviaremos un código de 6 dígitos para restablecer la contraseña.',auSendCode:'Enviar código',auRecH:'Elige una contraseña nueva',auRecP:'Escribe el código que enviamos a {e} y elige una contraseña nueva.',auSavePass:'Guardar y entrar',auBackIn:'Volver a entrar',
+auLinkH:'Elige una contraseña nueva',auLinkP:'Llegaste desde el enlace de restablecimiento. Elige una contraseña nueva para tu cuenta.',
+auDoneH:'¡Te damos la bienvenida, {u}!',auDoneP:'Tu cuenta está lista y has iniciado sesión.',auDoneGift:'{n} puntos de regalo ya te esperan en tu cuenta.',auDoneGo:'Empecemos',auPassDoneH:'Contraseña actualizada',auPassDoneP:'Has iniciado sesión con tu nueva contraseña.',
+auErrRate:'Demasiados intentos. Vuelve a intentarlo en {s} segundos.',auErrRate0:'Demasiados intentos. Vuelve a intentarlo en unos minutos.',auErrExists:'Ya existe una cuenta con este email. Entra o restablece la contraseña.',auErrWeak:'Esa contraseña es demasiado débil o apareció en una filtración. Elige otra.',auErrSame:'La contraseña nueva debe ser distinta de la anterior.',auErrNet:'No se puede conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.',
+auLegal:'Términos de uso',auPrivacy:'Privacidad',auWorking:'Un momento…',auFooterIn:'Al entrar aceptas los {t} y la {p}.',adTerms:'Términos aceptados',adTermsV:'Versión {v} · {d}',adTermsNone:'Sin registro'}};
+for(const k in IAU)Object.assign(I[k],IAU[k]);
 
 
 
@@ -1582,7 +1676,7 @@ function renderLib(){
   l.forEach((it,i)=>{
     const li=document.createElement('li'),o=document.createElement('button');o.type='button';o.className='op';
     const kn=(FLAT_MAJ.has(it.key.mode?mod(it.key.pc+3,12):it.key.pc)?FLAT:SHARP)[it.key.pc]+(it.key.mode?'m':'');
-    o.innerHTML=`<span class="t"></span><span class="m"><span class="lt" dir="ltr">${fmtBpm(it.bpm)} BPM · ${kn} · ${fmtS(it.dur)}</span>${it.genre?`<span class="g"></span>`:''}${it.file_path?`<span class="cl" title="${esc(t('cloudTag'))}">${CLOUD_IC}</span>`:''}</span>`;
+    o.innerHTML=`<span class="t"></span><span class="m"><span class="lt" dir="ltr">${esc(fmtBpm(+it.bpm||0))} BPM · ${esc(kn)} · ${esc(fmtS(+it.dur||0))}</span>${it.genre?`<span class="g"></span>`:''}${it.file_path?`<span class="cl" title="${esc(t('cloudTag'))}">${CLOUD_IC}</span>`:''}</span>`;
     if(it.genre)o.querySelector('.g').textContent=it.genre;
     o.querySelector('.t').textContent=it.name;o.onclick=()=>openLib(it);
     const d=document.createElement('button');d.type='button';d.className='del';d.textContent=t('del');
@@ -1640,13 +1734,14 @@ function logAct(action,detail){
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtDate=v=>{if(!v)return '—';const d=new Date(v);return isNaN(d)?'—':d.toLocaleString(LANG==='he'?'he-IL':LANG==='ar'?'ar':LANG,{dateStyle:'medium',timeStyle:'short'})};
 const initials=n=>{const s=String(n||'?').trim();return s?s[0].toUpperCase():'?'};
+// only our own avatars bucket (a data: URL only in local tests with the mock backend)
+const AVATAR_BASE=String((window.CHORDROOM_CONFIG||{}).supabaseUrl||'').replace(/\/+$/,'')+'/storage/v1/object/public/avatars/';
+const avatarOk=u=>typeof u==='string'&&((AVATAR_BASE.length>40&&u.startsWith(AVATAR_BASE)&&!/[\s"'<>]/.test(u))||(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/^data:image\//.test(u)));
 function avatarFor(p){
-  if(p&&p.avatar_url)return p.avatar_url;
+  if(p&&p.avatar_url&&avatarOk(p.avatar_url))return p.avatar_url;
   const n=(p&&(p.display_name||p.username||p.email))||'?',c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');
   g.fillStyle='#0B0B0C';g.fillRect(0,0,96,96);g.fillStyle='#fff';g.font='600 44px IBM Plex Sans, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(initials(n),48,52);return c.toDataURL();
 }
-function authErr(e){const c=e&&e.code;return c==='login'?t('errLogin'):c==='confirm'?t('errConfirm'):c==='short'?t('errShort'):c==='user'?t('errUser'):c==='taken'?t('errUserTaken'):c==='closed'?t('signupClosed'):c==='curpass'?t('errCurPass'):t('errGeneric',{m:String(e&&e.message||e).slice(0,120)})}
-function setMsg(el,text,err){el.textContent=text||'';el.classList.toggle('err',!!err)}
 
 async function initAccount(){
   if(!ACC.on){renderAccount();return}
@@ -1654,11 +1749,11 @@ async function initAccount(){
   applyConfig();
   try{Backend.onConfig&&Backend.onConfig(c=>{ACC.config={...ACC.config,...c};applyConfig()})}catch(e){}
   await Backend.init(async(event,user)=>{
-    if(event==='PASSWORD_RECOVERY'){openDlg('reset');}
+    if(event==='PASSWORD_RECOVERY'&&!AU.recovering){openDlg('reset');}
     const changed=(user&&user.id)!==(ACC.user&&ACC.user.id);ACC.user=user;
     authChanged(user?user.id:null,event);
     if(user&&changed&&event==='SIGNED_IN')setTimeout(()=>logAct('sign_in',navigator.language||''),0);
-    else if(user&&changed){try{const k='chordroom.visit.'+user.id,d=new Date().toDateString();if(sessionStorage.getItem(k)!==d){sessionStorage.setItem(k,d);setTimeout(()=>logAct('visit',location.hash.slice(1)||'tool'),1500)}}catch(e){}}
+    else if(user&&changed){try{const k='chordroom.visit.'+user.id,d=new Date().toDateString();if(sessionStorage.getItem(k)!==d){sessionStorage.setItem(k,d);setTimeout(()=>logAct('visit',location.hash.slice(1).replace(/[^\w-]/g,'').slice(0,20)||'tool'),1500)}}catch(e){}}
     if(!user){ACC.profile=null;ACC.admin=false;ACC.owner=false;ACC.panel=false;ACC.perms=new Set();ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
     if(changed||event==='USER_UPDATED'||event==='INITIAL'){await loadProfile(true);loadCloudLib()}
   });
@@ -1678,7 +1773,7 @@ async function loadProfile(touch){
 function myName(){const p=ACC.profile||{};return p.display_name||p.username||(ACC.user&&ACC.user.email)||'—'}
 function renderAccount(){
   const on=ACC.on,user=ACC.user;
-  $('#signInBtn').hidden=!on||!!user;$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.panel;
+  renderAuthBtns();$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.panel;
   if(!user)return;
   const p=ACC.profile||{};
   $('#accImg').src=avatarFor(p);$('#accBtn').setAttribute('aria-label',t('account'));
@@ -1689,41 +1784,288 @@ function renderAccount(){
     $('#pUname').value=p.username||'';$('#pNick').value=p.display_name||'';$('#pBio').value=p.bio||'';$('#pLang').value=p.lang||LANG;
   }
   const rows=[[t('username'),p.username?'@'+p.username:'—'],[t('email'),user.email||'—'],[t('role'),rl.textContent],[t('joined'),fmtDate(p.created_at||user.created_at)],[t('lastSeen'),fmtDate(p.last_seen)],[t('songsSaved'),String(p.songs??(ACC.lib?ACC.lib.length:0))],[t('seps'),String(p.seps??0)]];
+  if(p.terms_version)rows.push([t('adTerms'),t('adTermsV',{v:p.terms_version,d:fmtDate(p.terms_at)})]);
   const dl=$('#pDl');dl.innerHTML='';for(const [k,v] of rows){const a=document.createElement('dt');a.textContent=k;const b=document.createElement('dd');b.textContent=v;dl.append(a,b)}
 }
 
-/* auth dialog */
-let dlgMode='in';
-function openDlg(mode){
-  dlgMode=mode;const d=$('#authDlg');d.hidden=false;
-  const sec={in:'#fIn',up:'#fUp',forgot:'#fForgot',reset:'#fReset'};
-  for(const [m,sel] of Object.entries(sec))$(sel).hidden=m!==mode;
-  $('#authTitle').textContent=mode==='in'?t('authIn'):mode==='up'?t('authUp'):mode==='forgot'?t('authForgot'):t('setNewPass');
-  d.querySelectorAll('.amsg').forEach(el=>setMsg(el,''));
-  const signupOpen=ACC.config.allow_signup!==false;$('#toUp').hidden=!signupOpen;
-  setTimeout(()=>{const f=d.querySelector(sec[mode]+' input');f&&f.focus()},30);
+/* auth dialog: sign in · sign up in steps (details → terms → email code → welcome) · password reset by code.
+   The reset link from the email still works (PASSWORD_RECOVERY → 'reset'). Backend methods added later
+   (verifySignup/resendSignup/sendRecoveryCode/verifyRecovery/usernameFree) are optional: a mock backend may lack them. */
+const AU={mode:'in',email:'',pendingAt:0,user:'',recEmail:'',recOk:false,recovering:false,cool:{},tick:0,ret:null,uSeq:0,uFree:null,uTimer:0,done:null};
+const AU_FORMS={in:'#fIn',up:'#fUp',terms:'#fTerms',code:'#fCode',done:'#auDone',forgot:'#fForgot',recover:'#fRecover',reset:'#fReset'};
+const AU_UP=['up','terms','code','done'];
+const EMAIL_RE=/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+const USER_RE=(window.Backend&&Backend.USERNAME_RE)||/^[A-Za-z0-9_.-]{3,24}$/;
+const PW_COMMON=new Set(['12345678','123456789','1234567890','password','password1','password123','qwerty123','qwertyui','qwertyuiop','11111111','00000000','iloveyou','abcd1234','abc12345','aa123456','87654321','1q2w3e4r','1qaz2wsx','asdfghjk','zxcvbnm1','letmein1','welcome1','chordroom','chordroom1','12341234','123123123','qwe12345','a1b2c3d4']);
+const signupOpen=()=>(ACC.config||{}).allow_signup!==false;
+function authErr(e){const c=e&&e.code;
+  if(c==='rate')return e.wait?t('auErrRate',{s:e.wait}):t('auErrRate0');
+  return c==='login'?t('errLogin'):c==='confirm'?t('errConfirm'):c==='short'?t('errShort'):c==='user'?t('errUser'):c==='taken'?t('errUserTaken'):c==='closed'?t('signupClosed'):c==='curpass'?t('errCurPass')
+    :c==='otp'?t('auCodeBad'):c==='exists'?t('auErrExists'):c==='weak'?t('auErrWeak'):c==='same'?t('auErrSame'):c==='email'?t('auEmailBad'):c==='network'?t('auErrNet'):t('errGeneric',{m:String(e&&e.message||e).slice(0,120)})}
+function setMsg(el,text,err){el.textContent=text||'';el.classList.toggle('err',!!err)}
+function auMsg(text,kind){const el=$('#auMsg');el.textContent=text||'';el.className='au-msg'+(kind?' '+kind:'');el.hidden=!text}
+// inline field error (text under the field + aria-invalid); '' clears it
+function auFe(inp,text,ok){
+  const el=$('#'+inp.id+'E')||$('#'+inp.id+'S');inp.toggleAttribute('aria-invalid',!!text&&!ok);if(!text)inp.removeAttribute('aria-invalid');
+  if(el){el.textContent=text||'';el.classList.toggle('err',!!text&&!ok);el.classList.toggle('ok',!!text&&!!ok)}
 }
-function closeDlg(){$('#authDlg').hidden=true}
+function auBad(inp,text){auFe(inp,text);inp.focus();return false}
+function auBrand(){
+  const b=BILL(),gift=billingOn()&&+b.signup>0?+b.signup:0;
+  const items=[...(gift?[['gift',t('auBenGift',{n:`<b dir="ltr">${gift}</b>`}),1]]:[]),['wave',esc(t('auBen1'))],['spark',esc(t('auBen2'))],['decks',esc(t('auBen3'))],['crate',esc(t('auBen4'))],['lock',esc(t('auBen5'))]];
+  const IC={gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8C10.5 4 7 3.5 7 6s3 2 5 2zM12 8c1.5-4 5-4.5 5-2s-3 2-5 2z"/>',wave:'<path d="M3 12h1.5M7 8v8M11 4v16M15 7v10M19 10v4M21.5 12h-.5"/>',
+    spark:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',decks:'<circle cx="6.5" cy="12" r="4.5"/><circle cx="17.5" cy="12" r="4.5"/><circle cx="6.5" cy="12" r=".8"/><circle cx="17.5" cy="12" r=".8"/>',
+    crate:'<path d="M3 8l9-5 9 5-9 5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/>',lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'};
+  $('#auBen').innerHTML=items.map(([k,h,hot])=>`<li${hot?' class="hot"':''}><span class="au-bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg></span><span>${h}</span></li>`).join('');
+}
+function auHead(mode){
+  const e=`⁨${AU.email}⁩`,r=`⁨${AU.recEmail}⁩`;
+  const H={in:['auInH','auInP'],up:['auUpH','auUpP'],terms:['auTermsH','auTermsP'],code:['auCodeH','auCodeP'],forgot:['auForgotH','auForgotP'],recover:['auRecH','auRecP'],reset:['auLinkH','auLinkP'],done:AU.done==='pass'?['auPassDoneH','auPassDoneP']:['auDoneH','auDoneP']}[mode];
+  $('#authTitle').textContent=t(H[0],{u:AU.user||myName()});$('#authSub').textContent=t(H[1],{e:mode==='recover'?r:e});
+}
+function auShow(mode,keep){
+  AU.mode=mode;const d=$('#authDlg'),up=AU_UP.includes(mode);
+  for(const [m,sel] of Object.entries(AU_FORMS))$(sel).hidden=m!==mode;
+  $('#auPanIn').hidden=mode!=='in';$('#auPanUp').hidden=!up;
+  const seg=$('#auSeg');seg.hidden=!(mode==='in'||(up&&mode!=='done'));seg.dataset.on=mode==='in'?'in':'up';
+  const upOk=signupOpen();$('#auTabUp').hidden=!upOk;seg.classList.toggle('one',!upOk);$('#auAltUp').hidden=!upOk;
+  [['#auTabIn',mode==='in'],['#auTabUp',up]].forEach(([s,on])=>{const b=$(s);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1});
+  const st=$('#auSteps'),n={up:1,terms:2,code:3}[mode]||0;st.hidden=!n;st.setAttribute('aria-label',t('auSteps'));
+  st.querySelectorAll('li').forEach(li=>{const s=+li.dataset.s;li.classList.toggle('on',s===n);li.classList.toggle('ok',s<n);if(s===n)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current')});
+  d.querySelector('.audlg').dataset.mode=mode;
+  const ft=$('#auFoot');ft.innerHTML=mode==='in'?esc(t('auFooterIn')).replace('{t}',`<a href="#terms" target="_blank" rel="noopener">${esc(t('auLegal'))}</a>`).replace('{p}',`<a href="#privacy" target="_blank" rel="noopener">${esc(t('auPrivacy'))}</a>`):'';
+  auHead(mode);if(!keep)auMsg('');
+  if(mode==='terms'){const sm=$('#auSum');sm.innerHTML=window.LEGAL?LEGAL.summary(LANG):'';sm.setAttribute('aria-label',t('auTermsBox'));sm.scrollTop=0;auTermsState()}
+  if(mode==='done')auDoneFill();
+  auCoolPaint();
+  if(!keep)setTimeout(()=>{if($('#authDlg').hidden||AU.mode!==mode)return;
+    const f=mode==='done'?$('#auDoneGo'):mode==='terms'?$('#auSum'):[...$(AU_FORMS[mode]).querySelectorAll('input')].find(i=>!i.value&&i.type!=='checkbox')||$(AU_FORMS[mode]).querySelector('input');
+    f&&f.focus({preventScroll:true})},40);
+}
+function openDlg(mode){
+  const d=$('#authDlg'),fresh=d.hidden;
+  if(fresh){AU.ret=document.activeElement;auBrand();d.hidden=false;document.documentElement.classList.add('au-open')}
+  let note='';
+  if(mode==='up'&&!signupOpen()){mode='in';note=t('signupClosed')}
+  // an account that still waits for its email code → straight back to the code step
+  if(mode==='up'&&fresh&&AU.email&&Date.now()-AU.pendingAt<36e5)mode='code';
+  if(mode==='reset'){AU.done='pass'}
+  auShow(mode);if(note)auMsg(note,'err');
+}
+function closeDlg(){
+  const d=$('#authDlg');if(d.hidden)return;d.hidden=true;document.documentElement.classList.remove('au-open');
+  ['#inPass','#upPass','#upPass2','#rcPass','#rcPass2','#rsPass','#rsPass2'].forEach(s=>{const i=$(s);i.value='';i.type='password'});
+  document.querySelectorAll('#authDlg .au-eye').forEach(b=>{b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',t('auShow'))});
+  if(AU.mode==='done'){AU.done=null;AU.email='';AU.pendingAt=0}
+  const r=AU.ret;AU.ret=null;
+  if(r&&r.isConnected&&r.getClientRects().length&&!r.closest('#authDlg'))r.focus({preventScroll:true});
+  else{const b=[$('#accBtn'),$('#signInBtn')].find(x=>x&&!x.hidden);if(b)b.focus({preventScroll:true})}
+}
+async function auRun(btn,fn){
+  if(btn.classList.contains('ld'))return;btn.classList.add('ld');btn.disabled=true;btn.setAttribute('aria-busy','true');
+  try{await fn()}finally{btn.classList.remove('ld');btn.removeAttribute('aria-busy');btn.disabled=btn.id==='auCreate'?!auTermsOk():false;if(btn.dataset.cool)auCoolPaint()}
+}
+async function busyBtn(btn,fn){btn.disabled=true;try{await fn()}finally{btn.disabled=false}}
+/* ---- resend cooldowns (60 s) ---- */
+function auCool(k,s){AU.cool[k]=Date.now()+(s||60)*1000;auCoolPaint();if(!AU.tick)AU.tick=setInterval(()=>{auCoolPaint();if(Object.values(AU.cool).every(v=>v<Date.now())){clearInterval(AU.tick);AU.tick=0}},1000)}
+function auCoolPaint(){document.querySelectorAll('#authDlg [data-cool]').forEach(b=>{const left=Math.ceil(((AU.cool[b.dataset.cool]||0)-Date.now())/1000);
+  b.disabled=left>0;b.textContent=left>0?t('auResendIn',{s:`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`}):t('auResend')})}
+/* ---- password strength (0–4) ---- */
+function pwScore(p,ctx){
+  if(!p)return -1;if(p.length<8)return 0;
+  const low=p.toLowerCase();if(PW_COMMON.has(low)||/^(.)\1+$/.test(p)||/^(0123456789|1234567890|abcdefgh)/.test(low))return 0;
+  const cls=[/[a-z]/,/[A-Z]/,/\d/,/[^A-Za-z0-9]/].filter(r=>r.test(p)).length;
+  let s=1;if(p.length>=12)s++;if(cls>=2)s++;if(cls>=3&&p.length>=10||p.length>=16)s++;
+  if((ctx||[]).some(x=>x&&x.length>=3&&low.includes(x.toLowerCase())))s=Math.min(s,1);
+  return Math.min(4,s);
+}
+function pwPaint(id,ctx){
+  const inp=$('#'+id),sc=pwScore(inp.value,ctx),m=$('#'+id+'M'),st=$('#'+id+'S');
+  m.dataset.l=String(Math.max(0,sc));m.classList.toggle('on',sc>=0);
+  m.querySelectorAll('i').forEach((x,i)=>x.classList.toggle('f',sc>=0&&i<Math.max(1,sc)));
+  if(sc<0){st.textContent=t('auPwLen');st.className='au-fe au-pws'}
+  else{st.textContent=t('auPwStrength',{s:t('auPwLvl')[sc]})+(sc<3?' · '+(inp.value.length<8?t('auPwLen'):t('auPwTip')):'');st.className='au-fe au-pws l'+sc}
+  inp.removeAttribute('aria-invalid');return sc;
+}
+function pwMatch(a,b){const p2=$('#'+b);if(!p2.value){auFe(p2,'');return}const ok=$('#'+a).value===p2.value;auFe(p2,ok?t('auPwMatch'):t('errMismatch'),ok)}
+function pwCheck(id,ctx){const inp=$('#'+id),v=inp.value;if(v.length<8)return auBad(inp,t('errShort'));if(pwScore(v,ctx)===0)return auBad(inp,t('auPwCommon'));return true}
+/* ---- username availability (debounced) ---- */
+function userState(kind,text){const s=$('#upUserS'),i=$('#upUserI'),inp=$('#upUser');s.textContent=text;s.className='au-fe au-hint'+(kind?' '+kind:'');i.className='au-ust '+(kind||'');
+  if(kind==='err')inp.setAttribute('aria-invalid','true');else inp.removeAttribute('aria-invalid')}
+function userCheck(now){
+  const u=$('#upUser').value.trim(),seq=++AU.uSeq;clearTimeout(AU.uTimer);AU.uFree=null;
+  if(!u){userState('',t('usernameH'));return Promise.resolve(null)}
+  if(!USER_RE.test(u)){userState(u.length>=3||now?'err':'',t('usernameH'));AU.uFree=false;return Promise.resolve(false)}
+  if(!Backend.usernameFree){userState('',t('usernameH'));return Promise.resolve(true)}
+  userState('wait',t('auUserChecking'));
+  return new Promise(ok=>{AU.uTimer=setTimeout(async()=>{let f=true;try{f=await Backend.usernameFree(u)}catch(e){f=true}
+    if(seq!==AU.uSeq)return ok(null);AU.uFree=!!f;userState(f?'ok':'err',f?`@${u} · ${t('auUserFree')}`:t('auUserTaken'));ok(!!f)},now?0:450)});
+}
+/* ---- 6-digit code boxes: one real input (one-time-code autofill + paste) painted into six cells ---- */
+function wireOtp(inp){
+  const cells=[...inp.parentElement.querySelectorAll('.au-cells i')];
+  const paint=()=>{const v=inp.value,f=document.activeElement===inp;cells.forEach((c,i)=>{c.textContent=v[i]||'';c.classList.toggle('f',!!v[i]);c.classList.toggle('on',f&&i===Math.min(v.length,5)&&!(v.length===6&&i<5))})};
+  const end=()=>{try{const n=inp.value.length;inp.setSelectionRange(n,n)}catch(e){}};
+  inp.addEventListener('input',()=>{const v=inp.value.replace(/\D/g,'').slice(0,6);if(v!==inp.value)inp.value=v;auFe(inp,'');paint();end();
+    if(v.length===6&&inp.dataset.auto&&!inp.form.querySelector('.au-cta.ld'))inp.form.requestSubmit()});
+  inp.addEventListener('focus',()=>{paint();setTimeout(end)});inp.addEventListener('blur',paint);inp.addEventListener('click',end);
+  inp.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='Home')e.preventDefault()});
+  inp.__paint=paint;
+}
+wireOtp($('#auCode'));wireOtp($('#rcCode'));
+const otpSet=(inp,v)=>{inp.value=v;inp.__paint&&inp.__paint()};
+/* ---- show/hide password, caps lock ---- */
+document.querySelectorAll('#authDlg .au-eye').forEach(b=>{b.setAttribute('aria-label',t('auShow'));b.onclick=()=>{const i=$('#'+b.dataset.eye),show=i.type==='password';
+  i.type=show?'text':'password';b.setAttribute('aria-pressed',String(show));b.setAttribute('aria-label',show?t('auHide'):t('auShow'));i.focus({preventScroll:true})}});
+document.querySelectorAll('#authDlg input[type=password]').forEach(i=>{const cap=e=>{if(!e.getModifierState)return;const c=$('#'+i.id+'Caps');if(c)c.hidden=!e.getModifierState('CapsLock')};
+  i.addEventListener('keydown',cap);i.addEventListener('keyup',cap);i.addEventListener('blur',()=>{const c=$('#'+i.id+'Caps');if(c)c.hidden=true})});
+/* ---- dialog chrome: tabs, close, focus trap, Esc ---- */
 $('#signInBtn').onclick=()=>openDlg('in');
+$('#signUpBtn').onclick=()=>openDlg('up');
 $('#gateIn').onclick=()=>openDlg('in');
 $('#authClose').onclick=closeDlg;
-$('#authDlg').addEventListener('click',e=>{if(e.target.id==='authDlg')closeDlg()});
-$('#toUp').onclick=()=>openDlg('up');$('#toIn').onclick=()=>openDlg('in');$('#toForgot').onclick=()=>openDlg('forgot');$('#toIn2').onclick=()=>openDlg('in');
-async function busyBtn(btn,fn){btn.disabled=true;try{await fn()}finally{btn.disabled=false}}
-$('#fIn').addEventListener('submit',e=>{e.preventDefault();const m=$('#fIn .amsg');busyBtn(e.submitter||$('#fIn button[type=submit]'),async()=>{
-  try{await Backend.signIn({email:$('#inEmail').value.trim(),password:$('#inPass').value});$('#inPass').value='';closeDlg()}catch(err){setMsg(m,authErr(err),true)}})});
-$('#fUp').addEventListener('submit',e=>{e.preventDefault();const m=$('#fUp .amsg');
-  const username=$('#upUser').value.trim(),email=$('#upEmail').value.trim(),p1=$('#upPass').value,p2=$('#upPass2').value;
-  if(p1!==p2)return setMsg(m,t('errMismatch'),true);
-  if(ACC.config.allow_signup===false)return setMsg(m,t('signupClosed'),true);
-  busyBtn(e.submitter||$('#fUp button[type=submit]'),async()=>{
-    try{const r=await Backend.signUp({username,email,password:p1});$('#upPass').value=$('#upPass2').value='';
-      if(r.needsConfirm)setMsg(m,t('checkEmail',{e:email}),false);else closeDlg()}catch(err){setMsg(m,authErr(err),true)}})});
-$('#fForgot').addEventListener('submit',e=>{e.preventDefault();const m=$('#fForgot .amsg');busyBtn(e.submitter||$('#fForgot button[type=submit]'),async()=>{
-  try{await Backend.sendReset($('#fgEmail').value.trim());setMsg(m,t('resetSent'))}catch(err){setMsg(m,authErr(err),true)}})});
-$('#fReset').addEventListener('submit',e=>{e.preventDefault();const m=$('#fReset .amsg'),p1=$('#rsPass').value,p2=$('#rsPass2').value;
-  if(p1!==p2)return setMsg(m,t('errMismatch'),true);
-  busyBtn(e.submitter||$('#fReset button[type=submit]'),async()=>{try{await Backend.setPassword(p1);setMsg(m,t('passChanged'));setTimeout(closeDlg,1200)}catch(err){setMsg(m,authErr(err),true)}})});
+$('#authDlg').addEventListener('mousedown',e=>{AU.down=e.target});
+$('#authDlg').addEventListener('click',e=>{if(e.target.id==='authDlg'&&AU.down===e.target)closeDlg()});
+$('#auTabIn').onclick=()=>{if(AU.mode!=='in')auShow('in')};
+$('#auTabUp').onclick=()=>{if(!AU_UP.includes(AU.mode))openDlg('up')};
+$('#auSeg').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();
+  const tabs=[$('#auTabIn'),$('#auTabUp')].filter(b=>!b.hidden),i=tabs.indexOf(document.activeElement);const n=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+  tabs[n].focus();tabs[n].click()});
+$('#authDlg').addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeDlg();return}
+  if(e.key!=='Tab')return;
+  const f=[...$('#authBox').querySelectorAll('button,input,a[href],[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.tabIndex>=0&&x.getClientRects().length&&!x.closest('[hidden]'));
+  if(!f.length)return;const a=document.activeElement,first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&(a===first||!$('#authBox').contains(a))){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&(a===last||!$('#authBox').contains(a))){e.preventDefault();first.focus()}
+});
+$('#toUp').onclick=()=>openDlg('up');$('#toIn').onclick=()=>auShow('in');$('#toIn2').onclick=()=>auShow('in');$('#toIn3').onclick=()=>auShow('in');
+$('#toForgot').onclick=()=>{const e=$('#inEmail').value.trim();if(e&&!$('#fgEmail').value)$('#fgEmail').value=e;auShow('forgot')};
+/* ---- sign in ---- */
+$('#inEmail').addEventListener('input',()=>auFe($('#inEmail'),''));
+$('#fIn').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const em=$('#inEmail'),pw=$('#inPass'),email=em.value.trim();
+  if(!EMAIL_RE.test(email))return auBad(em,t('auEmailBad'));
+  if(!pw.value){auMsg(t('errShort'),'err');pw.focus();return}
+  auRun($('#fIn .au-cta'),async()=>{
+    try{await Backend.signIn({email,password:pw.value});pw.value='';closeDlg()}
+    catch(err){
+      if(err&&err.code==='confirm'&&Backend.verifySignup){AU.email=email;AU.pendingAt=Date.now();auShow('code');otpSet($('#auCode'),'');
+        let m=t('auConfirmFirst');if(Backend.resendSignup){try{await Backend.resendSignup(email);auCool('code')}catch(x){if(x&&x.code==='rate'){auCool('code',x.wait||60);m=authErr(x)}}}
+        auMsg(m,'info');return}
+      auMsg(authErr(err),'err');if(err&&err.code==='login'){pw.select&&pw.select();pw.focus()}}
+  })});
+/* ---- sign up, step 1: details ---- */
+$('#upUser').addEventListener('input',()=>userCheck(false));
+$('#upUser').addEventListener('blur',()=>{if($('#upUser').value.trim()&&!USER_RE.test($('#upUser').value.trim()))userState('err',t('usernameH'))});
+$('#upEmail').addEventListener('input',()=>auFe($('#upEmail'),''));
+$('#upEmail').addEventListener('blur',()=>{const v=$('#upEmail').value.trim();if(v&&!EMAIL_RE.test(v))auFe($('#upEmail'),t('auEmailBad'))});
+const upCtx=()=>[$('#upUser').value.trim(),$('#upEmail').value.trim().split('@')[0]];
+$('#upPass').addEventListener('input',()=>{pwPaint('upPass',upCtx());pwMatch('upPass','upPass2')});
+$('#upPass2').addEventListener('input',()=>pwMatch('upPass','upPass2'));
+$('#fUp').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  if(!signupOpen())return auMsg(t('signupClosed'),'err');
+  const u=$('#upUser'),em=$('#upEmail'),p1=$('#upPass'),p2=$('#upPass2'),name=u.value.trim(),email=em.value.trim();
+  if(!USER_RE.test(name)){userState('err',t('usernameH'));u.focus();return}
+  if(AU.uFree===false){userState('err',t('auUserTaken'));u.focus();return}
+  if(!EMAIL_RE.test(email))return auBad(em,t('auEmailBad'));
+  if(!pwCheck('upPass',upCtx()))return;
+  if(p1.value!==p2.value)return auBad(p2,t('errMismatch'));
+  auRun($('#fUp .au-cta'),async()=>{
+    const free=AU.uFree===true?true:await userCheck(true);
+    if(free===false){u.focus();return}
+    if(AU.email&&AU.email!==email){AU.pendingAt=0}
+    AU.user=name;auShow('terms');
+  })});
+/* ---- step 2: terms (create button enabled only when both boxes are ticked) ---- */
+const auTermsOk=()=>$('#auAgree').checked&&$('#auAge').checked;
+function auTermsState(){const ok=auTermsOk();$('#auCreate').disabled=!ok||$('#auCreate').classList.contains('ld');$('#auNeedAgree').hidden=ok}
+$('#auAgree').onchange=auTermsState;$('#auAge').onchange=auTermsState;
+$('#auTermsBack').onclick=()=>auShow('up');
+$('#fTerms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  if(!auTermsOk()){auTermsState();return}
+  const username=$('#upUser').value.trim(),email=$('#upEmail').value.trim(),password=$('#upPass').value;
+  auRun($('#auCreate'),async()=>{
+    try{
+      const r=await Backend.signUp({username,email,password,terms:{version:window.LEGAL?LEGAL.version:'',at:new Date().toISOString()}});
+      $('#upPass').value=$('#upPass2').value='';pwPaint('upPass');auFe($('#upPass2'),'');
+      AU.user=username;AU.email=email;
+      if(r&&r.needsConfirm){
+        if(!Backend.verifySignup){auShow('up');auMsg(t('checkEmail',{e:email}),'info');return}   // no code support → the old "check your email" note
+        AU.pendingAt=Date.now();auCool('code');otpSet($('#auCode'),'');auShow('code');return}
+      AU.done='new';auShow('done');
+    }catch(err){
+      const c=err&&err.code;
+      if(c==='taken'||c==='user'){auShow('up',true);userState('err',c==='taken'?t('auUserTaken'):t('usernameH'));$('#upUser').focus();auMsg(authErr(err),'err');return}
+      if(c==='exists'||c==='email'){auShow('up',true);auFe($('#upEmail'),authErr(err));$('#upEmail').focus();auMsg(authErr(err),'err');return}
+      if(c==='short'||c==='weak'){auShow('up',true);auFe($('#upPass'),authErr(err));$('#upPass').focus();auMsg(authErr(err),'err');return}
+      auMsg(authErr(err),'err');
+    }
+  })});
+/* ---- step 3: the 6-digit code from the email ---- */
+$('#fCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const c=$('#auCode'),v=c.value.replace(/\D/g,'');
+  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  if(!Backend.verifySignup)return;
+  auRun($('#fCode .au-cta'),async()=>{
+    try{await Backend.verifySignup(AU.email,v);AU.done='new';AU.pendingAt=0;auShow('done')}
+    catch(err){auFe(c,authErr(err));otpSet(c,'');c.focus()}
+  })});
+$('#auResend').onclick=()=>{if(!Backend.resendSignup||!AU.email)return;const b=$('#auResend');
+  auRun(b,async()=>{try{await Backend.resendSignup(AU.email);auCool('code');auMsg(t('auResent'),'ok');otpSet($('#auCode'),'');$('#auCode').focus()}catch(err){if(err&&err.code==='rate')auCool('code',err.wait||60);auMsg(authErr(err),'err')}});auCoolPaint()};
+$('#auChangeEmail').onclick=()=>{AU.pendingAt=0;auShow('up');setTimeout(()=>{const em=$('#upEmail');em.focus();em.select()},60)};
+function auDoneFill(){
+  const pass=AU.done==='pass',g=$('#auGift'),b=BILL(),n=+b.signup||0;
+  g.hidden=pass||!(billingOn()&&n>0);if(!g.hidden)g.querySelector('span').innerHTML=esc(t('auDoneGift',{n:'⁦'+n+'⁩'}));
+}
+$('#auDoneGo').onclick=()=>closeDlg();
+/* ---- forgot password → code + new password ---- */
+$('#fgEmail').addEventListener('input',()=>auFe($('#fgEmail'),''));
+$('#fForgot').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const em=$('#fgEmail'),email=em.value.trim();
+  if(!EMAIL_RE.test(email))return auBad(em,t('auEmailBad'));
+  auRun($('#fForgot .au-cta'),async()=>{
+    try{await (Backend.sendRecoveryCode||Backend.sendReset).call(Backend,email);
+      if(!Backend.verifyRecovery){auMsg(t('resetSent'),'ok');return}   // no code support → link only
+      AU.recEmail=email;AU.recOk=false;auCool('rec');otpSet($('#rcCode'),'');auShow('recover')}
+    catch(err){if(err&&err.code==='rate')auCool('rec',err.wait||60);auMsg(authErr(err),'err')}
+  })});
+$('#rcPass').addEventListener('input',()=>{pwPaint('rcPass',[AU.recEmail.split('@')[0]]);pwMatch('rcPass','rcPass2')});
+$('#rcPass2').addEventListener('input',()=>pwMatch('rcPass','rcPass2'));
+$('#fRecover').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const c=$('#rcCode'),v=c.value.replace(/\D/g,''),p1=$('#rcPass'),p2=$('#rcPass2');
+  if(!AU.recOk&&v.length!==6)return auBad(c,t('auCodeShort'));
+  if(!pwCheck('rcPass',[AU.recEmail.split('@')[0]]))return;
+  if(p1.value!==p2.value)return auBad(p2,t('errMismatch'));
+  auRun($('#fRecover .au-cta'),async()=>{
+    try{
+      if(!AU.recOk){AU.recovering=true;try{await Backend.verifyRecovery(AU.recEmail,v)}finally{setTimeout(()=>{AU.recovering=false},1500)}AU.recOk=true}
+      await Backend.setPassword(p1.value);p1.value=p2.value='';AU.recOk=false;AU.done='pass';auShow('done');
+    }catch(err){const k=err&&err.code;
+      if(k==='otp'){auFe(c,authErr(err));otpSet(c,'');c.focus();return}
+      if(k==='same'||k==='weak'||k==='short'){auFe(p1,authErr(err));p1.focus();return}
+      auMsg(authErr(err),'err')}
+  })});
+$('#rcResend').onclick=()=>{if(!AU.recEmail)return;const b=$('#rcResend');
+  auRun(b,async()=>{try{await (Backend.sendRecoveryCode||Backend.sendReset).call(Backend,AU.recEmail);auCool('rec');AU.recOk=false;auMsg(t('auResent'),'ok');otpSet($('#rcCode'),'')}catch(err){if(err&&err.code==='rate')auCool('rec',err.wait||60);auMsg(authErr(err),'err')}});auCoolPaint()};
+/* ---- reset from the email link (PASSWORD_RECOVERY) ---- */
+$('#rsPass').addEventListener('input',()=>{pwPaint('rsPass');pwMatch('rsPass','rsPass2')});
+$('#rsPass2').addEventListener('input',()=>pwMatch('rsPass','rsPass2'));
+$('#fReset').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const p1=$('#rsPass'),p2=$('#rsPass2');
+  if(!pwCheck('rsPass'))return;if(p1.value!==p2.value)return auBad(p2,t('errMismatch'));
+  auRun($('#fReset .au-cta'),async()=>{try{await Backend.setPassword(p1.value);p1.value=p2.value='';AU.done='pass';auShow('done')}
+    catch(err){const k=err&&err.code;if(k==='same'||k==='weak'||k==='short'){auFe(p1,authErr(err));p1.focus();return}auMsg(authErr(err),'err')}})});
+// header buttons: signed out → "sign in" + "sign up" (sign up hidden while registration is closed)
+function renderAuthBtns(){const on=ACC.on,user=ACC.user;$('#signInBtn').hidden=!on||!!user;$('#signUpBtn').hidden=!on||!!user||!signupOpen()}
+// initial paint of the idle texts (the language switch repaints them through auLang)
+function auLang(){
+  userCheck(false);['upPass','rcPass','rsPass'].forEach(id=>pwPaint(id));auCoolPaint();auTermsState();
+  document.querySelectorAll('#authDlg .au-eye').forEach(b=>b.setAttribute('aria-label',b.getAttribute('aria-pressed')==='true'?t('auHide'):t('auShow')));
+  $('#auSeg').setAttribute('aria-label',t('auTabs'));
+  if(!$('#authDlg').hidden){auBrand();auShow(AU.mode,true)}
+}
+auLang();
 
 /* profile */
 let pendingAvatar=null;
@@ -1761,6 +2103,8 @@ function applyConfig(){
   if(c.lang&&I[c.lang]&&!LANG_CHOSEN&&!(ACC.profile&&ACC.profile.lang)&&c.lang!==LANG)setLang(c.lang,false);
   $('#blocked').hidden=!(ACC.profile&&ACC.profile.blocked);
   $('#gate').hidden=!(ACC.on&&c.require_login&&!ACC.user);
+  renderAuthBtns();if(!$('#authDlg').hidden&&(AU.mode==='in'||AU_UP.includes(AU.mode)))auShow(AU.mode,true);
+  if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);
   renderStemsUI();renderCredits();
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
@@ -1783,7 +2127,7 @@ function renderAdmin(){
   if(!tabOk(ACC.admView))ACC.admView=ADM_TABS.find(tabOk)||'users';
   const M=ACC.users||[],wk=Date.now()-7*864e5,dl=ACC.dlAll||[];
   const k=[[t('statUsers'),M.length],[t('statSongs'),M.reduce((a,m)=>a+(m.songs||0),0)],[t('downloadsL'),dl.length],[t('statActive'),M.filter(m=>new Date(m.last_seen).getTime()>wk).length]];
-  $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${b}</div></div>`).join('');
+  $('#kpis').innerHTML=k.map(([a,b])=>`<div class="kpi"><div class="k">${esc(a)}</div><div class="v">${esc(b)}</div></div>`).join('');
   document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.hidden=!tabOk(b.dataset.v);b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
   $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;$('#admAct').hidden=ACC.admView!=='activity'||!!ACC.admUser;
   $('#admSettings').hidden=!!ACC.admUser||ACC.admView!=='settings';$('#admRolesSec').hidden=!!ACC.admUser||ACC.admView!=='roles';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
@@ -1800,7 +2144,7 @@ function renderAdmin(){
   if(!rows.length){body.innerHTML=`<tr><td colspan="10" class="snote">${esc(t('noUsers'))}</td></tr>`;return}
   rows.forEach(m=>{
     const tr=document.createElement('tr'),isMe=ACC.user&&m.id===ACC.user.id,adm=m.role==='admin';
-    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${m.owner?'own':m.role!=='user'?'adm':''}">${esc(m.owner?t('roleOwner'):roleName(m.role))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${m.seps||0}</td><td class="mono">${m.credits??0}${m.plan&&m.plan!=='free'?` · ${esc(planName(m.plan))}`:''}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
+    tr.innerHTML=`<td><div class="u"><img alt=""><div style="min-width:0"><div class="t"></div><div class="e"></div></div></div></td><td><span class="pill ${m.owner?'own':m.role!=='user'?'adm':''}">${esc(m.owner?t('roleOwner'):roleName(m.role))}</span></td><td>${esc(fmtDate(m.created_at))}</td><td>${esc(fmtDate(m.last_seen))}</td><td class="mono">${+m.songs||0}</td><td class="mono">${dlc[m.id]||0}</td><td class="mono">${+m.seps||0}</td><td class="mono">${+m.credits||0}${m.plan&&m.plan!=='free'?` · ${esc(planName(m.plan))}`:''}</td><td><span class="pill ${m.blocked?'bad':''}">${esc(m.blocked?t('blockedS'):t('active'))}</span></td><td class="acts"></td>`;
     tr.querySelector('img').src=avatarFor(m);
     tr.querySelector('.t').textContent=(m.display_name||m.username||'—')+(isMe?` (${t('you')})`:'');
     tr.querySelector('.e').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
@@ -1898,7 +2242,7 @@ function openRoleDlg(m){
   d.hidden=false;sel.focus();
 }
 /* activity (admin): everyone's recent actions, or one user's in the details view */
-const ACT_KEYS=['role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
+const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy'];
 const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
 async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
 function actRows(list,withUser){
@@ -1935,6 +2279,7 @@ function renderAdminUser(){
   $('#udMeta').innerHTML=[m.username?ltr('@'+m.username):'',m.email?ltr(m.email):''].filter(Boolean).join(' · ');
   $('#udCred').hidden=!ACC.perms.has('credits');
   const facts=[[t('role'),m.owner?t('roleOwner'):roleName(m.role)],[t('joined'),fmtDate(m.created_at)],[t('lastSeen'),fmtDate(m.last_seen)],[t('uploads'),String(songs.length)],[t('downloadsL'),String(dls.length)],[t('seps'),String(m.seps||0)],[t('colStatus'),m.blocked?t('blockedS'):t('active')]];
+  if('terms_version' in m)facts.push([t('adTerms'),m.terms_version?t('adTermsV',{v:m.terms_version,d:fmtDate(m.terms_at)}):t('adTermsNone')]);
   facts.push([t('creditsCol'),String(m.credits??0)],[t('seePlans'),m.plan&&m.plan!=='free'?`${planName(m.plan)} · ${t('planUntil',{d:fmtDate(m.plan_until)})}`:t('planFreeL')]);
   $('#udFacts').innerHTML=facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
   const ps=$('#udPlan');ps.innerHTML=['free',...BILL().plans.map(p=>p.id)].map(id=>`<option value="${esc(id)}">${esc(planName(id))}</option>`).join('');ps.value=m.plan||'free';
@@ -2133,7 +2478,9 @@ function hookPages(){
 // ── automatic payments: checkout link → Lemon Squeezy → webhook (functions/api/pay/webhook.js → pay_webhook in SQL)
 const PAY={opened:0,polling:false,focusAt:0};
 const PAY_LIVE=['active','on_trial','past_due','paused'];
-function contactAction(c){return [/^https?:/.test(c)?c.replace(/^https?:\/\//,'').slice(0,40):c,()=>{location.href=/@/.test(c)&&!/^https?:/.test(c)?'mailto:'+c:c}]}
+// the contact from the settings: an e-mail address (→ mailto:) or an https:// link only — never javascript:/data:
+function contactHref(c){c=String(c||'').trim();if(/^[^\s@:\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(c))return 'mailto:'+c;try{const u=new URL(c);if(u.protocol==='https:')return u.href}catch(e){}return null}
+function contactAction(c){const h=contactHref(c);return [/^https?:/.test(c)?c.replace(/^https?:\/\//,'').slice(0,40):c,()=>{if(!h)return;if(h.startsWith('mailto:'))location.href=h;else window.open(h,'_blank','noopener')}]}
 // the plan's checkout link + who is paying (Lemon Squeezy returns checkout[custom] in the webhook; other providers ignore it)
 function checkoutUrl(link,planId){
   try{const u=new URL(link);for(const k of [...u.searchParams.keys()])if(/^checkout\[(custom\]\[(user_id|plan)|email)\]$/.test(k))u.searchParams.delete(k);
@@ -2267,7 +2614,7 @@ async function dz(path,params){
   const q=new URLSearchParams(params||{}).toString();
   if(dzMode!=='jsonp'){
     try{const r=await fetch(`api/deezer/${path}${q?'?'+q:''}`);if(r.ok&&/json/.test(r.headers.get('content-type')||'')){dzMode='proxy';return await r.json()}}catch(e){}
-    if(dzMode==='proxy')throw new Error('deezer');
+    if(dzMode==='proxy'||!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))throw new Error('deezer');   // production: proxy only
     dzMode='jsonp';
   }
   return new Promise((ok,no)=>{const cb='__dz'+Math.random().toString(36).slice(2);const s=document.createElement('script');
@@ -2278,13 +2625,17 @@ function rowFromTrack(t,album){
   const id='dz:'+t.id;const r=DC.rows[id]||{id,ext:t.id,a:null,status:'idle',plays:0};
   Object.assign(r,{title:t.title_short||t.title,artist:(t.artist&&t.artist.name)||'',album:(album&&album.title)||(t.album&&t.album.title)||'',
     cover:(album&&album.cover_medium)||(t.album&&t.album.cover_medium)||r.cover||'',preview:t.preview||r.preview||'',link:t.link||r.link||'',
-    release:(album&&album.release_date)||r.release||null,dur:t.duration||r.dur||0});
+    release:(album&&album.release_date)||r.release||null,dur:t.duration||r.dur||0,dz:true});
   return DC.rows[id]=r;
 }
+// catalog rows are written by other users: Deezer's own data wins; covers only from Deezer's image CDN, links only to deezer.com
+const coverOk=u=>typeof u==='string'&&/^https:\/\/[a-z0-9-]+\.dzcdn\.net\/[^\s"'<>]*$/i.test(u);
+const linkOk=u=>typeof u==='string'&&/^https:\/\/www\.deezer\.com\/[^\s"'<>]*$/i.test(u);
 function rowFromCatalog(c){
-  const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'};
-  Object.assign(r,{title:c.title||r.title,artist:c.artist||r.artist,album:c.album||r.album,cover:c.cover||r.cover,link:c.link||r.link,release:c.release_date||r.release||null,dur:c.duration||r.dur,plays:c.plays,inCat:true,
-    a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:c.chords||[]}:r.a,added:c.created_at,full:!!c.is_full});
+  const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'},txt=(v,d)=>v!=null&&v!==''?String(v).slice(0,300):(d||'');
+  if(!r.dz)Object.assign(r,{title:txt(c.title,r.title),artist:txt(c.artist,r.artist),album:txt(c.album,r.album),cover:coverOk(c.cover)?c.cover:(r.cover||''),link:linkOk(c.link)?c.link:(r.link||'')});
+  Object.assign(r,{release:c.release_date||r.release||null,dur:+c.duration||r.dur||0,plays:+c.plays||0,inCat:true,
+    a:c.bpm!=null?{bpm:+c.bpm,pc:c.key_pc,mode:c.key_mode,chords:Array.isArray(c.chords)?c.chords.filter(Number.isInteger):[]}:r.a,added:c.created_at,full:!!c.is_full});
   if(r.a)r.status='done';
   return DC.rows[c.id]=r;
 }
@@ -2551,11 +2902,12 @@ function renderMix(){
 $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
-const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout']};
+const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null]};
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
   logAct('view',v);
-  for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=k!==v;$(nav).classList.toggle('on',k===v)}
+  const cur=VIEWS[v][0];
+  for(const k in VIEWS){const [sec,nav]=VIEWS[k];$(sec).hidden=sec!==cur;if(nav)$(nav).classList.toggle('on',k===v)}
   const d=v==='discover',j=v==='dj';
   if(v!=='tool'&&P.playing)stop();
   if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
@@ -2564,6 +2916,7 @@ function showView(v,anchor){
   if(window.CRATE)v==='crate'?CRATE.show():CRATE.hide();
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
+  if(v==='terms'||v==='privacy')renderLegal(v);else LEGAL_V.kind=null;
   document.documentElement.classList.remove('home');
   try{history.replaceState(null,'',v==='about'&&!anchor?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
   const tgt=anchor&&document.getElementById(anchor);
@@ -2588,6 +2941,25 @@ $('#navCrate').onclick=()=>showView('crate');
 $('#navPricing').onclick=()=>showView('pricing');
 $('#navAbout').onclick=()=>showView('about');
 $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
+/* Terms of Use / Privacy Policy (#terms, #privacy): text from assets/legal.js (window.LEGAL) */
+const LEGAL_V={kind:null};
+function renderLegal(kind){
+  const el=$('#legalView');LEGAL_V.kind=kind;
+  if(!window.LEGAL){el.innerHTML='';return}
+  const u=LEGAL.ui(LANG),toc=LEGAL.toc(kind,LANG),tab=(k,label)=>`<a href="#${k}" class="lg-tab${k===kind?' on':''}"${k===kind?' aria-current="page"':''}>${esc(label)}</a>`;
+  el.innerHTML=`<div class="pg lg"><header class="lg-head"><span class="pg-eb">${esc(u.eyebrow)}</span><h1 id="lgH">${esc(LEGAL.title(kind,LANG))}</h1>
+    <p class="lg-meta"><span>${esc(u.version)} <b dir="ltr">${esc(LEGAL.version)}</b></span><span aria-hidden="true">·</span><span>${esc(u.effective.replace('{d}',LEGAL.date(LANG)))}</span></p>
+    <nav class="lg-tabs" aria-label="${esc(u.eyebrow)}">${tab('terms',u.terms)}${tab('privacy',u.privacy)}</nav></header>
+    <div class="lg-grid"><nav class="lg-toc" aria-labelledby="lgTocH"><details${matchMedia('(min-width:901px)').matches?' open':''}><summary id="lgTocH">${esc(u.toc)}</summary><ol>${toc.map(([id,h],i)=>`<li><a href="#${kind}" data-sec="${id}"><span class="lg-n" dir="ltr">${i+1}</span><span>${esc(h)}</span></a></li>`).join('')}</ol></details></nav>
+    <article class="lg-doc" aria-labelledby="lgH">${LEGAL.html(kind,LANG,{contact:(BILL().contact||'').trim()})}</article></div>
+    <p class="lg-foot"><button type="button" class="lnk" data-nav="about">${esc(u.back)}</button><button type="button" class="lnk" data-top="1">${esc(u.top)}</button></p></div>`;
+}
+$('#legalView').addEventListener('click',e=>{
+  const a=e.target.closest('[data-sec]');
+  if(a){e.preventDefault();const s=document.getElementById(a.dataset.sec);if(s){s.scrollIntoView({block:'start'});const h=s.querySelector('h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}return}
+  const b=e.target.closest('[data-nav],[data-top]');if(!b)return;
+  if(b.dataset.nav)showView(b.dataset.nav);else{window.scrollTo(0,0);$('#lgH').tabIndex=-1;$('#lgH').focus({preventScroll:true})}
+});
 // the About page is the home page (no hash); the tool lives at #tool
 const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'about':VIEWS[h]?h:'about'};
 const routeHash=()=>{const h=location.hash.slice(1);showView(viewOfHash(),h==='about-a11y'?h:null)};
@@ -2685,7 +3057,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.PAGES)PAGES.lang();auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -2739,7 +3111,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='l'||e.key==='L'){loopToggle()}
   else if(e.key==='m'||e.key==='M'){S.click=!S.click;$('#clickBtn').classList.toggle('on',S.click)}
   else if(e.key==='+'||e.key==='='){zoom(-1)}else if(e.key==='-'){zoom(1)}
-  else if(e.key==='Escape'){$('#pop').hidden=true;$('#mix').hidden=true;$('#lib').hidden=true;$('#acc').hidden=true;$('#admin').hidden=true;$('#authDlg').hidden=true}
+  else if(e.key==='Escape'){$('#pop').hidden=true;$('#mix').hidden=true;$('#lib').hidden=true;$('#acc').hidden=true;$('#admin').hidden=true;closeDlg()}
 });
 ov.addEventListener('pointerdown',e=>{if(!S.dur)return;const r=ov.getBoundingClientRect();seek((e.clientX-r.left)/r.width*S.dur)});
 let drag=null;

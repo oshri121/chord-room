@@ -85,6 +85,11 @@ html[dir="rtl"] .langw .sel{background-position:left 11px center}
 .langw .sel:hover{border-color:var(--ink);background-color:var(--soft)}
 .langw .sel option{background:var(--paper);color:var(--ink)}
 
+/* sign up (signed out): solid with the brand gradient; darkened accents keep white text readable */
+.top .btn.au-up{position:relative;isolation:isolate;color:#fff;border-color:transparent;background:linear-gradient(100deg,color-mix(in srgb,var(--acc-a) 78%,#000),color-mix(in srgb,var(--acc-p) 72%,#000) 55%,color-mix(in srgb,var(--acc-b) 64%,#000));background-size:180% 100%;background-position:0 0;font-weight:600;transition:background-position .5s var(--ease),box-shadow .2s,transform .15s}
+.top .btn.au-up:hover{background:linear-gradient(100deg,color-mix(in srgb,var(--acc-a) 78%,#000),color-mix(in srgb,var(--acc-p) 72%,#000) 55%,color-mix(in srgb,var(--acc-b) 64%,#000));background-size:180% 100%;background-position:100% 0;border-color:transparent;box-shadow:0 10px 24px -12px var(--acc-p)}
+.top .btn.au-up:focus-visible{outline-offset:3px}
+
 /* points chip */
 .credits{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px 0 5px;border-radius:999px;border:1px solid transparent;background:linear-gradient(var(--paper),var(--paper)) padding-box,linear-gradient(90deg,rgba(47,140,255,.55),rgba(182,109,255,.55),rgba(255,122,26,.65)) border-box;font-size:13px;color:var(--muted);white-space:nowrap;transition:box-shadow .2s}
 .credits svg{width:26px;height:26px;flex:none;filter:drop-shadow(0 2px 4px rgba(255,122,26,.35))}
@@ -111,7 +116,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 
 /* visually hidden label: icon buttons keep their accessible name */
 .top.c2 #libBtn span,.top.c2 #adminBtn span,.top.c2 #signInBtn span,.top.c2 .credits span,
-.top.c4 #upLbl span,.top.m #signInBtn span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.top.c4 #upLbl span,.top.c4 #signUpBtn span,.top.m #signInBtn span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* ---------- compaction levels (set by shell.js, cumulative) ---------- */
 .top.c1 .top-in{gap:12px}
@@ -122,7 +127,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.c1 .mark .tl,.top.m .mark .tl{display:none}
 .top.c1 .mark .wm,.top.m .mark .wm{grid-row:1/3;align-self:center}
 .top.c3 .mark .wm{letter-spacing:.13em}
-.top.c4 #upLbl{width:38px;padding:0}
+.top.c4 #upLbl,.top.c4 #signUpBtn{width:38px;padding:0}
 /* c3: the language picker shrinks to its globe (the list still shows the names), c4: tab labels without icons */
 .top.c3 .langw .sel{width:38px;padding:0;color:transparent;background-image:none}
 .top.c3 .langw .lgl{inset-inline-start:11px;color:var(--ink)}
@@ -141,6 +146,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.m .credits span{display:none}
 .top.m .credits{padding-inline-end:11px}
 .top.m #signInBtn{width:38px;padding:0}
+.top.m #signUpBtn{padding:0 14px}
 .top.m .navwrap{position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:2;width:min(360px,88vw);flex-direction:column;align-items:stretch;gap:18px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));background:var(--paper);border-inline-start:1px solid var(--line);box-shadow:0 0 60px var(--shadow);overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden}
 html[dir="rtl"] .top.m .navwrap{transform:translateX(-105%)}
 .top.m.anim .navwrap{transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s linear .38s}
@@ -175,6 +181,7 @@ html[lang="ar"] .top *{letter-spacing:0}
 /* ---------- reduced motion / accessibility widget ---------- */
 @media (prefers-reduced-motion:reduce){
   .top::after,.top .logo .lfg rect,.top .logo .lred,.top .btn.solid.up::before,.credits:hover svg{animation:none!important}
+  .top .btn.au-up{transition:none}
   .tab-ind.ready,.top .navwrap,.top .scrim{transition:none!important}
 }
 html.a11y-noanim .top::after,html.a11y-noanim .top .logo .lfg rect,html.a11y-noanim .top .logo .lred,html.a11y-noanim .top .btn.solid.up::before,html.a11y-noanim .credits:hover svg{animation:none!important}

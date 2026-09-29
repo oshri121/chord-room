@@ -280,6 +280,20 @@ function save(){
     localStorage.setItem(lsKey(),JSON.stringify({v:1,folder:C.folder,sort:C.sort,sel:C.sel,rows}));
   }catch(e){}
 }
+/* rows read back from localStorage are data, never markup: keep only the expected fields with the expected types
+   (ids and numbers go into HTML attributes/styles unescaped, so a tampered entry must not reach them as text) */
+function cleanRow(r){
+  if(!r||typeof r!=='object')return null;
+  const str=(v,n)=>typeof v==='string'?v.slice(0,n):'',num=v=>typeof v==='number'&&isFinite(v)?v:null;
+  const x={id:typeof r.id==='string'&&/^[A-Za-z0-9_-]{1,40}$/.test(r.id)?r.id:nid(),name:str(r.name,400),rel:str(r.rel,1000),size:num(r.size),ext:str(r.ext,10).replace(/[^a-z0-9]/gi,''),
+    dur:num(r.dur),lufs:num(r.lufs),peak:num(r.peak),bpm:num(r.bpm),bpm0:num(r.bpm0),offset:num(r.offset),down:num(r.down)||0,flux:num(r.flux)};
+  if(r.key&&Number.isInteger(r.key.pc)&&r.key.pc>=0&&r.key.pc<12)x.key={pc:r.key.pc,mode:r.key.mode?1:0};
+  if(r.lat&&typeof r.lat==='object')x.lat={artist:str(r.lat.artist,300),title:str(r.lat.title,300)};
+  if(Array.isArray(r.cues))x.cues=r.cues.filter(c=>c&&typeof c.k==='string'&&num(c.t)!=null).slice(0,32).map(c=>({...c,k:c.k,t:c.t}));
+  if(r.wv&&typeof r.wv.a==='string'&&typeof r.wv.c==='string')x.wv={a:r.wv.a,c:r.wv.c};
+  if(num(r.gsh)!=null)x.gsh=r.gsh;
+  return x;
+}
 function load(){
   C.rows=[];C.sel=null;C.compat=null;C.sort=null;C.folder='';C.q='';C.key='';C.editLat=null;
   try{
@@ -289,7 +303,7 @@ function load(){
     const o=JSON.parse(localStorage.getItem(lsKey())||'null');if(!o||o.v!==1||!Array.isArray(o.rows))return;
     C.folder=typeof o.folder==='string'?o.folder:'';
     C.sort=o.sort&&SORTABLE.has(o.sort.k)?{k:o.sort.k,dir:o.sort.dir<0?-1:1}:null;
-    C.rows=o.rows.filter(r=>r&&r.name&&r.bpm>0).map(r=>{const x={...r,st:'ok',file:null,p:1};x.energy=energyOf(x);return x});
+    C.rows=o.rows.map(cleanRow).filter(r=>r&&r.name&&r.bpm>0).map(r=>{const x={...r,st:'ok',file:null,p:1};x.energy=energyOf(x);return x});
     C.sel=o.sel&&byId(o.sel)?o.sel:null;
   }catch(e){}
 }
@@ -426,7 +440,8 @@ function smartOrder(){
 
 /* ---------- exports ---------- */
 const logExp=(kind,n)=>{if(CR.log)CR.log('crate_export',`${kind} · ${n} tracks`)};
-function csvCell(v){let s=String(v??'');if(/^[=+\-@]/.test(s)&&!/^-?\d/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+// spreadsheet formula injection: a cell that starts with = + - @ (or a tab/CR) is opened as a formula by Excel/Sheets → prefix "'" unless it's a plain number
+function csvCell(v){let s=String(v??'');if(/^[=+\-@\t\r]/.test(s)&&!/^-?\d+(?:\.\d+)?$/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
 function exportCsv(){
   const rows=exportRows();if(!rows.length){setMsg(t('crNothing'),true);renderMsg();return}
   const L=[[t('colName'),t('colFile'),'BPM',t('colKey'),t('colLen'),'LUFS',t('colEnergy')].map(csvCell).join(',')];
@@ -469,7 +484,7 @@ function exportM3u(){
   CR.saveBlob(new Blob([m3u(rows,r=>r.rel||r.name)],{type:'audio/x-mpegurl'}),'chord-room-set.m3u8');logExp('m3u',rows.length);setMsg('');renderMsg();
 }
 function renamed(r){
-  const safe=s=>s.replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').trim();
+  const safe=s=>s.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g,'').replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').trim();
   const base=baseOf(r.name).replace(/^(?:\d{1,2}[AB]|[A-G][b#]?m?) - \d{2,3}(?:\.\d)? - /,'');
   return safe(`${keyStr(r.key)||'--'} - ${Math.round(r.bpm)} - ${base}`).slice(0,180)+(r.ext?'.'+r.ext:'');
 }
@@ -778,7 +793,7 @@ function saveLat(r,val){
   C.editLat=null;save();renderTable();
 }
 /* file names that FAT32 USB sticks and CDJs accept */
-const fatName=s=>String(s).normalize('NFC').replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').replace(/[. ]+$/,'').trim();
+const fatName=s=>String(s).normalize('NFC').replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g,'').replace(/[\\/:*?"<>|\u0000-\u001F]/g,'_').replace(/\s+/g,' ').replace(/[. ]+$/,'').trim();
 function usbName(r){
   const l=latOf(r),pre=C.usbPre?`${keyStr(r.key)||'--'} - ${Math.round(r.bpm)} - `:'';
   return fatName(pre+latStr(l)).slice(0,120)+(r.ext?'.'+r.ext:'');

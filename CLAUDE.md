@@ -91,6 +91,16 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (added in `gridStart`, so XML/NML exports follow).
 - Discover player bar (`#dPlayer`, built by `dpEl`/`dpRender`): play/pause, previous/next through the visible list
   (auto-next at the end), stop, seek, volume/mute (saved in `chordroom.dvol`); hidden when leaving Discover.
+- Auth UX (`assets/auth.css`, app.js "auth dialog"): header "כניסה"/"הרשמה" (signed out), two-panel dialog; sign-up =
+  details → terms (required consent checkboxes; `terms_version`/`terms_at` go in user metadata → `profiles.terms_*` via
+  `handle_new_user`) → 6-digit email code (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
+  (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
+  owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
+- Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
+  client stops selecting `pay_portal`). `_headers` = strict CSP (no inline scripts: `assets/early.js`), frame-ancestors none,
+  HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
+  A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
+  scratchpad `sec/sec_test.py` (XSS payloads + CSP).
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.

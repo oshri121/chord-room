@@ -33,7 +33,7 @@ he: {
   f3l: ['סנכרון קצב וביטים מדויק לדגימה, Key Lock, הזזת סולם וסנכרון סולם',
     'EQ בשלושה תחומים עם Kill, פילטר וקרוספיידר', 'אפקטי ביט: Echo,‏ Reverb,‏ Flanger,‏ Gate,‏ Roll ו־Brake',
     'סמפלר (צופר, סירנה, Riser,‏ Drop), Hot Cues ולופים', 'מעבר אוטומטי שנכנס בתחילת תיבה ומחליף בסים',
-    'הקלטת המיקס, ציון התאמה על גלגל קאמלוט עם עצה בלחיצה אחת, והצעות לשיר הבא מהשירים שלכם ומהקטלוג'],
+    'הקלטת המיקס, ציון התאמה על גלגל סולמות עם עצה בלחיצה אחת, והצעות לשיר הבא מהשירים שלכם ומהקטלוג'],
   f4k: 'ייצוא למפיקים', f4h: 'ישר ל־FL Studio',
   f4p: 'מוציאים בדיוק את מה שצריך להפקה — בקצב ובסולם שבחרתם.',
   f4l: ['WAV ו־MP3 ב־320 kbps: ערוצים, אינסטרומנטלי ומקור', 'MIDI לפסנתר: אקורדים, קו בס ומלודיית השירה', 'הכל בקצב ובסולם שבחרתם'],
@@ -110,7 +110,7 @@ en: {
   f3l: ['Sample-accurate tempo and beat sync, key lock, key shift and key sync',
     '3-band EQ with kill, filter and crossfader', 'Beat FX: echo, reverb, flanger, gate, roll and brake',
     'Sampler (horn, siren, riser, drop), hot cues and loops', 'Auto transition with a bar-aligned entry and bass swap',
-    'Record the mix, a match score on a Camelot wheel with one-click advice, and next-song picks from your songs and the catalog'],
+    'Record the mix, a match score on a key wheel with one-click advice, and next-song picks from your songs and the catalog'],
   f4k: 'Export for producers', f4h: 'Straight into FL Studio',
   f4p: 'Take out exactly what you need for production — in the tempo and key you chose.',
   f4l: ['WAV and MP3 320 kbps: stems, instrumental and original', 'Piano MIDI: chords, bass line and vocal melody', 'Everything in your chosen tempo and key'],
@@ -186,7 +186,7 @@ ar: {
   f3l: ['مزامنة الإيقاع والنبضات بدقة العيّنة، وقفل المقام وتحريكه ومزامنته',
     'معادل بثلاثة نطاقات مع Kill، وفلتر وكروسفيدر', 'مؤثرات إيقاعية: Echo وReverb وFlanger وGate وRoll وBrake',
     'سامبلر (بوق، صفارة، Riser،‏ Drop)، ونقاط Hot Cue وحلقات', 'انتقال تلقائي يبدأ مع بداية المازورة ويبدّل الباص',
-    'تسجيل المزج، ودرجة توافق على عجلة كاميلوت مع نصيحة بنقرة واحدة، واقتراحات للأغنية التالية من أغانيك ومن الكتالوج'],
+    'تسجيل المزج، ودرجة توافق على عجلة المقامات مع نصيحة بنقرة واحدة، واقتراحات للأغنية التالية من أغانيك ومن الكتالوج'],
   f4k: 'تصدير للمنتجين', f4h: 'مباشرة إلى FL Studio',
   f4p: 'صدّر ما تحتاجه للإنتاج بالضبط — بالإيقاع والمقام اللذين اخترتهما.',
   f4l: ['WAV وMP3 بجودة 320 kbps: المسارات والنسخة الموسيقية والأصل', 'MIDI للبيانو: الكوردات وخط الباص ولحن الغناء', 'كل شيء بالإيقاع والمقام اللذين اخترتهما'],
@@ -262,7 +262,7 @@ ru: {
   f3l: ['Синхронизация темпа и битов с точностью до сэмпла, key lock, сдвиг и синхронизация тональности',
     '3-полосный эквалайзер с kill, фильтр и кроссфейдер', 'Бит-эффекты: echo, reverb, flanger, gate, roll и brake',
     'Сэмплер (горн, сирена, райзер, дроп), хот-кью и лупы', 'Автопереход: вход с начала такта и смена баса',
-    'Запись микса, оценка совместимости на круге Camelot с советом в один клик и подбор следующей песни из ваших песен и каталога'],
+    'Запись микса, оценка совместимости на круге тональностей с советом в один клик и подбор следующей песни из ваших песен и каталога'],
   f4k: 'Экспорт для продюсеров', f4h: 'Прямо в FL Studio',
   f4p: 'Забирайте ровно то, что нужно для продакшна, — в выбранном темпе и тональности.',
   f4l: ['WAV и MP3 320 kbps: стемы, инструментал и оригинал', 'Фортепианный MIDI: аккорды, бас-линия и вокальная мелодия', 'Всё в выбранном темпе и тональности'],
@@ -338,7 +338,7 @@ es: {
   f3l: ['Sincronía de tempo y beats con precisión de muestra, key lock, cambio y sincronía de tonalidad',
     'Ecualizador de 3 bandas con kill, filtro y crossfader', 'Efectos de beat: echo, reverb, flanger, gate, roll y brake',
     'Sampler (bocina, sirena, riser, drop), hot cues y loops', 'Transición automática con entrada alineada al compás y cambio de bajos',
-    'Graba la mezcla, puntuación en una rueda Camelot con consejo en un clic y sugerencias de la siguiente canción desde tus canciones y el catálogo'],
+    'Graba la mezcla, puntuación en una rueda de tonalidades con consejo en un clic y sugerencias de la siguiente canción desde tus canciones y el catálogo'],
   f4k: 'Exportar para productores', f4h: 'Directo a FL Studio',
   f4p: 'Llévate justo lo que necesitas para producir, en el tempo y la tonalidad que elegiste.',
   f4l: ['WAV y MP3 a 320 kbps: pistas, instrumental y original', 'MIDI de piano: acordes, línea de bajo y melodía vocal', 'Todo en el tempo y la tonalidad que elijas'],
@@ -390,6 +390,171 @@ es: {
   plans: { free: 'Gratis', basic: 'Básico', pro: 'Pro', studio: 'Estudio' }
 }
 };
+
+/* ---------- home page: what the site does today (overrides + new strings, all five languages) ---------- */
+const SX = {
+he: {
+  heroP: 'קצב, סולם ואקורדים תוך שניות, הפרדת ערוצים ב־AI, מיקס חי על שני דקים, ניתוח ספרייה שלמה לתקליטנים וייצוא ל־FL Studio. הכל רץ בדפדפן, בלי להתקין כלום.',
+  f1l: ['BPM, סולם ועוצמה (LUFS), עם שמות סולמות מוכרים כמו Am או F#m',
+    'אקורדים עם דף אקורדים חי, דיאגרמות לגיטרה ולפסנתר, טרנספוזיציה וקאפו',
+    'צורת גל RGB בסגנון DJ — אדום לבסים, ירוק לאמצע, כחול לגבוהים — עם גריד ביטים, לופים, Hot Cues ומטרונום',
+    'שינוי קצב בלי לשנות את גובה הצליל, ושינוי סולם בלי לשנות את הקצב',
+    'הפרדת ערוצים ב־AI לשירה, תופים, בס ושאר הכלים (Demucs v4 בדפדפן, עם האצת GPU כשיש) ומיקסר עם השתקה, סולו וקריוקי',
+    'השיר האחרון נפתח שוב לבד, גם אחרי שסוגרים את הדפדפן'],
+  f2l: ['מצעדים ושירים חדשים בעולם ובישראל, עם מסנן ״ישראלי״ שמציג אמנים ישראלים', 'סולם, BPM ואקורדים לכל שיר',
+    'התאמות DJ: סולמות שמתאימים הרמונית וקצב בטווח של 6%', 'נגן בתחתית המסך: הקודם והבא, עצירה, מעבר בתוך השיר ועוצמה',
+    'השמעת השיר המלא דרך הנגן הרשמי של Deezer'],
+  f6k: 'ניתוח ספרייה', f6h: 'כל הספרייה, מוכנה לסט',
+  f6p: 'גוררים תיקייה שלמה ומקבלים לכל שיר BPM, סולם, עוצמה ואנרגיה. אחר כך מסדרים סט, בודקים את נקודות הקיו ומייצאים לתוכנת ה־DJ.',
+  f6l: ['ניתוח של הרבה קבצים ברצף, בטבלה שאפשר למיין ולסנן', 'סדר סט חכם לפי סולמות תואמים, קצב ואנרגיה',
+    'נקודות קיו אוטומטיות בצבעים: Intro,‏ Vocal,‏ Break,‏ Build,‏ Drop ו־Outro',
+    'תצוגה בסגנון rekordbox: מאזינים מכל נקודה, גוררים קיו ומזיזים את הגריד',
+    'ייצוא ל־rekordbox ‏(XML), ל־Traktor ‏(NML) ול־Serato (הקיו בתוך עותקי ה־MP3), וגם CSV ו־M3U8',
+    'USB ל־Pioneer: עותקים עם שמות באותיות לטיניות לפי ההגייה העברית, ותגיות BPM וסולם בתוך הקבצים'],
+  f4l: ['WAV ו־MP3 ב־320 kbps: ערוצים, אינסטרומנטלי ומקור', 'MIDI לפסנתר: אקורדים, קו בס ומלודיית השירה',
+    'תופים ל־MIDI: קיק, סנר והיי־האט מערוץ התופים, מיושרים ל־1/16', 'הכל בקצב ובסולם שבחרתם, ומתחיל בתיבה 1'],
+  f5k: 'חשבון ונקודות', f5h: 'הספרייה שלכם, איתכם בכל מקום',
+  f5p: 'נרשמים עם אימייל, מאמתים בקוד שנשלח אליו, והשירים נשמרים בחשבון — כולל קובץ האודיו, באופן פרטי.',
+  f5lPts: ['נקודות מתנה בהרשמה, ומסלולים חודשיים למי שמפריד הרבה ערוצים', 'הזמנת חברים: גם אתם וגם החבר מקבלים נקודות'],
+  f5l: ['״השירים שלי״ נשמרים בחשבון יחד עם קובץ האודיו, באופן פרטי', 'פרופיל עם תמונה, שם וביו, מצב בהיר וכהה ו־5 שפות', 'תוסף נגישות מובנה'],
+  prv: [['העלאות פרטיות לכל חשבון', 'שירים שאתם מעלים נשמרים באחסון פרטי של החשבון שלכם ונפתחים בקישורים חתומים לזמן מוגבל. בעל האתר ומנהלים מורשים יכולים לגשת אליהם לצורכי תמיכה ופיקוח.'],
+    ['ניתוחים משותפים, אף פעם לא אודיו', 'ניתוחים של קטעי האזנה מ״גלה שירים״ נשמרים בקטלוג משותף — סולם, BPM ואקורדים בלבד, בלי אודיו ובלי שם המשתמש.'],
+    ['העיבוד קורה אצלכם', 'הניתוח, הפרדת הערוצים והייצוא רצים בדפדפן. תוצאות ניתוח הספרייה נשמרות בדפדפן שלכם, לכל חשבון בנפרד.']],
+  faqX: [['איך מעבירים את הניתוח ל־rekordbox,‏ Serato או Traktor?', 'בניתוח הספרייה מייצאים קובץ XML ל־rekordbox (עם BPM, סולם, גריד ונקודות קיו) או קובץ NML ל־Traktor. ל־Serato ול־VirtualDJ מורידים עותקי MP3 שהקיו כבר שמורים בתוכם.']],
+  incFree: ['BPM, סולם ועוצמה', 'אקורדים, דף אקורדים ודיאגרמות', 'גלה שירים, מיקס חי וניתוח ספרייה', 'ייצוא MIDI לפסנתר'],
+  rowDisc: 'גלה שירים, מיקס חי וניתוח ספרייה',
+  lgNav: 'מסמכים', lgTerms: 'תנאי שימוש', lgPrivacy: 'מדיניות פרטיות', lgA11y: 'הצהרת נגישות'
+},
+en: {
+  heroP: 'Tempo, key and chords in seconds, AI stem separation, a live two-deck mix, whole-library analysis for DJs and export to FL Studio. It all runs in your browser — nothing to install.',
+  f1l: ['BPM, key and loudness (LUFS), with familiar key names like Am or F#m',
+    'Chords with a live chord sheet, guitar and piano diagrams, transpose and capo',
+    'RGB DJ waveform — red lows, green mids, blue highs — with beat grid, loops, hot cues and a metronome',
+    'Change the tempo without changing the pitch, and the key without changing the tempo',
+    'AI stem separation into vocals, drums, bass and other (Demucs v4 in the browser, GPU-accelerated when available) with a mute / solo / karaoke mixer',
+    'Your last song reopens by itself, even after you close the browser'],
+  f2l: ['Charts and new releases worldwide and in Israel, with an “Israeli” filter that shows Israeli artists', 'Key, BPM and chords for every track',
+    'DJ matches: harmonically compatible keys and tempo within 6%', 'A player bar at the bottom: previous and next, stop, seek and volume',
+    'Full-song playback through Deezer’s official player'],
+  f6k: 'Library analysis', f6h: 'Your whole library, set-ready',
+  f6p: 'Drop in a whole folder and get BPM, key, loudness and energy for every track. Then order a set, check the cue points and export to your DJ software.',
+  f6l: ['Analyses many files in a row, in a table you can sort and filter', 'Smart set order by compatible keys, tempo and energy',
+    'Automatic colour cue points: Intro, Vocal, Break, Build, Drop and Outro',
+    'A rekordbox-style overview: listen from any point, drag a cue, move the grid',
+    'Export to rekordbox (XML), Traktor (NML) and Serato (cues inside the MP3 copies), plus CSV and M3U8',
+    'USB for Pioneer: copies named in Latin letters by Hebrew pronunciation, with BPM and key tags inside the files'],
+  f4l: ['WAV and MP3 320 kbps: stems, instrumental and original', 'Piano MIDI: chords, bass line and vocal melody',
+    'Drums to MIDI: kick, snare and hi-hat from the drums stem, quantised to 1/16', 'Everything in your chosen tempo and key, starting at bar 1'],
+  f5k: 'Account & points', f5h: 'Your library, wherever you are',
+  f5p: 'Sign up with your email, confirm it with a code, and your songs are saved to your account — audio file included, kept private.',
+  f5lPts: ['Free points when you sign up, and monthly plans for heavy stem users', 'Invite friends: you and your friend both get points'],
+  f5l: ['My songs saved with the audio file, privately', 'Profile with photo, name and bio, light and dark mode, and 5 languages', 'Built-in accessibility plugin'],
+  prv: [['Private uploads, per account', 'Songs you upload are stored privately in your account and open through time-limited signed links. The site owner and authorized admins can access them for support and moderation.'],
+    ['Shared analyses, never audio', 'Analyses of Discover previews go into a shared catalog — key, BPM and chords only, no audio and no username.'],
+    ['Processing on your device', 'Analysis, stem separation and exports run in your browser. Library analysis results are kept in your browser, separately for each account.']],
+  faqX: [['How do I get the analysis into rekordbox, Serato or Traktor?', 'In Library analysis, export an XML file for rekordbox (with BPM, key, grid and cue points) or an NML file for Traktor. For Serato and VirtualDJ, download MP3 copies that already carry the cues.']],
+  incFree: ['BPM, key and loudness', 'Chords, chord sheet and diagrams', 'Discover, DJ Mix and library analysis', 'Piano MIDI export'],
+  rowDisc: 'Discover, DJ Mix and library analysis',
+  lgNav: 'Legal', lgTerms: 'Terms of Use', lgPrivacy: 'Privacy Policy', lgA11y: 'Accessibility statement'
+},
+ar: {
+  heroP: 'الإيقاع والمقام والكوردات في ثوانٍ، وفصل المسارات بالذكاء الاصطناعي، ومزج حيّ على منصّتين، وتحليل مكتبة كاملة لمنسّقي الأغاني، وتصدير إلى FL Studio. كل ذلك داخل متصفحك دون تثبيت أي شيء.',
+  f1l: ['BPM والمقام والشدة (LUFS)، بأسماء مقامات مألوفة مثل Am أو F#m',
+    'كوردات مع ورقة كوردات حيّة، ومخططات للغيتار والبيانو، وتحويل المقام والكابو',
+    'موجة DJ ملوّنة RGB — الأحمر للمنخفضات، والأخضر للمتوسطات، والأزرق للعاليات — مع شبكة إيقاع وحلقات ونقاط Hot Cue ومترونوم',
+    'غيّر الإيقاع دون تغيير طبقة الصوت، وغيّر المقام دون تغيير الإيقاع',
+    'فصل المسارات بالذكاء الاصطناعي إلى الغناء والطبول والباص وباقي الآلات (Demucs v4 داخل المتصفح، مع تسريع GPU عند توفره) مع خلّاط للكتم والعزل والكاريوكي',
+    'آخر أغنية تُفتح تلقائيًا من جديد، حتى بعد إغلاق المتصفح'],
+  f2l: ['القوائم والإصدارات الجديدة عالميًا وفي إسرائيل، مع مرشّح «إسرائيلي» يعرض الفنانين الإسرائيليين', 'المقام وBPM والكوردات لكل أغنية',
+    'اقتراحات DJ: مقامات متوافقة هارمونيًا وإيقاع في حدود 6%', 'مشغّل أسفل الشاشة: السابق والتالي والإيقاف والتنقل داخل الأغنية ومستوى الصوت',
+    'تشغيل الأغنية كاملة عبر مشغّل Deezer الرسمي'],
+  f6k: 'تحليل المكتبة', f6h: 'مكتبتك كلها، جاهزة للسِّت',
+  f6p: 'اسحب مجلدًا كاملًا واحصل لكل أغنية على BPM والمقام والشدة والطاقة. ثم رتّب السِّت وراجع نقاط الإشارة وصدّر إلى برنامج الـDJ.',
+  f6l: ['تحليل ملفات كثيرة على التوالي في جدول يمكن فرزه وتصفيته', 'ترتيب ذكي للسِّت حسب المقامات المتوافقة والإيقاع والطاقة',
+    'نقاط إشارة تلقائية ملوّنة: Intro وVocal وBreak وBuild وDrop وOutro',
+    'عرض بأسلوب rekordbox: استمع من أي نقطة، واسحب نقطة الإشارة، وحرّك الشبكة',
+    'تصدير إلى rekordbox ‏(XML) وTraktor ‏(NML) وSerato (نقاط الإشارة داخل نسخ MP3)، إضافة إلى CSV وM3U8',
+    'USB لأجهزة Pioneer: نسخ بأسماء بأحرف لاتينية حسب النطق العبري، مع وسوم BPM والمقام داخل الملفات'],
+  f4l: ['WAV وMP3 بجودة 320 kbps: المسارات والنسخة الموسيقية والأصل', 'MIDI للبيانو: الكوردات وخط الباص ولحن الغناء',
+    'الطبول إلى MIDI: الكيك والسنير والهاي هات من مسار الطبول، مضبوطة على 1/16', 'كل شيء بالإيقاع والمقام اللذين اخترتهما، بدءًا من المازورة 1'],
+  f5k: 'الحساب والنقاط', f5h: 'مكتبتك معك أينما كنت',
+  f5p: 'سجّل ببريدك الإلكتروني وأكّده برمز نرسله إليه، وتُحفظ أغانيك في حسابك — مع ملف الصوت، بشكل خاص.',
+  f5lPts: ['نقاط هدية عند التسجيل، وباقات شهرية لمن يفصل المسارات كثيرًا', 'ادعُ أصدقاءك: تحصل أنت وصديقك على نقاط'],
+  f5l: ['«أغانيّ» محفوظة مع ملف الصوت، بشكل خاص', 'ملف شخصي بصورة واسم ونبذة، والوضع الفاتح والداكن، و5 لغات', 'إضافة مدمجة لإمكانية الوصول'],
+  prv: [['رفع خاص لكل حساب', 'الأغاني التي ترفعها تُحفظ في تخزين خاص بحسابك وتُفتح بروابط موقّعة لمدة محدودة. يمكن لصاحب الموقع والمشرفين المخوّلين الوصول إليها لأغراض الدعم والإشراف.'],
+    ['تحليلات مشتركة، لا صوت أبدًا', 'تحليلات المقاطع التجريبية في «اكتشف» تُحفظ في كتالوج مشترك — المقام وBPM والكوردات فقط، دون صوت ودون اسم المستخدم.'],
+    ['المعالجة على جهازك', 'التحليل وفصل المسارات والتصدير تعمل داخل متصفحك. تُحفظ نتائج تحليل المكتبة في متصفحك، لكل حساب على حدة.']],
+  faqX: [['كيف أنقل التحليل إلى rekordbox أو Serato أو Traktor؟', 'في تحليل المكتبة صدّر ملف XML لـ rekordbox (مع BPM والمقام والشبكة ونقاط الإشارة) أو ملف NML لـ Traktor. أما Serato وVirtualDJ فنزّل لهما نسخ MP3 تحمل نقاط الإشارة بداخلها.']],
+  incFree: ['BPM والمقام والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ وتحليل المكتبة', 'تصدير MIDI للبيانو'],
+  rowDisc: 'اكتشف ومزج DJ وتحليل المكتبة',
+  lgNav: 'مستندات', lgTerms: 'شروط الاستخدام', lgPrivacy: 'سياسة الخصوصية', lgA11y: 'بيان إمكانية الوصول'
+},
+ru: {
+  heroP: 'Темп, тональность и аккорды за секунды, разделение на стемы с AI, живой микс на двух деках, анализ целой библиотеки для диджеев и экспорт в FL Studio. Всё работает в браузере — ничего не нужно устанавливать.',
+  f1l: ['BPM, тональность и громкость (LUFS) — с привычными названиями тональностей вроде Am или F#m',
+    'Аккорды с живым листом аккордов, аппликатуры для гитары и фортепиано, транспонирование и каподастр',
+    'RGB-волна как у DJ — красный для низов, зелёный для середины, синий для верхов — с битовой сеткой, лупами, хот-кью и метрономом',
+    'Меняйте темп без изменения высоты тона, а тональность — без изменения темпа',
+    'Разделение с AI на вокал, барабаны, бас и остальное (Demucs v4 в браузере, с ускорением на GPU, если есть) и микшер с mute, solo и караоке',
+    'Последняя песня открывается сама, даже после закрытия браузера'],
+  f2l: ['Чарты и новинки в мире и в Израиле, с фильтром «Израиль», который показывает израильских артистов', 'Тональность, BPM и аккорды для каждого трека',
+    'DJ-совпадения: гармонически совместимые тональности и темп в пределах 6%', 'Плеер внизу экрана: предыдущая и следующая, стоп, перемотка и громкость',
+    'Полная песня в официальном плеере Deezer'],
+  f6k: 'Анализ библиотеки', f6h: 'Вся библиотека — готова к сету',
+  f6p: 'Перетащите целую папку и получите BPM, тональность, громкость и энергию каждого трека. Затем выстройте сет, проверьте кью-точки и экспортируйте в DJ-программу.',
+  f6l: ['Анализ множества файлов подряд, в таблице с сортировкой и фильтрами', 'Умный порядок сета по совместимым тональностям, темпу и энергии',
+    'Автоматические цветные кью-точки: Intro, Vocal, Break, Build, Drop и Outro',
+    'Обзор в стиле rekordbox: слушайте с любого места, перетаскивайте кью, двигайте сетку',
+    'Экспорт в rekordbox (XML), Traktor (NML) и Serato (кью внутри копий MP3), а также CSV и M3U8',
+    'USB для Pioneer: копии с именами латиницей по ивритскому произношению и тегами BPM и тональности в файлах'],
+  f4l: ['WAV и MP3 320 kbps: стемы, инструментал и оригинал', 'Фортепианный MIDI: аккорды, бас-линия и вокальная мелодия',
+    'Барабаны в MIDI: бочка, малый и хай-хэт из стема барабанов, с квантизацией 1/16', 'Всё в выбранном темпе и тональности, с первого такта'],
+  f5k: 'Аккаунт и баллы', f5h: 'Ваша библиотека всегда с вами',
+  f5p: 'Регистрируйтесь по email, подтверждайте кодом из письма — и песни сохраняются в аккаунте вместе с аудиофайлом, приватно.',
+  f5lPts: ['Подарочные баллы при регистрации и ежемесячные тарифы для тех, кто часто разделяет стемы', 'Приглашайте друзей: баллы получаете и вы, и друг'],
+  f5l: ['«Мои песни» сохраняются вместе с аудиофайлом, приватно', 'Профиль с фото, именем и описанием, светлая и тёмная тема, 5 языков', 'Встроенный плагин доступности'],
+  prv: [['Приватные загрузки для каждого аккаунта', 'Загруженные песни хранятся приватно в вашем аккаунте и открываются по ссылкам, подписанным на ограниченное время. Владелец сайта и уполномоченные администраторы могут получить к ним доступ для поддержки и модерации.'],
+    ['Общие анализы, но не аудио', 'Анализы превью из обзора попадают в общий каталог — только тональность, BPM и аккорды, без аудио и без имени пользователя.'],
+    ['Обработка на вашем устройстве', 'Анализ, разделение на стемы и экспорт выполняются в браузере. Результаты анализа библиотеки хранятся в вашем браузере, отдельно для каждого аккаунта.']],
+  faqX: [['Как перенести анализ в rekordbox, Serato или Traktor?', 'В анализе библиотеки экспортируйте XML для rekordbox (с BPM, тональностью, сеткой и кью-точками) или NML для Traktor. Для Serato и VirtualDJ скачайте копии MP3, в которых кью уже записаны.']],
+  incFree: ['BPM, тональность и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор, DJ-микс и анализ библиотеки', 'Экспорт фортепианного MIDI'],
+  rowDisc: 'Обзор, DJ-микс и анализ библиотеки',
+  lgNav: 'Документы', lgTerms: 'Условия использования', lgPrivacy: 'Политика конфиденциальности', lgA11y: 'Заявление о доступности'
+},
+es: {
+  heroP: 'Tempo, tonalidad y acordes en segundos, separación de pistas con IA, una mezcla en vivo con dos platos, análisis de bibliotecas completas para DJs y exportación a FL Studio. Todo funciona en tu navegador, sin instalar nada.',
+  f1l: ['BPM, tonalidad y sonoridad (LUFS), con nombres de tonalidad conocidos como Am o F#m',
+    'Acordes con hoja de acordes en vivo, diagramas de guitarra y piano, transposición y cejilla',
+    'Forma de onda RGB estilo DJ —rojo para graves, verde para medios, azul para agudos— con rejilla de beats, loops, hot cues y metrónomo',
+    'Cambia el tempo sin cambiar el tono, y la tonalidad sin cambiar el tempo',
+    'Separación con IA en voz, batería, bajo y resto (Demucs v4 en el navegador, con aceleración GPU si está disponible) y mezclador con mute, solo y karaoke',
+    'Tu última canción se vuelve a abrir sola, incluso después de cerrar el navegador'],
+  f2l: ['Listas y novedades del mundo y de Israel, con un filtro «Israelí» que muestra artistas israelíes', 'Tonalidad, BPM y acordes de cada tema',
+    'Coincidencias DJ: tonalidades armónicamente compatibles y tempo dentro del 6 %', 'Un reproductor abajo: anterior y siguiente, detener, avanzar dentro de la canción y volumen',
+    'Canción completa en el reproductor oficial de Deezer'],
+  f6k: 'Análisis de biblioteca', f6h: 'Toda tu biblioteca, lista para el set',
+  f6p: 'Arrastra una carpeta entera y obtén BPM, tonalidad, sonoridad y energía de cada tema. Después ordena el set, revisa los puntos cue y exporta a tu software de DJ.',
+  f6l: ['Analiza muchos archivos seguidos, en una tabla que puedes ordenar y filtrar', 'Orden inteligente del set por tonalidades compatibles, tempo y energía',
+    'Puntos cue automáticos en color: Intro, Vocal, Break, Build, Drop y Outro',
+    'Vista estilo rekordbox: escucha desde cualquier punto, arrastra un cue y mueve la rejilla',
+    'Exporta a rekordbox (XML), Traktor (NML) y Serato (cues dentro de las copias MP3), además de CSV y M3U8',
+    'USB para Pioneer: copias con nombres en letras latinas según la pronunciación hebrea, con etiquetas de BPM y tonalidad en los archivos'],
+  f4l: ['WAV y MP3 a 320 kbps: pistas, instrumental y original', 'MIDI de piano: acordes, línea de bajo y melodía vocal',
+    'Batería a MIDI: bombo, caja y hi-hat desde la pista de batería, cuantizados a 1/16', 'Todo en el tempo y la tonalidad que elijas, desde el compás 1'],
+  f5k: 'Cuenta y puntos', f5h: 'Tu biblioteca, donde estés',
+  f5p: 'Regístrate con tu email, confírmalo con un código y tus canciones se guardan en tu cuenta, con el archivo de audio incluido y de forma privada.',
+  f5lPts: ['Puntos de regalo al registrarte y planes mensuales para quien separa muchas pistas', 'Invita a amigos: tú y tu amigo recibís puntos'],
+  f5l: ['Mis canciones guardadas con el archivo de audio, en privado', 'Perfil con foto, nombre y bio, modo claro y oscuro, y 5 idiomas', 'Plugin de accesibilidad integrado'],
+  prv: [['Subidas privadas, por cuenta', 'Las canciones que subes se guardan de forma privada en tu cuenta y se abren con enlaces firmados por tiempo limitado. El propietario del sitio y los administradores autorizados pueden acceder a ellas para soporte y moderación.'],
+    ['Análisis compartidos, nunca audio', 'Los análisis de las vistas previas de Descubrir van a un catálogo compartido: solo tonalidad, BPM y acordes, sin audio y sin nombre de usuario.'],
+    ['Procesamiento en tu dispositivo', 'El análisis, la separación de pistas y las exportaciones se ejecutan en tu navegador. Los resultados del análisis de biblioteca se guardan en tu navegador, por separado para cada cuenta.']],
+  faqX: [['¿Cómo llevo el análisis a rekordbox, Serato o Traktor?', 'En Análisis de biblioteca, exporta un archivo XML para rekordbox (con BPM, tonalidad, rejilla y puntos cue) o un NML para Traktor. Para Serato y VirtualDJ, descarga copias MP3 que ya llevan los cues dentro.']],
+  incFree: ['BPM, tonalidad y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir, Mezcla DJ y análisis de biblioteca', 'Exportación MIDI de piano'],
+  rowDisc: 'Descubrir, Mezcla DJ y análisis de biblioteca',
+  lgNav: 'Documentos', lgTerms: 'Términos de uso', lgPrivacy: 'Política de privacidad', lgA11y: 'Declaración de accesibilidad'
+}
+};
+for (const l in SX) Object.assign(S[l], SX[l]);
 
 /* plural forms, keyed by Intl.PluralRules categories */
 const PL = {
@@ -542,6 +707,41 @@ function artDj() {
     '<rect x="170" y="254" width="140" height="6" rx="3" fill="#2a2a31"/><rect class="pg-xf" x="232" y="248" width="16" height="18" rx="3" fill="#fff"/>' +
     '<text class="pg-am" x="240" y="40" text-anchor="middle" fill="#2BD46A">MATCH 92</text></svg>';
 }
+function artCrate() {
+  /* library table (title · BPM · key · energy) over a rekordbox-style overview with coloured hot cues */
+  const rows = [['Am', '124.0', 8, '#2F8CFF', 1], ['F#m', '126.0', 7, '#B66DFF', 0], ['C', '122.0', 5, '#FF7A1A', 0], ['Dm', '125.0', 9, '#2BD46A', 0]];
+  let g = '<text class="pg-am dim sm" x="40" y="30">TRACK</text><text class="pg-am dim sm" x="262" y="30">BPM</text><text class="pg-am dim sm" x="326" y="30">KEY</text><text class="pg-am dim sm" x="382" y="30">ENERGY</text>';
+  rows.forEach((r, i) => {
+    const y = 40 + i * 34;
+    g += '<g class="pg-drow" style="--i:' + i + '"><rect x="24" y="' + y + '" width="432" height="28" rx="6" fill="' + (r[4] ? 'rgba(255,255,255,.07)' : 'transparent') + '"/>' +
+      '<rect x="34" y="' + (y + 8) + '" width="12" height="12" rx="3" fill="' + r[3] + '"/>' +
+      '<rect x="56" y="' + (y + 10) + '" width="' + (150 - i * 22) + '" height="8" rx="4" fill="#4a4a54"/>' +
+      '<text class="pg-am" x="262" y="' + (y + 19) + '">' + r[1] + '</text>' +
+      '<rect x="322" y="' + (y + 4) + '" width="42" height="20" rx="5" fill="' + (r[4] ? '#fff' : '#26262c') + '"/><text class="pg-am ' + (r[4] ? 'ink' : '') + '" x="343" y="' + (y + 18.5) + '" text-anchor="middle">' + r[0] + '</text>';
+    for (let k = 0; k < 10; k++) g += '<rect x="' + (382 + k * 7) + '" y="' + (y + 8) + '" width="5" height="12" rx="1.5" fill="' + (k < r[2] ? (k > 7 ? '#FF7A1A' : k > 4 ? '#B66DFF' : '#2F8CFF') : '#26262c') + '"/>';
+    g += '</g>';
+  });
+  /* overview: RGB waveform, bar grid and cue flags A–F */
+  const r = rng(21), x0 = 24, x1 = 456, cy = 232, n = 108, bw = (x1 - x0) / n;
+  let lo = '', mi = '', hi = '', grid = '';
+  for (let i = 0; i < n; i++) {
+    const [a, b, c] = bands(i + 3, r), x = (x0 + i * bw).toFixed(1), w = (bw * .72).toFixed(1), e = i < 12 || i > 98 ? .45 : (i > 40 && i < 58) ? (i < 49 ? .3 + (i - 40) * .06 : .3) : 1;
+    const A = (6 + a * 22) * e, B = (4 + b * 14) * e, C = (2 + c * 8) * e;
+    lo += '<rect x="' + x + '" y="' + (cy - A).toFixed(1) + '" width="' + w + '" height="' + (A * 2).toFixed(1) + '"/>';
+    mi += '<rect x="' + x + '" y="' + (cy - B).toFixed(1) + '" width="' + w + '" height="' + (B * 2).toFixed(1) + '"/>';
+    hi += '<rect x="' + x + '" y="' + (cy - C).toFixed(1) + '" width="' + w + '" height="' + (C * 2).toFixed(1) + '"/>';
+    if (i % 6 === 0) grid += '<line x1="' + x + '" x2="' + x + '" y1="196" y2="268" stroke="rgba(255,255,255,' + (i % 24 === 0 ? .2 : .07) + ')"/>';
+  }
+  const cues = [['A', 12, '#28E214'], ['B', 26, '#305AFF'], ['C', 40, '#C3AF04'], ['D', 49, '#AA72FF'], ['E', 58, '#E62828'], ['F', 98, '#FF8C00']];
+  let fl = '';
+  cues.forEach((c, i) => {
+    const x = (x0 + c[1] * bw).toFixed(1);
+    fl += '<g class="pg-file" style="--i:' + i + '"><line x1="' + x + '" x2="' + x + '" y1="192" y2="270" stroke="' + c[2] + '" stroke-width="1.5"/><path d="M' + x + ' 186h13v11h-13z" fill="' + c[2] + '"/><text class="pg-am ink sm" x="' + (+x + 6.5) + '" y="195" text-anchor="middle">' + c[0] + '</text></g>';
+  });
+  return '<svg viewBox="0 0 480 290" aria-hidden="true" focusable="false">' + g +
+    '<rect x="16" y="180" width="448" height="96" rx="9" fill="#0f0f12" stroke="#23232a"/>' + grid +
+    '<g fill="#FF3B3B" opacity=".9">' + lo + '</g><g fill="#2BE36F" opacity=".85" style="mix-blend-mode:screen">' + mi + '</g><g fill="#3D7BFF" style="mix-blend-mode:screen">' + hi + '</g>' + fl + '</svg>';
+}
 function artExport() {
   const files = [['WAV', '#2F8CFF'], ['MP3 320', '#FF7A1A'], ['MIDI', '#B66DFF']];
   let g = '';
@@ -606,6 +806,12 @@ function contactLine(prefix, billing) {
   return '<p class="pg-contact"><b>' + prefix + '</b> ' + (link ? '<span class="pg-cw">' + t('contactW') + '</span>' + link : '<span>' + t('contactNone') + '</span>') + '</p>';
 }
 
+/* Terms / Privacy (#terms, #privacy — routed by app.js) and the accessibility statement */
+function legalLinks(a11y) {
+  return '<nav class="pg-legal" aria-label="' + esc(t('lgNav')) + '"><a href="#terms">' + esc(t('lgTerms')) + '</a><a href="#privacy">' + esc(t('lgPrivacy')) + '</a>' +
+    (a11y ? '<a href="#about-a11y">' + esc(t('lgA11y')) + '</a>' : '') + '</nav>';
+}
+
 /* ---------- About ---------- */
 function renderAbout(el, billing) {
   if (!el) return;
@@ -637,18 +843,20 @@ function renderAbout(el, billing) {
     '</div>' + con + '</div>' +
     '<div class="pg-hwave" aria-hidden="true">' + heroWave() + '<i class="pg-hph"></i></div></section>';
 
+  const payOn = !billing || billing.on !== false;
   const feats = [
-    ['wave', 'blue', artTool(), 'tool'], ['compass', 'orange', artDisc(), 'discover'], ['decks', 'purple', artDj(), 'dj'],
-    ['export', 'blue', artExport(), null], ['user', 'orange', artAcc(), null]
+    ['wave', 'blue', artTool(), 'tool', 1], ['compass', 'orange', artDisc(), 'discover', 2], ['decks', 'purple', artDj(), 'dj', 3],
+    ['layers', 'blue', artCrate(), 'crate', 6], ['export', 'orange', artExport(), null, 4], ['user', 'purple', artAcc(), null, 5]
   ];
+  const fList = k => k === 5 ? (payOn ? t('f5lPts') : []).concat(t('f5l')) : t('f' + k + 'l');
   const featHtml = '<section class="pg-sec" aria-labelledby="pgFeatH">' + sh(t('featEyebrow'), t('featH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFeatH">') +
     '<div class="pg-feats">' + feats.map((f, i) => {
-      const n = i + 1;
+      const n = f[4];
       return '<article class="pg-feat" style="--acc:var(--pg-' + f[1] + ')">' +
         '<div class="pg-ftxt rv">' +
-          '<div class="pg-fk"><span class="pg-badge">' + ic(f[0]) + '</span><span class="pg-fn" dir="ltr">0' + n + '</span><span class="pg-fkt">' + t('f' + n + 'k') + '</span></div>' +
+          '<div class="pg-fk"><span class="pg-badge">' + ic(f[0]) + '</span><span class="pg-fn" dir="ltr">0' + (i + 1) + '</span><span class="pg-fkt">' + t('f' + n + 'k') + '</span></div>' +
           '<h3>' + t('f' + n + 'h') + '</h3><p class="pg-fp">' + t('f' + n + 'p') + '</p>' +
-          '<ul class="pg-list">' + t('f' + n + 'l').map(s => '<li>' + ic('check') + '<span>' + s + '</span></li>').join('') + '</ul>' +
+          '<ul class="pg-list">' + fList(n).map(s => '<li>' + ic('check') + '<span>' + s + '</span></li>').join('') + '</ul>' +
           (f[3] ? '<button type="button" class="pg-lnk ink" data-nav="' + f[3] + '"><span>' + t('f' + n + 'k') + '</span>' + ic('arrow', 'pg-arr') + '</button>' : '') +
         '</div>' +
         '<div class="pg-art rv" style="--i:1" aria-hidden="true">' + f[2] + '</div></article>';
@@ -661,7 +869,8 @@ function renderAbout(el, billing) {
   let tiles = '';
   if (billing && billing.on !== false) {
     const c = billing.costs || {};
-    const tl = [['gift', 'orange', t('ptsGift'), billing.signup, true], ['spark', 'blue', t('ptsSep'), c.sep], ['export', 'purple', t('ptsDl'), c.stems]];
+    const nn = v => (v == null || v === '' || !isFinite(+v)) ? null : Math.max(0, Math.round(+v));   // numbers only: these go into HTML
+    const tl = [['gift', 'orange', t('ptsGift'), nn(billing.signup), true], ['spark', 'blue', t('ptsSep'), nn(c.sep)], ['export', 'purple', t('ptsDl'), nn(c.stems)]];
     tiles = '<div class="pg-tiles">' + tl.filter(x => x[3] != null).map((x, i) => '<div class="pg-tile rv" style="--acc:var(--pg-' + x[1] + ');--i:' + i + '">' + ic(x[0]) +
       '<b dir="ltr">' + (x[4] ? '+' : '') + '<span data-count="' + x[3] + '">' + fmtN(x[3]) + '</span></b><span class="pg-tu">' + plWord('ptsL', x[3]) + '</span><span class="pg-tl">' + x[2] + '</span></div>').join('') + '</div>';
   }
@@ -675,7 +884,7 @@ function renderAbout(el, billing) {
   const prv = '<section class="pg-sec" aria-labelledby="pgPrvH">' + sh(t('prvEyebrow'), t('prvH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgPrvH">') +
     '<div class="pg-prv">' + t('prv').map((p, i) => '<div class="rv" style="--i:' + i + '"><span class="pg-badge">' + ic(prvIc[i]) + '</span><h3>' + p[0] + '</h3><p>' + p[1] + '</p></div>').join('') + '</div></section>';
 
-  const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('faqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFaqH">') + '</div>' + faqList(t('faq')) + '</section>';
+  const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('faqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFaqH">') + '</div>' + faqList(t('faq').concat(t('faqX'))) + '</section>';
 
   let stmt = '';
   try { if (window.A11Y && typeof A11Y.statementHTML === 'function') stmt = A11Y.statementHTML(L()) || ''; } catch (e) { stmt = ''; }
@@ -683,7 +892,7 @@ function renderAbout(el, billing) {
     '<div class="pg-a11yin rv"><div class="pg-a11yh"><span class="pg-badge">' + ic('a11y') + '</span><span class="pg-eb">' + t('a11yEyebrow') + '</span></div>' +
     (stmt ? '<div class="pg-stmt">' + stmt + '</div>' : '<h2 class="pg-h">' + t('a11yH') + '</h2><p class="pg-fp">' + t('a11yPh') + '</p>') + '</div></section>';
 
-  const foot = '<footer class="pg-foot">' + contactLine(t('contactL'), billing) + '<p class="pg-cred">' + t('credits') + '</p></footer>';
+  const foot = '<footer class="pg-foot">' + contactLine(t('contactL'), billing) + '<p class="pg-cred">' + t('credits') + '</p>' + legalLinks(true) + '</footer>';
 
   el.innerHTML = '<div class="pg pg-about">' + hero + featHtml + how + pts + prv + faq + a11y + foot + '</div>';
   wire(el);
@@ -772,7 +981,7 @@ function renderPricing(el, billing, state) {
   if (!on) fq = fq.filter((q, i) => i === 3);
   else fq = fq.filter((q, i) => !(i === 1 && !signup) && !(i === 0 && !sep && !dlc));
   const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgPFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('prFaqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgPFaqH">') + '</div>' + faqList(fq, fv) + '</section>';
-  const foot = '<footer class="pg-foot">' + contactLine(t('prContact'), billing) + '</footer>';
+  const foot = '<footer class="pg-foot">' + contactLine(t('prContact'), billing) + legalLinks(false) + '</footer>';
 
   el.innerHTML = '<div class="pg pg-pricing">' + head + cards + table + faq + foot + '</div>';
   wire(el);

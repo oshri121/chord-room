@@ -11,13 +11,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<script>if(!location.hash||location.hash==="#")document.documentElement.classList.add("home")</script>
-<script>try{var t=localStorage.getItem("chordroom.theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}</script>
-<link rel="stylesheet" href="assets/app.css?v=15">
+<script src="assets/early.js?v=1"></script>
+<link rel="stylesheet" href="assets/app.css?v=16">
 <link rel="stylesheet" href="assets/dj.css?v=3">
 <link rel="stylesheet" href="assets/crate.css?v=5">
-<link rel="stylesheet" href="assets/shell.css?v=3">
-<link rel="stylesheet" href="assets/pages.css?v=2">
+<link rel="stylesheet" href="assets/shell.css?v=4">
+<link rel="stylesheet" href="assets/pages.css?v=3">
+<link rel="stylesheet" href="assets/auth.css?v=1">
 <link rel="stylesheet" href="assets/a11y.css?v=2">
 </head>
 <body>
@@ -52,7 +52,8 @@
     </div>
     <div class="quick">
       <button id="creditsChip" class="credits" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="crCoinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB14A"/><stop offset=".55" stop-color="#FF7A1A"/><stop offset="1" stop-color="#B66DFF"/></linearGradient></defs><circle cx="12" cy="12" r="10" fill="url(#crCoinG)"/><circle cx="12" cy="12" r="7" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2"/><path d="M12 7.6l1.3 2.9 3.1.3-2.4 2.1.7 3.1-2.7-1.6-2.7 1.6.7-3.1-2.4-2.1 3.1-.3z" fill="#fff"/></svg><b id="creditsN">0</b><span data-i="creditsL"></span></button>
-      <button class="btn ghost" id="signInBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-i="signIn"></span></button>
+      <button class="btn ghost" id="signInBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-i="signIn"></span></button>
+      <button class="btn solid au-up" id="signUpBtn" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="8" r="4"/><path d="M3 21c1.3-3.8 4-5.8 7-5.8 1.4 0 2.7.4 3.9 1.2M18 14v6M15 17h6"/></svg><span data-i="signUp"></span></button>
       <button class="avbtn" id="accBtn" type="button" hidden><img id="accImg" alt=""></button>
       <button class="burger" id="navBurger" type="button" aria-expanded="false" aria-controls="navDrawer"><span></span><span></span><span></span></button>
     </div>
@@ -158,7 +159,7 @@
   </section>
 
   <footer>
-    <div><h3 data-i="about"></h3><p data-i="aboutT" style="margin:0 0 8px"></p><p data-i="credits" style="margin:0"></p></div>
+    <div><h3 data-i="about"></h3><p data-i="aboutT" style="margin:0 0 8px"></p><p data-i="credits" style="margin:0 0 8px"></p><p class="flegal"><a href="#terms" data-i="auLegal"></a><span aria-hidden="true">·</span><a href="#privacy" data-i="auPrivacy"></a></p></div>
     <div><h3 data-i="keys"></h3><div class="keys" id="keys"></div></div>
   </footer>
 </main>
@@ -182,6 +183,7 @@
 <section class="wrap crate" id="crateView" hidden></section>
 <section class="wrap page" id="pricingView" hidden></section>
 <section class="wrap page" id="aboutView" hidden></section>
+<section class="wrap page legal" id="legalView" hidden></section>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <aside class="lib" id="lib" hidden>
@@ -231,37 +233,80 @@
   </div>
 </aside>
 
-<div class="dlgwrap" id="authDlg" hidden>
-  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <div class="dh"><h3 id="authTitle"></h3><button class="x" type="button" id="authClose" aria-label="Close">×</button></div>
-    <form id="fIn" class="fset">
-      <div class="fld"><label for="inEmail" data-i="email"></label><input type="email" id="inEmail" dir="ltr" required autocomplete="email"></div>
-      <div class="fld"><label for="inPass" data-i="password"></label><input type="password" id="inPass" required autocomplete="current-password"></div>
-      <button class="btn solid wide" type="submit" data-i="signIn"></button>
-      <p class="snote amsg"></p>
-      <div class="links"><button type="button" class="lnk" id="toForgot" data-i="forgot"></button><button type="button" class="lnk" id="toUp" data-i="toUp"></button></div>
-    </form>
-    <form id="fUp" class="fset" hidden>
-      <div class="fld"><label for="upUser" data-i="username"></label><input type="text" id="upUser" dir="ltr" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_.\-]{3,24}" autocomplete="username"><span class="snote" data-i="usernameH"></span></div>
-      <div class="fld"><label for="upEmail" data-i="email"></label><input type="email" id="upEmail" dir="ltr" required autocomplete="email"></div>
-      <div class="fld"><label for="upPass" data-i="password"></label><input type="password" id="upPass" required minlength="8" autocomplete="new-password"></div>
-      <div class="fld"><label for="upPass2" data-i="password2"></label><input type="password" id="upPass2" required minlength="8" autocomplete="new-password"></div>
-      <button class="btn solid wide" type="submit" data-i="signUp"></button>
-      <p class="snote amsg"></p>
-      <div class="links"><button type="button" class="lnk" id="toIn" data-i="toIn"></button></div>
-    </form>
-    <form id="fForgot" class="fset" hidden>
-      <div class="fld"><label for="fgEmail" data-i="email"></label><input type="email" id="fgEmail" dir="ltr" required autocomplete="email"></div>
-      <button class="btn solid wide" type="submit" data-i="sendReset"></button>
-      <p class="snote amsg"></p>
-      <div class="links"><button type="button" class="lnk" id="toIn2" data-i="toIn"></button></div>
-    </form>
-    <form id="fReset" class="fset" hidden>
-      <div class="fld"><label for="rsPass" data-i="newPass"></label><input type="password" id="rsPass" required minlength="8" autocomplete="new-password"></div>
-      <div class="fld"><label for="rsPass2" data-i="password2"></label><input type="password" id="rsPass2" required minlength="8" autocomplete="new-password"></div>
-      <button class="btn solid wide" type="submit" data-i="setNewPass"></button>
-      <p class="snote amsg"></p>
-    </form>
+<div class="dlgwrap au" id="authDlg" hidden>
+  <div class="dlg audlg" id="authBox" role="dialog" aria-modal="true" aria-labelledby="authTitle" aria-describedby="authSub">
+    <aside class="au-brand">
+      <div class="au-glow" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="au-mark"><svg class="au-logo" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="4" fill="#EDEDEF"/><g fill="#0A0A0C"><rect x="7" y="14" width="2.4" height="6" rx="1"/><rect x="11" y="10" width="2.4" height="14" rx="1"/><rect x="15" y="6" width="2.4" height="22" rx="1"/><rect x="19" y="11" width="2.4" height="12" rx="1"/><rect x="23" y="8" width="2.4" height="18" rx="1"/></g><rect x="27" y="13" width="2.4" height="8" rx="1" fill="#E5322B"/></svg><span class="au-wm" dir="ltr">CHORD ROOM</span></div>
+      <div class="au-btxt"><h2 class="au-bh" data-i="auBrandH"></h2><p class="au-bp" data-i="auBrandP"></p></div>
+      <ul class="au-ben" id="auBen"></ul>
+      <div class="au-eq" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i><i style="--i:12"></i><i style="--i:13"></i><i style="--i:14"></i><i style="--i:15"></i><i style="--i:16"></i><i style="--i:17"></i><i style="--i:18"></i><i style="--i:19"></i><i style="--i:20"></i><i style="--i:21"></i><i style="--i:22"></i><i style="--i:23"></i><i style="--i:24"></i><i style="--i:25"></i><i style="--i:26"></i><i style="--i:27"></i></div>
+      <p class="au-legal"><a href="#terms" target="_blank" rel="noopener" data-i="auLegal"></a><span aria-hidden="true">·</span><a href="#privacy" target="_blank" rel="noopener" data-i="auPrivacy"></a></p>
+    </aside>
+    <div class="au-main">
+      <button class="au-x" type="button" id="authClose" data-it="close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="au-seg" id="auSeg" role="tablist" data-on="in">
+        <button type="button" role="tab" id="auTabIn" aria-controls="auPanIn" data-i="auTabIn"></button><button type="button" role="tab" id="auTabUp" aria-controls="auPanUp" data-i="auTabUp"></button><span class="au-seg-ind" aria-hidden="true"></span>
+      </div>
+      <ol class="au-steps" id="auSteps"><li data-s="1"><i dir="ltr">1</i><span data-i="auStep1"></span></li><li data-s="2"><i dir="ltr">2</i><span data-i="auStep2"></span></li><li data-s="3"><i dir="ltr">3</i><span data-i="auStep3"></span></li></ol>
+      <div class="au-okc" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="none" stroke-width="2.5"/><path d="M15 27l7.5 7.5L37.5 19" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="au-head"><h3 id="authTitle"></h3><p id="authSub"></p></div>
+      <p class="au-msg" id="auMsg" role="alert" hidden></p>
+      <div id="auPanIn" role="tabpanel" aria-labelledby="auTabIn">
+      <form id="fIn" class="au-form" novalidate>
+        <div class="au-fld"><label for="inEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="inEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="inEmailE"></div><p class="au-fe" id="inEmailE"></p></div>
+        <div class="au-fld"><div class="au-lrow"><label for="inPass" data-i="password"></label><button type="button" class="au-lnk" id="toForgot" data-i="auForgotQ"></button></div><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="inPass" required minlength="8" autocomplete="current-password" aria-describedby="inPassCaps"><button type="button" class="au-eye" data-eye="inPass" aria-controls="inPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="inPassCaps" hidden><span data-i="auCaps"></span></p></div>
+        <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt" id="auAltUp"><button type="button" class="au-lnk" id="toUp" data-i="toUp"></button></p>
+      </form>
+      </div>
+      <div id="auPanUp" role="tabpanel" aria-labelledby="auTabUp">
+      <form id="fUp" class="au-form" novalidate>
+        <div class="au-fld"><label for="upUser" data-i="username"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg><input type="text" id="upUser" dir="ltr" required minlength="3" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false" aria-describedby="upUserS"><i class="au-ust" id="upUserI" aria-hidden="true"></i></div><p class="au-fe au-hint" id="upUserS" aria-live="polite"></p></div>
+        <div class="au-fld"><label for="upEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="upEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="upEmailE"></div><p class="au-fe" id="upEmailE"></p></div>
+        <div class="au-2"><div class="au-fld"><label for="upPass" data-i="password"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="upPass" required minlength="8" autocomplete="new-password" aria-describedby="upPassCaps upPassS"><button type="button" class="au-eye" data-eye="upPass" aria-controls="upPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="upPassCaps" hidden><span data-i="auCaps"></span></p><div class="au-meter" id="upPassM" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="au-fe au-pws" id="upPassS" aria-live="polite"></p></div>
+        <div class="au-fld"><label for="upPass2" data-i="password2"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="upPass2" required minlength="8" autocomplete="new-password" aria-describedby="upPass2Caps upPass2E"><button type="button" class="au-eye" data-eye="upPass2" aria-controls="upPass2" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="upPass2Caps" hidden><span data-i="auCaps"></span></p><p class="au-fe" id="upPass2E" aria-live="polite"></p></div></div>
+        <button class="au-cta" type="submit"><span data-i="auNext"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt"><button type="button" class="au-lnk" id="toIn" data-i="toIn"></button></p>
+      </form>
+      <form id="fTerms" class="au-form" novalidate hidden>
+        <div class="au-terms" id="auSum" tabindex="0" role="region"></div>
+        <p class="au-tlinks"><a href="#terms" target="_blank" rel="noopener"><span data-i="auTermsLink"></span><span class="au-vh" data-i="auNewTab"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a><a href="#privacy" target="_blank" rel="noopener"><span data-i="auPrivLink"></span><span class="au-vh" data-i="auNewTab"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a></p>
+        <label class="au-chk"><input type="checkbox" id="auAgree" required><span class="au-cb" aria-hidden="true"></span><span data-i="auAgree"></span></label>
+        <label class="au-chk"><input type="checkbox" id="auAge" required><span class="au-cb" aria-hidden="true"></span><span data-i="auAge"></span></label>
+        <div class="au-row"><button class="au-ghost" type="button" id="auTermsBack" data-i="auBack"></button><button class="au-cta" type="submit" id="auCreate" disabled aria-describedby="auNeedAgree"><span data-i="auCreate"></span><i class="au-spin" aria-hidden="true"></i></button></div>
+        <p class="au-fe au-hint" id="auNeedAgree" data-i="auNeedAgree"></p>
+      </form>
+      <form id="fCode" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="auCode" class="au-vh" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="auCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="auCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="auCodeE"></p></div>
+        <p class="au-fe au-hint" data-i="auCodeHint"></p>
+        <button class="au-cta" type="submit"><span data-i="auVerify"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <div class="au-row2"><button type="button" class="au-lnk" id="auResend" data-cool="code"></button><button type="button" class="au-lnk" id="auChangeEmail" data-i="auChangeEmail"></button></div>
+      </form>
+      <div id="auDone" class="au-done" hidden>
+        <p class="au-gift" id="auGift" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8C10.5 4 7 3.5 7 6s3 2 5 2zM12 8c1.5-4 5-4.5 5-2s-3 2-5 2z"/></svg><span></span></p>
+        <button class="au-cta" type="button" id="auDoneGo"><span data-i="auDoneGo"></span></button>
+      </div>
+      </div>
+      <form id="fForgot" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="fgEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="fgEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="fgEmailE"></div><p class="au-fe" id="fgEmailE"></p></div>
+        <button class="au-cta" type="submit"><span data-i="auSendCode"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt"><button type="button" class="au-lnk" id="toIn2" data-i="auBackIn"></button></p>
+      </form>
+      <form id="fRecover" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="rcCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="rcCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required aria-describedby="rcCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="rcCodeE"></p></div>
+        <div class="au-fld"><label for="rcPass" data-i="newPass"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rcPass" required minlength="8" autocomplete="new-password" aria-describedby="rcPassCaps rcPassS"><button type="button" class="au-eye" data-eye="rcPass" aria-controls="rcPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rcPassCaps" hidden><span data-i="auCaps"></span></p><div class="au-meter" id="rcPassM" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="au-fe au-pws" id="rcPassS" aria-live="polite"></p></div>
+        <div class="au-fld"><label for="rcPass2" data-i="password2"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rcPass2" required minlength="8" autocomplete="new-password" aria-describedby="rcPass2Caps rcPass2E"><button type="button" class="au-eye" data-eye="rcPass2" aria-controls="rcPass2" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rcPass2Caps" hidden><span data-i="auCaps"></span></p><p class="au-fe" id="rcPass2E" aria-live="polite"></p></div>
+        <button class="au-cta" type="submit"><span data-i="auSavePass"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <div class="au-row2"><button type="button" class="au-lnk" id="rcResend" data-cool="rec"></button><button type="button" class="au-lnk" id="toIn3" data-i="auBackIn"></button></div>
+      </form>
+      <form id="fReset" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="rsPass" data-i="newPass"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rsPass" required minlength="8" autocomplete="new-password" aria-describedby="rsPassCaps rsPassS"><button type="button" class="au-eye" data-eye="rsPass" aria-controls="rsPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rsPassCaps" hidden><span data-i="auCaps"></span></p><div class="au-meter" id="rsPassM" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="au-fe au-pws" id="rsPassS" aria-live="polite"></p></div>
+        <div class="au-fld"><label for="rsPass2" data-i="password2"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rsPass2" required minlength="8" autocomplete="new-password" aria-describedby="rsPass2Caps rsPass2E"><button type="button" class="au-eye" data-eye="rsPass2" aria-controls="rsPass2" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rsPass2Caps" hidden><span data-i="auCaps"></span></p><p class="au-fe" id="rsPass2E" aria-live="polite"></p></div>
+        <button class="au-cta" type="submit"><span data-i="setNewPass"></span><i class="au-spin" aria-hidden="true"></i></button>
+      </form>
+      <p class="au-foot" id="auFoot"></p>
+    </div>
   </div>
 </div>
 
@@ -335,17 +380,18 @@
 
 <script src="config.js?v=1"></script>
 <script src="vendor/supabase.js"></script>
-<script src="assets/backend.js?v=9"></script>
-<script src="assets/app.js?v=19"></script>
+<script src="assets/backend.js?v=11"></script>
+<script src="assets/legal.js?v=1"></script>
+<script src="assets/app.js?v=21"></script>
 <script src="assets/dj-i18n.js?v=2"></script>
-<script src="assets/dj.js?v=5"></script>
+<script src="assets/dj.js?v=6"></script>
 <script src="assets/heblat.js?v=1"></script>
 <script src="assets/cues.js?v=1"></script>
-<script src="assets/crate.js?v=6"></script>
+<script src="assets/crate.js?v=7"></script>
 <script src="assets/mp3.js?v=1"></script>
-<script src="assets/pages.js?v=3"></script>
-<script src="assets/shell.js?v=5"></script>
+<script src="assets/pages.js?v=5"></script>
+<script src="assets/shell.js?v=6"></script>
 <script src="assets/bg.js?v=2"></script>
-<script src="assets/a11y.js?v=2"></script>
+<script src="assets/a11y.js?v=3"></script>
 </body>
 </html>

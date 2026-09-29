@@ -782,6 +782,8 @@ async function catalogPool(){
   D.catP=(async()=>{try{if(window.Backend&&Backend.enabled&&Backend.catalogList){(await Backend.catalogList('plays',1000)).forEach(CR.rowFromCatalog)}}catch(e){}return true})();
   return D.catP;
 }
+// catalog rows are written by other users: show a cover only when it is Deezer's own image CDN
+const coverOk=u=>typeof u==='string'&&/^https:\/\/[a-z0-9-]+\.dzcdn\.net\/[^\s"'<>]*$/i.test(u);
 function renderRecs(){
   const ul=$('#djRecList');if(!ul)return;
   const ref=D.decks.find(d=>d&&d.playing&&d.track&&d.i===D.masterI)||D.decks.find(d=>d&&d.playing&&d.track)||D.decks.find(d=>d&&d.track);
@@ -804,8 +806,9 @@ function renderRecs(){
   const relName=[t('relSame'),t('relRel'),t('relUp'),t('relDown')];
   for(const o of out.slice(0,24)){
     const li=document.createElement('li');li.className='rrow';
-    li.innerHTML=`<span class="kbw"></span>${o.r&&o.r.cover?'<img alt="" loading="lazy">':'<i class="rimg"></i>'}<div class="rt"><div class="tt"></div><div class="ar"></div></div><span class="rtag"></span><div class="ra"></div>`;
-    li.querySelector('.kbw').append(CR.keyBadge(o.key));if(o.r&&o.r.cover)li.querySelector('img').src=o.r.cover;
+    const cov=o.r&&coverOk(o.r.cover)?o.r.cover:'';
+    li.innerHTML=`<span class="kbw"></span>${cov?'<img alt="" loading="lazy">':'<i class="rimg"></i>'}<div class="rt"><div class="tt"></div><div class="ar"></div></div><span class="rtag"></span><div class="ra"></div>`;
+    li.querySelector('.kbw').append(CR.keyBadge(o.key));if(cov)li.querySelector('img').src=cov;
     li.querySelector('.tt').textContent=o.name;
     li.querySelector('.ar').textContent=`${Math.round(o.bpm)} BPM${o.fit>0.004?` · ±${Math.max(1,Math.round(o.fit*100))}%`:''} · ${relName[o.rel]}${o.shift?' · '+t('djWithKey',{s:(o.shift>0?'+':'')+o.shift}):''}`;
     const tag=li.querySelector('.rtag');tag.textContent=o.src==='mine'?t('djMine'):t('djCat');tag.classList.add(o.src);

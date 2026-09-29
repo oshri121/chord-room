@@ -226,6 +226,8 @@ input[type=range]{width:100%;accent-color:var(--ink)}
 
 footer{border-top:1px solid var(--line2);margin-top:34px;padding-top:18px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;font-size:13px;color:var(--muted)}
 footer h3{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+footer .flegal{margin:0;display:flex;gap:8px;flex-wrap:wrap}
+footer .flegal a{color:var(--ink2);text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--acc-a) 60%,transparent)}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}
 kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-bottom-width:2px;border-radius:var(--r-xs);padding:1px 6px;color:var(--ink);background:var(--paper);white-space:nowrap}
 

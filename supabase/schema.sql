@@ -1154,3 +1154,679 @@ do $$ declare f text; begin
     execute 'grant execute on function public.' || f || ' to authenticated';
   end loop;
 end $$;
+
+-- =====================================================================
+-- Terms consent (was supabase/auth_consent.sql)
+-- =====================================================================
+-- Chord Room — consent to the Terms of Use / Privacy Policy, stored with every new account.
+-- Run AFTER supabase/schema.sql (Supabase → SQL Editor → New query → paste → Run). Safe to run again.
+-- IMPORTANT: schema.sql also defines public.handle_new_user(). Whenever schema.sql is re-run, run this file
+-- again afterwards, otherwise new sign-ups stop recording which terms version they accepted.
+--
+-- The sign-up form sends options.data = { username, terms_version: 'YYYY-MM-DD', terms_at: ISO time }
+-- (assets/backend.js signUp). The trigger copies them into profiles once, when the account is created.
+-- user_metadata can later be changed by the user, profiles.terms_* cannot: they are NOT granted for update.
+
+alter table public.profiles add column if not exists terms_version text;
+alter table public.profiles add column if not exists terms_at timestamptz;
+alter table public.profiles drop constraint if exists profiles_terms_version_check;
+alter table public.profiles add constraint profiles_terms_version_check
+  check (terms_version is null or terms_version ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+-- the browser may only update the columns granted in schema.sql; make sure these two never are
+revoke update (terms_version, terms_at) on public.profiles from authenticated, anon, public;
+
+-- new accounts: the very first one is the owner (same as schema.sql "Owner & roles") + the accepted terms
+create or replace function public.handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  wanted text := nullif(new.raw_user_meta_data->>'username', '');
+  first_user boolean := not exists (select 1 from public.profiles);
+  tv text := nullif(left(coalesce(new.raw_user_meta_data->>'terms_version', ''), 10), '');
+  ta timestamptz;
+begin
+  if wanted is not null and (wanted !~ '^[A-Za-z0-9_.-]{3,24}$' or exists (select 1 from public.profiles where lower(username) = lower(wanted))) then
+    wanted := null;
+  end if;
+  if tv is not null and tv !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' then tv := null; end if;
+  if tv is not null then
+    begin
+      ta := (new.raw_user_meta_data->>'terms_at')::timestamptz;
+    exception when others then
+      ta := null;
+    end;
+    -- the client clock is not trusted: outside a small window around the sign-up, use the server time
+    if ta is null or ta > now() + interval '10 minutes' or ta < now() - interval '1 day' then ta := now(); end if;
+  end if;
+  insert into public.profiles (id, username, email, display_name, role, owner, terms_version, terms_at)
+  values (new.id, wanted, new.email, coalesce(wanted, ''), case when first_user then 'admin' else 'user' end, first_user, tv, ta);
+  return new;
+end $$;
+
+-- the trigger itself is created in schema.sql (on_auth_user_created); recreate it here too so this file works on its own
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- =====================================================================
+-- Security hardening (was supabase/security.sql) — keep it LAST: it tightens what the blocks above create.
+-- =====================================================================
+-- Chord Room: security hardening. Run it in the Supabase SQL editor AFTER schema.sql (and again after every
+-- re-run of schema.sql, because schema.sql redefines some of the functions patched here). Safe to run many times.
+--
+-- Every block starts with [S-n] and the issue it closes. Nothing here stores or prints a secret.
+-- Checks that apply only to the browser run when current_user is 'anon' / 'authenticated' (a direct REST call);
+-- the security-definer RPCs and the SQL editor run as the owner and are not affected by those triggers.
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-1] Table privileges. Supabase's default privileges give anon/authenticated ALL on every new table,
+-- including TRUNCATE (not covered by RLS), REFERENCES and TRIGGER, and anon INSERT/DELETE on tables it never writes.
+-- RLS already blocks most of it; this removes the privileges themselves (defence in depth).
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+do $$ declare t text; begin
+  foreach t in array array['profiles','songs','site_config','catalog','downloads','credit_ledger','pay_events','activity','roles'] loop
+    if to_regclass('public.' || t) is not null then
+      execute format('revoke truncate, references, trigger on public.%I from anon, authenticated, public', t);
+      execute format('revoke insert, update, delete on public.%I from anon', t);   -- anon writes only through RPCs
+    end if;
+  end loop;
+end $$;
+-- the browser never inserts/deletes profiles (the auth trigger does), never edits the download log or the audit tables
+revoke insert, delete on public.profiles from authenticated;
+revoke update, delete on public.downloads from authenticated;
+revoke insert, update, delete on public.credit_ledger, public.pay_events, public.activity, public.roles from authenticated;
+-- future tables created by this role: no TRUNCATE/REFERENCES/TRIGGER for the API roles
+alter default privileges in schema public revoke truncate, references, trigger on tables from anon, authenticated;
+
+-- [S-2] Functions that only make sense for a signed-in user are not callable by anon (they were, through PUBLIC).
+revoke execute on function public.bump_seps() from public, anon;
+grant execute on function public.bump_seps() to authenticated;
+revoke execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) from public, anon;
+grant execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) to authenticated;
+-- trigger / helper functions: never RPCs
+revoke execute on function public.handle_new_user(), public.handle_user_email(), public.count_songs(),
+  public.handle_signup_credits() from public, anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-3] profiles: values the browser may write are validated.
+--  * avatar_url could be ANY string (tracking pixel on the admin panel, someone else's picture, javascript: …)
+--    → only '' or a public URL of the user's OWN folder in this project's avatars bucket.
+--  * display_name / bio had no real limits (display_name unbounded) → length + no control characters.
+--  * last_seen could be forged (admin panel "last seen") → always the server's now().
+--  * usernames were unique only case-sensitively ('Admin' next to 'admin') → case-insensitive unique index.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.guard_profile() returns trigger
+language plpgsql set search_path = public as $$
+begin
+  if current_user not in ('anon', 'authenticated') then return new; end if;   -- RPCs / triggers / SQL editor
+  if new.display_name is distinct from old.display_name then
+    new.display_name := btrim(regexp_replace(coalesce(new.display_name, ''), '[[:cntrl:]]', '', 'g'));
+    if char_length(new.display_name) > 60 then raise exception 'bad display_name' using errcode = '22023'; end if;
+  end if;
+  if new.bio is distinct from old.bio then
+    new.bio := regexp_replace(coalesce(new.bio, ''), '[\x01-\x09\x0b-\x1f\x7f]', '', 'g');
+  end if;
+  if new.avatar_url is distinct from old.avatar_url and coalesce(new.avatar_url, '') <> '' then
+    -- the project URL is public (config.js); change it here if the project ever moves
+    if new.avatar_url !~ ('^https://ydyocusfrghsokjsectw\.supabase\.co/storage/v1/object/public/avatars/'
+                          || old.id::text || '/[A-Za-z0-9_-][A-Za-z0-9._-]{0,119}(\?v=[0-9]{1,15})?$') then
+      raise exception 'bad avatar_url' using errcode = '22023';
+    end if;
+  end if;
+  if new.last_seen is distinct from old.last_seen then new.last_seen := now(); end if;
+  return new;
+end $$;
+revoke all on function private.guard_profile() from public, anon, authenticated;
+drop trigger if exists profiles_guard on public.profiles;
+create trigger profiles_guard before update on public.profiles
+  for each row execute function private.guard_profile();
+
+do $$ begin
+  if not exists (select 1 from pg_indexes where schemaname = 'public' and indexname = 'profiles_username_lower_key') then
+    if exists (select lower(username) from public.profiles where username is not null group by 1 having count(*) > 1) then
+      raise warning 'security.sql: two usernames differ only in case; rename one and run this file again';
+    else
+      create unique index profiles_username_lower_key on public.profiles (lower(username));
+    end if;
+  end if;
+end $$;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-4] songs: the library row is validated.
+--  * file_path could point into ANOTHER user's folder (the admin "details → download all" then fetched the
+--    victim's file under the attacker's name) → must be '<own uid>/<file name>'.
+--  * name / genre / data had no size limits (a single row could hold hundreds of MB) → limits + max rows per user.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.guard_song() returns trigger
+language plpgsql set search_path = public as $$
+begin
+  if current_user not in ('anon', 'authenticated') then return new; end if;
+  if new.name is null or char_length(new.name) not between 1 and 300 then raise exception 'bad song name' using errcode = '22023'; end if;
+  if char_length(coalesce(new.genre, '')) > 80 then raise exception 'bad genre' using errcode = '22023'; end if;
+  if new.file_path is not null and new.file_path !~ ('^' || new.user_id::text || '/[A-Za-z0-9_-][A-Za-z0-9._-]{0,119}$') then
+    raise exception 'bad file_path' using errcode = '22023';
+  end if;
+  if new.file_type is not null and (char_length(new.file_type) > 100 or new.file_type !~ '^[a-z0-9.+-]+/[a-z0-9.+-]+$') then
+    raise exception 'bad file_type' using errcode = '22023';
+  end if;
+  if new.file_size is not null and new.file_size not between 0 and 52428800 then raise exception 'bad file_size' using errcode = '22023'; end if;
+  if octet_length(new.data::text) > 2000000 then raise exception 'song data too large' using errcode = '22023'; end if;
+  if tg_op = 'INSERT' then
+    new.created_at := now();
+    if (select count(*) from public.songs where user_id = new.user_id) >= 5000 then
+      raise exception 'too many songs' using errcode = '22023';
+    end if;
+  end if;
+  return new;
+end $$;
+revoke all on function private.guard_song() from public, anon, authenticated;
+drop trigger if exists songs_guard on public.songs;
+create trigger songs_guard before insert or update on public.songs
+  for each row execute function private.guard_song();
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-5] downloads (export log): unbounded rows/sizes and forgeable created_at; blocked users kept writing.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.guard_download() returns trigger
+language plpgsql set search_path = public as $$
+begin
+  if current_user not in ('anon', 'authenticated') then return new; end if;
+  if exists (select 1 from public.profiles where id = auth.uid() and blocked) then raise exception 'not allowed'; end if;
+  new.created_at := now();
+  if jsonb_typeof(new.files) <> 'array' or jsonb_array_length(new.files) > 100 or octet_length(new.files::text) > 8000 then
+    raise exception 'bad files' using errcode = '22023';
+  end if;
+  if new.size is not null and new.size not between 0 and 21474836480 then raise exception 'bad size' using errcode = '22023'; end if;
+  if (select count(*) from public.downloads where user_id = new.user_id and created_at > now() - interval '1 hour') >= 300 then
+    raise exception 'rate limit' using errcode = '22023';
+  end if;
+  return new;
+end $$;
+revoke all on function private.guard_download() from public, anon, authenticated;
+drop trigger if exists downloads_guard on public.downloads;
+create trigger downloads_guard before insert on public.downloads
+  for each row execute function private.guard_download();
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-6] catalog (shared Discover data, shown to every visitor). Any member could insert rows with
+--  plays = 2e9 (top of "popular"), is_full = true (fake "Full analysis", blocks real ones), a cover URL on their
+--  own server (IP tracking of every visitor), a non-Deezer link, backdated created_at, and a chords array of any
+--  size/shape. Now: counters/flags are forced, cover/link must be Deezer URLs, chords = small int arrays,
+--  text has no control characters, and inserts are rate limited per member.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create index if not exists catalog_by_idx on public.catalog (analyzed_by, created_at desc);
+create index if not exists catalog_full_by_idx on public.catalog (full_by, full_at desc);
+
+create or replace function public.catalog_chords_ok(c jsonb, maxn integer) returns boolean
+language sql immutable set search_path = public as $$
+  select c is not null and jsonb_typeof(c) = 'array' and jsonb_array_length(c) <= maxn
+     and not exists (select 1 from jsonb_array_elements(c) e
+                      where jsonb_typeof(e) <> 'number' or e::text !~ '^-?\d{1,2}$' or e::text::int not between -1 and 23);
+$$;
+revoke execute on function public.catalog_chords_ok(jsonb, integer) from public, anon;
+grant execute on function public.catalog_chords_ok(jsonb, integer) to authenticated;
+
+-- rows the signed-in member added in the last hour (definer: works even when analyzed_by is not readable, see [S-16])
+create or replace function public.catalog_my_recent_adds() returns integer
+language sql stable security definer set search_path = public as $$
+  select count(*)::int from public.catalog where analyzed_by = auth.uid() and created_at > now() - interval '1 hour';
+$$;
+revoke execute on function public.catalog_my_recent_adds() from public, anon;
+grant execute on function public.catalog_my_recent_adds() to authenticated;
+
+create or replace function private.guard_catalog() returns trigger
+language plpgsql set search_path = public as $$
+declare cl text := '[[:cntrl:]]';
+begin
+  if current_user not in ('anon', 'authenticated') then return new; end if;
+  if tg_op = 'INSERT' then
+    new.source := 'deezer'; new.ext_id := substr(new.id, 4)::bigint;
+    new.plays := 0; new.is_full := false; new.full_by := null; new.full_at := null;
+    new.created_at := now(); new.analyzed_by := auth.uid();
+    if public.catalog_my_recent_adds() >= 400 then
+      raise exception 'rate limit' using errcode = '22023';
+    end if;
+  end if;
+  new.title := btrim(regexp_replace(new.title, cl, '', 'g'));
+  new.artist := btrim(regexp_replace(new.artist, cl, '', 'g'));
+  new.album := btrim(regexp_replace(coalesce(new.album, ''), cl, '', 'g'));
+  if new.title = '' or new.artist = '' then raise exception 'bad title' using errcode = '22023'; end if;
+  if coalesce(new.cover, '') <> '' and new.cover !~ '^https://([a-z0-9-]+\.)*dzcdn\.net/[A-Za-z0-9/._-]{1,255}$'
+                                    and new.cover !~ '^https://api\.deezer\.com/(album|artist|playlist)/[0-9]{1,15}/image$' then
+    raise exception 'bad cover' using errcode = '22023';
+  end if;
+  if coalesce(new.link, '') <> '' and new.link !~ '^https://www\.deezer\.com/([a-z]{2}/)?track/[0-9]{1,15}$' then
+    raise exception 'bad link' using errcode = '22023';
+  end if;
+  if not public.catalog_chords_ok(new.chords, 16) then
+    raise exception 'bad chords' using errcode = '22023';
+  end if;
+  if new.duration is not null and new.duration not between 0 and 36000 then raise exception 'bad duration' using errcode = '22023'; end if;
+  if new.release_date is not null and new.release_date not between date '1900-01-01' and (now() + interval '2 years')::date then
+    new.release_date := null;
+  end if;
+  return new;
+end $$;
+revoke all on function private.guard_catalog() from public, anon, authenticated;
+drop trigger if exists catalog_guard on public.catalog;
+create trigger catalog_guard before insert or update on public.catalog
+  for each row execute function private.guard_catalog();
+
+-- [S-7] catalog_set_full: chords elements were not checked (any JSON, any size), there was no rate limit (one member
+-- could mark every chart track as "full" with junk, and the first one wins forever), and only full admins could
+-- replace a bad one. Now: int chords, 20 per member per day, holders of the 'catalog' permission can replace.
+create or replace function public.catalog_set_full(cid text, p_bpm numeric, p_pc smallint, p_mode smallint, p_chords jsonb)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare n integer; mod boolean;
+begin
+  if auth.uid() is null or exists (select 1 from public.profiles where id = auth.uid() and blocked) then
+    raise exception 'not allowed';
+  end if;
+  if p_bpm is null or p_bpm < 30 or p_bpm > 300 or p_pc is null or p_pc not between 0 and 11 or p_mode is null or p_mode not in (0,1)
+     or not public.catalog_chords_ok(p_chords, 16) then
+    raise exception 'bad analysis';
+  end if;
+  mod := public.has_perm('catalog');
+  if not mod and (select count(*) from public.catalog where full_by = auth.uid() and full_at > now() - interval '1 day') >= 20 then
+    raise exception 'rate limit';
+  end if;
+  -- the first full analysis wins; catalog moderators (and admins) can always replace it
+  update public.catalog
+     set bpm = p_bpm, key_pc = p_pc, key_mode = p_mode, chords = p_chords,
+         is_full = true, full_by = auth.uid(), full_at = now()
+   where id = cid and (not is_full or mod);
+  get diagnostics n = row_count;
+  return n > 0;
+end $$;
+revoke execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) from public, anon;
+grant execute on function public.catalog_set_full(text, numeric, smallint, smallint, jsonb) to authenticated;
+
+-- [S-8] catalog_play: anyone (even without an account) could call it in a loop and push any track to the top of
+-- "popular". Now: a member counts once per track per day, visitors without an account once per track per hour in total.
+create table if not exists private.catalog_play_log (
+  cid  text not null,
+  who  text not null,
+  slot bigint not null,
+  primary key (cid, who, slot)
+);
+revoke all on private.catalog_play_log from public, anon, authenticated;
+create or replace function public.catalog_play(cid text) returns void
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); n integer;
+begin
+  if cid is null or cid !~ '^dz:[0-9]{1,15}$' then return; end if;
+  insert into private.catalog_play_log (cid, who, slot)
+    values (cid, coalesce(uid::text, 'anon'),
+            case when uid is null then floor(extract(epoch from now()) / 3600) else floor(extract(epoch from now()) / 86400) end)
+    on conflict do nothing;
+  get diagnostics n = row_count;
+  if n > 0 then update public.catalog set plays = plays + 1 where id = cid; end if;
+  if random() < 0.002 then
+    delete from private.catalog_play_log where slot < floor(extract(epoch from now()) / 86400) - 2
+                                            and slot < floor(extract(epoch from now()) / 3600) - 48;
+  end if;
+end $$;
+revoke execute on function public.catalog_play(text) from public;
+grant execute on function public.catalog_play(text) to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-9] site_config: settings holders ('settings' permission, not only full admins) could store values the whole
+-- site then uses: billing.contact = 'javascript:…' (app.js contactAction() assigns it to location.href → stored XSS
+-- on every user → session theft of the owner = privilege escalation), plan links to any site, absurd point values.
+-- Now the fields are validated when they change (also for admins; the SQL editor is not affected).
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.guard_config() returns trigger
+language plpgsql set search_path = public as $$
+declare b jsonb; p jsonb; ids text[] := '{}'; v text;
+  url_re text := '^https://[^[:space:][:cntrl:]<>"''`\\]{3,}$';
+begin
+  if current_user not in ('anon', 'authenticated') then return new; end if;
+  if char_length(coalesce(new.title, '')) > 80 or char_length(coalesce(new.announce, '')) > 1000 then
+    raise exception 'bad config: text too long' using errcode = '22023';
+  end if;
+  if coalesce(new.lang, 'he') not in ('he','en','ar','ru','es') then raise exception 'bad config: lang' using errcode = '22023'; end if;
+  new.updated_at := now();
+  if tg_op = 'UPDATE' and new.billing is not distinct from old.billing then return new; end if;
+  b := new.billing;
+  if b is null or jsonb_typeof(b) <> 'object' then raise exception 'bad billing' using errcode = '22023'; end if;
+  if b ? 'on' and jsonb_typeof(b->'on') <> 'boolean' then raise exception 'bad billing: on' using errcode = '22023'; end if;
+  if b ? 'signup' and coalesce(public.safe_int(b->>'signup'), -1) not between 0 and 10000 then raise exception 'bad billing: signup' using errcode = '22023'; end if;
+  if b ? 'referral' and coalesce(public.safe_int(b->>'referral'), -1) not between 0 and 1000 then raise exception 'bad billing: referral' using errcode = '22023'; end if;
+  if b ? 'referral_max' and coalesce(public.safe_int(b->>'referral_max'), -1) not between 0 and 10000 then raise exception 'bad billing: referral_max' using errcode = '22023'; end if;
+  if b ? 'storage_mb' and coalesce(public.safe_int(b->>'storage_mb'), -1) not between 0 and 1000000 then raise exception 'bad billing: storage_mb' using errcode = '22023'; end if;
+  if b ? 'max_files' and coalesce(public.safe_int(b->>'max_files'), -1) not between 0 and 1000000 then raise exception 'bad billing: max_files' using errcode = '22023'; end if;
+  if b ? 'costs' then
+    if jsonb_typeof(b->'costs') <> 'object' then raise exception 'bad billing: costs' using errcode = '22023'; end if;
+    foreach v in array array['sep','stems'] loop
+      if (b->'costs') ? v and coalesce(public.safe_int(b->'costs'->>v), -1) not between 1 and 100000 then
+        raise exception 'bad billing: costs.%', v using errcode = '22023';
+      end if;
+    end loop;
+  end if;
+  if coalesce(b->>'currency', '') !~ '^([A-Z]{3})?$' then raise exception 'bad billing: currency' using errcode = '22023'; end if;
+  -- contact: an email, an https:// link or plain text ("WhatsApp: 050…"); never a script/data/plain-http/
+  -- protocol-relative URL (the app puts it in location.href). Browsers ignore whitespace/control characters
+  -- inside a scheme ("java\tscript:"), so the check runs on the text with those removed.
+  v := btrim(coalesce(b->>'contact', ''));
+  if char_length(v) > 200 then raise exception 'bad billing: contact too long' using errcode = '22023'; end if;
+  v := lower(regexp_replace(v, '[[:space:][:cntrl:]]', '', 'g'));
+  if v ~ '^(javascript|vbscript|data|blob|file|filesystem|about|http):' or v ~ '^[/\\]' or v ~ '[<>"`]' then
+    raise exception 'bad billing: contact (an email address, an https:// link or plain text)' using errcode = '22023';
+  end if;
+  if b ? 'plans' then
+    if jsonb_typeof(b->'plans') <> 'array' or jsonb_array_length(b->'plans') > 12 then raise exception 'bad billing: plans' using errcode = '22023'; end if;
+    for p in select * from jsonb_array_elements(b->'plans') loop
+      if jsonb_typeof(p) <> 'object' or coalesce(p->>'id', '') !~ '^[a-z][a-z0-9_]{1,23}$' or p->>'id' = 'free' or (p->>'id') = any(ids) then
+        raise exception 'bad billing: plan id' using errcode = '22023';
+      end if;
+      ids := ids || (p->>'id');
+      if coalesce(public.safe_int(p->>'points'), -1) not between 0 and 1000000 then raise exception 'bad billing: plan points' using errcode = '22023'; end if;
+      if coalesce(p->>'price', '0') !~ '^\d{1,6}(\.\d{1,12})?$' then raise exception 'bad billing: plan price' using errcode = '22023'; end if;
+      if coalesce(p->>'link', '') <> '' and (p->>'link' !~ url_re or char_length(p->>'link') > 500) then raise exception 'bad billing: plan link (https://)' using errcode = '22023'; end if;
+      if coalesce(p->>'variant', '') !~ '^(\d{1,12})?$' then raise exception 'bad billing: plan variant' using errcode = '22023'; end if;
+    end loop;
+  end if;
+  return new;
+end $$;
+revoke all on function private.guard_config() from public, anon, authenticated;
+drop trigger if exists site_config_guard on public.site_config;
+create trigger site_config_guard before insert or update on public.site_config
+  for each row execute function private.guard_config();
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-10] storage.
+--  * avatars had NO size or type limit (free file hosting of any size, HTML/SVG served from the project domain)
+--    → 2 MB, jpeg/png/webp only. uploads accepted any content type → audio/video types only.
+--  * "avatars: public read" let anyone LIST the whole bucket = every user's id. A public bucket does not need a
+--    SELECT policy for its public URLs, so listing is now limited to the user's own folder (upsert still works).
+--  * no quota on uploads (50 MB × unlimited files per account) → per-user files / MB limit
+--    (site_config.billing.max_files / storage_mb, defaults 2000 files / 5120 MB; avatars 30 files), admins exempt.
+--  * names with '.' / '..' segments, backslashes or control characters are refused; blocked users can't upload avatars.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+update storage.buckets set public = true, file_size_limit = 2097152,
+       allowed_mime_types = array['image/jpeg','image/png','image/webp'] where id = 'avatars';
+update storage.buckets set public = false, file_size_limit = 52428800,
+       allowed_mime_types = array['audio/*','video/mp4','video/webm','video/ogg','video/quicktime','video/x-matroska',
+                                  'application/ogg','application/octet-stream'] where id = 'uploads';
+
+-- may the signed-in user add an object called p_name to p_bucket? (their own folder, clean name, within quota)
+create or replace function public.storage_room(p_bucket text, p_name text) returns boolean
+language plpgsql stable security definer set search_path = public, storage as $$
+declare uid uuid := auth.uid(); n bigint; bytes bigint; b jsonb; maxn bigint; maxb bigint;
+begin
+  if uid is null or p_bucket is null or p_name is null then return false; end if;
+  if p_name ~ '(^|/)\.{1,2}(/|$)' or p_name ~ '[\\[:cntrl:]]' or p_name ~ '//' or char_length(p_name) > 400 then return false; end if;
+  if (storage.foldername(p_name))[1] is distinct from uid::text then return false; end if;
+  if exists (select 1 from public.profiles where id = uid and blocked) then return false; end if;
+  if public.is_admin() then return true; end if;
+  if exists (select 1 from storage.objects where bucket_id = p_bucket and name = p_name) then return true; end if;   -- overwrite
+  select billing into b from public.site_config where id = 1;
+  if p_bucket = 'avatars' then maxn := 30; maxb := 20::bigint * 1048576;
+  else
+    maxn := coalesce(public.safe_int(b->>'max_files'), 2000);
+    maxb := coalesce(public.safe_int(b->>'storage_mb'), 5120)::bigint * 1048576;
+  end if;
+  select count(*), coalesce(sum(case when metadata->>'size' ~ '^\d{1,15}$' then (metadata->>'size')::bigint else 0 end), 0)
+    into n, bytes from storage.objects
+   where bucket_id = p_bucket and (storage.foldername(name))[1] = uid::text;
+  return n < maxn and bytes < maxb;
+end $$;
+revoke execute on function public.storage_room(text, text) from public, anon;
+grant execute on function public.storage_room(text, text) to authenticated;
+
+drop policy if exists "avatars: public read" on storage.objects;
+drop policy if exists "avatars: own read" on storage.objects;
+create policy "avatars: own read" on storage.objects for select to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "avatars: own upload" on storage.objects;
+create policy "avatars: own upload" on storage.objects for insert to authenticated
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text and public.storage_room(bucket_id, name));
+drop policy if exists "avatars: own update" on storage.objects;
+create policy "avatars: own update" on storage.objects for update to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text and public.storage_room(bucket_id, name));
+drop policy if exists "uploads: own write" on storage.objects;
+create policy "uploads: own write" on storage.objects for insert to authenticated
+  with check (bucket_id = 'uploads' and (storage.foldername(name))[1] = auth.uid()::text and public.storage_room(bucket_id, name));
+drop policy if exists "uploads: own update" on storage.objects;
+create policy "uploads: own update" on storage.objects for update to authenticated
+  using (bucket_id = 'uploads' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'uploads' and (storage.foldername(name))[1] = auth.uid()::text and public.storage_room(bucket_id, name));
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-11] roles: every signed-in user could read all custom roles and their permissions.
+-- Now: admins, holders of 'users' (they see role names in the users list) and a user's own role.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+drop policy if exists "roles: read" on public.roles;
+create policy "roles: read" on public.roles for select to authenticated
+  using (public.is_admin() or public.has_perm('users')
+         or id = (select pr.role from public.profiles pr where pr.id = auth.uid()));
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-12] Referrals: two fresh accounts could invite EACH OTHER (both sides paid twice), and an account whose email
+-- was never confirmed could claim. Now both are refused. (Logic otherwise unchanged from schema.sql.)
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function public.claim_referral(p_code text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare me public.profiles; inv public.profiles; b jsonb; pts integer; cap integer; joined timestamptz; conf timestamptz;
+        recent integer; paid boolean := false;
+begin
+  if auth.uid() is null then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = auth.uid() for update;
+  if not found or me.blocked then return jsonb_build_object('ok', false, 'why', 'not_allowed'); end if;
+  if me.referred_by is not null then return jsonb_build_object('ok', false, 'why', 'already'); end if;
+  select u.created_at, u.email_confirmed_at into joined, conf from auth.users u where u.id = me.id;
+  if joined is null or joined < now() - interval '3 days' then return jsonb_build_object('ok', false, 'why', 'too_late'); end if;
+  if conf is null then return jsonb_build_object('ok', false, 'why', 'not_confirmed'); end if;
+  if p_code is null or btrim(p_code) !~ '^[a-z0-9]{6,12}$' then return jsonb_build_object('ok', false, 'why', 'bad_code'); end if;
+  select * into inv from public.profiles where ref_code = btrim(p_code) for update;
+  if not found or inv.blocked then return jsonb_build_object('ok', false, 'why', 'bad_code'); end if;
+  if inv.id = me.id or inv.referred_by = me.id then return jsonb_build_object('ok', false, 'why', 'self'); end if;
+
+  select billing into b from public.site_config where id = 1;
+  pts := least(1000, greatest(0, coalesce(public.safe_int(b->>'referral'), 10)));
+  cap := greatest(0, coalesce(public.safe_int(b->>'referral_max'), 20));
+  update public.profiles set referred_by = inv.id where id = me.id;
+  if pts > 0 then
+    update public.profiles set credits = credits + pts where id = me.id;
+    insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+      values (me.id, pts, me.credits + pts, 'referral', 'ref:joined:' || inv.id);
+    select count(*) into recent from public.credit_ledger
+     where user_id = inv.id and reason = 'referral' and ref like 'ref:inviter:%' and created_at > now() - interval '30 days';
+    if recent < cap then
+      update public.profiles set credits = credits + pts where id = inv.id;
+      insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+        values (inv.id, pts, inv.credits + pts, 'referral', 'ref:inviter:' || me.id);
+      paid := true;
+    end if;
+  end if;
+  return jsonb_build_object('ok', true, 'points', pts, 'balance', me.credits + pts, 'inviter_paid', paid);
+end $$;
+revoke execute on function public.claim_referral(text) from public, anon;
+grant execute on function public.claim_referral(text) to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-13] Points by hand: a custom role with the 'credits' permission could grant ITSELF unlimited points or a paid
+-- plan (full admins are free anyway). Now only the owner may target their own account. Bodies otherwise as in schema.sql.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function public.admin_grant_credits(target uuid, p_amount integer, p_note text default null)
+returns integer language plpgsql security definer set search_path = public as $$
+declare cur integer; nxt integer;
+begin
+  if not public.has_perm('credits') then raise exception 'not allowed'; end if;
+  if target = auth.uid() and not public.is_owner() then raise exception 'not allowed'; end if;
+  if p_amount is null or p_amount = 0 or abs(p_amount) > 1000000 then raise exception 'bad amount'; end if;
+  select credits into cur from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  nxt := greatest(0, cur + p_amount);
+  update public.profiles set credits = nxt where id = target;
+  insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+    values (target, nxt - cur, nxt, 'grant', left(nullif(btrim(p_note), ''), 300));
+  return nxt;
+end $$;
+revoke execute on function public.admin_grant_credits(uuid, integer, text) from public, anon;
+grant execute on function public.admin_grant_credits(uuid, integer, text) to authenticated;
+
+create or replace function public.admin_set_plan(target uuid, p_plan text, p_months integer default 1)
+returns void language plpgsql security definer set search_path = public as $$
+declare me public.profiles; pts integer;
+begin
+  if not public.has_perm('credits') then raise exception 'not allowed'; end if;
+  if target = auth.uid() and not public.is_owner() then raise exception 'not allowed'; end if;
+  select * into me from public.profiles where id = target for update;
+  if not found then raise exception 'no such user'; end if;
+  if p_plan = 'free' then
+    update public.profiles set plan = 'free', plan_until = null where id = target;
+    return;
+  end if;
+  pts := public.plan_points(p_plan);
+  if pts is null then raise exception 'bad plan'; end if;
+  if p_months is null or p_months < 1 or p_months > 36 then raise exception 'bad months'; end if;
+  update public.profiles
+     set plan = p_plan,
+         plan_until = greatest(now(), coalesce(me.plan_until, now())) + make_interval(months => p_months)
+   where id = target;
+  if (me.plan is distinct from p_plan or me.last_refill is null or me.last_refill <= now() - interval '1 month') then
+    update public.profiles set credits = credits + pts, last_refill = now() where id = target;
+    insert into public.credit_ledger (user_id, delta, balance, reason, ref)
+      values (target, pts, me.credits + pts, 'plan', p_plan || ' x' || p_months);
+  end if;
+end $$;
+revoke execute on function public.admin_set_plan(uuid, text, integer) from public, anon;
+grant execute on function public.admin_set_plan(uuid, text, integer) to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-14] Audit trail: there was no record of WHO changed a role, blocked someone, granted points or set a plan.
+-- These are written to the activity log (admin-readable) as adm_* actions, with the acting account in the detail.
+-- log_activity now refuses adm_* names, so users can't forge audit rows.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.audit_profile() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare actor text := coalesce(auth.uid()::text, 'system');
+begin
+  if new.role is distinct from old.role then
+    insert into public.activity (user_id, action, detail) values (new.id, 'adm_role', left('by ' || actor || ': ' || old.role || ' → ' || new.role, 300));
+  end if;
+  if new.blocked is distinct from old.blocked then
+    insert into public.activity (user_id, action, detail) values (new.id, 'adm_block', left('by ' || actor || ': ' || case when new.blocked then 'blocked' else 'unblocked' end, 300));
+  end if;
+  if new.owner is distinct from old.owner then
+    insert into public.activity (user_id, action, detail) values (new.id, 'adm_owner', left('by ' || actor || ': owner=' || new.owner, 300));
+  end if;
+  if (new.plan is distinct from old.plan or new.plan_until is distinct from old.plan_until)
+     and auth.uid() is not null and auth.uid() <> new.id then
+    insert into public.activity (user_id, action, detail)
+      values (new.id, 'adm_plan', left('by ' || actor || ': ' || coalesce(new.plan, '-') || ' until ' || coalesce(to_char(new.plan_until, 'YYYY-MM-DD'), '-'), 300));
+  end if;
+  return null;
+end $$;
+revoke all on function private.audit_profile() from public, anon, authenticated;
+drop trigger if exists profiles_audit on public.profiles;
+create trigger profiles_audit after update of role, blocked, owner, plan, plan_until on public.profiles
+  for each row execute function private.audit_profile();
+
+create or replace function private.audit_ledger() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if new.reason in ('grant', 'plan') then
+    insert into public.activity (user_id, action, detail)
+      values (new.user_id, 'adm_credits', left('by ' || coalesce(auth.uid()::text, 'system') || ': ' || new.reason || ' '
+                                               || new.delta || ' → ' || new.balance || coalesce(' · ' || new.ref, ''), 300));
+  end if;
+  return null;
+end $$;
+revoke all on function private.audit_ledger() from public, anon, authenticated;
+drop trigger if exists credit_ledger_audit on public.credit_ledger;
+create trigger credit_ledger_audit after insert on public.credit_ledger
+  for each row execute function private.audit_ledger();
+
+create or replace function public.log_activity(p_action text, p_detail text default null) returns void
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null or p_action is null or p_action !~ '^[a-z_]{2,40}$' or p_action like 'adm\_%' then return; end if;
+  if (select count(*) from public.activity where user_id = uid and created_at > now() - interval '1 hour') >= 400 then return; end if;
+  insert into public.activity (user_id, action, detail)
+    values (uid, p_action, nullif(left(btrim(regexp_replace(coalesce(p_detail, ''), '[[:cntrl:]]', ' ', 'g')), 300), ''));
+  if random() < 0.005 then delete from public.activity where created_at < now() - interval '180 days'; end if;
+end $$;
+revoke execute on function public.log_activity(text, text) from public, anon;
+grant execute on function public.log_activity(text, text) to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-15] Payments.
+--  a) Plan from the product/variant NAME was a substring match and applied even when variant ids are configured:
+--     any other subscription in the same Lemon Squeezy store whose name merely contains a plan id ("Producer pack"
+--     contains "pro") activated that plan with its points. Now names are used only while NO variant id is configured,
+--     and only as whole words.
+--  b) The last-resort match by the buyer's email accepted unconfirmed accounts: with email confirmation off, someone
+--     could register a buyer's address first and collect their subscription. Now only confirmed emails match.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function private.pay_plan_of(a jsonb, cd jsonb) returns text
+language plpgsql stable set search_path = public as $$
+declare plans jsonb; r text; nm text; vid text;
+begin
+  select c.billing->'plans' into plans from public.site_config c where c.id = 1;
+  if plans is null or jsonb_typeof(plans) <> 'array' then plans := '[]'::jsonb; end if;
+  vid := btrim(coalesce(a->>'variant_id', a->'first_order_item'->>'variant_id', ''));
+  if vid <> '' then
+    select p->>'id' into r from jsonb_array_elements(plans) p
+     where btrim(coalesce(p->>'variant', '')) = vid and coalesce(p->>'id', '') not in ('', 'free') limit 1;
+    if r is not null then return r; end if;
+  end if;
+  -- variant ids configured → only an exact variant id counts (names and the editable checkout hint are ignored)
+  if exists (select 1 from jsonb_array_elements(plans) p where btrim(coalesce(p->>'variant', '')) <> '') then return null; end if;
+  nm := lower(concat_ws(' ', a->>'variant_name', a->>'product_name',
+                        a->'first_order_item'->>'variant_name', a->'first_order_item'->>'product_name'));
+  if btrim(nm) <> '' then
+    select p->>'id' into r from jsonb_array_elements(plans) p
+     where coalesce(p->>'id', '') ~ '^[a-z][a-z0-9_]{1,23}$' and p->>'id' <> 'free'
+       and nm ~ ('\m' || lower(p->>'id') || '\M')
+     order by length(p->>'id') desc limit 1;
+    if r is not null then return r; end if;
+  end if;
+  select p->>'id' into r from jsonb_array_elements(plans) p
+   where p->>'id' = cd->>'plan' and p->>'id' <> 'free' limit 1;
+  return r;
+end $$;
+revoke all on function private.pay_plan_of(jsonb, jsonb) from public, anon, authenticated;
+
+do $$
+declare src text;
+  old_s text := 'where lower(u.email) = lower(btrim(a->>''user_email''));';
+  new_s text := 'where lower(u.email) = lower(btrim(a->>''user_email'')) and u.email_confirmed_at is not null;';
+begin
+  src := pg_get_functiondef('public.pay_webhook(text, text)'::regprocedure);
+  if position(new_s in src) > 0 then return; end if;                  -- already patched
+  if position(old_s in src) = 0 then
+    raise warning 'security.sql [S-15b]: pay_webhook email match not found - NOT patched, check the function by hand';
+    return;
+  end if;
+  execute replace(src, old_s, new_s);                                 -- create or replace keeps owner and grants
+end $$;
+revoke execute on function public.pay_webhook(text, text) from public;
+grant execute on function public.pay_webhook(text, text) to anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [S-16] Phase 2 — run ONLY after the browser code stops selecting these columns with select('*')
+-- (see the audit report: backend.js getProfile/adminUsers/catalogGet/catalogList). Until then these lines would
+-- break the site, so they are commented out.
+--  * profiles.pay_portal is a signed Lemon Squeezy customer-portal link (manage/cancel the subscription); anyone with
+--    the 'users' permission can read everybody's. Serve it to its owner through my_pay_portal() instead.
+--  * catalog.analyzed_by / full_by publish which account analysed which song to every visitor.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+create or replace function public.my_pay_portal() returns text
+language sql stable security definer set search_path = public as $$
+  select pay_portal from public.profiles where id = auth.uid();
+$$;
+revoke execute on function public.my_pay_portal() from public, anon;
+grant execute on function public.my_pay_portal() to authenticated;
+-- (a column can only be hidden when the table-level SELECT is replaced by a column list)
+-- do $$ declare cols text; begin
+--   select string_agg(quote_ident(column_name), ', ') into cols from information_schema.columns
+--    where table_schema = 'public' and table_name = 'profiles' and column_name <> 'pay_portal';
+--   execute 'revoke select on public.profiles from anon, authenticated';
+--   execute 'grant select (' || cols || ') on public.profiles to authenticated';
+-- end $$;
+-- revoke select on public.catalog from anon, authenticated;
+-- grant select (id, source, ext_id, title, artist, album, cover, link, release_date, duration, bpm, key_pc, key_mode,
+--               chords, plays, created_at, is_full, full_at) on public.catalog to anon, authenticated;

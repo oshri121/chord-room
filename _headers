@@ -1,10 +1,61 @@
+# Cloudflare Pages response headers (static files only; the Functions in functions/ set their own).
+# When the site starts loading something from a new origin (a CDN, an analytics script, another API), add that
+# origin to the matching CSP directive below, or the browser blocks it. Repo files that are not part of the site
+# (supabase/, tools/, *.md …) answer 404 through functions/_middleware.js + _routes.json.
+#
+# CSP notes
+# - script-src: our own files only (no inline scripts: assets/early.js sets the home class + saved theme).
+#   'wasm-unsafe-eval' = WebAssembly (Signalsmith Stretch, lamejs is plain JS). blob: = the AudioWorklets and
+#   workers we build from strings (YIN, recorder, Signalsmith). No 'unsafe-inline', no 'unsafe-eval', and
+#   no api.deezer.com: JSONP is only the local-dev fallback, production goes through /api/deezer.
+# - style-src: 'unsafe-inline' is needed for style="" attributes (index.html + rendered templates); injected
+#   <style> elements stay blocked through style-src-elem.
+# - img/media/connect: Supabase (avatars, signed song URLs, REST, realtime) and Deezer's CDN (*.dzcdn.net:
+#   covers + 30 s previews). frame-src: Deezer's official widget. Checkout (Lemon Squeezy), WhatsApp and
+#   Deezer links open as normal navigations, which CSP does not restrict. frame-src also allows www.deezer.com in case
+#   the widget navigates inside its frame (sign-in).
 /*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com; frame-src https://widget.deezer.com https://www.deezer.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), hid=(), midi=(), display-capture=(), magnetometer=(), gyroscope=(), accelerometer=(), browsing-topics=()
+  X-Permitted-Cross-Domain-Policies: none
 
-/ai/model/*
-  Cache-Control: public, max-age=31536000, immutable
+# The AI worker (ONNX Runtime) gets its CSP from its own response. Its embind glue may build functions with
+# new Function() on the WebGPU path, which a strict policy would break, so it runs without the page policy.
+# It is our own, unmodified build and never touches the DOM or user HTML.
+/ai/*
+  ! Content-Security-Policy
 
-/vendor/*
+# Caching. HTML is always revalidated (Pages' default), so a deploy with new ?v= numbers is seen at once.
+# assets/*: the <script>/<link> tags carry ?v= (bump it on every change); short cache + background refresh as a
+# safety net for files that are fetched without ?v= (icon.svg).
+/assets/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# Versioned third-party files never change under the same name.
+/vendor/lamejs-1.2.7.min.js
   Cache-Control: public, max-age=31536000, immutable
+/vendor/signalsmith-stretch-1.3.2.js
+  Cache-Control: public, max-age=31536000, immutable
+# supabase.js has no version in its file name: a day, so an update reaches everyone.
+/vendor/supabase.js
+  Cache-Control: public, max-age=86400
+
+# AI model: the weight/graph/runtime chunks are fixed for this model; the manifest and the worker can change.
+/ai/model/*.bin
+  Cache-Control: public, max-age=31536000, immutable
+/ai/model/wman.json
+  Cache-Control: public, max-age=3600
+/ai/worker.js
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# The logo in the sign-up / reset emails is loaded by mail clients from other origins.
+/assets/email/*
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=604800
