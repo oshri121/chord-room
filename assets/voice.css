@@ -1,0 +1,92 @@
+/* "My key" (assets/voice.js): the button in the key stat + the range-test / key-recommendation dialog.
+   Colours: the app tokens, plus piano-key tokens below (light + forced dark + system dark). */
+:root{--vc-wk:#FFFFFF;--vc-wkl:#C9C9C5;--vc-bk:#1B1B1F;--vc-kl:#8A8A90;--vc-in:color-mix(in srgb,var(--acc-a) 22%,var(--vc-wk))}
+:root[data-theme="dark"]{--vc-wk:#D9D9DF;--vc-wkl:#9A9AA4;--vc-bk:#0E0E12;--vc-kl:#5E5E68}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--vc-wk:#D9D9DF;--vc-wkl:#9A9AA4;--vc-bk:#0E0E12;--vc-kl:#5E5E68}}
+
+/* entry button (inside #stKey) */
+.vc-open{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;height:26px;margin-top:4px;padding:0 10px;border:1px solid var(--line2);border-radius:var(--r-pill);
+  background:var(--btn-bg);color:var(--ink);font-size:12px;font-weight:500;line-height:1;white-space:nowrap;transition:border-color .15s,background .15s}
+.vc-open:hover{border-color:var(--bd-hover);background:var(--btn-hover)}
+.vc-open .vc-ic{width:14px;height:14px}
+.vc-ic{width:16px;height:16px;flex:none;vertical-align:-3px}
+
+/* dialog */
+.vc-wrap{z-index:90} /* same layer as the auth dialog: above the floating accessibility / assistant buttons */
+.vc-wrap .vcdlg{width:min(640px,100%);padding:22px 22px 20px}
+.vcdlg .dh{margin-bottom:10px}
+.vcdlg h3{display:flex;align-items:center;gap:8px}
+.vcdlg h3 .vc-ic{width:20px;height:20px}
+.vcdlg p{margin:0 0 8px;font-size:14px;line-height:1.5}
+.vc-intro{color:var(--ink2)}
+.vc-priv{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:var(--r-sm);background:var(--soft);color:var(--ink2);font-size:13px!important}
+.vc-priv .vc-ic{margin-top:2px;color:var(--ok)}
+.vc-sec{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.vc-sec h4{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+html[dir="rtl"] .vc-sec h4,html[lang="ar"] .vc-sec h4{letter-spacing:.01em;text-transform:none}
+.vc-sec h5{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--ink2)}
+.vc-sn{text-transform:none;letter-spacing:0;color:var(--ink2);font-weight:500;unicode-bidi:isolate}
+.vc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.vc-hint,.vc-muted,.vc-note{color:var(--muted);font-size:13px!important}
+.vc-err{color:var(--signal);font-weight:500}
+.vc-ltr{unicode-bidi:isolate;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.vc-live{min-height:1px;margin:8px 0 0!important;font-size:13px!important;color:var(--ink2)}
+.vc-live:empty{margin:0!important}
+
+/* result */
+.vc-big{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-size:26px;font-weight:600;line-height:1.2}
+.vc-vt{font-size:15px;font-weight:600;padding:3px 10px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--acc-a) 16%,transparent);color:var(--ink)}
+.vc-sub{color:var(--muted);font-size:12px!important;margin-top:2px!important}
+
+/* test */
+.vc-step{font-size:12px!important;color:var(--muted);margin:0 0 2px!important}
+.vc-sth{font-size:16px!important;font-weight:600}
+.vc-meter{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:6px 14px;align-items:center;margin:10px 0 6px}
+.vc-note-live{grid-row:span 2;min-width:3.4ch;font:600 34px/1 var(--mono);text-align:center;font-variant-numeric:tabular-nums}
+.vc-lvl,.vc-bar,.vc-sprog{height:8px;border-radius:4px;background:var(--soft2);overflow:hidden}
+.vc-lvl i,.vc-bar i,.vc-sprog i{display:block;height:100%;width:0;border-radius:inherit;background:var(--ok);transition:width .08s linear}
+.vc-bar i{background:var(--acc-a)}
+.vc-sprog{margin:4px 0 6px}.vc-sprog i{background:var(--acc-p)}
+html[dir="rtl"] .vc-lvl,html[dir="rtl"] .vc-bar,html[dir="rtl"] .vc-sprog{transform:scaleX(-1)}
+.vc-stat{min-height:21px;color:var(--ink2)}
+
+/* keyboard strip (LTR) */
+.vc-kb{direction:ltr;margin:14px 0 6px}
+.vc-kbs{display:block;width:100%;height:auto}
+.vc-kbs .wk{fill:var(--vc-wk);stroke:var(--vc-wkl);stroke-width:1}
+.vc-kbs .bk{fill:var(--vc-bk)}
+.vc-kbs .kl{fill:var(--vc-kl);font-family:var(--mono);font-weight:600;font-size:9px}.vc-kbs .kl.big{font-size:12px}
+.vc-kbs .wk.live,.vc-kbs .bk.live{fill:var(--ok)}
+.vc-kbs .lv{fill:var(--ok)}
+.vc-kbs .b-you{fill:var(--acc-a)}
+.vc-kbs .b-song{fill:var(--acc-b)}
+.vc-kbs .b-new{fill:var(--acc-p)}
+.vc-lg{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;font-size:12.5px;color:var(--ink2)}
+.vc-lg li{display:inline-flex;align-items:center;gap:6px}
+.vc-lg .sw{width:18px;height:8px;border-radius:4px;flex:none}
+.vc-lg .sw.you{background:var(--acc-a)}.vc-lg .sw.song{background:var(--acc-b)}.vc-lg .sw.new{background:var(--acc-p)}.vc-lg .sw.live{background:var(--ok);width:8px}
+
+/* song + recommendation */
+.vc-srange b{font-weight:600}
+.vc-tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:var(--r-pill);border:1px solid var(--line2);color:var(--muted);vertical-align:1px}
+.vc-tag.est{border-style:dashed}
+.vc-rec{border:1px solid var(--line2);border-inline-start:3px solid var(--acc-p);border-radius:var(--r-md);padding:12px 14px;margin-top:10px;background:var(--card)}
+.vc-rec-h{font-size:20px;font-weight:600;line-height:1.3;margin-bottom:4px}
+.vc-sh{font-size:13px;font-weight:500;color:var(--muted);padding:1px 7px;border:1px solid var(--line2);border-radius:var(--r-pill);vertical-align:2px;white-space:nowrap}
+.vc-fit{color:var(--ink2);font-size:13px!important}
+.vc-ok{color:var(--ok);font-weight:600;margin:6px 0 0!important}
+.vc-ok:focus{outline:none}
+.vc-alts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.vc-alt{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.vc-alt-h b{font-size:16px}
+.vc-alt .btn{align-self:flex-start;height:32px;padding:0 12px;font-size:13px;margin-top:4px}
+.vc-apply{margin-top:6px}
+
+@media (max-width:520px){
+  .vc-wrap .vcdlg{padding:18px 14px 16px}
+  .vc-big{font-size:22px}
+  .vc-rec-h{font-size:18px}
+  .vc-note-live{font-size:28px}
+  .vc-row .btn{height:36px;padding:0 12px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){.vc-lvl i,.vc-bar i,.vc-sprog i{transition:none}}

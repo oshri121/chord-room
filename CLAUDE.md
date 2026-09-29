@@ -89,7 +89,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   is shown only to that account; switching account resets the tool (`authChanged` → `cr-user` event → `userSwitched`).
 - Activity log: `activity` table written only by `log_activity(action, detail)` (rate limited, admins read). `logAct(a,d)` in
   app.js (`CR.log` for dj.js/crate.js): visit, sign_in, view, song_upload/open, discover_open, separate, export, dj_load,
-  crate_analyze/export, subscribe_click, invite_copy, mashup_export. Admin panel tab "Activity" + per-user activity in the details view.
+  crate_analyze/export, subscribe_click, invite_copy, mashup_export, voice_test. Admin panel tab "Activity" + per-user activity in the details view.
 - Auto cue points (`assets/cues.js`, `CUES.detect(buffer, grid)`): intro/vocal/break/build/drop/outro = hot cues A–F with fixed
   colours, found from per-bar band energies. Crate stores them per row, draws a structure strip, and exports them:
   rekordbox XML POSITION_MARK (hot + memory), Serato `GEOB "Serato Markers2"` inside MP3 copies, Traktor NML (CUE_V2).
@@ -155,6 +155,12 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   ask for an account too (`needAccount`/`askAccount`). `regate()` re-routes on auth changes. Only when accounts are on
   (tests that exercise the tools without the mock stub `vendor/supabase.js` → local mode). The old `require_login` overlay
   (`#gate`) is retired and its admin toggle hidden. Client-side (honest-user) gate; paid/server things are checked server-side.
+- "My key" / הסולם שלי (`assets/voice.js/css`, strings inside, only via `window.CR`; button `#vcOpen` injected into `#stKey`):
+  mic range test (own AudioContext + AnalyserNode, YIN per 50 ms frame, median + octave guard; steps lowest / highest /
+  optional 10 s song) → comfortable range + voice type, saved in localStorage `chordroom.voice.v1:<uid|guest>`. Song melody
+  range = YIN in a blob Worker over the vocals stem (`S.stems[0]`) or a centre-channel STFT extract of the mix ("estimated"),
+  10th–90th percentile of steady runs. `recommend()` scores shifts −6…+6 × singer octave −1/0/+1; Apply = `CR.setTranspose`
+  (bridge block after `window.CR`: `voiceSong`, `getTranspose`, `setTranspose` → `setT`). Needs `microphone=(self)` in `_headers`.
 - Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
   defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
 
