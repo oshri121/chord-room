@@ -3,7 +3,7 @@
 //  1. The site is deployed from the repo root, so owner docs and sources would be public files. They are not
 //     secret (no keys live in the repo), but they are not part of the site either: answer 404.
 //  2. _headers does not apply to Function responses, so the API gets its security headers here.
-const HIDDEN = /^\/(?:supabase|tools|functions|\.git)(?:\/|$)|^\/(?:CLAUDE|PAYMENTS|README|EMAIL|ASSISTANT)\.md$|^\/\.gitignore$/i;
+const HIDDEN = /^\/(?:supabase|tools|functions|\.git)(?:\/|$)|^\/[^\/]*\.md$|^\/\.gitignore$/i;
 
 const API_HEADERS = {
   'x-content-type-options': 'nosniff',

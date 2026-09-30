@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/api/*", "/supabase/*", "/tools/*", "/functions/*", "/.git/*", "/CLAUDE.md", "/PAYMENTS.md", "/README.md", "/EMAIL.md", "/ASSISTANT.md", "/.gitignore"],
+  "include": ["/api/*", "/supabase/*", "/tools/*", "/functions/*", "/.git/*", "/*.md", "/.gitignore"],
   "exclude": []
 }
