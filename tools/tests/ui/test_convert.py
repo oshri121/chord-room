@@ -12,6 +12,7 @@ Fixtures come from fixtures/gen_media.py (system ffmpeg + mutagen when present; 
    BPM & key from the analysis option into the tags.
 5. ZIP of all results, cancel while running, options remembered across a reload, activity logged.
 6. he + ar RTL, dark, 375 px: no horizontal scroll, LTR values; zero CSP violations, no page errors.
+   Rows are conversion cards (`#cvBody .cvcard`, sizes in `.cvnum bdi`); the format is a segmented radio group `input[name=fmt]`.
 Images tab: PNG → 500 px square JPG and WebP.
 """
 import os, sys, io, re, json, time, struct, zipfile, tempfile
@@ -41,7 +42,7 @@ def set_opts(pg, **o):
 
 def download_row(pg, i):
     with pg.expect_download() as d:
-        pg.click(f'#cvBody tr:nth-child({i + 1}) [data-a="dl"]')
+        pg.click(f'#cvBody .cvcard:nth-child({i + 1}) [data-a="dl"]')
     p = d.value.path(); data = open(p, 'rb').read()
     return d.value.suggested_filename, data
 
@@ -73,7 +74,7 @@ def test(t, srv, b):
     t.check('gate: #convert signed out shows the sign-in gate', not pg.evaluate("document.querySelector('#gateView').hidden") and pg.evaluate("document.querySelector('#convertView').hidden"))
     lib.sign_up(pg, 'oshri', 'o@x.com')
     lib.poll(pg, "!document.querySelector('#convertView').hidden&&document.querySelector('#cvDrop')", 15)
-    t.check('signed in: converter view built, nav tab on', pg.evaluate("document.querySelector('#navConvert').classList.contains('on')&&!!document.querySelector('#cvOpts select[name=fmt]')"))
+    t.check('signed in: converter view built, nav tab on', pg.evaluate("document.querySelector('#navConvert').classList.contains('on')&&!!document.querySelector('#cvOpts input[name=fmt]:checked')"))
     t.eq('nav label (en)', pg.evaluate("document.querySelector('#navConvert span').textContent"), 'Convert')
     t.check('empty state mentions on-device privacy', 'not sent anywhere' in pg.evaluate("document.querySelector('.cvpriv').textContent"))
     t.shot(pg, '01-empty-en')
@@ -186,8 +187,8 @@ def test(t, srv, b):
     set_opts(pg, fmt='flac', bk=False, norm=True)
     lib.reload(pg)
     if not pg.evaluate("!!(window.Backend&&Backend.user)"): lib.sign_in(pg)
-    lib.poll(pg, "!document.querySelector('#convertView').hidden&&document.querySelector('#cvOpts select[name=fmt]')", 20)
-    t.eq('options remembered after reload (flac + normalise)', pg.evaluate("[document.querySelector('#cvOpts select[name=fmt]').value,document.querySelector('#cvOpts input[name=norm]').checked]"), ['flac', True])
+    lib.poll(pg, "!document.querySelector('#convertView').hidden&&document.querySelector('#cvOpts input[name=fmt]:checked')", 20)
+    t.eq('options remembered after reload (flac + normalise)', pg.evaluate("[document.querySelector('#cvOpts input[name=fmt]:checked').value,document.querySelector('#cvOpts input[name=norm]').checked]"), ['flac', True])
     t.check('zero CSP violations', lib.csp_violations(pg) == [], lib.csp_violations(pg))
     ctx.close()
 
@@ -226,7 +227,7 @@ def test(t, srv, b):
         t.check(f'{lang}: title translated', pg.evaluate("document.querySelector('#convertView h1').textContent") not in ('', 'cvTitle'))
         t.eq(f'{lang} {w}px: no horizontal scroll', lib.scroll_width(pg), w)
         if lang in ('he', 'ar'):
-            t.check(f'{lang}: size/duration cells are LTR', pg.evaluate("[...document.querySelectorAll('#cvBody td.num bdi')].every(b=>getComputedStyle(b).direction==='ltr')"))
+            t.check(f'{lang}: size/duration cells are LTR', pg.evaluate("[...document.querySelectorAll('#cvBody .cvnum bdi')].every(b=>getComputedStyle(b).direction==='ltr')"))
         if theme == 'dark': t.check(f'{lang}: dark background really dark', lib.page_luma(pg, '.cvopts') < 80, lib.page_luma(pg, '.cvopts'))
         t.check(f'{lang}: zero CSP violations', lib.csp_violations(pg) == [], lib.csp_violations(pg))
         t.shot(pg, f'06-{lang}-{theme}-{w}', full_page=True)

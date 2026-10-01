@@ -39,7 +39,8 @@ he:{navConvert:'המרה',cvEyebrow:'המרת קבצים · הכול במכשי�
   cvDone:'הושלמו {n} קבצים',cvDoneErr:'{n} נכשלו',cvNothing:'קודם מוסיפים קבצים.',cvZipBusy:'אורז ZIP…',cvZipDone:'ה־ZIP מוכן ({s} MB).',
   cvImgDropT:'גררו לכאן תמונות',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · עטיפות לשירים, בגודל שהנגנים אוהבים',
   cvImgSize:'גודל',cvImgSq:'{n} × {n} פיקסלים',cvImgOrig:'גודל מקורי',cvImgNote:'הגדלים הריבועיים נחתכים מהמרכז, כמו שנגנים מציגים עטיפות.',
-  cvFiles:'{n} קבצים',cvAfter:'אחרי',cvFilesIn:'במכשיר'},
+  cvFiles:'{n} קבצים',cvAfter:'אחרי',cvFilesIn:'במכשיר',
+  stTagging:'כותב תגיות…',cvRunning:'ממיר…',cvEta:'נותרו בערך {t}',cvAllDone:'הכול מוכן',cvEngineH:'מכין את מנוע ההמרה…',cvEngineS:'פעם אחת בלבד · {s} MB',cvEngineLocal:'רץ אצלכם במכשיר. שום דבר לא עולה לשרת.',cvEng1:'הורדה',cvEng2:'פריסה',cvEng3:'הפעלה',cvAny:'כל פורמט',cvTagsKept:'תגיות נשמרות',cvNoTags:'בלי תגיות',cvTrimS:'חיתוך שקט',cvFadeS:'פייד',cvBkS:'BPM וסולם',cvLossless:'ללא איבוד',spDecode:'פענוח',spProcess:'עיבוד',spEncode:'קידוד',spTags:'תגיות',cvOfN:'{a} מתוך {b}',cvAgain:'המרה מחדש',cvSmaller:'קטן ב־{p}%',cvLarger:'גדול ב־{p}%',cvSummary:'סיכום ההגדרות'},
 en:{navConvert:'Convert',cvEyebrow:'File conversion · all on your device',cvTitle:'Converter',
   cvSub:'Drop many audio or video files and get MP3, WAV, FLAC, OGG or M4A, tags and cover included. Nothing is uploaded: the conversion runs in your browser.',
   cvTabAudio:'Audio',cvTabImages:'Images',cvAdd:'Add files',cvDropT:'Drop audio or video files here',
@@ -58,7 +59,8 @@ en:{navConvert:'Convert',cvEyebrow:'File conversion · all on your device',cvTit
   cvDone:'{n} files done',cvDoneErr:'{n} failed',cvNothing:'Add files first.',cvZipBusy:'Packing ZIP…',cvZipDone:'ZIP ready ({s} MB).',
   cvImgDropT:'Drop images here',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · cover art for your tracks, at the sizes players like',
   cvImgSize:'Size',cvImgSq:'{n} × {n} px',cvImgOrig:'Original size',cvImgNote:'Square sizes are cropped from the centre, the way players show cover art.',
-  cvFiles:'{n} files',cvAfter:'after',cvFilesIn:'on device'},
+  cvFiles:'{n} files',cvAfter:'after',cvFilesIn:'on device',
+  stTagging:'Tagging…',cvRunning:'Converting…',cvEta:'about {t} left',cvAllDone:'All done',cvEngineH:'Preparing the conversion engine…',cvEngineS:'Only once · {s} MB',cvEngineLocal:'Runs on your device. Nothing is uploaded.',cvEng1:'Download',cvEng2:'Unpack',cvEng3:'Start',cvAny:'any format',cvTagsKept:'tags kept',cvNoTags:'no tags',cvTrimS:'silence trimmed',cvFadeS:'fades',cvBkS:'BPM & key',cvLossless:'lossless',spDecode:'decode',spProcess:'process',spEncode:'encode',spTags:'tags',cvOfN:'{a} of {b}',cvAgain:'Convert again',cvSmaller:'{p}% smaller',cvLarger:'{p}% larger',cvSummary:'Settings summary'},
 ar:{navConvert:'تحويل',cvEyebrow:'تحويل الملفات · كل شيء على جهازك',cvTitle:'محوّل الملفات',
   cvSub:'اسحب ملفات صوت أو فيديو كثيرة واحصل على MP3 أو WAV أو FLAC أو OGG أو M4A مع الوسوم والغلاف. لا يُرفع شيء: التحويل يعمل في متصفحك.',
   cvTabAudio:'صوت',cvTabImages:'صور',cvAdd:'إضافة ملفات',cvDropT:'اسحب ملفات صوت أو فيديو إلى هنا',
@@ -77,7 +79,8 @@ ar:{navConvert:'تحويل',cvEyebrow:'تحويل الملفات · كل شيء 
   cvDone:'اكتمل {n} ملفات',cvDoneErr:'فشل {n}',cvNothing:'أضف ملفات أولًا.',cvZipBusy:'يحزم ZIP…',cvZipDone:'ملف ZIP جاهز ({s} MB).',
   cvImgDropT:'اسحب الصور إلى هنا',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · أغلفة لأغانيك بالأحجام التي تفضّلها المشغلات',
   cvImgSize:'الحجم',cvImgSq:'{n} × {n} بكسل',cvImgOrig:'الحجم الأصلي',cvImgNote:'الأحجام المربعة تُقص من المنتصف، كما تعرض المشغلات الأغلفة.',
-  cvFiles:'{n} ملفات',cvAfter:'بعد',cvFilesIn:'على الجهاز'},
+  cvFiles:'{n} ملفات',cvAfter:'بعد',cvFilesIn:'على الجهاز',
+  stTagging:'يكتب الوسوم…',cvRunning:'يحوّل…',cvEta:'يتبقى نحو {t}',cvAllDone:'اكتمل كل شيء',cvEngineH:'يجهّز محرك التحويل…',cvEngineS:'مرة واحدة فقط · {s} MB',cvEngineLocal:'يعمل على جهازك. لا يُرفع شيء.',cvEng1:'تنزيل',cvEng2:'فك الضغط',cvEng3:'تشغيل',cvAny:'أي صيغة',cvTagsKept:'الوسوم محفوظة',cvNoTags:'بلا وسوم',cvTrimS:'قص الصمت',cvFadeS:'تدرّج',cvBkS:'BPM والمقام',cvLossless:'بلا فقدان',spDecode:'فك',spProcess:'معالجة',spEncode:'ترميز',spTags:'وسوم',cvOfN:'{a} من {b}',cvAgain:'تحويل من جديد',cvSmaller:'أصغر بنسبة {p}%',cvLarger:'أكبر بنسبة {p}%',cvSummary:'ملخص الإعدادات'},
 ru:{navConvert:'Конвертер',cvEyebrow:'Конвертация файлов · всё на вашем устройстве',cvTitle:'Конвертер',
   cvSub:'Перетащите много аудио- или видеофайлов и получите MP3, WAV, FLAC, OGG или M4A вместе с тегами и обложкой. Ничего не загружается: конвертация идёт в браузере.',
   cvTabAudio:'Аудио',cvTabImages:'Изображения',cvAdd:'Добавить файлы',cvDropT:'Перетащите сюда аудио или видео',
@@ -96,7 +99,8 @@ ru:{navConvert:'Конвертер',cvEyebrow:'Конвертация файло
   cvDone:'Готово: {n} файлов',cvDoneErr:'{n} с ошибкой',cvNothing:'Сначала добавьте файлы.',cvZipBusy:'Упаковка ZIP…',cvZipDone:'ZIP готов ({s} МБ).',
   cvImgDropT:'Перетащите сюда изображения',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · обложки для треков в размерах, которые любят плееры',
   cvImgSize:'Размер',cvImgSq:'{n} × {n} px',cvImgOrig:'Исходный размер',cvImgNote:'Квадратные размеры обрезаются по центру — так плееры показывают обложки.',
-  cvFiles:'{n} файлов',cvAfter:'после',cvFilesIn:'на устройстве'},
+  cvFiles:'{n} файлов',cvAfter:'после',cvFilesIn:'на устройстве',
+  stTagging:'Запись тегов…',cvRunning:'Конвертация…',cvEta:'осталось около {t}',cvAllDone:'Всё готово',cvEngineH:'Подготовка движка конвертации…',cvEngineS:'Только один раз · {s} МБ',cvEngineLocal:'Работает на вашем устройстве. Ничего не загружается.',cvEng1:'Загрузка',cvEng2:'Распаковка',cvEng3:'Запуск',cvAny:'любой формат',cvTagsKept:'теги сохраняются',cvNoTags:'без тегов',cvTrimS:'обрезка тишины',cvFadeS:'фейды',cvBkS:'BPM и тональность',cvLossless:'без потерь',spDecode:'декодирование',spProcess:'обработка',spEncode:'кодирование',spTags:'теги',cvOfN:'{a} из {b}',cvAgain:'Конвертировать снова',cvSmaller:'меньше на {p}%',cvLarger:'больше на {p}%',cvSummary:'Сводка настроек'},
 es:{navConvert:'Convertir',cvEyebrow:'Conversión de archivos · todo en tu dispositivo',cvTitle:'Conversor',
   cvSub:'Arrastra muchos archivos de audio o vídeo y obtén MP3, WAV, FLAC, OGG o M4A con sus etiquetas y carátula. No se sube nada: la conversión se hace en tu navegador.',
   cvTabAudio:'Audio',cvTabImages:'Imágenes',cvAdd:'Añadir archivos',cvDropT:'Arrastra aquí archivos de audio o vídeo',
@@ -115,7 +119,8 @@ es:{navConvert:'Convertir',cvEyebrow:'Conversión de archivos · todo en tu disp
   cvDone:'{n} archivos listos',cvDoneErr:'{n} fallaron',cvNothing:'Añade archivos primero.',cvZipBusy:'Empaquetando ZIP…',cvZipDone:'ZIP listo ({s} MB).',
   cvImgDropT:'Arrastra aquí imágenes',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · carátulas para tus temas, en los tamaños que prefieren los reproductores',
   cvImgSize:'Tamaño',cvImgSq:'{n} × {n} px',cvImgOrig:'Tamaño original',cvImgNote:'Los tamaños cuadrados se recortan desde el centro, como muestran las carátulas los reproductores.',
-  cvFiles:'{n} archivos',cvAfter:'después',cvFilesIn:'en el dispositivo'}
+  cvFiles:'{n} archivos',cvAfter:'después',cvFilesIn:'en el dispositivo',
+  stTagging:'Escribiendo etiquetas…',cvRunning:'Convirtiendo…',cvEta:'quedan unos {t}',cvAllDone:'Todo listo',cvEngineH:'Preparando el motor de conversión…',cvEngineS:'Solo una vez · {s} MB',cvEngineLocal:'Se ejecuta en tu dispositivo. No se sube nada.',cvEng1:'Descarga',cvEng2:'Descompresión',cvEng3:'Inicio',cvAny:'cualquier formato',cvTagsKept:'etiquetas conservadas',cvNoTags:'sin etiquetas',cvTrimS:'silencio recortado',cvFadeS:'fundidos',cvBkS:'BPM y tonalidad',cvLossless:'sin pérdida',spDecode:'decodificar',spProcess:'procesar',spEncode:'codificar',spTags:'etiquetas',cvOfN:'{a} de {b}',cvAgain:'Convertir de nuevo',cvSmaller:'{p}% más pequeño',cvLarger:'{p}% más grande',cvSummary:'Resumen de ajustes'}
 });
 
 /* ---------- constants & state ---------- */
@@ -133,7 +138,7 @@ const FF_ONLY=new Set(['aif','aiff','aifc','wma','ac3','amr','wv','ape','mka','c
 const ACCEPT='audio/*,video/*,.mp3,.wav,.flac,.ogg,.oga,.opus,.m4a,.aac,.aif,.aiff,.wma,.mp4,.m4v,.mov,.webm,.mkv,.avi,.3gp';
 const IMG_ACCEPT='image/*,.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif';
 const DEF={fmt:'mp3',q:320,sr:0,ch:0,norm:false,trim:false,fin:0,fout:0,tags:true,bk:false,isize:1000,ifmt:'jpg'};
-const C={built:false,visible:false,tab:'audio',rows:[],irows:[],running:false,abort:null,o:loadOpts(),msg:'',msgErr:false,zipBusy:false,seq:0,ffp:null};
+const C={built:false,visible:false,tab:'audio',rows:[],irows:[],running:false,abort:null,o:loadOpts(),msg:'',msgErr:false,zipBusy:false,seq:0,ffp:null,batch:null,fin:0};
 function loadOpts(){let o={};try{o=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){}const r={...DEF,...o};if(!FMT[r.fmt])r.fmt=DEF.fmt;return r}
 function saveOpts(){try{localStorage.setItem(LS,JSON.stringify(C.o))}catch(e){}}
 const ext=n=>{const m=/\.([a-z0-9]+)$/i.exec(n||'');return m?m[1].toLowerCase():''};
@@ -455,11 +460,12 @@ function metaArgs(T,fmt){
 async function encode(p,o,r,T,sig){
   const f=FMT[o.fmt];r.status='encoding';r.p=0;renderRow(r);
   const prog=x=>{r.p=x;renderRow(r)};
-  if(o.fmt==='wav')return new Blob([wavPcm(p.chs,p.sr,o.q===24?24:16,T)],{type:f.mime});
+  if(o.fmt==='wav'){const pcm=wavPcm(p.chs,p.sr,o.q===24?24:16,T);r.status='tagging';r.p=1;renderRow(r);return new Blob([pcm],{type:f.mime})}
   if(o.fmt==='mp3'){
     if(!window.MP3||!MP3.supported)throw new Error('MP3 encoder unavailable');
     const L=p.chs[0],R=p.chs[1]||p.chs[0];
     const mp3=await MP3.encode(L,R,p.sr,{kbps:f.q.includes(+o.q)?+o.q:320,onProgress:prog});chk(sig);
+    r.status='tagging';r.p=1;renderRow(r);
     return new Blob([id3Tag(T),stripId3(mp3)],{type:f.mime});
   }
   const files=[{name:'in.wav',data:wavF32(p.chs,p.sr)}],args=['-hide_banner','-nostats','-i','in.wav'],out='out.'+f.ext;
@@ -476,7 +482,7 @@ async function encode(p,o,r,T,sig){
   let res;
   try{res=await ffRun(files,args,[out],sig,prog)}
   catch(x){if(x.aborted)throw x;if(/not loaded|http |DecompressionStream|worker:|createFFmpegCore/.test(String(x.message)))throw Object.assign(x,{code:'erEngine'});throw Object.assign(x,{code:'erEncode',m:shortLog(x.message)})}
-  const data=res.outs[out];
+  const data=res.outs[out];r.status='tagging';r.p=1;renderRow(r);
   if(!data||!data.length)throw Object.assign(new Error(res.log||'empty'),{code:'erEncode',m:shortLog(res.log)});
   return new Blob([data],{type:f.mime});
 }
@@ -494,27 +500,27 @@ async function runRow(r,o,sig){
     try{const a=await CR.analyzeTrack(toBuffer(d.chs,d.sr),p=>{r.p=p;renderRow(r)});chk(sig);if(a&&a.bpm)r.tags.bpm=String(Math.round(a.bpm));if(a&&a.key)r.tags.key=keyTag(a.key)}catch(e){if(e&&e.aborted)throw e}}
   const p=await process(d,o,r,sig);chk(sig);
   const blob=await encode(p,o,r,r.tags||{},sig);chk(sig);
-  r.out={blob,name:outName(r,o),size:blob.size,fmt:o.fmt};r.status='done';r.p=1;renderRow(r);
+  r.out={blob,name:outName(r,o),size:blob.size,fmt:o.fmt};r.status='done';r.p=1;r.justDone=true;renderRow(r);
 }
 async function convertAll(only){
   if(C.running)return;
   const todo=(only?[only]:C.rows.filter(r=>r.status!=='done'||r.outFmt!==C.o.fmt)).filter(Boolean);
   if(!todo.length){setMsg(t('cvNothing'),true);return}
   const o={...C.o};C.running=true;C.abort=new AbortController();const sig=C.abort.signal;setMsg('');
-  todo.forEach(r=>{r.status='queued';r.err=null});renderActs();renderTable();
+  todo.forEach(r=>{r.status='queued';r.err=null});C.batch={t0:performance.now(),todo,total:todo.reduce((a,r)=>a+r.size,0)||1,ok:0,bad:0};C.fin=0;renderActs();renderTable();
   let ok=0,bad=0;
   CR.log&&CR.log('convert',`${todo.length} files → ${o.fmt}`);
   for(const r of todo){
     if(sig.aborted)break;
-    try{await runRow(r,o,sig);ok++}
+    try{await runRow(r,o,sig);ok++;C.batch.ok=ok}
     catch(e){
       if(e&&e.aborted){r.status='cancelled';renderRow(r);continue}
-      console.warn('convert',r.name,e);bad++;
+      console.warn('convert',r.name,e);bad++;C.batch.bad=bad;
       r.status='error';r.err=e&&e.code?tt(e.code,{n:MAX_MB,m:e.m||''}):t('erRead');renderRow(r);
     }
   }
   if(sig.aborted)C.rows.forEach(r=>{if(r.status==='queued'){r.status='cancelled';renderRow(r)}});
-  C.running=false;C.abort=null;C.ffp=null;renderEngine();renderActs();renderTable();
+  C.running=false;C.abort=null;C.ffp=null;C.batch=null;C.fin=sig.aborted?0:(bad?1:2);renderEngine();renderActs();renderTable();
   setMsg(sig.aborted?t('stCancelled'):tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok);
 }
 function cancelAll(){if(C.abort)C.abort.abort()}
@@ -526,12 +532,14 @@ function addFiles(list){
   if(files.length>room){setMsg(tt('erMany',{n:MAX_FILES}),true)}
   for(const f of files.slice(0,Math.max(0,room))){
     const e=ext(f.name);
-    C.rows.push({id:++C.seq,file:f,name:f.name,ext:e,size:f.size,dur:null,sr:0,ch:0,status:'ready',p:0,err:null,out:null,tags:{}});
+    C.rows.push({id:++C.seq,file:f,name:f.name,ext:e,size:f.size,dur:null,sr:0,ch:0,status:'ready',p:0,err:null,out:null,tags:{},fresh:true});
   }
   renderTable();renderActs();
 }
-function removeRow(id){if(C.running)return;C.rows=C.rows.filter(r=>r.id!==id);renderTable();renderActs()}
-function clearRows(){if(C.running)return;C.rows=[];setMsg('');renderTable();renderActs()}
+function removeRow(id){if(C.running)return;C.rows=C.rows.filter(r=>r.id!==id);if(!C.rows.length)C.fin=0;renderTable();renderActs()}
+function clearRows(){if(C.running)return;C.rows=[];C.fin=0;setMsg('');renderTable();renderActs()}
+const safeUrl=f=>{try{return URL.createObjectURL(f)}catch(e){return ''}};
+const dropImg=r=>{if(r.url)try{URL.revokeObjectURL(r.url)}catch(e){}};
 async function zipAll(){
   const rows=C.rows.filter(r=>r.out);if(!rows.length||C.zipBusy)return;C.zipBusy=true;renderActs();setMsg(t('cvZipBusy'));
   try{const files=[];for(const r of rows)files.push({name:r.out.name,data:new Uint8Array(await r.out.blob.arrayBuffer())});
@@ -545,7 +553,7 @@ const IFMT={jpg:{mime:'image/jpeg',ext:'jpg'},png:{mime:'image/png',ext:'png'},w
 const ISIZES=[500,1000,1500,0];
 function addImages(list){
   const files=[...list].filter(f=>f&&f.size>0&&/^image\//.test(f.type||''));if(!files.length)return;
-  for(const f of files.slice(0,Math.max(0,MAX_FILES-C.irows.length)))C.irows.push({id:++C.seq,file:f,name:f.name,size:f.size,status:'ready',out:null,err:null,w:0,h:0});
+  for(const f of files.slice(0,Math.max(0,MAX_FILES-C.irows.length)))C.irows.push({id:++C.seq,file:f,name:f.name,size:f.size,status:'ready',out:null,err:null,w:0,h:0,fresh:true,url:safeUrl(f)});
   renderImgTable();renderImgActs();
   C.irows.filter(r=>!r.w).forEach(async r=>{try{const b=await createImageBitmap(r.file);r.w=b.width;r.h=b.height;b.close&&b.close()}catch(e){}renderImgRow(r)});
 }
@@ -564,7 +572,7 @@ async function convertImages(){
       const blob=await new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error('toBlob')),f.mime,0.92));
       const used=new Set(C.irows.filter(x=>x!==r&&x.out).map(x=>x.out.name.toLowerCase()));
       let nm=`${base(r.name)||'cover'}${size?'-'+size:''}.${f.ext}`,k=2;while(used.has(nm.toLowerCase()))nm=`${base(r.name)}${size?'-'+size:''} (${k++}).${f.ext}`;
-      r.out={blob,name:nm,size:blob.size,w:W,h:H};r.outKey=size+f.ext;r.status='done';ok++;
+      r.out={blob,name:nm,size:blob.size,w:W,h:H};r.outKey=size+f.ext;r.status='done';r.justDone=true;ok++;
     }catch(e){console.warn('image',r.name,e);r.status='error';r.err=t('erImg');bad++}
     renderImgRow(r);await new Promise(x=>setTimeout(x,0));
   }
@@ -583,13 +591,22 @@ function setMsg(m,err,img){C.msg=m||'';C.msgErr=!!err;const el=$(img?'#cvIMsg':'
 /* ---------- build & render ---------- */
 const IC={
   files:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>',
-  drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h7l2 2h7v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg>',
   img:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20 15l-4.5-4.5L8 18"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 7.6-8 9-4.6-1.4-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
-  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>'
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>',
+  ok:'<svg class="cvok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5" pathLength="1"/><path d="M7.5 12.3l3 3 6-6.3" pathLength="1"/></svg>',
+  bad:'<svg class="cvbadx" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></svg>',
+  eq:'<span class="cveq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>'
 };
+const RUNS=new Set(['reading','decoding','analyzing','processing','encoding','tagging']);
+const STG={ready:0,queued:0,reading:0.03,decoding:0.06,analyzing:0.36,processing:0.56,encoding:0.62,tagging:0.985,done:1,error:1,cancelled:0};
+const SPAN={decoding:0.3,analyzing:0.2,encoding:0.36};
+const rowFrac=r=>Math.min(1,(STG[r.status]||0)+(SPAN[r.status]?SPAN[r.status]*(r.p||0):0));
+const STEP={reading:0,decoding:0,analyzing:1,processing:1,encoding:2,tagging:3,done:4};
+const noMotion=()=>document.documentElement.classList.contains('a11y-noanim')||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const bump=(el,cls)=>{if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)};
 function build(){
   const v=$('#convertView');
   v.innerHTML=`
@@ -601,37 +618,40 @@ function build(){
   </div>
 </div>
 <div id="cvAudio" role="tabpanel">
-  <div class="cvdrop" id="cvDrop">
-    <div class="cvdi">${IC.drop}</div>
-    <b data-i="cvDropT"></b>
-    <p class="snote" id="cvDropH"></p>
-    <div class="cvdb"><label class="btn solid" for="cvFile">${IC.files}<span data-i="cvAdd"></span></label>
-      <input type="file" id="cvFile" multiple accept="${ACCEPT}" hidden></div>
-    <p class="snote cvpriv">${IC.lock}<span data-i="cvPrivacy"></span></p>
+  <div class="cvstage" id="cvDrop">
+    <div class="cvsweep" aria-hidden="true"></div>
+    <div class="cvsin">
+      <div class="cvdi" aria-hidden="true"><span class="cvbars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+      <b data-i="cvDropT"></b>
+      <p class="snote" id="cvDropH"></p>
+      <div class="cvpills" dir="ltr" aria-hidden="true"><span class="cvpill src" id="cvPillSrc"></span><span class="cvflow"><i></i><i></i><i></i></span><span class="cvpill dst" id="cvPillDst"></span></div>
+      <div class="cvdb"><label class="btn solid" for="cvFile">${IC.files}<span data-i="cvAdd"></span></label>
+        <input type="file" id="cvFile" multiple accept="${ACCEPT}" hidden></div>
+      <p class="snote cvpriv">${IC.lock}<span data-i="cvPrivacy"></span></p>
+    </div>
   </div>
   <div class="cvopts" id="cvOpts"></div>
-  <div class="cvacts" id="cvActs"></div>
   <div class="cvengine" id="cvEngine" hidden></div>
+  <div class="cvconsole" id="cvActs"></div>
   <p class="cvmsg" id="cvMsg" role="status" aria-live="polite"></p>
-  <div class="cvtw" id="cvTableWrap" hidden><table class="cvtab" id="cvTable"><thead><tr>
-    <th data-i="cvThName"></th><th class="num" data-i="cvThSize"></th><th class="num" data-i="cvThDur"></th><th data-i="cvThFmt"></th><th class="st" data-i="cvThStatus"></th><th class="num" data-i="cvThOut"></th><th class="act"></th>
-  </tr></thead><tbody id="cvBody"></tbody></table></div>
+  <div class="cvlist" id="cvTableWrap" hidden><div class="cvcards" id="cvBody"></div></div>
 </div>
 <div id="cvImages" role="tabpanel" hidden>
-  <div class="cvdrop" id="cvIDrop">
-    <div class="cvdi">${IC.img}</div>
-    <b data-i="cvImgDropT"></b>
-    <p class="snote" data-i="cvImgDropH"></p>
-    <div class="cvdb"><label class="btn solid" for="cvIFile">${IC.files}<span data-i="cvAdd"></span></label>
-      <input type="file" id="cvIFile" multiple accept="${IMG_ACCEPT}" hidden></div>
-    <p class="snote cvpriv">${IC.lock}<span data-i="cvPrivacy"></span></p>
+  <div class="cvstage" id="cvIDrop">
+    <div class="cvsweep" aria-hidden="true"></div>
+    <div class="cvsin">
+      <div class="cvdi cvdimg" aria-hidden="true">${IC.img}</div>
+      <b data-i="cvImgDropT"></b>
+      <p class="snote" data-i="cvImgDropH"></p>
+      <div class="cvdb"><label class="btn solid" for="cvIFile">${IC.files}<span data-i="cvAdd"></span></label>
+        <input type="file" id="cvIFile" multiple accept="${IMG_ACCEPT}" hidden></div>
+      <p class="snote cvpriv">${IC.lock}<span data-i="cvPrivacy"></span></p>
+    </div>
   </div>
   <div class="cvopts" id="cvIOpts"></div>
-  <div class="cvacts" id="cvIActs"></div>
+  <div class="cvconsole" id="cvIActs"></div>
   <p class="cvmsg" id="cvIMsg" role="status" aria-live="polite"></p>
-  <div class="cvtw" id="cvITableWrap" hidden><table class="cvtab" id="cvITable"><thead><tr>
-    <th data-i="cvThName"></th><th class="num" data-i="cvThSize"></th><th class="num" data-i="cvThDim"></th><th class="st" data-i="cvThStatus"></th><th class="num" data-i="cvThOut"></th><th class="act"></th>
-  </tr></thead><tbody id="cvIBody"></tbody></table></div>
+  <div class="cvlist" id="cvITableWrap" hidden><div class="cvcards cvigrid" id="cvIBody"></div></div>
 </div>`;
   C.built=true;
   $('#cvTabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)setTab(b.dataset.tab)});
@@ -647,29 +667,49 @@ function build(){
   $('#cvBody').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const r=C.rows.find(x=>x.id===+b.dataset.id);if(!r)return;
     if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm')removeRow(r.id);else if(b.dataset.a==='retry')convertAll(r)});
   $('#cvIBody').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const r=C.irows.find(x=>x.id===+b.dataset.id);if(!r)return;
-    if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm'&&!C.running){C.irows=C.irows.filter(x=>x!==r);renderImgTable();renderImgActs()}});
+    if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm'&&!C.running){dropImg(r);C.irows=C.irows.filter(x=>x!==r);renderImgTable();renderImgActs()}});
   $('#cvOpts').addEventListener('change',onOpt);$('#cvOpts').addEventListener('input',onOpt);
-  $('#cvIOpts').addEventListener('change',e=>{const el=e.target;if(el.name==='isize')C.o.isize=+el.value;if(el.name==='ifmt')C.o.ifmt=el.value;saveOpts()});
+  $('#cvIOpts').addEventListener('change',e=>{const el=e.target;if(el.name==='isize')C.o.isize=+el.value;if(el.name==='ifmt')C.o.ifmt=el.value;saveOpts();renderImgSummary()});
   $('#cvActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertAll();else if(a==='cancel')cancelAll();else if(a==='zip')zipAll();else if(a==='clear')clearRows()});
-  $('#cvIActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertImages();else if(a==='zip')zipImages();else if(a==='clear'&&!C.running){C.irows=[];renderImgTable();renderImgActs()}});
+  $('#cvIActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertImages();else if(a==='zip')zipImages();else if(a==='clear'&&!C.running){C.irows.forEach(dropImg);C.irows=[];renderImgTable();renderImgActs()}});
 }
 function setTab(k){C.tab=k;$('#cvTabs').querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===k;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});$('#cvAudio').hidden=k!=='audio';$('#cvImages').hidden=k!=='images'}
 function onOpt(e){
   const el=e.target,n=el.name;if(!n)return;
-  if(n==='fmt'){C.o.fmt=el.value;const f=FMT[C.o.fmt];if(f.q&&!f.q.includes(+C.o.q))C.o.q=f.dq;renderOpts()}
+  if(e.type==='input'&&el.type!=='number')return; // radios/checkboxes/selects: 'change' only
+  if(n==='fmt'){if(!el.checked)return;C.o.fmt=el.value;const f=FMT[C.o.fmt];if(f.q&&!f.q.includes(+C.o.q))C.o.q=f.dq;renderOpts();bump($('#cvPillDst'),'morph')}
   else if(n==='q')C.o.q=+el.value;else if(n==='sr')C.o.sr=+el.value;else if(n==='ch')C.o.ch=+el.value;
   else if(n==='fin'||n==='fout')C.o[n]=clamp(+el.value||0,0,30);
   else if(el.type==='checkbox')C.o[n]=el.checked;
-  saveOpts();if(n==='fmt')renderActs();
+  saveOpts();renderSummary();if(n==='fmt'){renderActs();renderTable()}
+}
+function qualityLabel(o){const f=FMT[o.fmt];return f.q?tt(f.ql,{n:o.q}):t('cvLossless')}
+function summaryParts(o){
+  const f=FMT[o.fmt],p=[`${f.label.split(' ')[0]} ${qualityLabel(o)}`];
+  if(o.sr)p.push(`${o.sr/1000} kHz`);
+  p.push(o.ch===1?t('cvMono'):o.ch===2?t('cvStereo'):t('cvKeep'));
+  if(o.norm)p.push('−14 LUFS');if(o.trim)p.push(t('cvTrimS'));if(+o.fin||+o.fout)p.push(t('cvFadeS'));
+  p.push(o.tags?t('cvTagsKept'):t('cvNoTags'));if(o.bk)p.push(t('cvBkS'));
+  return p;
+}
+function renderSummary(){const el=$('#cvSum');if(el)el.innerHTML=summaryParts(C.o).map(x=>`<bdi>${esc(x)}</bdi>`).join('<i>·</i>');renderPills()}
+function renderImgSummary(){const el=$('#cvISum');if(!el)return;const o=C.o;el.innerHTML=[String(IFMT[o.ifmt]?o.ifmt.toUpperCase():'JPG'),o.isize?tt('cvImgSq',{n:o.isize}):t('cvImgOrig')].map(x=>`<bdi>${esc(x)}</bdi>`).join('<i>·</i>')}
+function renderPills(){
+  const src=$('#cvPillSrc'),dst=$('#cvPillDst');if(!src)return;
+  const ex=[...new Set(C.rows.map(r=>(r.ext||'?').toUpperCase()))];
+  const txt=ex.length?ex.slice(0,3).join(' · ')+(ex.length>3?` +${ex.length-3}`:''):t('cvAny');
+  if(src.textContent!==txt){src.textContent=txt;bump(src,'morph')}
+  const d=FMT[C.o.fmt].label.split(' ')[0];if(dst.textContent!==d)dst.textContent=d;
 }
 function renderOpts(){
   const o=C.o,f=FMT[o.fmt];
   const sel=(name,opts,val,lbl)=>`<label class="cvf"><span>${esc(t(lbl))}</span><select class="sel" name="${name}" aria-label="${esc(t(lbl))}">${opts.map(([v,l])=>`<option value="${v}"${String(v)===String(val)?' selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
   const tog=(name,lbl,title)=>`<label class="tog cvtog"${title?` title="${esc(t(title))}"`:''}><span>${esc(t(lbl))}</span><input type="checkbox" name="${name}"${o[name]?' checked':''}></label>`;
+  const seg=`<div class="cvf cvfmt"><span id="cvFmtL">${esc(t('cvFmt'))}</span><div class="cvseg" role="radiogroup" aria-labelledby="cvFmtL">${Object.keys(FMT).map(k=>`<label class="${k===o.fmt?'on':''}"><input type="radio" name="fmt" value="${k}"${k===o.fmt?' checked':''}><span>${esc(FMT[k].label.split(' ')[0])}</span></label>`).join('')}</div></div>`;
   $('#cvOpts').innerHTML=`
   <div class="cvog">
-    ${sel('fmt',Object.keys(FMT).map(k=>[k,FMT[k].label]),o.fmt,'cvFmt')}
-    ${f.q?sel('q',f.q.map(q=>[q,tt(f.ql,{n:q})]),o.q,'cvQ'):`<label class="cvf"><span>${esc(t('cvQ'))}</span><span class="cvfix">Lossless</span></label>`}
+    ${seg}
+    ${f.q?sel('q',f.q.map(q=>[q,tt(f.ql,{n:q})]),o.q,'cvQ'):`<label class="cvf"><span>${esc(t('cvQ'))}</span><span class="cvfix">${esc(t('cvLossless'))}</span></label>`}
     ${sel('sr',SRS.map(s=>[s,s?`${s/1000} kHz`:t('cvKeep')]),o.sr,'cvSr')}
     ${sel('ch',[[0,t('cvKeep')],[2,t('cvStereo')],[1,t('cvMono')]],o.ch,'cvCh')}
   </div>
@@ -677,68 +717,142 @@ function renderOpts(){
     ${tog('norm','cvNorm','cvNormT')}${tog('trim','cvTrim')}
     <div class="tog cvtog cvfade"><span>${esc(t('cvFade'))}</span><span class="cvfi"><label><span>${esc(t('cvFadeIn'))}</span><input type="number" name="fin" min="0" max="30" step="0.5" value="${+o.fin||0}" dir="ltr"><i>${esc(t('cvSec'))}</i></label><label><span>${esc(t('cvFadeOut'))}</span><input type="number" name="fout" min="0" max="30" step="0.5" value="${+o.fout||0}" dir="ltr"><i>${esc(t('cvSec'))}</i></label></span></div>
     ${tog('tags','cvTags')}${tog('bk','cvBk','cvBkT')}
-  </div>`;
+  </div>
+  <p class="cvsum" id="cvSum" aria-label="${esc(t('cvSummary'))}"></p>`;
   $('#cvIOpts').innerHTML=`<div class="cvog">
     ${sel('isize',ISIZES.map(s=>[s,s?tt('cvImgSq',{n:s}):t('cvImgOrig')]),o.isize,'cvImgSize')}
     ${sel('ifmt',Object.keys(IFMT).map(k=>[k,k.toUpperCase()]),o.ifmt,'cvFmt')}
-    <p class="snote cvinote">${esc(t('cvImgNote'))}</p></div>`;
+    <p class="snote cvinote">${esc(t('cvImgNote'))}</p></div><p class="cvsum" id="cvISum" aria-label="${esc(t('cvSummary'))}"></p>`;
+  renderSummary();renderImgSummary();
 }
+/* batch console: ring + counter + status + the one big button */
+function batchFrac(){const b=C.batch;if(!b)return 0;let acc=0;for(const r of b.todo)acc+=r.size*(r.status==='done'||r.status==='error'?1:rowFrac(r));return Math.min(1,acc/b.total)}
+function etaText(){const b=C.batch;if(!b)return '';const f=batchFrac(),el=(performance.now()-b.t0)/1000;if(f<0.04||el<1.5)return '';return tt('cvEta',{t:fmtDur(el*(1-f)/f)})}
+const RING_R=15.5,RING_C=2*Math.PI*RING_R;
+function ring(p,cls){return `<svg class="cvring ${cls||''}" viewBox="0 0 36 36" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><defs><linearGradient id="cvRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0"/><stop offset=".55"/><stop offset="1"/></linearGradient></defs><circle class="bg" cx="18" cy="18" r="${RING_R}"/><circle class="fg" cx="18" cy="18" r="${RING_R}" style="stroke-dasharray:${RING_C.toFixed(2)};stroke-dashoffset:${(RING_C*(1-p)).toFixed(2)}"/><path class="tick" d="M11.5 18.5l4 4 9-9" pathLength="1"/></svg>`}
 function renderActs(){
-  const n=C.rows.length,done=C.rows.filter(r=>r.out).length,run=C.running;
+  const n=C.rows.length,done=C.rows.filter(r=>r.out).length,bad=C.rows.filter(r=>r.status==='error').length,run=C.running,p=run?batchFrac():0;
+  const fin=!run&&n&&C.fin===2&&done===n;
+  const doneN=run?C.batch.ok+C.batch.bad:done;
+  const status=run?`<span class="cvdot" aria-hidden="true"></span>${esc(t('cvRunning'))}`:fin?esc(t('cvAllDone')):bad?esc(tt('cvDoneErr',{n:bad})):'';
+  const eta=run?etaText():'';
+  const goLbl=fin?t('cvAgain'):n>1?tt('cvConvertN',{n}):t('cvConvert');
   $('#cvActs').innerHTML=n?`
-    <button type="button" class="btn solid" data-a="go"${run?' disabled':''}>${IC.play}<span>${esc(n>1?tt('cvConvertN',{n}):t('cvConvert'))}</span><span class="cvto" dir="ltr">→ ${esc(FMT[C.o.fmt].label)}</span></button>
-    ${run?`<button type="button" class="btn" data-a="cancel">${IC.x}<span>${esc(t('cvCancel'))}</span></button>`:''}
-    ${done>1?`<button type="button" class="btn" data-a="zip"${C.zipBusy||run?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
-    ${!run?`<button type="button" class="btn ghost" data-a="clear">${esc(t('cvClear'))}</button>`:''}`:'';
-  $('#cvTableWrap').hidden=!n;$('#cvDrop').classList.toggle('compact',n>0);
+    <div class="cvcs">${ring(fin?1:p,fin?'full':run?'live':'')}<div class="cvcst"><span class="cvcnt" dir="ltr" aria-label="${esc(tt('cvOfN',{a:doneN,b:n}))}"><b id="cvCntA">${doneN}</b><i>/</i>${n}</span><span class="cvstat" id="cvStat">${status}${eta?`<span class="cveta" id="cvEta">${esc(eta)}</span>`:''}</span></div></div>
+    <div class="cvcb">
+      ${run?`<button type="button" class="btn ghost" data-a="cancel">${IC.x}<span>${esc(t('cvCancel'))}</span></button>`:''}
+      ${!run&&done>1?`<button type="button" class="btn cvgo${fin?' pri':''}" data-a="zip"${C.zipBusy?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
+      <button type="button" class="btn cvgo${fin?' quiet':' pri'}${run?' run':''}" data-a="go" id="cvGo"${run?' disabled':''} style="--p:${(p*100).toFixed(1)}%">${run?'':IC.play}<span class="lbl">${esc(run?t('cvRunning'):goLbl)}</span>${run?`<span class="pct" dir="ltr" id="cvGoP">${Math.round(p*100)}%</span>`:`<span class="cvto" dir="ltr">→ ${esc(FMT[C.o.fmt].label.split(' ')[0])}</span>`}</button>
+      ${!run?`<button type="button" class="btn ghost quiet" data-a="clear">${esc(t('cvClear'))}</button>`:''}
+    </div>`:'';
+  const act=$('#cvActs');act.classList.toggle('fin',!!fin);act.classList.toggle('run',!!run);
+  if(fin&&C.fin===2&&!C.celebrated){C.celebrated=true;celebrate(act)}if(!fin)C.celebrated=false;
+  $('#cvTableWrap').hidden=!n;$('#cvDrop').classList.toggle('compact',n>0);renderPills();
+}
+function celebrate(host){
+  if(noMotion()||!host)return;
+  const c=document.createElement('span');c.className='cvconf';c.setAttribute('aria-hidden','true');
+  for(let i=0;i<14;i++){const s=document.createElement('i');s.style.setProperty('--x',(Math.random()*2-1).toFixed(2));s.style.setProperty('--d',(Math.random()*0.25).toFixed(2)+'s');s.style.setProperty('--h',i%3);c.appendChild(s)}
+  host.appendChild(c);setTimeout(()=>c.remove(),1600);
+}
+let tickReq=0;
+function consoleTick(){
+  if(tickReq)return;tickReq=requestAnimationFrame(()=>{tickReq=0;if(!C.running||!C.batch)return;
+    const p=batchFrac(),go=$('#cvGo'),gp=$('#cvGoP'),rg=$('#cvActs .cvring'),eta=etaText();
+    if(go)go.style.setProperty('--p',(p*100).toFixed(1)+'%');if(gp)gp.textContent=Math.round(p*100)+'%';
+    if(rg){rg.setAttribute('aria-valuenow',Math.round(p*100));const fg=rg.querySelector('.fg');if(fg)fg.style.strokeDashoffset=(RING_C*(1-p)).toFixed(2)}
+    const a=$('#cvCntA');if(a){const d=String(C.batch.ok+C.batch.bad);if(a.textContent!==d)a.textContent=d}
+    let e=$('#cvEta');const st=$('#cvStat');if(eta){if(!e&&st){e=document.createElement('span');e.className='cveta';e.id='cvEta';st.appendChild(e)}if(e&&e.textContent!==eta)e.textContent=eta}else if(e)e.remove();
+  });
 }
 function renderEngine(){
   const el=$('#cvEngine');if(!el)return;const p=C.ffp;
   if(p==null||p>=1){el.hidden=true;el.innerHTML='';return}
-  el.hidden=false;el.innerHTML=`<span>${esc(tt('cvEngine',{s:ENGINE_MB,p:Math.round(p*100)}))}</span><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><i style="width:${(p*100).toFixed(1)}%"></i></span><span class="snote">${esc(t('cvEngineT'))}</span>`;
+  const pc=Math.round(p*100);
+  if(el.hidden||!el.firstChild){el.hidden=false;el.innerHTML=`<div class="cven"><div class="cvenh"><b>${esc(t('cvEngineH'))}</b><span class="pct" dir="ltr">${pc}%</span></div>
+    <span class="snote">${esc(tt('cvEngineS',{s:ENGINE_MB}))} · ${esc(t('cvEngineT'))}</span>
+    <span class="bar cvbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pc}" aria-label="${esc(t('cvEngineH'))}"><i style="--p:${(p*100).toFixed(1)}%"></i></span>
+    <ol class="cvsteps cvensteps"><li>${esc(t('cvEng1'))}</li><li>${esc(t('cvEng2'))}</li><li>${esc(t('cvEng3'))}</li></ol>
+    <span class="snote cvpriv">${IC.lock}<span>${esc(t('cvEngineLocal'))}</span></span></div>`}
+  el.querySelector('.pct').textContent=pc+'%';const bar=el.querySelector('.bar');bar.setAttribute('aria-valuenow',pc);bar.firstChild.style.setProperty('--p',(p*100).toFixed(1)+'%');
+  const li=el.querySelectorAll('.cvensteps li'),k=p>=0.9?2:p>=0.85?1:0;li.forEach((x,i)=>{x.className=i<k?'done':i===k?'now':''});
 }
 function renderTable(){
-  const tb=$('#cvBody');tb.innerHTML='';
-  for(const r of C.rows){const tr=document.createElement('tr');tr.dataset.id=r.id;tb.appendChild(tr);rowHtml(r,tr)}
+  const tb=$('#cvBody');tb.innerHTML='';let i=0;
+  for(const r of C.rows){const el=document.createElement('article');el.className='cvcard';el.dataset.id=r.id;if(r.fresh){el.classList.add('fresh');el.style.setProperty('--i',Math.min(i++,14));r.fresh=false}tb.appendChild(el);rowHtml(r,el)}
   $('#cvTableWrap').hidden=!C.rows.length;
 }
-function renderRow(r){const tr=$('#cvBody')&&$('#cvBody').querySelector(`tr[data-id="${r.id}"]`);if(tr)rowHtml(r,tr)}
-function statusCell(r){
+const rowEl=r=>$('#cvBody')&&$('#cvBody').querySelector(`.cvcard[data-id="${r.id}"]`);
+function renderRow(r){
+  const el=rowEl(r);if(!el)return;
+  if(el.dataset.st===r.status&&RUNS.has(r.status)){ // progress tick only: no re-render
+    const f=rowFrac(r),pc=Math.round(f*100);
+    const bar=el.querySelector('.cvbar i');if(bar)bar.style.setProperty('--p',(f*100).toFixed(1)+'%');
+    const pb=el.querySelector('.cvbar');if(pb)pb.setAttribute('aria-valuenow',pc);
+    const pt=el.querySelector('.cvpct');if(pt)pt.textContent=pc+'%';
+    consoleTick();return;
+  }
+  rowHtml(r,el);consoleTick();
+}
+const stageLabel=r=>{const s=r.status;return s==='encoding'?t('stEncoding').replace(/\s*\{p\}%/,''):t(s==='reading'?'stReading':s==='decoding'?'stDecoding':s==='analyzing'?'stAnalyzing':s==='tagging'?'stTagging':'stProcessing')};
+function stepsHtml(r){const k=STEP[r.status];if(k==null)return '';return `<ol class="cvsteps">${['spDecode','spProcess','spEncode','spTags'].map((s,i)=>`<li class="${i<k?'done':i===k?'now':''}">${esc(t(s))}</li>`).join('')}</ol>`}
+function ratioChip(a,b){if(!a||!b)return '';const d=Math.round((b-a)/a*100);if(!d)return '';const sm=d<0;return `<span class="cvchip ${sm?'dn':'up'}" dir="ltr" title="${esc(tt(sm?'cvSmaller':'cvLarger',{p:Math.abs(d)}))}">${sm?'−':'+'}${Math.abs(d)}%</span>`}
+function statusHtml(r){
   const s=r.status;
-  if(s==='error')return `<span class="cvst err">${esc(r.err||t('erRead'))}</span>`;
-  if(s==='done')return `<span class="cvst ok">${esc(t('stDone'))}</span>`;
-  if(s==='cancelled'||s==='ready'||s==='queued')return `<span class="cvst dim">${esc(t(s==='cancelled'?'stCancelled':s==='queued'?'stQueued':'stReady'))}</span>`;
-  const lbl=s==='encoding'?tt('stEncoding',{p:Math.round((r.p||0)*100)}):t(s==='reading'?'stReading':s==='decoding'?'stDecoding':s==='analyzing'?'stAnalyzing':'stProcessing');
-  const p=s==='encoding'||s==='analyzing'||(s==='decoding'&&r.p>0)?r.p||0:null;
-  return `<span class="cvst run">${esc(lbl)}</span>${p!=null?`<span class="bar" role="progressbar" aria-valuenow="${Math.round(p*100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${(p*100).toFixed(1)}%"></i></span>`:'<span class="bar ind"><i></i></span>'}`;
+  if(s==='error')return `<div class="cvstate err">${IC.bad}<span class="cvst err">${esc(r.err||t('erRead'))}</span></div>`;
+  if(s==='done')return `<div class="cvstate ok">${IC.ok}<span class="cvst ok">${esc(t('stDone'))}</span>${stepsHtml(r)}</div>`;
+  if(s==='cancelled'||s==='ready'||s==='queued')return `<div class="cvstate dim"><span class="cvst dim">${esc(t(s==='cancelled'?'stCancelled':s==='queued'?'stQueued':'stReady'))}</span></div>`;
+  const f=rowFrac(r),pc=Math.round(f*100);
+  return `<div class="cvstate run">${IC.eq}<span class="cvst run cvstl">${esc(stageLabel(r))}</span><span class="cvpct" dir="ltr">${pc}%</span>
+    <span class="bar cvbar" role="progressbar" aria-valuenow="${pc}" aria-valuemin="0" aria-valuemax="100"><i style="--p:${(f*100).toFixed(1)}%"></i></span>${stepsHtml(r)}</div>`;
 }
-function rowHtml(r,tr){
-  tr.className='cvrow '+r.status;
-  const src=(r.ext||'?').toUpperCase(),dst=FMT[r.out?r.out.fmt:C.o.fmt].label;
-  tr.innerHTML=`<td class="nm"><bdi>${esc(r.name)}</bdi>${r.tags&&(r.tags.title||r.tags.artist)?`<small><bdi>${esc([r.tags.artist,r.tags.title].filter(Boolean).join(' – '))}</bdi></small>`:''}</td>
-    <td class="num">${ltr(fsz(r.size))}</td>
-    <td class="num">${ltr(fmtDur(r.dur))}</td>
-    <td class="fm"><span dir="ltr">${esc(src)} → <b>${esc(dst)}</b></span></td>
-    <td class="st">${statusCell(r)}</td>
-    <td class="num">${r.out?ltr(fsz(r.out.size)):'—'}</td>
-    <td class="act">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}
-      ${r.status==='error'&&!C.running?`<button type="button" class="btn ghost cvsm" data-a="retry" data-id="${r.id}">${esc(t('cvRetry'))}</button>`:''}
-      ${!C.running?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</td>`;
+function rowHtml(r,el){
+  el.className='cvcard '+r.status+(el.classList.contains('fresh')?' fresh':'');el.dataset.st=r.status;
+  const src=(r.ext||'?').toUpperCase(),dst=FMT[r.out?r.out.fmt:C.o.fmt].label.split(' ')[0];
+  const meta=[r.dur!=null?fmtDur(r.dur):null,r.sr?`${(r.sr/1000).toFixed(1).replace(/\.0$/,'')} kHz`:null,r.ch?(r.ch===1?t('cvMono'):t('cvStereo')):null].filter(Boolean);
+  el.innerHTML=`<div class="cvfb" dir="ltr"><span class="cvbadge src">${esc(src)}</span><span class="cvarrow" aria-hidden="true"></span><span class="cvbadge dst">${esc(dst)}</span></div>
+    <div class="cvmain">
+      <div class="cvnm"><bdi>${esc(r.name)}</bdi>${r.tags&&(r.tags.title||r.tags.artist)?`<small><bdi>${esc([r.tags.artist,r.tags.title].filter(Boolean).join(' – '))}</bdi></small>`:''}</div>
+      ${statusHtml(r)}
+    </div>
+    <div class="cvside">
+      <div class="cvsz" dir="ltr"><span class="cvnum"><bdi dir="ltr">${esc(fsz(r.size))}</bdi></span>${r.out?`<span class="cvszarr" aria-hidden="true">→</span><span class="cvnum out"><bdi dir="ltr" data-bytes="${r.out.size}">${esc(fsz(r.out.size))}</bdi></span>${ratioChip(r.size,r.out.size)}`:''}${meta.length?`<span class="cvmeta"><bdi dir="ltr">${esc(meta.join(' · '))}</bdi></span>`:''}</div>
+      <div class="cvact">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}
+        ${r.status==='error'&&!C.running?`<button type="button" class="btn ghost cvsm" data-a="retry" data-id="${r.id}">${esc(t('cvRetry'))}</button>`:''}
+        ${!C.running?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</div>
+    </div>`;
+  if(r.justDone){r.justDone=false;el.classList.add('just');countUp(el.querySelector('.cvnum.out bdi'))}
+  if(r.status==='error')bump(el,'shake');
 }
-function renderImgTable(){const tb=$('#cvIBody');tb.innerHTML='';for(const r of C.irows){const tr=document.createElement('tr');tr.dataset.id=r.id;tb.appendChild(tr);imgRowHtml(r,tr)}$('#cvITableWrap').hidden=!C.irows.length;$('#cvIDrop').classList.toggle('compact',C.irows.length>0)}
-function renderImgRow(r){const tr=$('#cvIBody')&&$('#cvIBody').querySelector(`tr[data-id="${r.id}"]`);if(tr)imgRowHtml(r,tr)}
-function imgRowHtml(r,tr){
-  tr.className='cvrow '+r.status;
-  const st=r.status==='error'?`<span class="cvst err">${esc(r.err||'')}</span>`:r.status==='done'?`<span class="cvst ok">${esc(t('stDone'))}</span>`:r.status==='processing'?`<span class="cvst run">${esc(t('stProcessing'))}</span>`:`<span class="cvst dim">${esc(t('stReady'))}</span>`;
-  tr.innerHTML=`<td class="nm"><bdi>${esc(r.name)}</bdi></td><td class="num">${ltr(fsz(r.size))}</td><td class="num">${r.w?ltr(`${r.w} × ${r.h}`):'—'}${r.out?` <span class="cvarr" dir="ltr">→ ${r.out.w} × ${r.out.h}</span>`:''}</td>
-    <td class="st">${st}</td><td class="num">${r.out?ltr(fsz(r.out.size)):'—'}</td>
-    <td class="act">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}${!C.running?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</td>`;
+function countUp(el){
+  if(!el||noMotion())return;const n=+el.dataset.bytes||0,fin=el.textContent;if(!n)return;
+  const t0=performance.now(),D=620;
+  const step=now=>{const k=Math.min(1,(now-t0)/D),e=1-Math.pow(1-k,3);el.textContent=k<1?fsz(n*e):fin;if(k<1)requestAnimationFrame(step)};
+  requestAnimationFrame(step);
+}
+/* images */
+function renderImgTable(){const tb=$('#cvIBody');tb.innerHTML='';let i=0;for(const r of C.irows){const el=document.createElement('article');el.className='cvcard cvimg';el.dataset.id=r.id;if(r.fresh){el.classList.add('fresh');el.style.setProperty('--i',Math.min(i++,14));r.fresh=false}tb.appendChild(el);imgRowHtml(r,el)}$('#cvITableWrap').hidden=!C.irows.length;$('#cvIDrop').classList.toggle('compact',C.irows.length>0)}
+function renderImgRow(r){const el=$('#cvIBody')&&$('#cvIBody').querySelector(`.cvcard[data-id="${r.id}"]`);if(el)imgRowHtml(r,el)}
+function imgRowHtml(r,el){
+  el.className='cvcard cvimg '+r.status+(el.classList.contains('fresh')?' fresh':'');
+  const st=r.status==='error'?`<div class="cvstate err">${IC.bad}<span class="cvst err">${esc(r.err||'')}</span></div>`:r.status==='done'?`<div class="cvstate ok">${IC.ok}<span class="cvst ok">${esc(t('stDone'))}</span></div>`:r.status==='processing'?`<div class="cvstate run">${IC.eq}<span class="cvst run">${esc(t('stProcessing'))}</span></div>`:`<div class="cvstate dim"><span class="cvst dim">${esc(t('stReady'))}</span></div>`;
+  el.innerHTML=`<div class="cvthumb${r.out?' flip':''}"><span class="face a">${r.url?`<img src="${r.url}" alt="">`:IC.img}</span>${r.out?`<span class="face b" dir="ltr"><b>${r.out.w} × ${r.out.h}</b><small>${esc(fsz(r.out.size))}</small></span>`:''}</div>
+    <div class="cvmain">
+      <div class="cvnm"><bdi>${esc(r.name)}</bdi></div>
+      <div class="cvsz" dir="ltr"><span class="cvnum"><bdi dir="ltr">${esc(fsz(r.size))}</bdi></span>${r.w?`<span class="cvmeta"><bdi dir="ltr">${r.w} × ${r.h}</bdi></span>`:''}${r.out?`<span class="cvszarr" aria-hidden="true">→</span><span class="cvnum out"><bdi dir="ltr" data-bytes="${r.out.size}">${esc(fsz(r.out.size))}</bdi></span><span class="cvmeta"><bdi dir="ltr">${r.out.w} × ${r.out.h}</bdi></span>${ratioChip(r.size,r.out.size)}`:''}</div>
+      ${st}
+    </div>
+    <div class="cvact">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}${!C.running?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</div>`;
+  if(r.justDone){r.justDone=false;el.classList.add('just');countUp(el.querySelector('.cvnum.out bdi'))}
 }
 function renderImgActs(){
-  const n=C.irows.length,done=C.irows.filter(r=>r.out).length;
-  $('#cvIActs').innerHTML=n?`<button type="button" class="btn solid" data-a="go"${C.running?' disabled':''}>${IC.play}<span>${esc(n>1?tt('cvConvertN',{n}):t('cvConvert'))}</span></button>
-    ${done>1?`<button type="button" class="btn" data-a="zip"${C.zipBusy||C.running?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
-    ${!C.running?`<button type="button" class="btn ghost" data-a="clear">${esc(t('cvClear'))}</button>`:''}`:'';
+  const n=C.irows.length,done=C.irows.filter(r=>r.out).length,run=C.running&&C.tab==='images',fin=!run&&n&&done===n;
+  $('#cvIActs').innerHTML=n?`<div class="cvcs">${ring(fin?1:n?done/n:0,fin?'full':run?'live':'')}<div class="cvcst"><span class="cvcnt" dir="ltr" aria-label="${esc(tt('cvOfN',{a:done,b:n}))}"><b>${done}</b><i>/</i>${n}</span><span class="cvstat">${run?`<span class="cvdot" aria-hidden="true"></span>${esc(t('cvRunning'))}`:fin?esc(t('cvAllDone')):''}</span></div></div>
+    <div class="cvcb">
+    ${!run&&done>1?`<button type="button" class="btn cvgo${fin?' pri':''}" data-a="zip"${C.zipBusy?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
+    <button type="button" class="btn cvgo${fin?' quiet':' pri'}" data-a="go"${C.running?' disabled':''}>${IC.play}<span class="lbl">${esc(fin?t('cvAgain'):n>1?tt('cvConvertN',{n}):t('cvConvert'))}</span></button>
+    ${!C.running?`<button type="button" class="btn ghost quiet" data-a="clear">${esc(t('cvClear'))}</button>`:''}</div>`:'';
+  $('#cvIActs').classList.toggle('fin',!!fin);
 }
 function renderAll(){
   if(!C.built)return;
