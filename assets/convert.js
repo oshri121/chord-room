@@ -36,7 +36,7 @@ he:{navConvert:'המרה',cvEyebrow:'המרת קבצים · הכול במכשי�
   erRead:'לא הצלחנו לקרוא את הקובץ. האם זה קובץ אודיו או וידאו?',erBig:'הקובץ גדול מדי (מעל {n} MB).',erEngine:'מנוע ההמרה לא נטען. בדקו את החיבור לאינטרנט ונסו שוב.',
   erEncode:'הקידוד נכשל: {m}',erNoAudio:'לא נמצא פסקול בקובץ.',erMany:'אפשר עד {n} קבצים בבת אחת.',erImg:'לא הצלחנו לפתוח את התמונה.',
   cvEngine:'טוען את מנוע ההמרה ({s} MB, פעם אחת בלבד)… {p}%',cvEngineT:'נדרש ל־FLAC, OGG, M4A ולקובצי וידאו',
-  cvDone:'הושלמו {n} קבצים',cvDoneErr:'{n} נכשלו',cvNothing:'קודם מוסיפים קבצים.',cvZipBusy:'אורז ZIP…',cvZipDone:'ה־ZIP מוכן ({s} MB).',
+  cvDone:'הושלמו {n} קבצים',cvDoneErr:'{n} נכשלו',cvRef:'{n} קבצים ← {f}',cvNothing:'קודם מוסיפים קבצים.',cvZipBusy:'אורז ZIP…',cvZipDone:'ה־ZIP מוכן ({s} MB).',
   cvImgDropT:'גררו לכאן תמונות',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · עטיפות לשירים, בגודל שהנגנים אוהבים',
   cvImgSize:'גודל',cvImgSq:'{n} × {n} פיקסלים',cvImgOrig:'גודל מקורי',cvImgNote:'הגדלים הריבועיים נחתכים מהמרכז, כמו שנגנים מציגים עטיפות.',
   cvFiles:'{n} קבצים',cvAfter:'אחרי',cvFilesIn:'במכשיר',
@@ -56,7 +56,7 @@ en:{navConvert:'Convert',cvEyebrow:'File conversion · all on your device',cvTit
   erRead:'We couldn\'t read this file. Is it an audio or video file?',erBig:'This file is too big (over {n} MB).',erEngine:'The conversion engine couldn\'t be loaded. Check your connection and try again.',
   erEncode:'Encoding failed: {m}',erNoAudio:'No soundtrack was found in this file.',erMany:'Up to {n} files at a time.',erImg:'We couldn\'t open this image.',
   cvEngine:'Loading the conversion engine ({s} MB, only once)… {p}%',cvEngineT:'needed for FLAC, OGG, M4A and video files',
-  cvDone:'{n} files done',cvDoneErr:'{n} failed',cvNothing:'Add files first.',cvZipBusy:'Packing ZIP…',cvZipDone:'ZIP ready ({s} MB).',
+  cvDone:'{n} files done',cvDoneErr:'{n} failed',cvRef:'{n} files → {f}',cvNothing:'Add files first.',cvZipBusy:'Packing ZIP…',cvZipDone:'ZIP ready ({s} MB).',
   cvImgDropT:'Drop images here',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · cover art for your tracks, at the sizes players like',
   cvImgSize:'Size',cvImgSq:'{n} × {n} px',cvImgOrig:'Original size',cvImgNote:'Square sizes are cropped from the centre, the way players show cover art.',
   cvFiles:'{n} files',cvAfter:'after',cvFilesIn:'on device',
@@ -76,7 +76,7 @@ ar:{navConvert:'تحويل',cvEyebrow:'تحويل الملفات · كل شيء 
   erRead:'لم نتمكن من قراءة هذا الملف. هل هو ملف صوت أو فيديو؟',erBig:'الملف كبير جدًا (أكثر من {n} MB).',erEngine:'تعذّر تحميل محرك التحويل. تحقق من الاتصال وحاول مجددًا.',
   erEncode:'فشل الترميز: {m}',erNoAudio:'لم يُعثر على مسار صوتي في هذا الملف.',erMany:'حتى {n} ملفًا في المرة الواحدة.',erImg:'لم نتمكن من فتح هذه الصورة.',
   cvEngine:'يحمّل محرك التحويل ({s} MB، مرة واحدة فقط)… {p}%',cvEngineT:'مطلوب لـ FLAC وOGG وM4A وملفات الفيديو',
-  cvDone:'اكتمل {n} ملفات',cvDoneErr:'فشل {n}',cvNothing:'أضف ملفات أولًا.',cvZipBusy:'يحزم ZIP…',cvZipDone:'ملف ZIP جاهز ({s} MB).',
+  cvDone:'اكتمل {n} ملفات',cvDoneErr:'فشل {n}',cvRef:'{n} ملفات ← {f}',cvNothing:'أضف ملفات أولًا.',cvZipBusy:'يحزم ZIP…',cvZipDone:'ملف ZIP جاهز ({s} MB).',
   cvImgDropT:'اسحب الصور إلى هنا',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · أغلفة لأغانيك بالأحجام التي تفضّلها المشغلات',
   cvImgSize:'الحجم',cvImgSq:'{n} × {n} بكسل',cvImgOrig:'الحجم الأصلي',cvImgNote:'الأحجام المربعة تُقص من المنتصف، كما تعرض المشغلات الأغلفة.',
   cvFiles:'{n} ملفات',cvAfter:'بعد',cvFilesIn:'على الجهاز',
@@ -96,7 +96,7 @@ ru:{navConvert:'Конвертер',cvEyebrow:'Конвертация файло
   erRead:'Не удалось прочитать файл. Это аудио- или видеофайл?',erBig:'Файл слишком большой (больше {n} МБ).',erEngine:'Не удалось загрузить движок конвертации. Проверьте соединение и попробуйте снова.',
   erEncode:'Кодирование не удалось: {m}',erNoAudio:'В файле нет звуковой дорожки.',erMany:'Не больше {n} файлов за раз.',erImg:'Не удалось открыть изображение.',
   cvEngine:'Загрузка движка конвертации ({s} МБ, только один раз)… {p}%',cvEngineT:'нужен для FLAC, OGG, M4A и видео',
-  cvDone:'Готово: {n} файлов',cvDoneErr:'{n} с ошибкой',cvNothing:'Сначала добавьте файлы.',cvZipBusy:'Упаковка ZIP…',cvZipDone:'ZIP готов ({s} МБ).',
+  cvDone:'Готово: {n} файлов',cvDoneErr:'{n} с ошибкой',cvRef:'{n} файлов → {f}',cvNothing:'Сначала добавьте файлы.',cvZipBusy:'Упаковка ZIP…',cvZipDone:'ZIP готов ({s} МБ).',
   cvImgDropT:'Перетащите сюда изображения',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · обложки для треков в размерах, которые любят плееры',
   cvImgSize:'Размер',cvImgSq:'{n} × {n} px',cvImgOrig:'Исходный размер',cvImgNote:'Квадратные размеры обрезаются по центру — так плееры показывают обложки.',
   cvFiles:'{n} файлов',cvAfter:'после',cvFilesIn:'на устройстве',
@@ -116,7 +116,7 @@ es:{navConvert:'Convertir',cvEyebrow:'Conversión de archivos · todo en tu disp
   erRead:'No pudimos leer este archivo. ¿Es un archivo de audio o vídeo?',erBig:'El archivo es demasiado grande (más de {n} MB).',erEngine:'No se pudo cargar el motor de conversión. Revisa tu conexión e inténtalo de nuevo.',
   erEncode:'La codificación falló: {m}',erNoAudio:'No se encontró pista de audio en este archivo.',erMany:'Hasta {n} archivos a la vez.',erImg:'No pudimos abrir esta imagen.',
   cvEngine:'Cargando el motor de conversión ({s} MB, solo una vez)… {p}%',cvEngineT:'necesario para FLAC, OGG, M4A y vídeo',
-  cvDone:'{n} archivos listos',cvDoneErr:'{n} fallaron',cvNothing:'Añade archivos primero.',cvZipBusy:'Empaquetando ZIP…',cvZipDone:'ZIP listo ({s} MB).',
+  cvDone:'{n} archivos listos',cvDoneErr:'{n} fallaron',cvRef:'{n} archivos → {f}',cvNothing:'Añade archivos primero.',cvZipBusy:'Empaquetando ZIP…',cvZipDone:'ZIP listo ({s} MB).',
   cvImgDropT:'Arrastra aquí imágenes',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · carátulas para tus temas, en los tamaños que prefieren los reproductores',
   cvImgSize:'Tamaño',cvImgSq:'{n} × {n} px',cvImgOrig:'Tamaño original',cvImgNote:'Los tamaños cuadrados se recortan desde el centro, como muestran las carátulas los reproductores.',
   cvFiles:'{n} archivos',cvAfter:'después',cvFilesIn:'en el dispositivo',
@@ -502,17 +502,25 @@ async function runRow(r,o,sig){
   const blob=await encode(p,o,r,r.tags||{},sig);chk(sig);
   r.out={blob,name:outName(r,o),size:blob.size,fmt:o.fmt};r.status='done';r.p=1;r.justDone=true;renderRow(r);
 }
+const settleP=(p,n)=>{if(!p)return;if(CR.settleN)CR.settleN(p,n);else if(n>0&&p.id&&CR.refundN)CR.refundN(p,n)};   // points v2
+const todoRows=only=>(only?[only]:C.rows.filter(r=>r.status!=='done'||r.outFmt!==C.o.fmt)).filter(Boolean);
+/* points v2: a batch costs 'convert' × files (ONE confirmation, plan discount applied; "only the first K" when short);
+   files that fail or are cancelled are refunded when the batch ends. Images are free. */
 async function convertAll(only){
-  if(C.running)return;
-  const todo=(only?[only]:C.rows.filter(r=>r.status!=='done'||r.outFmt!==C.o.fmt)).filter(Boolean);
+  if(C.running||C.paying)return;
+  let todo=todoRows(only);
   if(!todo.length){setMsg(t('cvNothing'),true);return}
+  let pay={qty:todo.length};
+  if(CR.payN){C.paying=true;try{pay=await CR.payN('convert',todo.length,{ref:tt('cvRef',{n:todo.length,f:FMT[C.o.fmt].ext})})}finally{C.paying=false}
+    if(!pay||!pay.qty)return;if(C.running){settleP(pay,pay.qty);return}
+    if(pay.qty<todo.length){todo=todo.slice(0,pay.qty)}}
   const o={...C.o};C.running=true;C.abort=new AbortController();const sig=C.abort.signal;setMsg('');
   todo.forEach(r=>{r.status='queued';r.err=null});C.batch={t0:performance.now(),todo,total:todo.reduce((a,r)=>a+r.size,0)||1,ok:0,bad:0};C.fin=0;renderActs();renderTable();
   let ok=0,bad=0;
   CR.log&&CR.log('convert',`${todo.length} files → ${o.fmt}`);
   for(const r of todo){
     if(sig.aborted)break;
-    try{await runRow(r,o,sig);ok++;C.batch.ok=ok}
+    try{await runRow(r,o,sig);ok++;C.batch.ok=ok;if(CR.progressN)CR.progressN(pay,ok)}
     catch(e){
       if(e&&e.aborted){r.status='cancelled';renderRow(r);continue}
       console.warn('convert',r.name,e);bad++;C.batch.bad=bad;
@@ -520,6 +528,7 @@ async function convertAll(only){
     }
   }
   if(sig.aborted)C.rows.forEach(r=>{if(r.status==='queued'){r.status='cancelled';renderRow(r)}});
+  settleP(pay,todo.length-ok);   // failed + cancelled files → points back (+ close the crash journal)
   C.running=false;C.abort=null;C.ffp=null;C.batch=null;C.fin=sig.aborted?0:(bad?1:2);renderEngine();renderActs();renderTable();
   setMsg(sig.aborted?t('stCancelled'):tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok);
 }
@@ -730,6 +739,9 @@ function batchFrac(){const b=C.batch;if(!b)return 0;let acc=0;for(const r of b.t
 function etaText(){const b=C.batch;if(!b)return '';const f=batchFrac(),el=(performance.now()-b.t0)/1000;if(f<0.04||el<1.5)return '';return tt('cvEta',{t:fmtDur(el*(1-f)/f)})}
 const RING_R=15.5,RING_C=2*Math.PI*RING_R;
 function ring(p,cls){return `<svg class="cvring ${cls||''}" viewBox="0 0 36 36" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><defs><linearGradient id="cvRingGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0"/><stop offset=".55"/><stop offset="1"/></linearGradient></defs><circle class="bg" cx="18" cy="18" r="${RING_R}"/><circle class="fg" cx="18" cy="18" r="${RING_R}" style="stroke-dasharray:${RING_C.toFixed(2)};stroke-dashoffset:${(RING_C*(1-p)).toFixed(2)}"/><path class="tick" d="M11.5 18.5l4 4 9-9" pathLength="1"/></svg>`}
+// "Convert 8 files → MP3 · 8 pts" (CR.priceChip: plan discount included, '' when free)
+function ptsChip(){const n=todoRows().length,c=n&&CR.priceChip?CR.priceChip('convert',n):'';return c?`<i class="ptchip" id="cvPts">${esc(c)}</i>`:''}
+document.addEventListener('cr-prices',()=>{if(C.built&&!C.running)renderActs()});
 function renderActs(){
   const n=C.rows.length,done=C.rows.filter(r=>r.out).length,bad=C.rows.filter(r=>r.status==='error').length,run=C.running,p=run?batchFrac():0;
   const fin=!run&&n&&C.fin===2&&done===n;
@@ -742,7 +754,7 @@ function renderActs(){
     <div class="cvcb">
       ${run?`<button type="button" class="btn ghost" data-a="cancel">${IC.x}<span>${esc(t('cvCancel'))}</span></button>`:''}
       ${!run&&done>1?`<button type="button" class="btn cvgo${fin?' pri':''}" data-a="zip"${C.zipBusy?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
-      <button type="button" class="btn cvgo${fin?' quiet':' pri'}${run?' run':''}" data-a="go" id="cvGo"${run?' disabled':''} style="--p:${(p*100).toFixed(1)}%">${run?'':IC.play}<span class="lbl">${esc(run?t('cvRunning'):goLbl)}</span>${run?`<span class="pct" dir="ltr" id="cvGoP">${Math.round(p*100)}%</span>`:`<span class="cvto" dir="ltr">→ ${esc(FMT[C.o.fmt].label.split(' ')[0])}</span>`}</button>
+      <button type="button" class="btn cvgo${fin?' quiet':' pri'}${run?' run':''}" data-a="go" id="cvGo"${run?' disabled':''} style="--p:${(p*100).toFixed(1)}%">${run?'':IC.play}<span class="lbl">${esc(run?t('cvRunning'):goLbl)}</span>${run?`<span class="pct" dir="ltr" id="cvGoP">${Math.round(p*100)}%</span>`:`<span class="cvto" dir="ltr">→ ${esc(FMT[C.o.fmt].label.split(' ')[0])}</span>${ptsChip()}`}</button>
       ${!run?`<button type="button" class="btn ghost quiet" data-a="clear">${esc(t('cvClear'))}</button>`:''}
     </div>`:'';
   const act=$('#cvActs');act.classList.toggle('fin',!!fin);act.classList.toggle('run',!!run);

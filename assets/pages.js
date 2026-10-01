@@ -595,21 +595,117 @@ es: {
 }
 };
 for (const l in SX) Object.assign(S[l], SX[l]);
+/* points v2: the price list is generated from billing.costs (every kind), plans show their discount */
+const SV = {
+he: {
+  prP: 'גלה שירים, המיקס החי, העריכה וייצוא MIDI — בחינם. נקודות יורדות על פעולות: ניתוח שיר חדש, הפרדת ערוצים ב־AI, ייצוא תיקיות מניתוח הספרייה, מאשאפ ואקסטנדד, והמרת קבצים. המחירון המלא כאן למטה.',
+  ptsH: 'משלמים רק על מה שמשתמשים.', prH: 'משלמים רק על מה שמשתמשים.',
+  ptsP: 'גלה שירים, המיקס החי, העריכה וייצוא MIDI — בחינם. נקודות יורדות על פעולות: ניתוח שיר חדש (פעם אחת לשיר), הפרדת ערוצים ב־AI והורדתם, ייצוא תיקייה מניתוח הספרייה (USB לפיוניר או עותקים עם שם חדש), ייצוא מאשאפ ואקסטנדד והמרת קבצים.',
+  offP: 'אין צורך בנקודות כרגע — כל הכלים והייצואים פתוחים בחינם.',
+  f5lPts: ['נקודות מתנה בהרשמה, ומסלולים חודשיים עם הנחה על כל פעולה', 'הזמנת חברים: גם אתם וגם החבר מקבלים נקודות'],
+  faqPts: ['מה עולה נקודות?', 'ניתוח שיר חדש שהעליתם (פעם אחת לשיר), הפרדת ערוצים ב־AI והורדתם, ייצוא תיקייה מניתוח הספרייה (USB לפיוניר או עותקים עם שם חדש), ייצוא מאשאפ ואקסטנדד והמרת קבצים. גלה שירים, המיקס החי, העריכה וייצוא MIDI — בחינם. המחירון המלא בעמוד המחירים.'],
+  prFaq: [['מה הן נקודות?', 'נקודות הן הקרדיט של האתר. כל פעולה בתשלום מופיעה במחירון שלמעלה — למשל הפרדת ערוצים ב־AI עולה {sep}. לפני כל חיוב מופיע אישור עם המחיר והיתרה, ואם פעולה נכשלת הנקודות חוזרות.'],
+    ['מה מקבלים בהרשמה?', 'כל חשבון חדש מקבל {gift} במתנה.'],
+    ['איך עובד מסלול חודשי?', 'המסלול מוסיף את הנקודות שלו ליתרה שלכם בכל חודש, ונותן הנחה על כל פעולה כל עוד הוא בתוקף. כשאתם מחוברים, היתרה והמסלול מופיעים בראש העמוד.'],
+    ['חייבים מסלול כדי להשתמש באתר?', 'לא. גלה שירים, המיקס החי וייצוא MIDI — בחינם, ונקודות המתנה מספיקות כדי להתחיל.'],
+    ['איך מחושבת ההנחה?', 'ההנחה של המסלול יורדת מהסכום של כל פעולה ומעוגלת למעלה. למשל 45 שירים במסלול עם 10% הנחה: 41 נקודות במקום 45.']],
+  rk_song: 'ניתוח שיר שהעליתם', rk_usb: 'ייצוא תיקייה: USB לפיוניר או עותקים עם שם חדש (נקודות קיו, תגיות)', rk_mashup: 'ייצוא מאשאפ', rk_extended: 'ייצוא גרסת אקסטנדד', rk_convert: 'המרת קבצים',
+  per_song: 'לכל שיר', per_file: 'לכל קובץ', once_song: 'פעם אחת לשיר', per_exp: 'לכל ייצוא',
+  tblPlan: '{p} · {d}', tblNote: 'במסלול, ההנחה יורדת מהסכום של כל פעולה ומעוגלת למעלה (למשל 45 שירים ב־−10%: 41 נקודות).',
+  rowOpen: 'פתיחה מחדש של השירים שלכם, שיר הדוגמה וקטעי ״גלה שירים״', rowCrateX: 'ייצוא הספרייה: CSV,‏ rekordbox XML,‏ Traktor,‏ M3U8',
+  incDisc: '{d} על כל פעולה', ptsSong: 'ניתוח שיר', ptsUsb: 'שיר בתיקייה מיוצאת'
+},
+en: {
+  prP: 'Discover, the DJ mix, editing and MIDI export are free. Points pay for actions: analysing a new song, AI stem separation, Crate folder, Mashup and Extended exports, and file conversions. The full price list is below.',
+  ptsH: 'Pay only for what you use.', prH: 'Pay only for what you use.',
+  ptsP: 'Discover, the DJ mix, editing and MIDI export cost nothing. Points pay for actions: analysing a new song (once per song), AI stem separation and stem downloads, Crate folder exports (USB for Pioneer or renamed copies), Mashup and Extended exports, and file conversions.',
+  offP: 'No points needed at the moment — every tool and every export is free to use.',
+  f5lPts: ['Free points when you sign up, and monthly plans with a discount on every action', 'Invite friends: you and your friend both get points'],
+  faqPts: ['What costs points?', 'Analysing a new song you upload (once per song), AI stem separation and stem downloads, Crate folder exports (USB for Pioneer or renamed copies), Mashup and Extended exports, and file conversions. Discover, the DJ mix, editing and MIDI export are free. The full price list is on the Pricing page.'],
+  prFaq: [['What are points?', 'Points are the site’s credits. Every paid action is in the price list above — for example AI stem separation costs {sep}. Before anything is charged you see a confirmation with the price and your balance, and if an action fails the points come back.'],
+    ['What do I get when I sign up?', 'Every new account gets {gift} as a signup gift.'],
+    ['How does a monthly plan work?', 'A plan adds its points to your balance every month and gives a discount on every action while it’s active. When you’re signed in, your balance and plan are shown at the top of this page.'],
+    ['Do I need a plan to use the site?', 'No. Discover, the DJ mix and MIDI export are free, and the signup points are enough to get started.'],
+    ['How is the discount worked out?', 'Your plan’s discount comes off the total of each action and is rounded up. For example 45 songs on a plan with 10% off: 41 points instead of 45.']],
+  rk_song: 'Analysing a song you upload', rk_usb: 'Crate folder: USB for Pioneer or renamed copies (cue points, tags)', rk_mashup: 'Mashup export', rk_extended: 'Extended mix export', rk_convert: 'File conversion',
+  per_song: 'per song', per_file: 'per file', once_song: 'once per song', per_exp: 'per export',
+  tblPlan: '{p} · {d}', tblNote: 'On a plan the discount comes off the total of each action, rounded up (e.g. 45 songs at −10%: 41 points).',
+  rowOpen: 'Reopening your songs, the demo song and Discover previews', rowCrateX: 'Library exports: CSV, rekordbox XML, Traktor, M3U8',
+  incDisc: '{d} on every action', ptsSong: 'song analysis', ptsUsb: 'song in an exported folder'
+},
+ar: {
+  prP: 'الاكتشاف ومزج DJ والتحرير وتصدير MIDI مجانًا. تُدفع النقاط مقابل العمليات: تحليل أغنية جديدة، فصل المسارات بالذكاء الاصطناعي، تصدير مجلدات المكتبة والماشاب والنسخة الممتدة، وتحويل الملفات. قائمة الأسعار الكاملة أدناه.',
+  ptsH: 'ادفع فقط مقابل ما تستخدمه.', prH: 'ادفع فقط مقابل ما تستخدمه.',
+  ptsP: 'الاكتشاف ومزج DJ والتحرير وتصدير MIDI مجانًا. تُدفع النقاط مقابل العمليات: تحليل أغنية جديدة (مرة لكل أغنية)، فصل المسارات بالذكاء الاصطناعي وتنزيلها، تصدير مجلد من المكتبة (USB لأجهزة Pioneer أو نسخ بأسماء جديدة)، تصدير الماشاب والنسخة الممتدة، وتحويل الملفات.',
+  offP: 'لا حاجة إلى نقاط في الوقت الحالي — كل الأدوات وكل عمليات التصدير مجانية.',
+  f5lPts: ['نقاط هدية عند التسجيل، وباقات شهرية بخصم على كل عملية', 'ادعُ أصدقاءك: تحصل أنت وصديقك على نقاط'],
+  faqPts: ['ما الذي يكلّف نقاطًا؟', 'تحليل أغنية جديدة ترفعها (مرة لكل أغنية)، فصل المسارات بالذكاء الاصطناعي وتنزيلها، تصدير مجلد من المكتبة (USB لأجهزة Pioneer أو نسخ بأسماء جديدة)، تصدير الماشاب والنسخة الممتدة، وتحويل الملفات. الاكتشاف ومزج DJ والتحرير وتصدير MIDI مجانًا. القائمة الكاملة في صفحة الأسعار.'],
+  prFaq: [['ما هي النقاط؟', 'النقاط هي رصيد الموقع. كل عملية مدفوعة تظهر في قائمة الأسعار أعلاه — مثلًا فصل المسارات بالذكاء الاصطناعي يكلّف {sep}. قبل أي خصم يظهر تأكيد بالسعر ورصيدك، وإذا فشلت العملية تعود النقاط.'],
+    ['ماذا أحصل عند التسجيل؟', 'يحصل كل حساب جديد على {gift} هديةً عند التسجيل.'],
+    ['كيف تعمل الباقة الشهرية؟', 'تضيف الباقة نقاطها إلى رصيدك كل شهر وتمنح خصمًا على كل عملية ما دامت سارية. عند تسجيل الدخول يظهر رصيدك وباقتك أعلى هذه الصفحة.'],
+    ['هل أحتاج إلى باقة لاستخدام الموقع؟', 'لا. الاكتشاف ومزج DJ وتصدير MIDI مجانًا، ونقاط التسجيل تكفي للبدء.'],
+    ['كيف يُحسب الخصم؟', 'يُخصم خصم باقتك من مجموع كل عملية ويُقرَّب للأعلى. مثلًا 45 أغنية في باقة بخصم 10%: ‏41 نقطة بدل 45.']],
+  rk_song: 'تحليل أغنية ترفعها', rk_usb: 'تصدير مجلد: USB لأجهزة Pioneer أو نسخ بأسماء جديدة (نقاط إشارة، وسوم)', rk_mashup: 'تصدير ماشاب', rk_extended: 'تصدير النسخة الممتدة', rk_convert: 'تحويل الملفات',
+  per_song: 'لكل أغنية', per_file: 'لكل ملف', once_song: 'مرة لكل أغنية', per_exp: 'لكل تصدير',
+  tblPlan: '{p} · {d}', tblNote: 'في الباقة يُخصم الخصم من مجموع كل عملية ويُقرَّب للأعلى (مثلًا 45 أغنية بخصم 10%: ‏41 نقطة).',
+  rowOpen: 'إعادة فتح أغانيك والأغنية التجريبية ومقاطع الاكتشاف', rowCrateX: 'تصدير المكتبة: CSV و rekordbox XML و Traktor و M3U8',
+  incDisc: '{d} على كل عملية', ptsSong: 'تحليل أغنية', ptsUsb: 'أغنية في مجلد مُصدَّر'
+},
+ru: {
+  prP: 'Обзор, DJ-микс, редактирование и экспорт MIDI бесплатны. Баллы списываются за действия: анализ новой песни, разделение на стемы с AI, экспорт папок из библиотеки, мэшапа и extended, конвертацию файлов. Полный прайс — ниже.',
+  ptsH: 'Платите только за то, чем пользуетесь.', prH: 'Платите только за то, чем пользуетесь.',
+  ptsP: 'Обзор, DJ-микс, редактирование и экспорт MIDI ничего не стоят. Баллы списываются за действия: анализ новой песни (один раз на песню), разделение на стемы с AI и их скачивание, экспорт папки из библиотеки (USB для Pioneer или переименованные копии), экспорт мэшапа и extended, конвертацию файлов.',
+  offP: 'Баллы сейчас не нужны — все инструменты и экспорты бесплатны.',
+  f5lPts: ['Подарочные баллы при регистрации и ежемесячные тарифы со скидкой на каждое действие', 'Приглашайте друзей: баллы получаете и вы, и друг'],
+  faqPts: ['За что списываются баллы?', 'За анализ новой загруженной песни (один раз на песню), разделение на стемы с AI и их скачивание, экспорт папки из библиотеки (USB для Pioneer или переименованные копии), экспорт мэшапа и extended и конвертацию файлов. Обзор, DJ-микс, редактирование и экспорт MIDI бесплатны. Полный прайс — на странице тарифов.'],
+  prFaq: [['Что такое баллы?', 'Баллы — это кредиты сайта. Каждое платное действие есть в прайсе выше — например, разделение на стемы с AI стоит {sep}. Перед списанием вы видите подтверждение с ценой и балансом, а если действие не удалось, баллы возвращаются.'],
+    ['Что я получу при регистрации?', 'Каждый новый аккаунт получает {gift} в подарок.'],
+    ['Как работает ежемесячный тариф?', 'Тариф каждый месяц добавляет баллы на ваш баланс и даёт скидку на каждое действие, пока он активен. Если вы вошли в аккаунт, баланс и тариф показаны вверху этой страницы.'],
+    ['Нужен ли тариф, чтобы пользоваться сайтом?', 'Нет. Обзор, DJ-микс и экспорт MIDI бесплатны, а подарочных баллов хватит, чтобы начать.'],
+    ['Как считается скидка?', 'Скидка тарифа вычитается из суммы каждого действия и округляется вверх. Например, 45 песен на тарифе со скидкой 10%: 41 балл вместо 45.']],
+  rk_song: 'Анализ загруженной песни', rk_usb: 'Экспорт папки: USB для Pioneer или переименованные копии (кью-точки, теги)', rk_mashup: 'Экспорт мэшапа', rk_extended: 'Экспорт extended-версии', rk_convert: 'Конвертация файлов',
+  per_song: 'за песню', per_file: 'за файл', once_song: 'один раз на песню', per_exp: 'за экспорт',
+  tblPlan: '{p} · {d}', tblNote: 'На тарифе скидка вычитается из суммы каждого действия с округлением вверх (например, 45 песен при −10%: 41 балл).',
+  rowOpen: 'Повторное открытие ваших песен, демо и превью из обзора', rowCrateX: 'Экспорт библиотеки: CSV, rekordbox XML, Traktor, M3U8',
+  incDisc: '{d} на каждое действие', ptsSong: 'анализ песни', ptsUsb: 'песня в экспортированной папке'
+},
+es: {
+  prP: 'Descubrir, la mezcla DJ, la edición y la exportación MIDI son gratis. Los puntos pagan acciones: analizar una canción nueva, separar pistas con IA, exportar carpetas de la biblioteca, mashup y extended, y convertir archivos. La lista completa está abajo.',
+  ptsH: 'Paga solo por lo que usas.', prH: 'Paga solo por lo que usas.',
+  ptsP: 'Descubrir, la mezcla DJ, la edición y la exportación MIDI no cuestan nada. Los puntos pagan acciones: analizar una canción nueva (una vez por canción), separar pistas con IA y descargarlas, exportar carpetas de la biblioteca (USB para Pioneer o copias renombradas), exportar mashups y extended, y convertir archivos.',
+  offP: 'No necesitas puntos por ahora: todas las herramientas y exportaciones son gratis.',
+  f5lPts: ['Puntos de regalo al registrarte y planes mensuales con descuento en cada acción', 'Invita a amigos: tú y tu amigo recibís puntos'],
+  faqPts: ['¿Qué cuesta puntos?', 'Analizar una canción nueva que subes (una vez por canción), separar pistas con IA y descargarlas, exportar carpetas de la biblioteca (USB para Pioneer o copias renombradas), exportar mashups y extended, y convertir archivos. Descubrir, la mezcla DJ, la edición y la exportación MIDI son gratis. La lista completa está en Precios.'],
+  prFaq: [['¿Qué son los puntos?', 'Los puntos son los créditos del sitio. Cada acción de pago está en la lista de arriba; por ejemplo, separar pistas con IA cuesta {sep}. Antes de cobrar ves una confirmación con el precio y tu saldo, y si una acción falla, los puntos vuelven.'],
+    ['¿Qué recibo al registrarme?', 'Cada cuenta nueva recibe {gift} de regalo al registrarse.'],
+    ['¿Cómo funciona un plan mensual?', 'El plan añade sus puntos a tu saldo cada mes y da un descuento en cada acción mientras está activo. Si has iniciado sesión, tu saldo y tu plan aparecen arriba en esta página.'],
+    ['¿Necesito un plan para usar el sitio?', 'No. Descubrir, la mezcla DJ y la exportación MIDI son gratis, y los puntos de regalo bastan para empezar.'],
+    ['¿Cómo se calcula el descuento?', 'El descuento de tu plan se resta del total de cada acción y se redondea hacia arriba. Por ejemplo, 45 canciones con un 10 % de descuento: 41 puntos en vez de 45.']],
+  rk_song: 'Analizar una canción que subes', rk_usb: 'Exportar carpeta: USB para Pioneer o copias renombradas (cues, etiquetas)', rk_mashup: 'Exportar mashup', rk_extended: 'Exportar versión extended', rk_convert: 'Conversión de archivos',
+  per_song: 'por canción', per_file: 'por archivo', once_song: 'una vez por canción', per_exp: 'por exportación',
+  tblPlan: '{p} · {d}', tblNote: 'Con un plan, el descuento se resta del total de cada acción y se redondea hacia arriba (p. ej. 45 canciones con −10 %: 41 puntos).',
+  rowOpen: 'Volver a abrir tus canciones, la demo y los fragmentos de Descubrir', rowCrateX: 'Exportaciones de biblioteca: CSV, rekordbox XML, Traktor, M3U8',
+  incDisc: '{d} en cada acción', ptsSong: 'análisis de canción', ptsUsb: 'canción en una carpeta exportada'
+}
+};
+for (const l in SV) Object.assign(S[l], SV[l]);
 
 /* plural forms, keyed by Intl.PluralRules categories */
 const PL = {
   he: { pts: { one: 'נקודה אחת', two: '2 נקודות', other: '{n} נקודות' }, ptsL: { one: 'נקודה', other: 'נקודות' },
-    sep: { one: 'הפרדה אחת', other: '{n} הפרדות ערוצים' }, dl: { one: 'הורדה אחת', other: '{n} הורדות ערוצים' } },
+    sep: { one: 'הפרדה אחת', other: '{n} הפרדות ערוצים' }, dl: { one: 'הורדה אחת', other: '{n} הורדות ערוצים' }, song: { one: 'ניתוח שיר אחד', other: '{n} ניתוחי שירים' } },
   en: { pts: { one: '{n} point', other: '{n} points' }, ptsL: { one: 'point', other: 'points' },
-    sep: { one: '{n} stem separation', other: '{n} stem separations' }, dl: { one: '{n} stem download', other: '{n} stem downloads' } },
+    sep: { one: '{n} stem separation', other: '{n} stem separations' }, dl: { one: '{n} stem download', other: '{n} stem downloads' }, song: { one: '{n} song analysis', other: '{n} song analyses' } },
   ar: { pts: { one: 'نقطة واحدة', two: 'نقطتان', few: '{n} نقاط', many: '{n} نقطة', other: '{n} نقطة' }, ptsL: { few: 'نقاط', other: 'نقطة' },
     sep: { one: 'عملية فصل واحدة', two: 'عمليتا فصل', few: '{n} عمليات فصل', many: '{n} عملية فصل', other: '{n} عملية فصل' },
-    dl: { one: 'تنزيل واحد', two: 'تنزيلان', few: '{n} تنزيلات', many: '{n} تنزيلًا', other: '{n} تنزيل' } },
+    dl: { one: 'تنزيل واحد', two: 'تنزيلان', few: '{n} تنزيلات', many: '{n} تنزيلًا', other: '{n} تنزيل' },
+    song: { one: 'تحليل أغنية واحدة', two: 'تحليل أغنيتين', few: 'تحليل {n} أغانٍ', many: 'تحليل {n} أغنية', other: 'تحليل {n} أغنية' } },
   ru: { pts: { one: '{n} балл', few: '{n} балла', many: '{n} баллов', other: '{n} балла' }, ptsL: { one: 'балл', few: 'балла', many: 'баллов', other: 'балла' },
     sep: { one: '{n} разделение', few: '{n} разделения', many: '{n} разделений', other: '{n} разделения' },
-    dl: { one: '{n} скачивание стемов', few: '{n} скачивания стемов', many: '{n} скачиваний стемов', other: '{n} скачивания стемов' } },
+    dl: { one: '{n} скачивание стемов', few: '{n} скачивания стемов', many: '{n} скачиваний стемов', other: '{n} скачивания стемов' },
+    song: { one: 'анализ {n} песни', few: 'анализ {n} песен', many: 'анализ {n} песен', other: 'анализ {n} песни' } },
   es: { pts: { one: '{n} punto', other: '{n} puntos' }, ptsL: { one: 'punto', other: 'puntos' },
-    sep: { one: '{n} separación', other: '{n} separaciones' }, dl: { one: '{n} descarga de pistas', other: '{n} descargas de pistas' } }
+    sep: { one: '{n} separación', other: '{n} separaciones' }, dl: { one: '{n} descarga de pistas', other: '{n} descargas de pistas' }, song: { one: '{n} análisis de canción', other: '{n} análisis de canciones' } }
 };
 
 /* ---------- helpers ---------- */
@@ -965,7 +1061,7 @@ function renderAbout(el, billing) {
   if (billing && billing.on !== false) {
     const c = billing.costs || {};
     const nn = v => (v == null || v === '' || !isFinite(+v)) ? null : Math.max(0, Math.round(+v));   // numbers only: these go into HTML
-    const tl = [['gift', 'orange', t('ptsGift'), nn(billing.signup), true], ['spark', 'blue', t('ptsSep'), nn(c.sep)], ['export', 'purple', t('ptsDl'), nn(c.stems)]];
+    const tl = [['gift', 'orange', t('ptsGift'), nn(billing.signup), true], ['wave', 'purple', t('ptsSong'), nn(c.song)], ['spark', 'blue', t('ptsSep'), nn(c.sep)], ['layers', 'orange', t('ptsUsb'), nn(c.usb)]].filter(x => x[4] || x[3] > 0);
     tiles = '<div class="pg-tiles">' + tl.filter(x => x[3] != null).map((x, i) => '<div class="pg-tile rv" style="--acc:var(--pg-' + x[1] + ');--i:' + i + '">' + ic(x[0]) +
       '<b dir="ltr">' + (x[4] ? '+' : '') + '<span data-count="' + x[3] + '">' + fmtN(x[3]) + '</span></b><span class="pg-tu">' + plWord('ptsL', x[3]) + '</span><span class="pg-tl">' + x[2] + '</span></div>').join('') + '</div>';
   }
@@ -979,7 +1075,7 @@ function renderAbout(el, billing) {
   const prv = '<section class="pg-sec" aria-labelledby="pgPrvH">' + sh(t('prvEyebrow'), t('prvH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgPrvH">') +
     '<div class="pg-prv">' + t('prv').map((p, i) => '<div class="rv" style="--i:' + i + '"><span class="pg-badge">' + ic(prvIc[i]) + '</span><h3>' + p[0] + '</h3><p>' + p[1] + '</p></div>').join('') + '</div></section>';
 
-  const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('faqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFaqH">') + '</div>' + faqList(t('faq').concat(t('faqX'))) + '</section>';
+  const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('faqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFaqH">') + '</div>' + faqList(t('faq').slice(0, -1).concat([t('faqPts')], t('faqX'))) + '</section>';
 
   let stmt = '';
   try { if (window.A11Y && typeof A11Y.statementHTML === 'function') stmt = A11Y.statementHTML(L()) || ''; } catch (e) { stmt = ''; }
@@ -994,6 +1090,8 @@ function renderAbout(el, billing) {
 }
 
 /* ---------- Pricing ---------- */
+const pct = n => '<span dir="ltr">−' + n + (L() === 'es' ? ' %' : '%') + '</span>';   /* "−10%" kept in one piece in RTL */
+const disc = p => Math.max(0, Math.min(90, Math.round(+(p && p.discount) || 0)));   /* plan discount %, numbers only (goes into HTML) */
 function renderPricing(el, billing, state) {
   if (!el) return;
   billing = billing || {}; state = state || { signedIn: false, plan: 'free', credits: 0, planUntil: null };
@@ -1036,8 +1134,10 @@ function renderPricing(el, billing, state) {
   }
   function buys(p) {
     const out = [];
+    const sg = Math.max(0, Math.round(+c.song || 0));
     if (sep > 0) out.push('≈ ' + pl('sep', Math.floor(p / sep)));
-    if (dlc > 0) out.push((out.length ? t('buyOr') + ' ' : '') + '≈ ' + pl('dl', Math.floor(p / dlc)));
+    if (sg > 0) out.push((out.length ? t('buyOr') + ' ' : '') + '≈ ' + pl('song', Math.floor(p / sg)));
+    else if (dlc > 0) out.push((out.length ? t('buyOr') + ' ' : '') + '≈ ' + pl('dl', Math.floor(p / dlc)));
     return out.length ? '<ul class="pg-buys">' + out.map(s => '<li>' + s + '</li>').join('') + '</ul>' : '';
   }
   let cards = '';
@@ -1055,7 +1155,8 @@ function renderPricing(el, billing, state) {
         (p.best ? '<span class="pg-flag best">' + ic('spark') + t('best') + '</span>' : '') + (isCur ? '<span class="pg-flag cur">' + t('current') + '</span>' : '') +
         '<h3>' + esc(planName(p.id)) + '</h3><div class="pg-pw">' + money(+p.price || 0, cur) + '<span class="pg-per">' + t('perMonth') + '</span>' + usdApprox(+p.price || 0, cur, billing) + '</div>' +
         '<div class="pg-ppts"><b dir="ltr" data-count="' + pts + '">' + fmtN(pts) + '</b><span>' + plWord('ptsL', pts) + ' · ' + t('perMonth') + '</span></div>' + buys(pts) +
-        '<ul class="pg-list"><li>' + ic('check') + '<span>' + t('incAll') + '</span></li><li>' + ic('check') + '<span>' + fill(t('incPts'), { pts: pl('pts', pts) }) + '</span></li></ul>' +
+        '<ul class="pg-list"><li>' + ic('check') + '<span>' + t('incAll') + '</span></li><li>' + ic('check') + '<span>' + fill(t('incPts'), { pts: pl('pts', pts) }) + '</span></li>' +
+        (disc(p) > 0 ? '<li class="pg-disc">' + ic('spark') + '<span>' + fill(t('incDisc'), { d: pct(disc(p)) }) + '</span></li>' : '') + '</ul>' +
         '<div class="pg-pact">' + (isCur ? btn('your') : !state.signedIn ? btn('subsignup', p) : btn('sub', p)) + '</div></article>';
     });
     cards = '<div class="pg-plans" style="--n:' + (plans.length + 1) + '">' + cards + '</div>' + (L() !== 'he' && cur === 'ILS' ? '<p class="pg-usdnote rv">' + esc(t('usdNote')) + '</p>' : '');
@@ -1064,22 +1165,37 @@ function renderPricing(el, billing, state) {
       (state.signedIn ? '<button type="button" class="pg-btn ink" data-nav="tool">' + ic('play') + '<span>' + t('ctaTool') + '</span></button>' : '<button type="button" class="pg-btn ink" data-signup="1"><span>' + t('btnSignup') + '</span>' + ic('arrow', 'pg-arr') + '</button>') + '</div>';
   }
 
+  /* points v2: one row per kind in billing.costs (the built-in ones in this order, then any other key), a column per plan
+     with a discount (per-unit price after the discount; the real charge rounds the TOTAL up), then the free things */
   const pv = (n, cls) => '<span class="pg-cost ' + cls + '">' + n + '</span>';
+  const KR = { song: ['wave', 'rk_song', 'once_song'], sep: ['spark', 'rowSep', 'per_song'], stems: ['export', 'rowDl', 'once_song'], usb: ['layers', 'rk_usb', 'per_song'],
+    mashup: ['merge', 'rk_mashup', 'per_exp'], extended: ['extend', 'rk_extended', 'per_exp'], convert: ['convert', 'rk_convert', 'per_file'] };
+  const dplans = on ? plans.filter(p => disc(p) > 0) : [];
+  const ncol = 2 + dplans.length;
+  const unitOf = (u, d) => Math.round(u * (100 - d)) / 100;
   const rows = [];
   if (on) {
-    if (sep) rows.push([ic('spark'), t('rowSep'), pv(pl('pts', sep), 'paid')]);
-    if (dlc) rows.push([ic('export'), t('rowDl'), pv(pl('pts', dlc), 'paid')]);
+    Object.keys(KR).concat(Object.keys(c).filter(k => !KR[k] && /^[a-z][a-z_]{1,23}$/.test(k))).forEach(k => {
+      const u = Math.max(0, Math.min(100, Math.round(+c[k] || 0))); if (!(k in c) && !KR[k]) return;
+      const r = KR[k]; if (!r) return;   /* unknown kinds have no label in five languages: not listed */
+      if (!u) { rows.push([ic(r[0]), t(r[1]), '<td colspan="' + (ncol - 1) + '">' + pv(t('freeV'), 'free') + '</td>']); return; }
+      rows.push([ic(r[0]), t(r[1]) + '<small class="pg-per1">' + t(r[2]) + '</small>',
+        '<td>' + pv(pl('pts', u), 'paid') + '</td>' + dplans.map(p => '<td>' + pv(num(unitOf(u, disc(p))), 'paid disc') + '</td>').join('')]);
+    });
   }
-  rows.push([ic('wave'), t('rowAn'), pv(t('freeV'), 'free')], [ic('decks'), t('rowDisc'), pv(t('freeV'), 'free')], [ic('sliders'), t('rowMidi'), pv(t('freeV'), 'free')]);
-  if (on && signup) rows.push([ic('gift'), t('rowGift'), pv(pl('pts', signup, '+'), 'gift')]);
+  [[ic('wave'), t('rowOpen')], [ic('compass'), t('rowDisc')], [ic('sliders'), t('rowMidi')], [ic('layers'), t('rowCrateX')]]
+    .forEach(r => rows.push([r[0], r[1], '<td colspan="' + (ncol - 1) + '">' + pv(t('freeV'), 'free') + '</td>']));
+  if (on && signup) rows.push([ic('gift'), t('rowGift'), '<td colspan="' + (ncol - 1) + '">' + pv(pl('pts', signup, '+'), 'gift') + '</td>']);
   const table = '<section class="pg-sec" aria-labelledby="pgTblH">' + sh(t('tblEyebrow'), t('tblH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgTblH">') +
-    '<div class="pg-tblw rv"><table class="pg-tbl"><thead><tr><th scope="col">' + t('tblA') + '</th><th scope="col">' + t('tblC') + '</th></tr></thead><tbody>' +
-    rows.map(r => '<tr><th scope="row"><span class="pg-ti">' + r[0] + '</span>' + r[1] + '</th><td>' + r[2] + '</td></tr>').join('') + '</tbody></table></div></section>';
+    '<div class="pg-tblw rv"><table class="pg-tbl' + (dplans.length ? ' pg-tbl-d' : '') + '"><thead><tr><th scope="col">' + t('tblA') + '</th><th scope="col">' + t('tblC') + '</th>' +
+    dplans.map(p => '<th scope="col" class="pg-thd">' + fill(t('tblPlan'), { p: esc(planName(p.id)), d: pct(disc(p)) }) + '</th>').join('') + '</tr></thead><tbody>' +
+    rows.map(r => '<tr><th scope="row"><span class="pg-ti">' + r[0] + '</span><span class="pg-tlb">' + r[1] + '</span></th>' + r[2] + '</tr>').join('') + '</tbody></table></div>' +
+    (dplans.length ? '<p class="pg-tnote rv">' + t('tblNote') + '</p>' : '') + '</section>';
 
   const fv = { sep: pl('pts', sep), dl: pl('pts', dlc), gift: pl('pts', signup) };
   let fq = t('prFaq');
   if (!on) fq = fq.filter((q, i) => i === 3);
-  else fq = fq.filter((q, i) => !(i === 1 && !signup) && !(i === 0 && !sep && !dlc));
+  else fq = fq.filter((q, i) => !(i === 1 && !signup) && !(i === 0 && !sep) && !(i === 4 && !dplans.length));
   const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgPFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('prFaqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgPFaqH">') + '</div>' + faqList(fq, fv) + '</section>';
   const foot = '<footer class="pg-foot">' + contactLine(t('prContact'), billing) + legalLinks(false) + '</footer>';
 

@@ -294,6 +294,49 @@ es:{navPricing:'Precios',navAbout:'Acerca de',navHome:'Inicio',creditsL:'puntos'
   planUntil:'Válido hasta {d}',planFreeL:'Plan gratis',lr_signup:'Regalo de registro',lr_spend:'Uso',lr_grant:'Ajuste manual',lr_refill:'Recarga mensual',lr_plan:'Plan activado',lr_refund:'Reembolso',
   fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.',lk_sep:'Separación de pistas',lk_stems:'Descarga de pistas',refunded:'La separación no terminó, te devolvimos los puntos.'}};
 for(const k in IP)Object.assign(I[k],IP[k]);
+// points v2: a price for every paid action (kinds = billing.costs keys), plan discounts, one confirmation per batch
+const IPV={
+he:{pvOne1:'נקודה אחת',pvGo1:'אישור · נקודה אחת',pvChip1:'1 נק׳',lk_song:'ניתוח שיר',lk_usb:'ייצוא תיקייה',lk_mashup:'ייצוא מאשאפ',lk_extended:'ייצוא אקסטנדד',lk_convert:'המרת קבצים',
+  un_song:'שירים',un_usb:'שירים',un_convert:'קבצים',un_sep:'הפרדות',un_stems:'הורדות',un_mashup:'ייצואים',un_extended:'ייצואים',
+  ck_song:'ניתוח שיר שהועלה (פעם אחת לשיר)',ck_sep:'הפרדת ערוצים ב־AI',ck_stems:'הורדת סטמים (פעם אחת לשיר)',ck_usb:'ייצוא תיקייה מניתוח הספרייה: USB לפיוניר / עותקים עם שם חדש (לכל שיר)',ck_mashup:'ייצוא מאשאפ',ck_extended:'ייצוא אקסטנדד',ck_convert:'המרה (לכל קובץ)',
+  billCosts:'מחיר לכל פעולה בנקודות (0 = חינם, עד 100)',planDisc:'הנחה על פעולות (%)',
+  pvCalc:'{n} {u} × {p} = {t} נקודות',pvOne:'{t} נקודות',pvDisc:'המסלול שלך {pl} \u2066−{d}%\u2069 ← {t}',pvBal:'יתרה {b} ← {a}',
+  pvShort:'אין מספיק נקודות: יש לך {b}, וזה מספיק ל־{k} הראשונים.',pvNone:'אין מספיק נקודות: הפעולה עולה {t} ויש לך {b}.',
+  pvGo:'אישור · {t} נקודות',pvFirst:'רק {k} הראשונים',pvBuy:'קניית נקודות',pvSkip:'לא לשאול שוב על {x} כשזה עד {t} נקודות',
+  pvChip:'{t} נק׳',pvCrash:'הייצוא הקודם לא הסתיים (הדף נסגר או קרס), והוחזרו {n} נקודות.',pvRefunded:'הוחזרו {n} נקודות על {k} שלא הושלמו.',pvAlready:'כבר שילמת על השיר הזה, הוא חינם.',pvSkipped:'{n} לא נותחו: אין מספיק נקודות.'},
+en:{pvOne1:'1 point',pvGo1:'Confirm · 1 point',pvChip1:'1 pt',lk_song:'Song analysis',lk_usb:'Folder export',lk_mashup:'Mashup export',lk_extended:'Extended export',lk_convert:'File conversion',
+  un_song:'songs',un_usb:'songs',un_convert:'files',un_sep:'separations',un_stems:'downloads',un_mashup:'exports',un_extended:'exports',
+  ck_song:'Analysing an uploaded song (once per song)',ck_sep:'AI stem separation',ck_stems:'Stems download (once per song)',ck_usb:'Crate folder export: USB for Pioneer / renamed copies (per song)',ck_mashup:'Mashup export',ck_extended:'Extended export',ck_convert:'Conversion (per file)',
+  billCosts:'Price per action in points (0 = free, up to 100)',planDisc:'Discount on actions (%)',
+  pvCalc:'{n} {u} × {p} = {t} points',pvOne:'{t} points',pvDisc:'your plan {pl} −{d}% → {t}',pvBal:'balance {b} → {a}',
+  pvShort:'Not enough points: you have {b}, enough for the first {k}.',pvNone:'Not enough points: this costs {t} and you have {b}.',
+  pvGo:'Confirm · {t} points',pvFirst:'Only the first {k}',pvBuy:'Buy points',pvSkip:'Don\'t ask again for {x} up to {t} points',
+  pvChip:'{t} pts',pvCrash:'Your last export didn\'t finish (the page closed or crashed); {n} points were returned.',pvRefunded:'{n} points returned for {k} that didn\'t finish.',pvAlready:'You already paid for this song, it\'s free.',pvSkipped:'{n} not analysed: not enough points.'},
+ar:{pvOne1:'نقطة واحدة',pvGo1:'تأكيد · نقطة واحدة',pvChip1:'نقطة واحدة',lk_song:'تحليل أغنية',lk_usb:'تصدير مجلد',lk_mashup:'تصدير ماشاب',lk_extended:'تصدير النسخة الممتدة',lk_convert:'تحويل الملفات',
+  un_song:'أغانٍ',un_usb:'أغانٍ',un_convert:'ملفات',un_sep:'عمليات فصل',un_stems:'تنزيلات',un_mashup:'تصديرات',un_extended:'تصديرات',
+  ck_song:'تحليل أغنية مرفوعة (مرة واحدة لكل أغنية)',ck_sep:'فصل المسارات بالذكاء الاصطناعي',ck_stems:'تنزيل المسارات (مرة لكل أغنية)',ck_usb:'تصدير مجلد من المكتبة: USB لأجهزة Pioneer / نسخ بأسماء جديدة (لكل أغنية)',ck_mashup:'تصدير ماشاب',ck_extended:'تصدير النسخة الممتدة',ck_convert:'التحويل (لكل ملف)',
+  billCosts:'سعر كل عملية بالنقاط (0 = مجاني، حتى 100)',planDisc:'خصم على العمليات (%)',
+  pvCalc:'{n} {u} × {p} = {t} نقطة',pvOne:'{t} نقطة',pvDisc:'خطتك {pl} \u2066−{d}%\u2069 ← {t}',pvBal:'الرصيد {b} ← {a}',
+  pvShort:'النقاط غير كافية: لديك {b}، وهذا يكفي لأول {k}.',pvNone:'النقاط غير كافية: العملية تكلف {t} ولديك {b}.',
+  pvGo:'تأكيد · {t} نقطة',pvFirst:'أول {k} فقط',pvBuy:'شراء نقاط',pvSkip:'لا تسألني مجددًا عن {x} حتى {t} نقطة',
+  pvChip:'{t} نقطة',pvCrash:'لم يكتمل التصدير السابق (أُغلقت الصفحة أو تعطّلت)، وأُعيدت {n} نقاط.',pvRefunded:'أُعيدت {n} نقاط عن {k} لم تكتمل.',pvAlready:'دفعت مسبقًا مقابل هذه الأغنية، فهي مجانية.',pvSkipped:'لم يُحلَّل {n}: النقاط غير كافية.'},
+ru:{pvOne1:'1 балл',pvGo1:'Подтвердить · 1 балл',pvChip1:'1 балл',lk_song:'Анализ песни',lk_usb:'Экспорт папки',lk_mashup:'Экспорт мэшапа',lk_extended:'Экспорт extended',lk_convert:'Конвертация файлов',
+  un_song:'песен',un_usb:'песен',un_convert:'файлов',un_sep:'разделений',un_stems:'скачиваний',un_mashup:'экспортов',un_extended:'экспортов',
+  ck_song:'Анализ загруженной песни (один раз на песню)',ck_sep:'Разделение на стемы с AI',ck_stems:'Скачивание стемов (один раз на песню)',ck_usb:'Экспорт папки из библиотеки: USB для Pioneer / переименованные копии (за песню)',ck_mashup:'Экспорт мэшапа',ck_extended:'Экспорт extended',ck_convert:'Конвертация (за файл)',
+  billCosts:'Цена действия в баллах (0 = бесплатно, до 100)',planDisc:'Скидка на действия (%)',
+  pvCalc:'{n} {u} × {p} = {t} балл.',pvOne:'{t} балл.',pvDisc:'ваш тариф {pl} −{d}% → {t}',pvBal:'баланс {b} → {a}',
+  pvShort:'Недостаточно баллов: у вас {b}, хватит на первые {k}.',pvNone:'Недостаточно баллов: действие стоит {t}, у вас {b}.',
+  pvGo:'Подтвердить · {t} балл.',pvFirst:'Только первые {k}',pvBuy:'Купить баллы',pvSkip:'Больше не спрашивать про «{x}» до {t} баллов',
+  pvChip:'{t} балл.',pvCrash:'Прошлый экспорт не завершился (страница закрылась или упала); возвращено баллов: {n}.',pvRefunded:'Возвращено {n} балл. за {k} незавершённых.',pvAlready:'Эта песня уже оплачена, она бесплатна.',pvSkipped:'Не проанализировано: {n} — недостаточно баллов.'},
+es:{pvOne1:'1 punto',pvGo1:'Confirmar · 1 punto',pvChip1:'1 pt',lk_song:'Análisis de canción',lk_usb:'Exportación de carpeta',lk_mashup:'Exportación de mashup',lk_extended:'Exportación extended',lk_convert:'Conversión de archivos',
+  un_song:'canciones',un_usb:'canciones',un_convert:'archivos',un_sep:'separaciones',un_stems:'descargas',un_mashup:'exportaciones',un_extended:'exportaciones',
+  ck_song:'Analizar una canción subida (una vez por canción)',ck_sep:'Separación de pistas con IA',ck_stems:'Descarga de pistas (una vez por canción)',ck_usb:'Exportar carpeta de la biblioteca: USB para Pioneer / copias renombradas (por canción)',ck_mashup:'Exportación de mashup',ck_extended:'Exportación extended',ck_convert:'Conversión (por archivo)',
+  billCosts:'Precio por acción en puntos (0 = gratis, hasta 100)',planDisc:'Descuento en acciones (%)',
+  pvCalc:'{n} {u} × {p} = {t} puntos',pvOne:'{t} puntos',pvDisc:'tu plan {pl} −{d}% → {t}',pvBal:'saldo {b} → {a}',
+  pvShort:'No tienes puntos suficientes: tienes {b}, alcanza para los primeros {k}.',pvNone:'No tienes puntos suficientes: cuesta {t} y tienes {b}.',
+  pvGo:'Confirmar · {t} puntos',pvFirst:'Solo los primeros {k}',pvBuy:'Comprar puntos',pvSkip:'No volver a preguntar por {x} hasta {t} puntos',
+  pvChip:'{t} pts',pvCrash:'La última exportación no terminó (la página se cerró o falló); te devolvimos {n} puntos.',pvRefunded:'Te devolvimos {n} puntos por {k} sin terminar.',pvAlready:'Ya pagaste esta canción, es gratis.',pvSkipped:'{n} sin analizar: no hay puntos suficientes.'}};
+for(const k in IPV)Object.assign(I[k],IPV[k]);
 // automatic subscription payments (Lemon Squeezy)
 const IPAY={
 he:{payWait:'התשלום התקבל, מפעילים את המסלול…',payDone:'המסלול {p} פעיל! יש לך עכשיו {n} נקודות.',paySlow:'התשלום עדיין מאושר אצל חברת הסליקה. זה יכול לקחת דקה, רעננו את הדף בעוד רגע. אם הנקודות לא מגיעות, כתבו לנו.',payContact:'יצירת קשר',
@@ -1506,10 +1549,10 @@ async function aiSeparate(){
     catch(e){console.error(e);if(job!==AI.job)return;if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}sepEnd(t('aiErr',{m:String(e.message||e).slice(0,80)}),true);return}
     if(job!==AI.job||S.buffer!==token)return;
   }
-  const paid=billingOn()&&!ACC.admin&&costOf('sep')>0;
+  const paid=billingOn()&&!ACC.admin&&unitPrice('sep')>0;
   let skip=false;try{skip=localStorage.getItem(SEP_OK)==='1'}catch(e){}
   if(paid&&!skip){sepProgress(0,'');$('#sprog').hidden=true;
-    const ok=await sepConfirm(costOf('sep'),ACC.cred?ACC.cred.credits||0:0);
+    const ok=await sepConfirm(unitPrice('sep'),ACC.cred?ACC.cred.credits||0:0);
     if(job!==AI.job||S.buffer!==token)return;
     if(!ok){sepEnd(null);return}}
   const pay=await charge('sep',S.name);if(!pay){if(job===AI.job)sepEnd(null);return}
@@ -1768,7 +1811,7 @@ function renderExport(){
   /* qw: the greyed-out stem exports lead to the separation instead of a dead end */
   let cta=$('#xcta');if(!cta){cta=document.createElement('div');cta.id='xcta';cta.className='xcta';box.before(cta)}
   const need=!!S.buffer&&EXP.some(e=>!expOk(e))&&(typeof cfgOn!=='function'||cfgOn('ai'));cta.hidden=!need;
-  if(need){const n=billingOn()&&!ACC.admin?costOf('sep'):0;cta.innerHTML=`<span></span><button type="button" class="btn ghost"><b></b>${n?`<i class="cost"></i>`:''}</button>`;
+  if(need){const n=billingOn()&&!ACC.admin?unitPrice('sep'):0;cta.innerHTML=`<span></span><button type="button" class="btn ghost"><b></b>${n?`<i class="cost"></i>`:''}</button>`;
     cta.querySelector('span').textContent=t('expCta');cta.querySelector('b').textContent=t('expCtaBtn');if(n)cta.querySelector('i').textContent=t('expCtaCost',{n});
     cta.querySelector('button').disabled=$('#aiBtn').disabled;
     cta.querySelector('button').onclick=()=>{$('#rack').scrollIntoView({block:'center',behavior:'smooth'});aiSeparate()}}
@@ -2498,12 +2541,14 @@ async function loadCloudLib(){
 async function cloudSave(item){if(!ACC.user||ACC.lib===null)return;try{await Backend.saveSong(item);ACC.lib=[item,...ACC.lib.filter(x=>x.name!==item.name)];loadProfile(false)}catch(e){console.warn(e)}}
 async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await Backend.deleteSong(name);ACC.lib=ACC.lib.filter(x=>x.name!==name);loadProfile(false)}catch(e){console.warn(e)}}
 /* ---------- points & plans ---------- */
-const DEF_BILL={on:true,signup:20,costs:{sep:5,stems:2},currency:'ILS',contact:'',usd_rate:3.7,plans:[{id:'basic',price:29,points:60,link:''},{id:'pro',price:59,points:150,link:'',best:true},{id:'studio',price:99,points:400,link:''}]};
+const KINDS=['song','sep','stems','usb','mashup','extended','convert'];   // points v2 (schema.sql "Points v2"); billing.costs may hold more
+const DEF_BILL={on:true,signup:20,costs:{song:1,sep:5,stems:2,usb:1,mashup:3,extended:3,convert:1},currency:'ILS',contact:'',usd_rate:3.7,plans:[{id:'basic',price:29,points:60,link:'',discount:0},{id:'pro',price:59,points:150,link:'',best:true,discount:10},{id:'studio',price:99,points:400,link:'',discount:25}]};
 function BILL(){const b=(ACC.config&&ACC.config.billing)||{};return {...DEF_BILL,...b,costs:{...DEF_BILL.costs,...(b.costs||{})},plans:Array.isArray(b.plans)&&b.plans.length?b.plans:DEF_BILL.plans}}
 // the points tables/functions not installed yet in Supabase → behave as before (free) instead of blocking everyone
 const missingDb=e=>/does not exist|could not find|schema cache|PGRST20[0-9]|42703|42883/i.test(String((e&&(e.code||''))+' '+(e&&e.message||e)));
 const billingOn=()=>ACC.on&&BILL().on!==false&&!ACC.credMissing;
-const costOf=k=>+BILL().costs[k]||0;
+const costOf=k=>Math.max(0,Math.min(100,parseInt(BILL().costs[k],10)||0));
+const unitPrice=k=>priceOf(k,1).total;   // one unit with this user's plan discount (0 when free)
 ACC.cred=null;
 async function loadCredits(refill){
   if(!ACC.on||!ACC.user){ACC.cred=null;renderCredits();return}
@@ -2568,14 +2613,15 @@ function renderCredits(){
     $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}
     renderPayLine(show?c:null)}
   renderRef();
-  const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(costOf('sep')):''}
+  const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(unitPrice('sep')):''}
   renderDlCost();
   if(!$('#pricingView').hidden)renderPricingPage();
+  pricesChanged();
 }
 function renderDlCost(){
   const el=$('#dlCost');if(!el)return;
   const stems=EXP.some(e=>expSel[e.id]&&expOk(e)&&(typeof e.st==='number'||e.st==='inst'));
-  const on=billingOn()&&!ACC.admin&&stems&&!S.stemsPaid;el.hidden=!on;if(on)el.textContent=t('dlCostNote',{n:costOf('stems')});
+  const on=billingOn()&&!ACC.admin&&stems&&!S.stemsPaid;el.hidden=!on;if(on)el.textContent=t('dlCostNote',{n:unitPrice('stems')});
 }
 function toast(msg,actions){
   const el=$('#toast');el.innerHTML='';const sp=document.createElement('span');sp.textContent=msg;el.append(sp);
@@ -2587,28 +2633,187 @@ async function payFor(kind){
   if(!billingOn()||ACC.admin)return true;
   if(!ACC.user){toast(t('needSignIn',{n:BILL().signup}),[[t('signIn'),()=>openDlg('up')]]);return false}
   if(!ACC.cred)await loadCredits(false);
-  const need=costOf(kind),have=ACC.cred?ACC.cred.credits||0:0;
+  const need=unitPrice(kind),have=ACC.cred?ACC.cred.credits||0:0;
   if(have<need){toast(t('noPoints',{n:need,b:have}),[[t('seePlans'),()=>showView('pricing')]]);return false}
   return true;
 }
 // spend points now (the server sets the price). Returns false when refused, else {id} of the ledger row (null = free)
 async function charge(kind,ref){
   if(!billingOn()||ACC.admin||!ACC.user)return {id:null};
-  const n=costOf(kind);
+  const n=unitPrice(kind);
   try{const r=await Backend.spendCredits(kind,String(ref||'').slice(0,200)),b=r&&r.balance;
-    if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();if(r&&r.id)toast(t('charged',{n,b}));return {id:(r&&r.id)||null}}
+    if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();if(r&&r.id)toast(t('charged',{n:r.charged!=null?r.charged:n,b}));return {id:(r&&r.id)||null}}
   catch(e){if(missingDb(e)&&ACC.credMissing)return {id:null}; /* points not installed at all → free; anything else → refuse */if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
 }
 async function refund(pay){
   if(!pay||!pay.id)return;
   try{const b=await Backend.refundCredits(pay.id);if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();toast(t('refunded'))}catch(e){console.warn(e)}
 }
+/* ---------- points v2: every paid action, batches, plan discounts (server: spend_credits_n / price_quote / spend_song /
+   refund_credits_n in schema.sql). The browser only estimates + asks; the server sets the price and keeps the ledger.
+   payForN(kind,qty) = ONE confirmation for a batch (price, plan discount, balance before → after, "only the first K" when
+   short, "don't ask again up to N points" per kind) → chargeN → refundN(pay,k) for the units that failed.
+   Songs: paySongs(items) asks once for the songs this account never paid for (charged_songs) and commit(item) charges
+   each one after its analysis succeeded (spend_song: once per song per account, in any module). Admins and billing off
+   are free and never asked. Points v2 SQL not installed yet → the new kinds are free, 'sep'/'stems' use the old RPC. */
+const PAYOK_K='chordroom.payok.v1';
+const fmtPts=n=>(+n||0).toLocaleString('en-US');
+function planDisc(){
+  const c=ACC.cred;if(!c||!c.plan||c.plan==='free'||!c.plan_until||!(Date.parse(c.plan_until)>Date.now()))return 0;
+  const p=BILL().plans.find(x=>x.id===c.plan);return Math.max(0,Math.min(90,parseInt(p&&p.discount,10)||0));
+}
+const priceTot=(unit,qty,d)=>Math.floor((unit*qty*(100-d)+99)/100);   // = ceil(unit × qty × (100 − d) / 100), integers only
+function priceOf(kind,qty){
+  qty=Math.max(0,Math.floor(+qty||0));const unit=costOf(kind),d=planDisc(),free=!billingOn()||ACC.admin;
+  return {unit,qty,discount:d,total:free?0:priceTot(unit,qty,d),free};
+}
+const priceChip=(kind,qty)=>{const p=priceOf(kind,qty);return p.free||!p.total?'':p.total===1?t('pvChip1'):t('pvChip',{t:fmtPts(p.total)})};
+let prT=0;function pricesChanged(){if(prT)return;prT=setTimeout(()=>{prT=0;document.dispatchEvent(new CustomEvent('cr-prices'))},0)}
+function payOkGet(kind){try{const o=JSON.parse(localStorage.getItem(PAYOK_K)||'{}');return +o[kind]||0}catch(e){return 0}}
+function payOkSet(kind,n){try{const o=JSON.parse(localStorage.getItem(PAYOK_K)||'{}');o[kind]=n;localStorage.setItem(PAYOK_K,JSON.stringify(o))}catch(e){}}
+// the confirmation (same look as the separation dialog) → 'go' | 'part' | 'buy' | null
+function ptsConfirm(o){
+  return new Promise(ok=>{
+    const {kind,qty,q,have,fit}=o,short=have<q.total,lab=I.en['lk_'+kind]?t('lk_'+kind):kind,un=I.en['un_'+kind]?t('un_'+kind):'×';
+    const w=document.createElement('div');w.className='dlgwrap sepc ptsc';w.id='ptsDlg';
+    w.innerHTML=`<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="ptsH" aria-describedby="ptsP"><h3 id="ptsH"></h3>
+      <div class="ptsp" id="ptsP"><p class="ptscalc"></p><p class="ptsdisc" hidden></p><p class="ptsbal"></p><p class="ptsshort" role="alert" hidden></p></div>
+      <label class="sepskip" hidden><input type="checkbox"><span></span></label>
+      <div class="row2"><button type="button" class="btn solid go"></button><button type="button" class="btn ghost part" hidden></button><button type="button" class="btn ghost no"></button></div></div>`;
+    w.querySelector('h3').textContent=o.title||lab;
+    const base=q.unit*qty;
+    w.querySelector('.ptscalc').textContent=qty>1?t('pvCalc',{n:fmtPts(qty),u:un,p:fmtPts(q.unit),t:fmtPts(base)}):base===1?t('pvOne1'):t('pvOne',{t:fmtPts(base)});
+    if(q.discount>0&&q.total!==base){const e=w.querySelector('.ptsdisc');e.hidden=false;e.textContent=t('pvDisc',{pl:planName(q.plan||(ACC.cred&&ACC.cred.plan)||''),d:q.discount,t:fmtPts(q.total)})}
+    w.querySelector('.ptsbal').textContent=t('pvBal',{b:fmtPts(have),a:fmtPts(Math.max(0,have-q.total))});
+    const go=w.querySelector('.go'),part=w.querySelector('.part'),sk=w.querySelector('.sepskip');
+    if(short){
+      w.querySelector('.ptsbal').hidden=true;const sh=w.querySelector('.ptsshort');sh.hidden=false;
+      sh.textContent=fit>0&&o.partial?t('pvShort',{b:fmtPts(have),k:fit}):t('pvNone',{t:fmtPts(q.total),b:fmtPts(have)});
+      go.textContent=t('pvBuy');go.dataset.v='buy';
+      if(fit>0&&o.partial){part.hidden=false;part.textContent=t('pvFirst',{k:fit})}
+    }else{go.textContent=q.total===1?t('pvGo1'):t('pvGo',{t:fmtPts(q.total)});go.dataset.v='go';sk.hidden=false;sk.querySelector('span').textContent=t('pvSkip',{x:lab,t:fmtPts(q.total)})}
+    w.querySelector('.no').textContent=t('cancel');
+    const ret=document.activeElement,done=v=>{if(v==='go'&&!sk.hidden&&sk.querySelector('input').checked)payOkSet(kind,Math.max(q.total,payOkGet(kind)));
+      w.remove();if(!document.querySelector('.dlgwrap.sepc'))document.documentElement.classList.remove('dlg-open');if(ret&&ret.isConnected)ret.focus({preventScroll:true});ok(v)};
+    go.onclick=()=>done(go.dataset.v);part.onclick=()=>done('part');w.querySelector('.no').onclick=()=>done(null);
+    w.addEventListener('click',e=>{if(e.target===w)done(null)});
+    w.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();done(null)}
+      else if(e.key==='Tab'){const f=[...w.querySelectorAll('input,button')].filter(x=>!x.closest('[hidden]')),i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}});
+    document.body.appendChild(w);document.documentElement.classList.add('dlg-open');setTimeout(()=>(part.hidden?go:part).focus(),30);
+  });
+}
+// may this user do qty units of `kind` now? → {qty (maybe fewer = "only the first K"), free} or null (declined / no points)
+async function payForN(kind,qty,o){
+  o=o||{};qty=Math.max(0,Math.floor(+qty||0));if(!qty)return {qty:0,free:true};
+  if(!billingOn()||ACC.admin)return {qty,free:true};
+  if(!ACC.user){toast(t('needSignIn',{n:BILL().signup}),[[t('signIn'),()=>openDlg('up')]]);return null}
+  if(!ACC.cred)await loadCredits(false);
+  let q=null;
+  if(Backend.quote){try{q=await Backend.quote(kind,Math.min(500,qty));if(q&&ACC.cred&&q.balance!=null&&q.balance!==ACC.cred.credits){ACC.cred.credits=q.balance;renderCredits()}}catch(e){if(!missingDb(e))console.warn(e);q=null}}
+  if(!q||typeof q.total!=='number'){const p=priceOf(kind,qty);q={...p,balance:ACC.cred?ACC.cred.credits||0:0}}
+  if(q.free||!(q.total>0))return {qty,free:true};
+  const have=+q.balance||0;let fit=0;for(let k=qty;k>0;k--)if(priceTot(q.unit,k,q.discount)<=have){fit=k;break}
+  if(have>=q.total&&q.total<=payOkGet(kind))return {qty};
+  const v=await ptsConfirm({kind,qty,q,have,fit,title:o.title,partial:o.partial!==false&&qty>1});
+  if(v==='go')return {qty};if(v==='part')return {qty:fit};if(v==='buy')showView('pricing');
+  return null;
+}
+// spend now → {id (null = free), charged, qty} or false (refused). The server sets the price.
+async function chargeN(kind,qty,ref,o){
+  o=o||{};qty=Math.max(0,Math.floor(+qty||0));if(!qty)return {id:null,charged:0,qty:0};
+  if(!billingOn()||ACC.admin||!ACC.user)return {id:null,charged:0,qty};
+  const r0=String(ref||'').slice(0,200);
+  try{
+    let r;
+    if(Backend.spendN){try{r=await Backend.spendN(kind,qty,r0)}catch(e){if(!missingDb(e))throw e;r=null}}
+    if(!r){if(qty===1&&(kind==='sep'||kind==='stems')){const x=await charge(kind,r0);return x?{id:x.id,charged:x.id?unitPrice(kind):0,qty,v1:true}:false}
+      return {id:null,charged:0,qty}}                                  // points v2 SQL not installed yet → free
+    if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance;renderCredits();
+    if(r.id&&!o.quiet)toast(t('charged',{n:fmtPts(r.charged),b:fmtPts(r.balance)}));
+    return {id:r.id||null,charged:+r.charged||0,qty};
+  }catch(e){
+    if(missingDb(e)&&ACC.credMissing)return {id:null,charged:0,qty};
+    if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(priceOf(kind,qty).total),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]])}else toast(t('chargeFail'));
+    return false;
+  }
+}
+// give back k units of a batch charge (failed / cancelled items)
+async function refundN(pay,k){
+  k=Math.floor(+k||0);if(!pay||!pay.id||k<1||pay.v1)return 0;
+  try{const r=await Backend.refundN(pay.id,Math.min(k,pay.qty||k));if(ACC.cred&&r&&r.balance!=null)ACC.cred.credits=r.balance;renderCredits();
+    if(r&&r.refunded>0)toast(t('pvRefunded',{n:fmtPts(r.refunded),k}));return r&&r.refunded||0}
+  catch(e){console.warn(e);return 0}
+}
+// ask + spend in one go (modules): → {qty, id, charged} or null
+async function payN(kind,qty,o){
+  o=o||{};const p=await payForN(kind,qty,o);if(!p||!p.qty)return p&&!p.qty?{qty:0,id:null,charged:0}:null;
+  if(p.free)return {qty:p.qty,id:null,charged:0};
+  const c=await chargeN(kind,p.qty,o.ref,o);if(!c)return null;
+  const r={...c,qty:p.qty};jobStart(r,kind);return r;
+}
+/* a batch charge whose page dies before the module settles it (out of memory while zipping / rendering / converting, a
+   reload, a closed tab) is refunded on the next visit: payN journals {id,uid,kind,qty,done,t} in localStorage
+   (chordroom.payjobs.v1) and holds a Web Lock named after the ledger row while the job runs, so another open tab never
+   refunds a job that is still running. Every payN caller ends with CR.settleN(pay, failedUnits) (refund those + forget
+   the job); CR.progressN(pay, done) records units already delivered (Converter files). The server allows ≤ 3 h and never
+   more units than were charged, so a second tab doing the same check can't refund twice. */
+const JOB_K='chordroom.payjobs.v1',JOB_TTL=170*60000,JOBLIVE={};   // JOBLIVE: jobs of THIS tab → {rel (frees the lock), end}
+function jobsGet(){try{const a=JSON.parse(localStorage.getItem(JOB_K)||'[]');return Array.isArray(a)?a.filter(j=>j&&j.id&&Date.now()-(+j.t||0)<JOB_TTL):[]}catch(e){return []}}
+function jobsPut(a){try{a.length?localStorage.setItem(JOB_K,JSON.stringify(a.slice(-30))):localStorage.removeItem(JOB_K)}catch(e){}}
+function jobStart(pay,kind){
+  if(!pay||!pay.id||pay.v1||!AUTH.uid)return;
+  jobsPut([...jobsGet().filter(j=>j.id!==pay.id),{id:pay.id,uid:AUTH.uid,kind,qty:pay.qty,done:0,t:Date.now()}]);
+  const L=JOBLIVE[pay.id]={rel:null,end:false};
+  try{if(navigator.locks)navigator.locks.request('crpay:'+pay.id,()=>L.end?null:new Promise(ok=>{L.rel=ok})).catch(()=>{})}catch(e){}
+}
+function jobEnd(pay){if(!pay||!pay.id)return;jobsPut(jobsGet().filter(j=>j.id!==pay.id));const L=JOBLIVE[pay.id];if(L){L.end=true;if(L.rel)L.rel();delete JOBLIVE[pay.id]}}
+function progressN(pay,done){if(!pay||!pay.id)return;const a=jobsGet(),j=a.find(x=>x.id===pay.id);if(j){j.done=Math.max(0,Math.min(j.qty,Math.floor(+done||0)));jobsPut(a)}}
+// the job is over: give back `back` units (failed / cancelled / not delivered) and forget it
+async function settleN(pay,back){if(!pay)return 0;jobEnd(pay);back=Math.floor(+back||0);return back>0?refundN(pay,back):0}
+async function payJobsCheck(){
+  const uid=AUTH.uid;if(!uid||!ACC.on||!Backend.refundN)return;
+  const mine=jobsGet().filter(j=>j.uid===uid);if(!mine.length){jobsPut(jobsGet());return}
+  let held;try{if(!navigator.locks||!navigator.locks.query)return;const q=await navigator.locks.query();held=new Set([...(q.held||[]),...(q.pending||[])].map(l=>l.name))}catch(e){return}
+  const dead=mine.filter(j=>!held.has('crpay:'+j.id)&&!JOBLIVE[j.id]);if(!dead.length)return;
+  jobsPut(jobsGet().filter(j=>!dead.some(d=>d.id===j.id)));
+  let n=0;
+  for(const j of dead){const k=Math.floor(j.qty-(j.done||0));if(k<1)continue;
+    try{const r=await Backend.refundN(j.id,k);if(r){n+=+r.refunded||0;if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance}}catch(e){console.warn('pay job',j.id,e)}}
+  if(n>0){renderCredits();toast(t('pvCrash',{n:fmtPts(n)}))}
+}
+document.addEventListener('cr-user',e=>{if(e.detail&&e.detail.uid)setTimeout(payJobsCheck,1500)});
+// a stable key per uploaded file (name without extension + size); the same file is the same song in every module
+const songKey=(name,size)=>songKeyOf(String(name||'').replace(/\.[^./\\]{1,6}$/,'').normalize('NFC'))+'.'+Math.max(0,Math.floor(+size||0)).toString(36);
+async function commitSong(key,name){
+  if(!billingOn()||ACC.admin||!ACC.user||!Backend.spendSong)return true;
+  try{const r=await Backend.spendSong(key,String(name||'').slice(0,200));if(r&&ACC.cred&&r.balance!=null){ACC.cred.credits=r.balance;renderCredits()}return true}
+  catch(e){if(missingDb(e))return true;if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(costOf('song')),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]]);return false}
+    console.warn(e);return true}   // a network hiccup never throws away the user's analysis (the gate is honest-user level)
+}
+// items [{name,size}] → {ok: the items allowed (paid before + the new ones the user confirmed), commit(item) → bool}
+async function paySongs(items,o){
+  items=(items||[]).filter(Boolean);const keyOf=it=>songKey(it.name,it.size);
+  const res=ok=>({ok,commit:it=>commitSong(keyOf(it),it.name)});
+  if(!items.length)return res([]);
+  if(!billingOn()||ACC.admin)return res(items);
+  if(!ACC.user){toast(t('needSignIn',{n:BILL().signup}),[[t('signIn'),()=>openDlg('up')]]);return res([])}
+  let paid=[];if(Backend.chargedSongs){try{paid=await Backend.chargedSongs(items.map(keyOf))}catch(e){if(!missingDb(e))console.warn(e)}}
+  const was=new Set(paid),fresh=items.filter(it=>!was.has(keyOf(it)));
+  if(!fresh.length)return res(items);
+  const p=await payForN('song',fresh.length,{title:o&&o.title,partial:true});
+  const okNew=new Set(p?fresh.slice(0,p.qty):[]);
+  return res(items.filter(it=>was.has(keyOf(it))||okNew.has(it)));
+}
 function ledgerRef(r){
-  if(!r.ref||r.reason==='refund')return '';
+  if(r.reason==='refund'){const k=r.kind||(/^refund:/.test(r.ref||'')?'sep':'');return k&&I.en['lk_'+k]?t('lk_'+k)+(+r.qty>1?` ×${r.qty}`:''):''}
+  if(!r.ref)return '';
   if(r.reason==='payment'){const m=/^ls:(rf:)?(sub|inv|up):\S*\s*(\S*)\s*(upgrade)?/.exec(r.ref),test=/\(test\)\s*$/.test(r.ref)?' (test)':'';
     return m?(m[1]?t('payRefundL'):planName(m[3])+(m[4]?` · ${t('payUpgradeL')}`:''))+test:r.ref}
   if(r.reason==='referral')return /^ref:inviter:/.test(r.ref)?t('refInviterL'):t('refJoinedL');
-  const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);return m?t('lk_'+m[1])+(m[2]?` · ${m[2]}`:''):r.ref;
+  const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);if(m)return t('lk_'+m[1])+(m[2]?` · ${m[2]}`:'');
+  const v=/^([a-z][a-z_]{1,23}) ×(\d+)(?: (.*))?$/.exec(r.ref);   // points v2: "<kind> ×<qty> <ref>"
+  if(v){const lb=I.en['lk_'+v[1]]?t('lk_'+v[1]):v[1];return lb+(+v[2]>1?` ×${v[2]}`:'')+(v[3]?` · ${v[3]}`:'')}
+  return r.ref;
 }
 async function renderLedger(ul,rows){
   ul.innerHTML='';if(!rows||!rows.length){ul.innerHTML=`<li class="snote">${esc(t('noLedger'))}</li>`;return}
@@ -2694,12 +2899,16 @@ $('#udPlanBtn').onclick=()=>busyBtn($('#udPlanBtn'),async()=>{const m=ACC.admUse
   try{await Backend.adminSetPlan(m.id,$('#udPlan').value,+$('#udMonths').value);setMsg($('#udCredMsg'),t('planDone'));if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
 $('#udCred details').addEventListener('toggle',async e=>{if(e.target.open&&ACC.admUser){try{renderLedger($('#udLog'),await Backend.adminLedger(ACC.admUser.id,50))}catch(x){}}});
 function fillBilling(){
-  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bUsd').value=(+b.usd_rate>0?+b.usd_rate:3.7); /* qw */$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;$('#bRef').value=refPts();$('#bRefMax').value=(()=>{const n=parseInt(b.referral_max,10);return isFinite(n)&&n>=0?n:20})();
+  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bUsd').value=(+b.usd_rate>0?+b.usd_rate:3.7); /* qw */$('#bRef').value=refPts();
+  // points v2: one field per kind (the built-in ones first, then any other key the settings hold)
+  const kinds=[...KINDS,...Object.keys(b.costs).filter(k=>!KINDS.includes(k)&&/^[a-z][a-z_]{1,23}$/.test(k))];
+  $('#bCosts .bcgrid').innerHTML=kinds.map(k=>`<div class="fld"><label for="bCost_${k}">${esc(I.en['ck_'+k]?t('ck_'+k):k)}</label><input type="number" id="bCost_${k}" data-kind="${k}" min="0" max="100" step="1" dir="ltr" value="${costOf(k)}"></div>`).join('');$('#bRefMax').value=(()=>{const n=parseInt(b.referral_max,10);return isFinite(n)&&n>=0?n:20})();
   $('#bPlans').innerHTML=b.plans.map((p,i)=>`<div class="bplan" data-i="${i}"><b>${esc(planName(p.id))}</b>
     <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
     <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
     <label class="wide"><span>${esc(t('planLink'))}</span><input type="url" dir="ltr" data-f="link" placeholder="https://" value="${esc(p.link||'')}"></label>
     <label><span>${esc(t('planVariant'))}</span><input type="text" inputmode="numeric" dir="ltr" data-f="variant" placeholder="123456" value="${esc(p.variant==null?'':p.variant)}"></label>
+    <label><span>${esc(t('planDisc'))}</span><input type="number" min="0" max="90" step="1" dir="ltr" data-f="discount" value="${Math.max(0,Math.min(90,parseInt(p.discount,10)||0))}"></label>
     <label class="best"><input type="radio" name="bBest" ${p.best?'checked':''}><span>${esc(t('planBest'))}</span></label></div>`).join('');
   setMsg($('#bMsg'),'');loadPayEvents();
 }
@@ -2724,9 +2933,11 @@ function renderPayEvents(){
 $('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
   const b=BILL(),plans=[...document.querySelectorAll('#bPlans .bplan')].map((el,i)=>{const p=b.plans[i],f=k=>el.querySelector(`[data-f="${k}"]`).value;
     const v=f('variant').trim();
-    return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(v?{variant:v}:{}),...(el.querySelector('.best input').checked?{best:true}:{})}});
+    return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(v?{variant:v}:{}),...(el.querySelector('.best input').checked?{best:true}:{}),
+      discount:Math.max(0,Math.min(90,parseInt(f('discount'),10)||0))}});
+  const costs={...b.costs};document.querySelectorAll('#bCosts input[data-kind]').forEach(i=>{costs[i.dataset.kind]=Math.max(0,Math.min(100,parseInt(i.value,10)||0))});
   const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),usd_rate:Math.min(100,Math.max(0.1,parseFloat($('#bUsd').value)||3.7)), /* qw */
-    costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans,
+    costs,plans,
     referral:Math.min(1000,Math.max(0,parseInt($('#bRef').value,10)||0)),referral_max:Math.max(0,parseInt($('#bRefMax').value,10)||0)};
   const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
   const badV=plans.find(p=>p.variant&&!/^\d{1,12}$/.test(p.variant));if(badV){setMsg($('#bMsg'),t('planVariant')+': 0-9',true);return}
@@ -3249,10 +3460,13 @@ async function loadFile(file){
   if(!file)return;
   if($('#toolView').hidden)showView('tool');
   const name=file.name.replace(/\.[^.]+$/,'');
+  // points v2: a new song costs the 'song' price once per account (asked before the analysis, charged after it worked)
+  const gate=await paySongs([{name:file.name,size:file.size}]);if(!gate.ok.length)return;
   try{busy(t('bReading'),0.01);const ab=await file.arrayBuffer();const buf=await ac().decodeAudioData(ab);
     const saved=readLib().find(x=>x.name===name);
     setSaveState('');
     await analyze(buf,name,false);if(S.buffer!==buf)return; /* qw: superseded by a newer load */S.genre=(saved&&saved.genre)||'';
+    gate.commit(gate.ok[0]);
     if(saved&&Math.abs(saved.dur-buf.duration)<0.5)restoreSaved(saved);
     rememberSong(file,{name});
     logAct('song_upload',`${name} · ${fmtS(buf.duration)}`);
@@ -3380,11 +3594,17 @@ window.CR={
   log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid}),
   /* Mashup Studio (assets/mashup.js) */
   separateBuffer,stereo44,STEMS,STEM_IC,toast:(m,a)=>toast(m,a),
-  sepInfo:()=>({cost:billingOn()&&!ACC.admin?costOf('sep'):0,on:typeof cfgOn!=='function'||cfgOn('ai'),busy:!!(AI.busy||AI.ext)}),
+  sepInfo:()=>({cost:billingOn()&&!ACC.admin?unitPrice('sep'):0,on:typeof cfgOn!=='function'||cfgOn('ai'),busy:!!(AI.busy||AI.ext)}),
   waveOf:async b=>computeWave(await toMono(b)),
   loudness:measureLoudness, /* converter: −14 LUFS normalise (assets/convert.js) */
   /* Extended generator (assets/extended.js): chroma frames of any buffer (12 treble + 12 bass bins per frame, `rate` frames/s, frame i centred at t0 + i/rate) */
-  chromaOf:async b=>{const c=await computeChroma(await toMono(b),()=>{});return {...c,rate:SR/CH,t0:CN/2/SR}}
+  chromaOf:async b=>{const c=await computeChroma(await toMono(b),()=>{});return {...c,rate:SR/CH,t0:CN/2/SR}},
+  /* points v2 (modules): CR.price(kind,qty) → {unit,qty,discount,total,free} for button chips (event 'cr-prices' when it may
+     have changed), CR.priceChip → "12 pts" or '' when free; CR.payN(kind,qty,{title,ref,partial}) asks once + charges →
+     {qty,id,charged} | null — every caller ends with CR.settleN(pay,failedUnits) (refund + forget the crash journal),
+     CR.progressN(pay,done) records delivered units; CR.refundN(pay,k) gives back k units; CR.paySongs([{name,size}]) → {ok,commit(item)} */
+  price:priceOf,priceChip,payN,refundN,settleN,progressN,paySongs,songKey,refreshPoints:()=>loadCredits(false),
+  _payJobsCheck:payJobsCheck   /* tests: the boot-time refund of batch charges whose page died (normally on 'cr-user') */
 };
 /* ---------- bridge for "My key" (assets/voice.js): the tool song for the melody-range estimate + its transpose ---------- */
 Object.assign(window.CR,{

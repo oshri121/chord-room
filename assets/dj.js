@@ -414,12 +414,17 @@ async function loadInto(d,getBuf,name,hint,meta){
     d.autoGain=a.lufs!=null?clamp(-9-a.lufs,-12,6):0;applyEq(d);
     d.tiles=null;d.ovc=null;
     if(!D.decks[D.masterI].track)D.masterI=d.i;
+    if(meta&&meta.onLoaded)meta.onLoaded();
   }catch(e){console.warn(e);note(t('djLoadFail'))}
   finally{d.loading=false;busyDeck(d,null);renderDeck(d);renderMatch();renderRecsSoon()}
 }
-function loadFile(d,file){
-  if(!file)return;const nm=file.name.replace(/\.[a-z0-9]{2,5}$/i,'');
-  loadInto(d,async()=>c.decodeAudioData(await file.arrayBuffer()),nm,CR.libItem(nm));
+// points v2: a NEW uploaded file costs the 'song' price once per account (asked first, spent after the analysis worked);
+// My Songs, the tool's song, the demos and Discover previews are free
+async function loadFile(d,file){
+  if(!file||d.loading)return;const nm=file.name.replace(/\.[a-z0-9]{2,5}$/i,'');
+  const g=CR.paySongs?await CR.paySongs([{name:file.name,size:file.size}]):null;
+  if(g&&!g.ok.length)return;
+  loadInto(d,async()=>c.decodeAudioData(await file.arrayBuffer()),nm,CR.libItem(nm),g?{onLoaded:()=>g.commit(g.ok[0])}:null);
 }
 function loadTool(d){const s=CR.toolSong();if(!s){note(t('djNoTool'));return}loadInto(d,null,s.name,null,{analysis:s})}
 function loadDemo(d,n){

@@ -46,6 +46,28 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (`/* ---------- points & plans ---------- */`): `payFor(kind)` checks before, `charge(kind,ref)` spends — separation is
   charged BEFORE it runs and refunded if it fails or is cancelled, stems once per song on download (`S.stemsPaid`). Admins and `billing.on=false` are free.
   Separation runs in the browser, so the gate is honest-user level; the ledger is authoritative.
+  **Points v2** (schema.sql block "Points v2" `[points-v2:begin…end]`, before the hardening blocks; the same block + the updated [S-9]
+  guard + Roomy's price list = `supabase/points_v2.sql`, run once by the owner): kinds = keys of `billing.costs` (0…100 points/unit,
+  0 = free): `song` 1 (analysing an UPLOADED song in Tool/DJ/Crate, once per song per account), `sep` 5, `stems` 2, `usb` 1/song (Crate
+  folder exports: "USB for Pioneer" AND the renamed-copies ZIP — both carry cues + tags), `mashup` 3 / `extended` 3 (export), `convert` 1/file. `billing.plans[].discount` 0…90 % (pro 10, studio 25) while
+  `plan_until > now()`; price = ceil(unit·qty·(100−d)/100). RPCs: `spend_credits_n(kind,qty 1…500,ref)` → {balance,id,charged,unit,qty,
+  discount,free} (ledger row reason 'spend', `kind/qty` columns, ref "kind ×qty ref"; admins/owner/billing off/0 price → no row),
+  `spend_credits(kind,ref)` = qty 1 wrapper, `price_quote(kind,qty)`, `spend_song(key)` (table `charged_songs`, read-only own rows;
+  already paid → charged 0), `refund_credits_n(id,qty)` (own v2 row ≤3 h — long Converter batches, not sep/song/stems, `refunded` tracked on the row, sum of
+  partial refunds = what was paid, caps 20 refunds + 1000 units a day so a failed 300-song folder fits). The guard clamps costs 0…100 / discount 0…90 and accepts any
+  `^[a-z][a-z_]{1,23}$` kind. App (`/* ---------- points v2 */` after `refund()`): `priceOf/unitPrice/priceChip` (client estimate, same
+  formula), `payForN(kind,qty)` → ONE dialog `#ptsDlg` (calc, plan line, balance before→after, short → "Only the first K" / "Buy points",
+  "don't ask again up to N points" per kind in `chordroom.payok.v1`), `chargeN`, `refundN(pay,k)`, `payN` (ask+charge; journals the charge in localStorage `chordroom.payjobs.v1` + holds a Web Lock
+  `crpay:<id>` while it runs → every caller ends with `settleN(pay,failed)`; `progressN(pay,done)` = delivered units; `payJobsCheck` on
+  `cr-user` refunds jobs whose page died — lock not held anywhere — minus delivered units),
+  `paySongs([{name,size}])` → {ok, commit(item)} (asks once for the songs not in charged_songs, `commit` = spend_song AFTER the
+  analysis worked), `songKey(name,size)`. Bridge: `CR.price/priceChip/payN/refundN/settleN/progressN/paySongs/songKey/refreshPoints`, event `cr-prices`
+  (chips re-render). Wiring: Tool `loadFile` + DJ `loadFile` (new files only; My Songs/demo/previews free), Crate `approve()` before the
+  queue (rows not approved → 'pause') + commit per row, Crate USB + renamed ZIP = `payN('usb',rows)` (busy before asking: no double charge) + refund unreadable rows / failed ZIP (CSV/XML/
+  NML/M3U8 free), Mashup/Extended export = `payN(kind,1)` before rendering, refund on failure, the same mix/render again in the
+  session is free (`PAID`), Converter batch = `payN('convert',n)` + refund failed/cancelled files (Images free). Pricing table, plan
+  card discounts, About tiles/FAQ: `assets/pages.js` (SV strings) from `billing`; admin settings: `#bCosts` (one field per kind) +
+  plan `discount`. Points v2 SQL missing → new kinds free, sep/stems via the old RPC. Tests: `sql/test_points_v2.py`, `ui/test_points.py`.
 - Payments (Lemon Squeezy subscriptions; owner setup in `PAYMENTS.md`): each plan has `link` (checkout URL) + `variant` (id).
   "Subscribe" (signed-in only) opens `link` + `checkout[custom][user_id|plan]` + `checkout[email]`; an active subscriber goes to
   the portal instead. Webhooks → `functions/api/pay/webhook.js` (no secrets; forwards raw body + X-Signature) → SQL

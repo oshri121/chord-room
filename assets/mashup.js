@@ -627,7 +627,7 @@ function build(){
     <div class="mxexpr">
       <div class="mxseg" role="radiogroup" id="mxFmt" aria-labelledby="mxExpH"><button type="button" role="radio" data-fm="wav">WAV</button><button type="button" role="radio" data-fm="mp3">MP3 320</button></div>
       <label class="mxchk"><input type="checkbox" id="mxOnlyLoop"><span data-i="mxOnlyLoop"></span></label>
-      <button type="button" class="btn solid" id="mxExp">${IC.dl}<span data-i="mxExportBtn"></span></button>
+      <button type="button" class="btn solid" id="mxExp">${IC.dl}<span data-i="mxExportBtn"></span><i class="ptchip" id="mxExpPts" hidden></i></button>
     </div>
     <div class="mxprog" id="mxExpProg" hidden><div class="bar"><i></i></div></div>
     <p class="snote mxexpmsg" id="mxExpMsg" role="status" aria-live="polite"></p>
@@ -880,11 +880,21 @@ function timeText(){
   $('#mxTime').textContent=`${fmtT(h)} / ${fmtT(o.t1)}`;
   const q=(h-o.bar0)/o.beat,bar=Math.floor(q/4),beat=Math.floor(mod(q,4));$('#mxBB').textContent=`${bar+1}.${beat+1}`;
 }
+/* points v2: an export costs the 'mashup' price; exporting the SAME mix again in this session (another format) is free.
+   The mix = everything that changes the audio (songs, tempo, key shift, alignment, parts, levels, fades, range). */
+const PAID=new Set();
+const settleP=(p,n)=>{if(!p)return;if(CR.settleN)CR.settleN(p,n);else if(n>0&&p.id&&CR.refundN)CR.refundN(p,n)};   // points v2: refund n units + close the crash journal
+function mixSig(o,a,b,r0,r1){return JSON.stringify([a.name,b.name,Math.round(a.buffer.duration*1000),Math.round(b.buffer.duration*1000),+o.T.toFixed(3),o.semis,o.rA&&+o.rA.toFixed(5),o.rB&&+o.rB.toFixed(5),
+  o.vA,M.align,M.nudge,M.startA,M.fadeIn,M.fadeOut,M.vol,M.slots.map(s=>[s.use,s.gain]),+r0.toFixed(3),+r1.toFixed(3)])}
+function curSig(){const o=model(),a=song(0),b=song(1);if(!o||!a||!b||!o.hasA||!o.hasB)return null;let r0=o.t0,r1=o.t1;const lt=loopT(o);if(M.onlyLoop&&lt){r0=Math.max(o.t0,lt.a);r1=Math.min(o.t1,lt.b)}return mixSig(o,a,b,r0,r1)}
+function renderExpPts(){const el=$('#mxExpPts');if(!el)return;let paid=false;try{const g=curSig();paid=!!(g&&PAID.has(g))}catch(e){}
+  const c=CR.priceChip&&!paid?CR.priceChip('mashup',1):'';el.hidden=!c;el.textContent=c}
+document.addEventListener('cr-prices',()=>{if(M.built)renderExpPts()});
 function renderExport(){
   if(!M.built)return;const o=model(),A=an(0),B=an(1),both=!!(A&&B);
   $('#mxFmt').querySelectorAll('[data-fm]').forEach(b=>{const on=b.dataset.fm===M.fmt;b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));b.disabled=M.exporting||(b.dataset.fm==='mp3'&&!(window.MP3&&MP3.supported))});
   $('#mxOnlyLoop').checked=M.onlyLoop;$('#mxOnlyLoop').disabled=!M.loop||M.exporting;
-  $('#mxExp').disabled=!both||M.exporting;
+  $('#mxExp').disabled=!both||M.exporting;renderExpPts();
   $('#mxExpP').textContent=both&&o?t('mxExportP',{bpm:CR.fmtBpm(Math.round(o.T*10)/10),k:keyTxt(B.key)}):t('mxNeedBoth');
   $('#mxExpProg').hidden=!M.exporting;
 }
@@ -1007,8 +1017,11 @@ async function exportMix(){
   if(!o||!a||!b){setExp(t('mxNeedBoth'),true);return}
   M.exporting=true;renderExport();stop(true);setExp(t('mxRendering',{p:0}));
   const prog=p=>{$('#mxExpProg .bar i').style.width=Math.round(clamp(p,0,1)*100)+'%'};prog(0);
+  let pay=null,okSig=null;
   try{
     let r0=o.t0,r1=o.t1;const lt=loopT(o);if(M.onlyLoop&&lt){r0=Math.max(o.t0,lt.a);r1=Math.min(o.t1,lt.b)}
+    const sig=mixSig(o,a,b,r0,r1);
+    if(!PAID.has(sig)&&CR.payN){pay=await CR.payN('mashup',1,{ref:`${a.name} × ${b.name}`.slice(0,150)});if(!pay){setExp('');return}}
     const sr=44100,n=Math.max(1,Math.ceil((r1-r0)*sr));
     const need=[0,1].map(i=>!E.noStretch&&(i?Math.abs(o.rB-1)>1e-4:Math.abs(o.rA-1)>1e-4||o.semis!==0));
     let nodes=[null,null],lat=0;
@@ -1030,12 +1043,12 @@ async function exportMix(){
     const data=mp3?await MP3.encode(L,R,sr,{kbps:320,tags:{title,artist:'Chord Room',bpm:o.T,key:kn},onProgress:p=>{prog(0.92+p*0.08);setExp(t('encoding',{p:Math.round(p*100)}))}}):CR.wav(L,R,sr);
     const fname=`${title} ${bpm} BPM ${kn}`.replace(/[\\/:*?"<>|\u0000-\u001f]/g,'_').replace(/\s+/g,' ').slice(0,180)+'.'+ext;
     const blob=new Blob([data],{type:mp3?'audio/mpeg':'audio/wav'});
-    CR.saveBlob(blob,fname);prog(1);
+    CR.saveBlob(blob,fname);prog(1);okSig=sig;PAID.add(sig);
     CR.log('mashup_export',`${a.name} × ${b.name} · ${bpm} BPM · ${kn} · ${ext}${M.onlyLoop&&lt?' · loop':''}`);
     setExp(t('mxDone',{f:fname,s:(blob.size/1048576).toFixed(1)}));
     M.lastExport={name:fname,size:blob.size,sr,n,lat,r0,r1};
   }catch(e){console.error(e);setExp(e&&/MP3/.test(String(e.message))?t('mp3Fail'):t('mxExpFail'),true)}
-  finally{M.exporting=false;renderExport()}
+  finally{M.exporting=false;renderExport();settleP(pay,okSig?0:1)}   // failed export → points back
 }
 function setExp(m,err){const el=$('#mxExpMsg');if(!el)return;el.textContent=m||'';el.classList.toggle('err',!!err)}
 

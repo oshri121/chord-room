@@ -220,7 +220,11 @@ def test(t, srv, b):
         lib.poll(pg, "!document.querySelector('#convertView').hidden&&document.querySelector('#cvDrop')", 15)
         pg.set_input_files('#cvFile', [FILES['t.wav'], FILES.get('t.mp3', FILES['t.wav'])])
         set_opts(pg, fmt='wav', q=16, sr=0, ch=0, norm=False, trim=False, fin=0, fout=0, tags=True, bk=False)
-        pg.click('#cvActs [data-a="go"]'); wait_done(pg)
+        t.check(f'{lang}: price chip on the convert button (points v2: 2 files = 2 points)', pg.evaluate("!!document.querySelector('#cvPts')&&/2/.test(document.querySelector('#cvPts').textContent)"))
+        pg.click('#cvActs [data-a="go"]')
+        lib.poll(pg, "!!document.querySelector('#ptsDlg')||CONVERT._C.running", 15)   # dana is a normal user: one points confirmation
+        if pg.evaluate("!!document.querySelector('#ptsDlg')"): pg.click('#ptsDlg .go')
+        wait_done(pg)
         dirv = pg.evaluate("document.documentElement.dir")
         t.eq(f'{lang}: document dir', dirv, 'rtl' if lang in ('he', 'ar') else 'ltr')
         t.check(f'{lang}: nav label translated', pg.evaluate("document.querySelector('#navConvert span').textContent") in ('המרה', 'تحويل', 'Конвертер', 'Convertir'), pg.evaluate("document.querySelector('#navConvert span').textContent"))

@@ -1041,11 +1041,12 @@ function renderExport(){
     ${seg('fm',[['mp3','MP3 320'],['wav16','WAV 16-bit'],['wav24','WAV 24-bit']].filter(x=>x[0]!=='mp3'||mp3),S.fmt==='mp3'&&!mp3?'wav16':S.fmt,'fm',t('exExpH'))}
     <div class="exsr"><span class="snote">${esc(t('exRate'))}</span>${seg('sr',[[44100,'<span dir="ltr">44.1 kHz</span>'],[48000,'<span dir="ltr">48 kHz</span>']],S.sr,'sr',t('exRate'))}</div>
     <label class="mxchk"${S.fmt!=='mp3'?' hidden':''}><input type="checkbox" id="exCuesC"${S.cues?' checked':''}${window.CRATE&&CRATE.tagMp3?'':' disabled'}><span>${esc(t('exCues'))}</span></label>
-    <button type="button" class="btn solid" data-a="exp"${ok&&!X.exporting?'':' disabled'}>${IC.dl}<span>${esc(t('exExpBtn'))}</span></button>
+    <button type="button" class="btn solid" data-a="exp"${ok&&!X.exporting?'':' disabled'}>${IC.dl}<span>${esc(t('exExpBtn'))}</span><i class="ptchip" id="exExpPts" hidden></i></button>
   </div>
   <div class="mxprog" id="exExpProg"${X.exporting?'':' hidden'}><div class="bar"><i></i></div></div>
   <p class="snote mxexpmsg" id="exExpMsg" role="status" aria-live="polite">${ok?'':esc(t('exNeedGen'))}</p>`;
   el.querySelectorAll('[data-fm],[data-sr],#exCuesC').forEach(x=>{if(X.exporting)x.disabled=true});
+  renderExpPts();
 }
 function renderAll(){
   if(!X.built)return;const s=X.song,an=X.stage==='analyzing';
@@ -1218,8 +1219,17 @@ function newCues(){
   const oz=p.blocks.find(b=>b.role==='outro')||p.blocks.find(b=>b.role==='orig'&&s.secs[b.sec].lab==='outro');if(oz)out.push({k:'outro',t:outT(p,oz.o0)});
   return out.map(c=>({k:c.k,t:Math.round(c.t*1000)/1000}));
 }
+const PAID=new WeakSet();           // renders already paid for (points v2)
+const settleP=(p,n)=>{if(!p)return;if(CR.settleN)CR.settleN(p,n);else if(n>0&&p.id&&CR.refundN)CR.refundN(p,n)};   // points v2: refund n units + close the crash journal
+function renderExpPts(){const el=$('#exExpPts');if(!el)return;const c=CR.priceChip&&!(X.render&&PAID.has(X.render))?CR.priceChip('extended',1):'';el.hidden=!c;el.textContent=c}
+document.addEventListener('cr-prices',()=>{if(X.built)renderExpPts()});
 async function exportExt(){
-  if(X.exporting)return;const s=X.song,p=X.plan;if(!s||!p||!fresh()){setExp(t('exNeedGen'),true);return}
+  if(X.exporting||X.paying)return;const s=X.song,p=X.plan;if(!s||!p||!fresh()){setExp(t('exNeedGen'),true);return}
+  /* points v2: the export costs the 'extended' price; generating and previewing are free, and exporting the SAME render
+     again in this session (another format / sample rate) is free too */
+  let pay=null,paidOk=false;
+  if(X.render&&!PAID.has(X.render)&&CR.payN){X.paying=true;try{pay=await CR.payN('extended',1,{ref:String(s.name).slice(0,150)})}finally{X.paying=false}   // no 2nd charge on a double click
+    if(!pay)return;if(X.exporting||!fresh()){settleP(pay,1);return}}
   X.exporting=true;stopPB(true);renderExport();const prog=q=>{const i=$('#exExpProg .bar i');if(i)i.style.width=Math.round(clamp(q,0,1)*100)+'%'};prog(0);setExp(t('exRendering',{p:0}));
   try{
     const S=X.set,mp3=S.fmt==='mp3'&&window.MP3&&MP3.supported;
@@ -1232,12 +1242,13 @@ async function exportExt(){
       if(S.cues&&window.CRATE&&CRATE.tagMp3){try{data=CRATE.tagMp3(data,{bpm:bpmS,key:kn,cam:'',cues:newCues()})}catch(e){console.warn(e)}}
     }else{data=wavBytes(L,R,sr,S.fmt==='wav24'?24:16);ext='wav'}
     const fname=base+'.'+ext,blob=new Blob([data],{type:mp3?'audio/mpeg':'audio/wav'});
-    CR.saveBlob(blob,fname);prog(1);
+    CR.saveBlob(blob,fname);prog(1);paidOk=true;if(X.render)PAID.add(X.render);
     CR.log('extended_export',`${s.name} · ${fmtD(p.len)} (+${Math.round(p.added)} s) · ${t('exP_'+S.preset)} · ${ext}${ext==='wav'?' '+(S.fmt==='wav24'?24:16):''} · ${sr}`);
     X.lastExport={name:fname,size:blob.size,sr,n:L.length,fmt:S.fmt};
     setExp(t('exDone',{f:fname,s:(blob.size/1048576).toFixed(1)}));
   }catch(e){console.error(e);setExp(e&&/MP3/.test(String(e.message))?t('mp3Fail'):t('exExpFail'),true)}
-  finally{X.exporting=false;if(!X.visible){freeMem();return}   // the view was left while exporting: free now (hide() skipped it)
+  finally{X.exporting=false;settleP(pay,paidOk?0:1);   // failed export → points back
+    if(!X.visible){freeMem();return}   // the view was left while exporting: free now (hide() skipped it)
     const m=$('#exExpMsg'),keep=m?[m.textContent,m.classList.contains('err')]:null;renderExport();if(keep)setExp(keep[0],keep[1])}
 }
 function setExp(m,err){const el=$('#exExpMsg');if(!el)return;el.textContent=m||'';el.classList.toggle('err',!!err)}

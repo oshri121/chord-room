@@ -853,5 +853,20 @@ body.hasdp{padding-bottom:84px}
 .sepc .sepskip{display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:13.5px;color:var(--muted);cursor:pointer}
 .sepc .sepskip input{accent-color:var(--ink);width:15px;height:15px;margin:0}
 .sepc .row2{display:flex;gap:10px;flex-wrap:wrap}
+/* points v2: batch confirmation + price chips on paid buttons (CR.priceChip) */
+.ptsc .ptsp{margin:0 0 16px;font-size:15px;line-height:1.5;color:var(--ink2)}
+.ptsc .ptsp p{margin:0 0 4px}
+.ptsc .ptscalc{font:600 16px var(--mono);color:var(--ink);unicode-bidi:plaintext}
+.ptsc .ptsdisc{color:var(--ok);font-weight:600;unicode-bidi:plaintext}
+.ptsc .ptsbal{color:var(--muted);font-size:14px;unicode-bidi:plaintext}
+.ptsc .ptsshort{margin-top:8px;padding:8px 10px;border-radius:var(--r-sm);border:1px solid color-mix(in srgb,var(--signal) 45%,var(--line2));background:color-mix(in srgb,var(--signal) 8%,transparent);color:var(--ink)}
+.ptsc .row2 .btn{min-height:40px}
+@media (max-width:520px){.ptsc .row2 .btn{flex:1 1 100%}}
+.ptchip{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--mono);font-style:normal;padding:2px 7px 2px 5px;border-radius:10px;background:color-mix(in srgb,currentColor 12%,transparent);white-space:nowrap;unicode-bidi:isolate;margin-inline-start:6px}
+.ptchip::before{content:"";width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE08A,#F5A623 60%,#C77A00);box-shadow:0 0 0 1px rgba(0,0,0,.15);flex:none}
+.ptchip[hidden]{display:none}
+.bcosts{border:1px solid var(--line2);border-radius:var(--r-md);padding:10px 12px 12px;margin:0;min-width:0}
+.bcosts legend{padding:0 6px;font-size:13px;font-weight:600;color:var(--ink2)}
+.bcosts .bcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 @media (max-width:640px){.gbar{padding:10px 12px}.gbar .gba{width:100%}.gbar .gba .btn{flex:1}}
 h1[tabindex="-1"]:focus,h1[tabindex="-1"]:focus-visible{outline:none} /* qw: focus moved to the view heading is announced, not drawn */

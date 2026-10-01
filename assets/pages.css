@@ -458,3 +458,24 @@ html[lang="he"] .page .lg-toc summary,html[lang="ar"] .page .lg-toc summary{lett
 .page .pg-usdnote{margin:14px 2px 0;font-size:13px;color:var(--muted)}
 .page a.pg-btn.pg-soon{text-decoration:none}
 .page .pg-btn.pg-soon[disabled]{opacity:.6;cursor:default}
+
+/* points v2: the generated price list (a column per plan with a discount) + discount line on plan cards */
+.page .pg-tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.page .pg-tlb{display:inline-flex;flex-direction:column;vertical-align:middle;gap:2px}
+.page .pg-per1{font-size:12.5px;font-weight:400;color:var(--muted)}
+.page .pg-tbl .pg-thd{text-align:end;white-space:nowrap}
+.page .pg-tbl td+td{padding-inline-start:8px}
+.page .pg-tblw:has(.pg-tbl-d){overflow-x:auto}
+.page .pg-cost.disc{background:color-mix(in srgb,var(--pg-green) 12%,transparent);color:color-mix(in srgb,var(--pg-green) 72%,var(--ink))}
+.page .pg-tnote{margin:12px 2px 0;font-size:13px;color:var(--muted);max-width:760px}
+.page .pg-list li.pg-disc{font-weight:600;color:var(--ink)}
+.page .pg-list li.pg-disc .pg-ic{color:var(--pg-green)}
+@media (max-width:640px){
+  .page .pg-tiles{grid-template-columns:1fr 1fr}
+  .page .pg-tbl-d thead th{letter-spacing:.04em;font-size:10.5px}
+  .page .pg-tbl-d thead th,.page .pg-tbl-d tbody th,.page .pg-tbl-d td{padding:11px 8px}
+  .page .pg-tbl-d .pg-thd{white-space:normal}
+  .page .pg-tbl-d .pg-cost{padding:0 7px;font-size:12px;line-height:24px}
+  .page .pg-tbl-d td{white-space:nowrap}
+  .page .pg-tbl-d tbody th{font-size:14px;min-width:96px}
+}

@@ -10,7 +10,20 @@
   let cb = null, cur = null;
   const fail = c => { const e = new Error(c); e.code = c; throw e; };
   const now = () => new Date().toISOString();
-  const me = () => profiles.find(p => p.id === cur.id);
+  const me = () => { const p = profiles.find(p => p.id === cur.id); if (p && p.credits == null) { p.credits = 50; p.plan = p.plan || 'free'; } return p; };
+  const ledger = [], charged = new Set();
+  const DEF_COSTS = { song: 1, sep: 5, stems: 2, usb: 1, mashup: 3, extended: 3, convert: 1 }, DEF_DISC = { basic: 0, pro: 10, studio: 25 };
+  function price(p, kind, qty) {
+    const b = cfg.billing || {}, costs = { ...DEF_COSTS, ...(b.costs || {}) };
+    if (!(kind in costs)) fail('bad kind'); if (!(qty >= 1 && qty <= 500)) fail('bad qty');
+    const unit = Math.max(0, Math.min(100, parseInt(costs[kind], 10) || 0));
+    const active = p.plan && p.plan !== 'free' && p.plan_until && Date.parse(p.plan_until) > Date.now();
+    const pl = (b.plans || []).find(x => x.id === p.plan), d = !active ? 0 : Math.max(0, Math.min(90, parseInt(pl ? pl.discount : DEF_DISC[p.plan], 10) || 0));
+    return { unit, qty, discount: d, total: Math.ceil(unit * qty * (100 - d) / 100), free: b.on === false || p.role === 'admin' || !!p.owner };
+  }
+  function row(p, delta, reason, ref, kind, qty) {
+    const r = { id: ledger.length + 1, user_id: p.id, delta, balance: p.credits, reason, ref, kind, qty, refunded: 0, created_at: now() }; ledger.push(r); return r;
+  }
   const B = {
     enabled: true, user: null, USERNAME_RE: /^[A-Za-z0-9_.-]{3,24}$/,
     async init(on) { cb = on; window.__cb = on; on('INITIAL', null); },
@@ -20,7 +33,7 @@
       if (profiles.some(p => p.username === username)) fail('taken'); if (users.some(u => u.email === email)) fail('exists');
       const u = { id: 'u' + (users.length + 1), email, password, created_at: now() }; users.push(u);
       profiles.push({ id: u.id, username, email, display_name: username, bio: '', avatar_url: '', lang: 'he', role: username === 'oshri' ? 'admin' : 'user',
-        blocked: false, songs: 0, seps: 0, created_at: now(), last_seen: now(), terms_version: terms && terms.version, terms_at: terms && terms.at });
+        blocked: false, songs: 0, seps: 0, credits: 50, plan: 'free', plan_until: null, created_at: now(), last_seen: now(), terms_version: terms && terms.version, terms_at: terms && terms.at });
       cur = u; B.user = u; cb('SIGNED_IN', u); return { needsConfirm: false };
     },
     async signIn({ email, password }) { const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); },
@@ -50,10 +63,34 @@
     async adminUsers() { return profiles.map(p => ({ ...p })); },
     async adminSetRole(id, r) { profiles.find(p => p.id === id).role = r; return 'ok'; },
     async adminSetBlocked(id, b) { profiles.find(p => p.id === id).blocked = b; },
-    // points & plans, referrals, activity, access — neutral defaults (tests override what they exercise)
-    async credits() { return { credits: 50, plan: 'free', plan_until: null, last_refill: null }; },
-    async refillCredits() { return 0; }, async ledger() { return []; },
-    async spendCredits() { return { balance: 45, id: 1 }; }, async refundCredits() { return 50; },   // refund_credits(id) → new balance
+    // points & plans (same rules as schema.sql "Points v2"): every account starts with 50 points (window.__mock.setCredits),
+    // prices from cfg.billing (or the defaults), plan discount while plan_until is in the future, admins free.
+    async credits() { const p = me(); return { credits: p.credits, plan: p.plan || 'free', plan_until: p.plan_until || null, last_refill: null }; },
+    async refillCredits() { return me().credits; },
+    async ledger(n) { return ledger.filter(r => r.user_id === cur.id).slice().reverse().slice(0, n || 30); },
+    async spendCredits(kind, ref) { return B.spendN(kind, 1, ref); },
+    async refundCredits(id) {   // refund_credits(id): own 'sep' row, once → new balance
+      const p = me(), r = ledger.find(x => x.id === id && x.user_id === cur.id && x.reason === 'spend' && x.kind === 'sep');
+      if (!r) fail('not refundable'); if (ledger.some(x => x.ref === 'refund:' + id)) return p.credits;
+      p.credits -= r.delta; row(p, -r.delta, 'refund', 'refund:' + id, 'sep', 1); return p.credits; },
+    async quote(kind, qty) { const p = me(), q = price(p, kind, qty); return { ...q, total: q.free ? 0 : q.total, balance: p.credits, plan: p.plan || 'free' }; },
+    async spendN(kind, qty, ref) {
+      const p = me(), q = price(p, kind, qty);
+      if (q.free || q.total <= 0) return { balance: p.credits, id: null, charged: 0, unit: q.unit, qty, discount: q.discount, free: true };
+      if (p.credits < q.total) fail('insufficient');
+      p.credits -= q.total; const r = row(p, -q.total, 'spend', `${kind} ×${qty}${ref ? ' ' + ref : ''}`, kind, qty);
+      return { balance: p.credits, id: r.id, charged: q.total, unit: q.unit, qty, discount: q.discount, free: false }; },
+    async refundN(id, qty) {
+      const p = me(), r = ledger.find(x => x.id === id && x.user_id === cur.id && x.reason === 'spend' && x.qty && !['sep', 'song', 'stems'].includes(x.kind));
+      if (!r) fail('not refundable'); if (!(qty >= 1) || r.refunded + qty > r.qty) fail('over refund');
+      const amt = Math.floor(-r.delta * (r.refunded + qty) / r.qty) - Math.floor(-r.delta * r.refunded / r.qty);
+      r.refunded += qty; if (amt > 0) { p.credits += amt; row(p, amt, 'refund', `refundn:${id}:${qty}`, r.kind, qty); }
+      return { balance: p.credits, refunded: amt, left: r.qty - r.refunded }; },
+    async spendSong(key, ref) {
+      const p = me(), k = cur.id + '|' + key;
+      if (charged.has(k)) return { balance: p.credits, id: null, charged: 0, qty: 1, already: true, free: true };
+      const r = await B.spendN('song', 1, ref || key); charged.add(k); return { ...r, already: false }; },
+    async chargedSongs(keys) { return (keys || []).filter(k => charged.has(cur.id + '|' + k)); },
     async myReferral() { return { code: 'abc12345', invited: 0, earned: 0 }; }, async claimReferral() { return { ok: false }; },
     async logActivity(a, d) { (window.__log = window.__log || []).push({ user_id: B.user && B.user.id, action: a, detail: d, created_at: now() }); },
     async adminActivity(uid) { return (window.__log || []).filter(x => !uid || x.user_id === uid).slice().reverse(); },
@@ -64,7 +101,9 @@
     async accessToken() { return B.user ? 'tok-' + B.user.id : null; },
     async assistantStatus() { return window.__rmStatus || { ok: true, left: 30, limit: 30 }; }
   };
-  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, get cfg() { return cfg; } };
+  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, ledger, charged, get cfg() { return cfg; },
+    setCredits(n, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) p.credits = n; },
+    setPlan(plan, days, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) { p.plan = plan; p.plan_until = plan === 'free' ? null : new Date(Date.now() + days * 864e5).toISOString(); } } };
   users.push({ id: 'u0', email: 'dana@example.com', password: 'password1', created_at: now() });
-  profiles.push({ id: 'u0', username: 'dana_beats', email: 'dana@example.com', display_name: 'Dana', bio: '', avatar_url: '', lang: 'en', role: 'user', blocked: false, songs: 3, seps: 1, created_at: now(), last_seen: now() });
+  profiles.push({ id: 'u0', username: 'dana_beats', email: 'dana@example.com', display_name: 'Dana', bio: '', avatar_url: '', lang: 'en', role: 'user', blocked: false, songs: 3, seps: 1, credits: 50, plan: 'free', plan_until: null, created_at: now(), last_seen: now() });
 })();

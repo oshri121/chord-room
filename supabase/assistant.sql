@@ -54,8 +54,10 @@ language sql stable as $$
     'on', case when jsonb_typeof(b->'on') = 'boolean' then b->'on' end,
     'currency', b->'currency',
     'signup', b->'signup', 'referral', b->'referral',
-    'costs', case when jsonb_typeof(b->'costs') = 'object' then jsonb_build_object('sep', b->'costs'->'sep', 'stems', b->'costs'->'stems') end,
-    'plans', (select jsonb_agg(jsonb_build_object('id', p->>'id', 'price', p->'price', 'points', p->'points'))
+    -- every cost kind (points v2: song, sep, stems, usb, mashup, extended, convert, …), whole numbers only
+    'costs', case when jsonb_typeof(b->'costs') = 'object' then (select jsonb_object_agg(k, v) from jsonb_each(b->'costs') e(k, v)
+                                                                  where k ~ '^[a-z][a-z_]{1,23}$' and jsonb_typeof(v) = 'number') end,
+    'plans', (select jsonb_agg(jsonb_build_object('id', p->>'id', 'price', p->'price', 'points', p->'points', 'discount', p->'discount'))
                 from jsonb_array_elements(case when jsonb_typeof(b->'plans') = 'array' then b->'plans' else '[]'::jsonb end) p
                where jsonb_typeof(p) = 'object')));
 $$;

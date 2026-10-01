@@ -156,6 +156,39 @@
       if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
       return data || { balance: null, id: null };
     },
+    // points v2 (schema.sql "Points v2"): qty units of a kind, priced on the server with the plan discount
+    // → { balance, id, charged, unit, qty, discount, free }
+    async spendN(kind, qty, ref) {
+      const { data, error } = await sb.rpc('spend_credits_n', { p_kind: kind, p_qty: qty, p_ref: ref == null ? null : String(ref).slice(0, 250) });
+      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      return data || { balance: null, id: null, charged: 0 };
+    },
+    // what it would cost now → { unit, qty, discount, total, balance, free, plan }
+    async quote(kind, qty) {
+      const { data, error } = await sb.rpc('price_quote', { p_kind: kind, p_qty: qty });
+      if (error) throw error;
+      return data;
+    },
+    // give back qty units of a batch charge (own row, ≤ 30 min) → { balance, refunded, left }
+    async refundN(id, qty) {
+      const { data, error } = await sb.rpc('refund_credits_n', { p_id: id, p_qty: qty });
+      if (error) throw error;
+      return data;
+    },
+    // the 'song' price once per song per account → spendN's answer + { already }
+    async spendSong(key, ref) {
+      const { data, error } = await sb.rpc('spend_song', { p_song_key: key, p_ref: ref == null ? null : String(ref).slice(0, 250) });
+      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      return data || { balance: null, id: null, charged: 0 };
+    },
+    // which of these song keys this account already paid for
+    async chargedSongs(keys) {
+      keys = [...new Set((keys || []).filter(k => /^[A-Za-z0-9._-]{1,80}$/.test(k)))].slice(0, 500);
+      if (!keys.length) return [];
+      const { data, error } = await sb.from('charged_songs').select('song_key').eq('user_id', B.user.id).eq('kind', 'song').in('song_key', keys);
+      if (error) throw error;
+      return (data || []).map(r => r.song_key);
+    },
     // give back a separation charge that failed or was cancelled (own charge, within 20 minutes, once)
     async refundCredits(id) {
       const { data, error } = await sb.rpc('refund_credits', { p_id: id });
@@ -187,7 +220,9 @@
       return data || { ok: false };
     },
     async ledger(limit = 30) {
-      const { data, error } = await sb.from('credit_ledger').select('id,delta,balance,reason,ref,created_at').eq('user_id', B.user.id).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
+      let { data, error } = await sb.from('credit_ledger').select('id,delta,balance,reason,ref,created_at,kind,qty').eq('user_id', B.user.id).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit);
+      if (error && /42703|does not exist/i.test((error.code || '') + ' ' + (error.message || '')))   // points v2 not installed yet
+        ({ data, error } = await sb.from('credit_ledger').select('id,delta,balance,reason,ref,created_at').eq('user_id', B.user.id).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(limit));
       if (error) throw error;
       return data;
     },

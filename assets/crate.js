@@ -186,6 +186,14 @@ es:{crNml:'Traktor NML',crNmlDone:'NML guardado. En Traktor, arrástralo al pane
   crCuesOld:'Los temas analizados antes de esta actualización no tienen cue points: añádelos otra vez.',crCueAt:'{k} · {t}'}
 });
 
+/* points v2 (the dialog itself is in app.js) */
+CR.addStrings({
+he:{crPayT:'ניתוח {n} שירים',crUsbPayT:'USB לפיוניר · {n} שירים',crZipPayT:'עותקים עם שם חדש · {n} שירים',crUsbLeft:'{n} שירים לא נכללו (לא היו מספיק נקודות).',crUsbBad:'{n} קבצים לא נקראו, והנקודות שלהם הוחזרו.'},
+en:{crPayT:'Analyse {n} songs',crUsbPayT:'USB for Pioneer · {n} songs',crZipPayT:'Renamed copies · {n} songs',crUsbLeft:'{n} songs were left out (not enough points).',crUsbBad:'{n} files couldn\'t be read; their points were returned.'},
+ar:{crPayT:'تحليل {n} أغانٍ',crUsbPayT:'USB لأجهزة Pioneer · {n} أغانٍ',crZipPayT:'نسخ بأسماء جديدة · {n} أغانٍ',crUsbLeft:'لم تُضمَّن {n} أغانٍ (النقاط غير كافية).',crUsbBad:'تعذّرت قراءة {n} ملفات، وأُعيدت نقاطها.'},
+ru:{crPayT:'Анализ: {n} песен',crUsbPayT:'USB для Pioneer · {n} песен',crZipPayT:'Переименованные копии · {n} песен',crUsbLeft:'Не вошло песен: {n} (не хватило баллов).',crUsbBad:'Не удалось прочитать файлов: {n}; баллы за них возвращены.'},
+es:{crPayT:'Analizar {n} canciones',crUsbPayT:'USB para Pioneer · {n} canciones',crZipPayT:'Copias renombradas · {n} canciones',crUsbLeft:'{n} canciones quedaron fuera (no había puntos suficientes).',crUsbBad:'No se pudieron leer {n} archivos; te devolvimos sus puntos.'}
+});
 CR.addStrings({
 he:{ovPlay:'ניגון',ovPause:'השהיה',ovGrid:'גריד',ovBeatM:'הזזת הגריד פעימה אחורה',ovBeatP:'הזזת הגריד פעימה קדימה',ovFineM:'הזזה עדינה אחורה (10ms)',ovFineP:'הזזה עדינה קדימה (10ms)',
   ovBarHere:'כאן מתחילה תיבה',ovReset:'איפוס',ovHint:'לחיצה על הגל מנגנת משם · גוררים דגל כדי להזיז נקודת קיו (נצמד לתיבות, Alt = חופשי)',ovDragT:'אפשר לגרור'},
@@ -349,12 +357,26 @@ function collect(dt){
 }
 
 /* ---------- analysis queue: one file at a time, buffer dropped after each ---------- */
+/* points v2: analysing a new song costs the 'song' price once per account (any module). Before a row is analysed, all
+   queued rows that were not approved yet are asked for in ONE confirmation (CR.paySongs: songs paid before are free);
+   rows the user didn't approve (cancel / "only the first K") wait as 'pause' (Resume asks again). The point is spent per
+   row only after its analysis worked (commit → spend_song), so a file that fails to decode never costs anything. */
+async function approve(owner){
+  const q=C.rows.filter(x=>x.st==='q'&&x.file&&!x.pay);if(!q.length)return;
+  if(!CR.paySongs){q.forEach(r=>{r.pay={}});return}
+  const g=await CR.paySongs(q.map(r=>({name:r.name,size:r.size,r})),{title:t('crPayT',{n:q.length})});
+  if(C.owner!==owner)return;
+  const ok=new Set(g.ok.map(x=>x.r));
+  for(const r of q){if(ok.has(r))r.pay=g;else if(r.st==='q')r.st='pause'}
+  const skip=q.length-ok.size;if(skip){setMsg(t('pvSkipped',{n:skip}),true);renderMsg()}
+}
 async function pump(){
   if(C.running||C.owner===undefined)return;C.running=true;C.cancel=false;const owner=C.owner;
   try{
     for(;;){
       if(C.cancel||C.owner!==owner)break;
-      const r=C.rows.find(x=>x.st==='q'&&x.file);if(!r)break;
+      let r=C.rows.find(x=>x.st==='q'&&x.file);if(!r)break;
+      if(!r.pay){await approve(owner);renderAll();continue}
       await analyzeRow(r);save();renderAll();await CR.tick();
     }
   }finally{C.running=false;C.cur=null;C.cancel=false;renderAll();save();lookupArtists();if(C.owner===owner&&C._batch){CR.log&&CR.log('crate_analyze',`${C._batch} tracks`);C._batch=0}}
@@ -369,6 +391,8 @@ async function analyzeRow(r){
     r.st='ana';renderRow(r);
     const res=await CR.analyzeTrack(buf,p=>setP(r,p*0.9));
     if(!C.rows.includes(r))return;
+    const g=r.pay;r.pay=null;
+    if(g&&g.commit&&!(await g.commit({name:r.name,size:r.size}))){r.st='pause';r.p=0;buf=null;return}   // no points left → wait (Resume)
     r.wv=packWave(res.wave);
     Object.assign(r,{dur:res.dur,lufs:isFinite(res.lufs)?res.lufs:null,peak:isFinite(res.peak)?res.peak:null,bpm:res.bpm,bpm0:res.bpm,offset:res.offset,down:res.down||0,key:res.key||null,flux:fluxOf(res.wave,res.dur)});
     if(window.CUES&&r.bpm>0){try{r.cues=await CUES.detect(buf,res)}catch(e){console.warn('cues',r.name,e);r.cues=null}}
@@ -494,25 +518,42 @@ async function exportZip(force){
   if(!rows.length){setMsg(all.length?t('crZipNone'):t('crNothing'),true);renderMsg();return}
   const total=rows.reduce((a,r)=>a+r.size,0);
   if(total>BIG_ZIP&&!force){setMsg(t('crZipBig',{s:mb(total)}),true,[t('crZipGo'),()=>exportZip(true)]);renderMsg();return}
+  // points v2: the same folder price as "USB for Pioneer" ('usb' × songs, ONE charge: copies with cue points + tags);
+  // files that can't be read and a ZIP that fails are refunded. Busy before asking (no double charge on a double click).
   C.zipBusy=true;renderExp();
+  const pay=await folderPay(rows,t('crZipPayT',{n:rows.length}),t('crZip'));
+  if(!pay){C.zipBusy=false;renderExp();return}
+  let bad=0,ok=false;
   try{
     const files=[],used=new Set();let i=0;
     for(const r of rows){
       setMsg(t('crZipBusy',{p:Math.round(i/rows.length*100)}));renderMsg();await CR.tick();
       let nm=renamed(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
       used.add(nm.toLowerCase());r._zn=nm;
-      let data=new Uint8Array(await r.file.arrayBuffer());
+      let data;try{data=new Uint8Array(await r.file.arrayBuffer())}catch(e){console.warn('zip read',r.name,e);bad++;i++;used.delete(nm.toLowerCase());r._zn=null;continue}
       if(r.ext==='mp3')try{data=tagMp3(data,{bpm:String(Math.round(r.bpm)),key:rbKey(r.key),cam:keyStr(r.key),cues:cueList(r)})}catch(e){console.warn('id3',r.name,e)}
       files.push({name:nm,data});i++;
     }
-    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(m3u(rows,r=>r._zn))});
+    const inZip=rows.filter(r=>r._zn);if(!inZip.length)throw new Error('no files');
+    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(m3u(inZip,r=>r._zn))});
     setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
     const blob=CR.zip(files);
-    CR.saveBlob(blob,'chord-room-renamed.zip');logExp('zip',rows.length);
-    setMsg(t('crZipDone',{s:mb(blob.size)})+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
+    CR.saveBlob(blob,'chord-room-renamed.zip');logExp('zip',inZip.length);ok=true;
+    const left=all.filter(r=>r.file).length-rows.length;
+    setMsg(t('crZipDone',{s:mb(blob.size)})+(miss?' '+t('crZipNo',{n:miss}):'')+(left?' '+t('crUsbLeft',{n:left}):'')+(bad?' '+t('crUsbBad',{n:bad}):''),!!(miss||bad));
   }catch(e){console.error(e);setMsg(t('stErr'),true)}
-  finally{C.zipBusy=false;renderExp();renderMsg()}
+  finally{C.zipBusy=false;renderExp();renderMsg();settle(pay,ok?bad:rows.length)}
 }
+/* points v2 helpers for the two folder exports: ask + charge 'usb' × rows (rows beyond "only the first K" are dropped from
+   `rows`) → pay | null; settle(pay, failed) = refund the failed rows + close the crash journal (app.js settleN) */
+async function folderPay(rows,title,ref){
+  if(!CR.payN)return {qty:rows.length,id:null};
+  let pay=null;try{pay=await CR.payN('usb',rows.length,{title,ref})}catch(e){console.warn(e);pay=null}
+  if(!pay||!pay.qty)return null;
+  if(pay.qty<rows.length)rows.splice(pay.qty);
+  return pay;
+}
+function settle(pay,back){if(!pay)return;if(CR.settleN)CR.settleN(pay,back);else if(back>0&&pay.id&&CR.refundN)CR.refundN(pay,back)}
 
 /* ---------- ID3v2: keep the existing tag's frames (v2.3 / v2.4), replace TBPM / TKEY, Camelot into the comment ---------- */
 const ss=(u,p)=>((u[p]&127)<<21)|((u[p+1]&127)<<14)|((u[p+2]&127)<<7)|(u[p+3]&127);
@@ -826,7 +867,12 @@ async function exportUsb(force){
   if(!rows.length){setMsg(all.length?t('crZipNone'):t('crNothing'),true);renderMsg();return}
   const total=rows.reduce((a,r)=>a+r.size,0);
   if(total>BIG_ZIP&&!force){setMsg(t('crZipBig',{s:mb(total)}),true,[t('crZipGo'),()=>exportUsb(true)]);renderMsg();return}
+  // points v2: the whole folder is ONE charge ('usb' × rows, plan discount applied); rows that fail are refunded.
+  // Busy BEFORE asking: a double click (or "don't ask again") must not charge the folder twice.
   C.zipBusy=true;renderExp();
+  const pay=await folderPay(rows,t('crUsbPayT',{n:rows.length}),t('crUsb'));
+  if(!pay){C.zipBusy=false;renderExp();return}
+  let bad=0,ok=false;
   try{
     await lookupArtists();
     const files=[],used=new Set();let i=0,other=0;
@@ -835,19 +881,22 @@ async function exportUsb(force){
       let nm=usbName(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
       used.add(nm.toLowerCase());r._zn=nm;
       const lat=latOf(r),bpm=String(Math.round(r.bpm)),key=rbKey(r.key);
-      let data=new Uint8Array(await r.file.arrayBuffer());
+      let data;try{data=new Uint8Array(await r.file.arrayBuffer())}catch(e){console.warn('usb read',r.name,e);bad++;i++;used.delete(nm.toLowerCase());r._zn=null;continue}
       if(r.ext==='mp3'){try{data=tagMp3(data,{bpm,key,cam:keyStr(r.key),lat,cues:cueList(r)})}catch(e){console.warn('id3',r.name,e)}}
       else if(r.ext==='flac'){try{data=tagFlac(data,{lat,bpm,key})}catch(e){console.warn('flac',r.name,e)}}
       else if(hasHeb(r.name))other++;
       files.push({name:nm,data});i++;
     }
-    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...rows.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${latStr(latOf(r))}`,r._zn])].join('\n')+'\n')});
+    const inZip=rows.filter(r=>r._zn);if(!inZip.length)throw new Error('no files');
+    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...inZip.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${latStr(latOf(r))}`,r._zn])].join('\n')+'\n')});
     setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
     const blob=CR.zip(files);
-    CR.saveBlob(blob,'chord-room-usb.zip');logExp('usb',rows.length);
-    setMsg(t('crUsbDone',{s:mb(blob.size)})+(other?' '+t('crUsbOther',{n:other}):'')+(miss?' '+t('crZipNo',{n:miss}):''),!!miss);
+    CR.saveBlob(blob,'chord-room-usb.zip');logExp('usb',inZip.length);ok=true;
+    const left=all.filter(r=>r.file).length-rows.length;
+    setMsg(t('crUsbDone',{s:mb(blob.size)})+(other?' '+t('crUsbOther',{n:other}):'')+(miss?' '+t('crZipNo',{n:miss}):'')+(left?' '+t('crUsbLeft',{n:left}):'')+(bad?' '+t('crUsbBad',{n:bad}):''),!!(miss||bad));
   }catch(e){console.error(e);setMsg(t('stErr'),true)}
-  finally{C.zipBusy=false;renderExp();renderMsg()}
+  finally{C.zipBusy=false;renderExp();renderMsg();
+    settle(pay,ok?bad:rows.length)}
 }
 
 /* ---------- messages ---------- */
@@ -900,10 +949,10 @@ function build(){
       <button type="button" class="btn" id="crXml">${IC.dl}<span data-i="crXml"></span></button>
       <button type="button" class="btn" id="crNml">${IC.dl}<span data-i="crNml"></span></button>
       <button type="button" class="btn" id="crM3u">${IC.dl}<span data-i="crM3u"></span></button>
-      <button type="button" class="btn" id="crZip">${IC.dl}<span data-i="crZip"></span></button>
+      <button type="button" class="btn" id="crZip">${IC.dl}<span data-i="crZip"></span><i class="ptchip" id="crZipPts" hidden></i></button>
     </div>
     <div class="crusb">
-      <div class="crusbh"><button type="button" class="btn solid" id="crUsb">${IC.usb}<span data-i="crUsb"></span></button>
+      <div class="crusbh"><button type="button" class="btn solid" id="crUsb">${IC.usb}<span data-i="crUsb"></span><i class="ptchip" id="crUsbPts" hidden></i></button>
         <label class="crchk"><input type="checkbox" id="crUsbPre"><span data-i="crPrefix"></span></label></div>
       <p class="snote" id="crUsbT" data-i="crUsbT"></p><p class="snote" data-i="crUsbH"></p>
     </div>
@@ -1061,6 +1110,11 @@ function renderRow(r){
   if(done(r)&&r.key){const b=n.querySelector('.kbb');if(b)b.appendChild(CR.keyBadge(r.key))}
   tr.replaceWith(n);drawOverviews(n);
 }
+// "USB for Pioneer · 12 pts" / "Renamed copies (ZIP) · 12 pts": the price of the rows that would go into the folder
+// (both folder exports cost 'usb' per song; plan discount included, '' when free)
+function renderUsbPts(rows){const n=(rows||exportRows()).filter(r=>r.file).length,c=n&&CR.priceChip?CR.priceChip('usb',n):'';
+  for(const [b,k] of [['#crUsb','crUsb'],['#crZip','crZip']]){const el=$(b+'Pts');if(!el)continue;el.hidden=!c;el.textContent=c;$(b).setAttribute('aria-label',t(k)+(c?' · '+c:''))}}
+document.addEventListener('cr-prices',()=>{if(C.built)renderUsbPts()});
 function renderExp(){
   if(!C.built)return;
   const rows=exportRows(),n=rows.length;
@@ -1068,6 +1122,7 @@ function renderExp(){
   ['#crCsv','#crXml','#crNml','#crM3u'].forEach(s=>$(s).disabled=!n);
   $('#crCuesOld').hidden=!rows.some(r=>!cueList(r).length);
   $('#crZip').disabled=!rows.some(r=>r.file)||C.zipBusy;$('#crUsb').disabled=!rows.some(r=>r.file)||C.zipBusy;
+  renderUsbPts(rows);
   const restored=C.rows.some(r=>done(r)&&!r.file);
   let rn=$('#crRest');
   if(restored&&!rn){rn=document.createElement('p');rn.id='crRest';rn.className='snote crrest';$('#crMain').insertBefore(rn,$('#crMain').querySelector('.crtools'))}

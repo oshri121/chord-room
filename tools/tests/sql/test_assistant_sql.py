@@ -24,7 +24,7 @@ check('anon assistant_status refused', as_(None, 'select public.assistant_status
 r = as_(U1, 'select public.assistant_use()'); j = json.loads(r)
 check('user first use ok, left 29 of 30', r, lambda o: j['ok'] and j['left']==29 and j['limit']==30)
 check('returns plan + credits', r, lambda o: j['me']=={'plan':'free','credits':20})
-check('returns public prices (no links)', r, lambda o: j['billing']['costs']=={'sep':5,'stems':2} and len(j['billing']['plans'])==3 and 'link' not in json.dumps(j['billing']) and j['billing']['currency']=='ILS')
+check('returns public prices: every kind + plan discounts (no links)', r, lambda o: j['billing']['costs']=={'song':1,'sep':5,'stems':2,'usb':1,'mashup':3,'extended':3,'convert':1} and len(j['billing']['plans'])==3 and [p.get('discount') for p in j['billing']['plans']]==[0,10,25] and 'link' not in json.dumps(j['billing']) and j['billing']['currency']=='ILS')
 check('status shows 29 left', as_(U1, 'select public.assistant_status()'), lambda o: json.loads(o)=={'ok':True,'left':29,'limit':30})
 check('activity row "assistant" without detail', sql(f"select count(*)||':'||coalesce(max(detail),'NULL') from public.activity where user_id='{U1}' and action='assistant'"), '1:NULL')
 
