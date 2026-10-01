@@ -1528,8 +1528,8 @@ async function stemMono(i,sr){
 }
 async function transcribe(onP){
   if(S.notes)return S.notes;
-  const run=async(kind,idx,sr,p0)=>{const x=await stemMono(idx,sr);const w=new Worker(URL.createObjectURL(new Blob([YIN_SRC],{type:'text/javascript'})));
-    return new Promise(ok=>{w.onmessage=e=>{if(e.data.type==='p')onP(p0+e.data.p*0.5);else{w.terminate();ok(e.data.notes)}};w.postMessage({x,sr,kind},[x.buffer])})};
+  const run=async(kind,idx,sr,p0)=>{const x=await stemMono(idx,sr);const wu=URL.createObjectURL(new Blob([YIN_SRC],{type:'text/javascript'})),w=new Worker(wu);URL.revokeObjectURL(wu);
+    return new Promise((ok,no)=>{w.onmessage=e=>{if(e.data.type==='p')onP(p0+e.data.p*0.5);else{w.terminate();ok(e.data.notes)}};w.onerror=e=>{w.terminate();no(new Error((e&&e.message)||'worker'))};w.postMessage({x,sr,kind},[x.buffer])})};
   const bass=await run('bass',2,4000,0),mel=await run('mel',0,8000,0.5);
   S.notes={bass,mel};return S.notes;
 }
@@ -2144,7 +2144,7 @@ $('#pFile').addEventListener('change',async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const bm=await createImageBitmap(f);const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d');
     const sz=Math.min(bm.width,bm.height);g.drawImage(bm,(bm.width-sz)/2,(bm.height-sz)/2,sz,sz,0,0,256,256);
-    pendingAvatar=await new Promise(r=>c.toBlob(r,'image/jpeg',0.86));$('#pImg').src=URL.createObjectURL(pendingAvatar);setMsg($('#pMsg'),'')}
+    pendingAvatar=await new Promise(r=>c.toBlob(r,'image/jpeg',0.86));const im=$('#pImg');if(im.src.startsWith('blob:'))URL.revokeObjectURL(im.src);im.src=URL.createObjectURL(pendingAvatar);setMsg($('#pMsg'),'')}
   catch(err){setMsg($('#pMsg'),t('saveFail'),true)}
 });
 $('#pRm').onclick=()=>{pendingAvatar='remove';$('#pImg').src=avatarFor({...ACC.profile,avatar_url:''})};
@@ -2162,7 +2162,7 @@ $('#fEmail').addEventListener('submit',e=>{e.preventDefault();const m=$('#fEmail
 $('#fPass').addEventListener('submit',e=>{e.preventDefault();const m=$('#fPass .amsg'),p1=$('#chNew').value,p2=$('#chNew2').value;
   if(p1!==p2)return setMsg(m,t('errMismatch'),true);
   busyBtn($('#fPass button'),async()=>{try{await Backend.changePassword($('#chCur').value,p1);$('#fPass').reset();setMsg(m,t('passChanged'))}catch(err){setMsg(m,authErr(err),true)}})});
-$('#signOutBtn').onclick=async()=>{await Backend.signOut();$('#acc').hidden=true};
+$('#signOutBtn').onclick=async()=>{try{await Backend.signOut()}catch(e){console.warn(e)}$('#acc').hidden=true};
 $('#accBtn').onclick=()=>{renderAccount();$('#chEmail').value='';$('#acc').hidden=false};
 $('#accClose').onclick=()=>$('#acc').hidden=true;
 
@@ -3264,7 +3264,7 @@ Object.assign(window.CR,{
   setTranspose:v=>{if(!S.key)return false;v=Math.max(-12,Math.min(12,Math.round(v)));if(v!==S.transpose)setT(v===0?0:v-S.transpose);return S.transpose===v}
 });
 /* ---------- boot ---------- */
-applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount();
+applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount().catch(e=>console.warn(e));
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
 document.addEventListener('DOMContentLoaded',()=>{hookPages();routeHash()});
 AUTH.ready.then(()=>setTimeout(sepCrashCheck,1500));
