@@ -66,7 +66,10 @@ that the builders have not fixed yet, so the suite stays green and the report st
 
 ### Conventions
 
-* **Accounts.** The tools (`#tool`, `#discover`, `#dj`, `#crate`) need an account. Either sign in through the mock
+* **Accounts.** `#discover`, `#dj`, `#crate` and `#mashup` need an account; `#tool` is open to guests with the demo song
+  (upload / My songs / export / separation open the auth dialog). The demo is analysed the first time the tool is shown,
+  not at boot: a test that lands on the home page and needs the song must open `#tool` (or call `lib.wait_tool_song`
+  after navigating there). Either sign in through the mock
   backend (`mock=True`, `lib.sign_up/sign_in/sign_out`) or run in local mode with `accounts=False`, which stubs
   `vendor/supabase.js` so `Backend.enabled` is false and there is no gate. Never both.
 * **Mock backend.** `mock/mockb.js` implements `window.__MOCK_BACKEND` (honoured by `assets/backend.js` only on
@@ -107,7 +110,9 @@ unless `--keep-pg`.
 | sql/test_schema_security | `schema.sql` RLS/grants/validation/RPCs: owner & roles password, table privileges, profile columns and avatar URLs, songs/downloads, catalog + rate limits, billing validation, storage quotas, points (spend/refund/concurrent double-spend/admin grants), activity audit, referrals, roles-password lockout, Lemon Squeezy webhook (HMAC, replay, plan mapping), definer-function hardening sweep (174) |
 | sql/test_assistant_sql | `assistant.sql`: daily/burst quota per plan, admin unlimited, blocked/off, table privileges, admin-settable limits with validation, idempotent re-runs (49) |
 | ui/test_smoke | local mode boots under CSP, demo analysed, every nav tab and hash opens its view, Discover lists the mock chart, zero CSP violations |
-| ui/test_gate | routing + sign-in gate: home = About, tools gated when signed out, pricing/legal open, upload/gate buttons open the auth dialog, sign-in opens the tools, sign-out gates again; header + gate layout in light/dark × he/en/ar × 375/1440 px |
+| ui/test_gate | routing + sign-in gate: home = About (no demo analysis at boot), the tool opens for guests with the demo + banner (key agrees with the title, export CTA), Discover/DJ/Crate gated, pricing/legal open, upload/My songs/export/separation/gate buttons open the auth dialog, sign-in opens the gated view and keeps the song, sign-out gates again, unknown hash → home + notice, per-view title, skip link; sign-up from home → tool + first hint; header + gate + guest tool layout in light/dark × he/en/ar × 375/1440 px |
+| ui/test_header_fit | shell.js compaction: "כניסה"/"הרשמה"/"העלאת שיר" keep a visible label at 375/1024/1280/1440 px in all five languages (signed out + in), tabs use short names before the drawer, no drawer at 1024 (he/en/ar/es), no horizontal scroll |
+| ui/test_seo | `<head>` title/description (Hebrew), canonical, OG/Twitter tags, og.png 1200×630 < 200 KB, PNG icons + apple-touch-icon, manifest JSON (192/512/maskable), robots.txt + sitemap.xml served, middleware/_routes leave them alone |
 | ui/test_auth_signup | sign-up dialog: username availability, validation, strength, caps-lock, eye, terms consent (LEGAL.version sent), 6-digit code (wrong, resend cooldown, paste), welcome, header state; confirmation-off path; terms version in admin details; en/ar-dark dialogs |
 | ui/test_auth_signin | sign-in: keyboard, errors, focus trap, Esc focus return, forgot-password by code, unconfirmed account → code step with auto-resend, reset-link flow, sign-up closed by admin |
 | ui/test_auth_mobile | 375 px touch in he/en/ar: header, full-width auth sheet through all steps, terms page, TOC, nav drawer; no horizontal scroll anywhere |
@@ -120,7 +125,7 @@ unless `--keep-pg`.
 | ui/test_crate_cues | synthetic EDM track (`fixtures/gen_edm.py`): BPM 128 and all six cues on the true bars; overview play/seek, grid moves shift cues, flag drag snaps to bars; rekordbox XML, Traktor NML, Serato GEOB in the ZIP MP3; reload keeps rows. Two **known issues** reported via `t.known` (see below) |
 | ui/test_security | hostile backend + poisoned localStorage under the real CSP through every flow (home, pricing, tool + Signalsmith + MP3 export, AI separation start, Discover, DJ demo, Crate, account + all admin tabs): nothing executes, no injected markup, no request to the attacker host, zero CSP violations, each flow still works |
 | ui/test_assistant_ui | Roomy panel: a11y + placement vs the a11y button (RTL/LTR), gate, suggestions per view, streaming + stop, request format and ctx, safe markdown, error states + retry, 2000-char cap, history rules, per-user sessionStorage, 5 languages, dark, lift above Discover player / Deezer bar, 375 px sheet + focus trap, teaser once, zero CSP violations |
-| slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
+| slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: model download first (free), confirmation dialog with the price, 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
 | ui/test_assistant_md | `ROOMY._render` against 33 hostile markdown inputs: only allowed elements/attributes/hrefs, nothing executes, fast on pathological input |
 
 ### Known app issues the suite reports (not failures)
@@ -131,9 +136,9 @@ unless `--keep-pg`.
    to the kick (`gen_edm.make(hat_gain=0.075)`), `CR.analyzeTrack` puts the grid half a beat off (phase 0.53) and
    every cue lands 0.69 s late. At −28 dB it is right. `fitGrid` scores `env + 2·lowEnv`; the broadband hat onsets
    outweigh the kick+bass on the beat.
-2. **Music starting at 0:00 → cues one bar late.** With no leading silence (`gen_edm.make(lead=0)`) the first
-   downbeat is detected at 1.86 s instead of 0 (`S.down` picks bar 1), so drop/break/build/outro are all +1.86 s.
-   With 0.5 s of silence first everything is exact.
+2. ~~Music starting at 0:00 → cues one bar late.~~ Fixed: the onset envelope's frame time now includes the ~15 ms lag of
+   the flux peak (`ENV_LAG` in app.js), so a first beat at 0.000 s is no longer estimated at −0.015 s and bar 1 is kept.
+   `test_crate_cues` asserts it as a normal check now.
 
 ## Adding a test
 

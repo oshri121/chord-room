@@ -128,11 +128,12 @@ def test(t, srv, b):
     t.check('rows restored with their overview waveform', pg.evaluate("CRATE._C.rows.length") == len(files) and all(pg.evaluate("CRATE._C.rows.map(r=>!!r.wv)")))
 
     t.section('known issues (analysis heuristics)')
-    def report(part, lead, label):
+    def report(part, lead, label, fixed=False):
         r = get(part, '({bpm:r.bpm,offset:r.offset,down:r.down||0,cues:r.cues||[]})')
         T = 60 / r['bpm']; ph = (r['offset'] % T) / T; fd = ph * T + r['down'] * T
         drop = {c['k']: c['t'] for c in r['cues']}.get('drop', 0); err = drop - (lead + gen_edm.DROP * BAR)
-        t.known(label, abs(err) < 0.1 and min(ph, 1 - ph) < 0.1, f"bpm {r['bpm']}, grid phase {ph:.2f} beat (0 = kick), first downbeat {fd:.3f}s, drop off by {err:+.2f}s")
+        (t.check if fixed else t.known)(label, abs(err) < 0.1 and min(ph, 1 - ph) < 0.1, f"bpm {r['bpm']}, grid phase {ph:.2f} beat (0 = kick), first downbeat {fd:.3f}s, drop off by {err:+.2f}s")
     if loud: report('Loud', LEAD, 'off-beat hats at -20 dB: grid stays on the kick, drop on time')
-    report('Lead Zero', 0, 'music starting at 0:00: drop on time (bar 24 = 45.00s)')
+    # fixed by the +15 ms onset-frame correction (ENV_LAG in app.js): the first beat at 0.000 is no longer estimated at -0.015
+    report('Lead Zero', 0, 'music starting at 0:00: drop on time (bar 24 = 45.00s)', fixed=True)
     shutil.rmtree(tmp, ignore_errors=True)

@@ -139,3 +139,6 @@
   .rm-log{scroll-behavior:auto}
 }
 @media print{.rm{display:none!important}}
+
+/* qw: no floating button over an open dialog / sheet (sign-up, separation confirmation, language picker) */
+html.au-open .rm-fab,html.au-open .rm-teaser,html.dlg-open .rm-fab,html.dlg-open .rm-teaser,html.wl-open .rm-fab,html.wl-open .rm-teaser{visibility:hidden}

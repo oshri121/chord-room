@@ -113,19 +113,23 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .burger[aria-expanded="true"] span:nth-child(3),html[dir="rtl"] .burger[aria-expanded="true"] span:nth-child(3){top:19px;left:11px;right:11px;transform:rotate(-45deg)}
 .scrim{display:none}
 
-/* visually hidden label: icon buttons keep their accessible name */
-.top.c2 #libBtn span,.top.c2 #adminBtn span,.top.c2 #signInBtn span,.top.c2 .credits span,
-.top.c4 #upLbl span,.top.c4 #signUpBtn span,.top.m #signInBtn span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* visually hidden label: icon buttons keep their accessible name.
+   qw: "כניסה" / "הרשמה" / "העלאת שיר" keep their text at every width (REVIEW-UX P2-2). */
+.top.c2 #libBtn span,.top.c2 #adminBtn span,.top.c2 .credits span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* qw: short tab names (level s): the long span hides, the .tsh span shows */
+.top .tab .tsh{display:none}
+.top.s .tab .tsh{display:inline}
+.top.s .tab:has(.tsh) span[data-i]:not(.tsh){display:none}
 
 /* ---------- compaction levels (set by shell.js, cumulative) ---------- */
 .top.c1 .top-in{gap:12px}
 .top.c1 .tab{padding:0 11px;gap:6px}
 .top.c1 .tools,.top.c1 .quick{gap:6px}
-.top.c2 #libBtn,.top.c2 #adminBtn,.top.c2 #signInBtn{width:38px;padding:0}
+.top.c2 #libBtn,.top.c2 #adminBtn{width:38px;padding:0}
 .top.c2 .credits{padding-inline-end:11px}
 .top.c1 .mark .wm,.top.m .mark .wm{grid-row:1/3;align-self:center}
 .top.c3 .mark .wm{letter-spacing:.13em}
-.top.c4 #upLbl,.top.c4 #signUpBtn{width:38px;padding:0}
+.top.c4 #upLbl,.top.c4 #signUpBtn{padding:0 12px}
 /* c3: the language picker shrinks to its globe (the list still shows the names), c4: tab labels without icons */
 .top.c3 .langw .sel{width:38px;padding:0;color:transparent;background-image:none}
 .top.c3 .langw .lgl{inset-inline-start:11px;color:var(--ink)}
@@ -133,6 +137,14 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.c4 .tab svg{display:none}
 .top.c4 .tab{padding:0 10px}
 .top.c4 .mark .wm{letter-spacing:.08em}
+/* qw: c5 (last step before the drawer): logo only, tighter tabs and buttons — the labels of the primary actions stay */
+.top.c5 .mark .wm{display:none}
+.top.c5 .top-in{gap:6px}
+.top.c5 .tab{padding:0 6px;font-size:13px;gap:5px}
+.top.c5 .btn{padding:0 10px;font-size:13px;gap:6px}
+.top.c5 .tools,.top.c5 .quick{gap:3px}
+.top.c5 .navwrap{gap:6px}
+.top.c5 .langw .sel{width:34px}.top.c5 .btn.thm{width:34px}
 .top.m2 .mark .wm{font-size:14px;letter-spacing:.08em}
 .top.m3 .mark .wm{display:none}
 
@@ -143,7 +155,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.m .quick{display:flex}
 .top.m .credits span{display:none}
 .top.m .credits{padding-inline-end:11px}
-.top.m #signInBtn{width:38px;padding:0}
+.top.m #signInBtn{padding:0 10px}
 .top.m #signUpBtn{padding:0 14px}
 .top.m .navwrap{position:fixed;top:0;bottom:0;inset-inline-end:0;z-index:2;width:min(360px,88vw);flex-direction:column;align-items:stretch;gap:18px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));background:var(--elev);border-inline-start:1px solid var(--line);box-shadow:0 0 60px var(--shadow);overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden}
 html[dir="rtl"] .top.m .navwrap{transform:translateX(-105%)}

@@ -133,15 +133,15 @@ blockedMsg:'El administrador bloqueó tu cuenta.',offByAdmin:'El administrador d
 for(const k in IA)Object.assign(I[k],IA[k]);
 const ID={
 he:{navTool:'הכלי',navDisc:'גלה שירים',dTitle:'גלה שירים',dSub:'השירים החמים והחדשים בעולם, עם סולם, BPM ואקורדים. בחר שיר ותראה עם אילו שירים הוא מתמקסס בדיוק.',dTrend:'טרנדים עכשיו',dNew:'יציאות חדשות',dPlayed:'הכי מנוגנים אצלנו',dRecent:'נוספו לאחרונה',dAll:'הכול',dAllKeys:'כל הסולמות',dMatchCur:'מתאים לשיר שבכלי',dBpm:'BPM',dLoading:'טוען…',dLoadFail:'לא הצלחנו לטעון את הרשימה. נסה שוב בעוד רגע.',dEmptyCat:'הקטלוג עוד ריק. שירים נכנסים אליו אוטומטית כשמשתמשים מחוברים גולשים בטרנדים.',dNoMatch:'אין שירים שמתאימים לסינון.',dAnalyzing:'מנתח…',dPreview:'השמעת קטע',dMix:'מיקס',dOpen:'פתח בכלי',dPlays:'השמעות',dNoPreview:'אין קטע השמעה לשיר הזה.',
-dPreviewNote:'נטען קטע של 30 שניות מהשיר. הסולם והקצב מחושבים מהקטע, והאקורדים הם של הקטע בלבד.',mixTitle:'מתמקסס טוב עם',mixH:'שירים בסולם תואם בגלגל קאמלוט, בקצב של עד ±6% (כולל חצי/כפול קצב).',mixNone:'עוד אין שירים מתאימים. ככל שינותחו יותר שירים, יופיעו כאן יותר המלצות.',relSame:'אותו סולם',relRel:'מז׳ור/מינור מקביל',relUp:'+1 אנרגיה',relDown:'−1 רגוע',findMatches:'מצא שירים מתאימים',dNote:'הסולם וה־BPM מחושבים אוטומטית מקטע של 30 שניות, ולכן ייתכנו טעויות. נתוני הטרנדים וקטעי ההשמעה: Deezer.',dSignIn:'משתמשים מחוברים שומרים את הניתוחים בקטלוג המשותף, כך שכולם נהנים מהם.'},
+dPreviewNote:'נטען קטע של 30 שניות מהשיר. הסולם והקצב מחושבים מהקטע, והאקורדים הם של הקטע בלבד.',mixTitle:'מתמקסס טוב עם',mixH:'שירים בסולם תואם (אותו סולם, המקביל או השכן), בקצב של עד ±6% (כולל חצי/כפול קצב).',mixNone:'עוד אין שירים מתאימים. ככל שינותחו יותר שירים, יופיעו כאן יותר המלצות.',relSame:'אותו סולם',relRel:'מז׳ור/מינור מקביל',relUp:'+1 אנרגיה',relDown:'−1 רגוע',findMatches:'מצא שירים מתאימים',dNote:'הסולם וה־BPM מחושבים אוטומטית מקטע של 30 שניות, ולכן ייתכנו טעויות. נתוני הטרנדים וקטעי ההשמעה: Deezer.',dSignIn:'משתמשים מחוברים שומרים את הניתוחים בקטלוג המשותף, כך שכולם נהנים מהם.'},
 en:{navTool:'Tool',navDisc:'Discover',dTitle:'Discover songs',dSub:'The hottest and newest songs in the world, with key, BPM and chords. Pick a song to see what it mixes into.',dTrend:'Trending now',dNew:'New releases',dPlayed:'Most played here',dRecent:'Recently added',dAll:'All',dAllKeys:'All keys',dMatchCur:'Matches the song in the tool',dBpm:'BPM',dLoading:'Loading…',dLoadFail:'Could not load the list. Try again in a moment.',dEmptyCat:'The catalog is still empty. Songs join it automatically when signed-in users browse the trends.',dNoMatch:'No songs match the filter.',dAnalyzing:'Analyzing…',dPreview:'Play preview',dMix:'Mix',dOpen:'Open in tool',dPlays:'plays',dNoPreview:'No preview for this song.',
-dPreviewNote:'Loaded a 30-second preview. Key and tempo come from the preview, and the chords cover the preview only.',mixTitle:'Mixes well with',mixH:'Songs in a compatible Camelot key, within ±6% tempo (half/double time included).',mixNone:'No matches yet. More recommendations appear as more songs are analyzed.',relSame:'Same key',relRel:'Relative major/minor',relUp:'+1 energy',relDown:'−1 calmer',findMatches:'Find matching songs',dNote:'Key and BPM are computed automatically from a 30-second preview, so mistakes are possible. Chart data and previews: Deezer.',dSignIn:'Signed-in users save analyses to the shared catalog, so everyone benefits.'},
+dPreviewNote:'Loaded a 30-second preview. Key and tempo come from the preview, and the chords cover the preview only.',mixTitle:'Mixes well with',mixH:'Songs in a compatible key (same, relative or neighbour), within ±6% tempo (half/double time included).',mixNone:'No matches yet. More recommendations appear as more songs are analyzed.',relSame:'Same key',relRel:'Relative major/minor',relUp:'+1 energy',relDown:'−1 calmer',findMatches:'Find matching songs',dNote:'Key and BPM are computed automatically from a 30-second preview, so mistakes are possible. Chart data and previews: Deezer.',dSignIn:'Signed-in users save analyses to the shared catalog, so everyone benefits.'},
 ar:{navTool:'الأداة',navDisc:'اكتشف',dTitle:'اكتشف الأغاني',dSub:'أشهر الأغاني وأحدثها في العالم مع المقام والإيقاع والكوردات. اختر أغنية لترى ما يمتزج معها.',dTrend:'الرائج الآن',dNew:'إصدارات جديدة',dPlayed:'الأكثر تشغيلًا هنا',dRecent:'أُضيفت مؤخرًا',dAll:'الكل',dAllKeys:'كل المقامات',dMatchCur:'متوافق مع أغنية الأداة',dBpm:'BPM',dLoading:'جارٍ التحميل…',dLoadFail:'تعذّر تحميل القائمة. حاول بعد قليل.',dEmptyCat:'الكتالوج فارغ حاليًا. تُضاف الأغاني تلقائيًا عندما يتصفح المستخدمون المسجلون الرائج.',dNoMatch:'لا توجد أغانٍ تطابق التصفية.',dAnalyzing:'تحليل…',dPreview:'تشغيل مقطع',dMix:'مزج',dOpen:'افتح في الأداة',dPlays:'تشغيل',dNoPreview:'لا يوجد مقطع لهذه الأغنية.',
-dPreviewNote:'تم تحميل مقطع مدته 30 ثانية. المقام والإيقاع من المقطع، والكوردات للمقطع فقط.',mixTitle:'يمتزج جيدًا مع',mixH:'أغانٍ بمقام متوافق في عجلة كاميلوت وبإيقاع ضمن ±6% (مع نصف/ضعف الإيقاع).',mixNone:'لا توجد توصيات بعد. تظهر المزيد كلما حُلّلت أغانٍ أكثر.',relSame:'المقام نفسه',relRel:'ماجور/مينور مقابل',relUp:'+1 طاقة',relDown:'−1 أهدأ',findMatches:'ابحث عن أغانٍ متوافقة',dNote:'يُحسب المقام والإيقاع تلقائيًا من مقطع 30 ثانية لذا قد تقع أخطاء. بيانات الرائج والمقاطع: Deezer.',dSignIn:'المستخدمون المسجلون يحفظون التحليلات في الكتالوج المشترك ليستفيد الجميع.'},
+dPreviewNote:'تم تحميل مقطع مدته 30 ثانية. المقام والإيقاع من المقطع، والكوردات للمقطع فقط.',mixTitle:'يمتزج جيدًا مع',mixH:'أغانٍ بمقام متوافق (نفسه أو النسبي أو المجاور) وبإيقاع ضمن ±6% (مع نصف/ضعف الإيقاع).',mixNone:'لا توجد توصيات بعد. تظهر المزيد كلما حُلّلت أغانٍ أكثر.',relSame:'المقام نفسه',relRel:'ماجور/مينور مقابل',relUp:'+1 طاقة',relDown:'−1 أهدأ',findMatches:'ابحث عن أغانٍ متوافقة',dNote:'يُحسب المقام والإيقاع تلقائيًا من مقطع 30 ثانية لذا قد تقع أخطاء. بيانات الرائج والمقاطع: Deezer.',dSignIn:'المستخدمون المسجلون يحفظون التحليلات في الكتالوج المشترك ليستفيد الجميع.'},
 ru:{navTool:'Инструмент',navDisc:'Обзор',dTitle:'Обзор песен',dSub:'Самые популярные и новые песни мира с тональностью, BPM и аккордами. Выберите песню, чтобы увидеть, с чем она сводится.',dTrend:'В тренде',dNew:'Новинки',dPlayed:'Популярное у нас',dRecent:'Недавно добавлено',dAll:'Все',dAllKeys:'Все тональности',dMatchCur:'Подходит к песне в инструменте',dBpm:'BPM',dLoading:'Загрузка…',dLoadFail:'Не удалось загрузить список. Попробуйте чуть позже.',dEmptyCat:'Каталог пока пуст. Песни попадают в него автоматически, когда вошедшие пользователи смотрят тренды.',dNoMatch:'Нет песен под фильтр.',dAnalyzing:'Анализ…',dPreview:'Прослушать',dMix:'Микс',dOpen:'Открыть',dPlays:'прослушиваний',dNoPreview:'Для этой песни нет превью.',
-dPreviewNote:'Загружено 30-секундное превью. Тональность и темп — по превью, аккорды — только для превью.',mixTitle:'Хорошо сводится с',mixH:'Песни в совместимой тональности по кругу Camelot, темп в пределах ±6% (включая половинный/двойной).',mixNone:'Совпадений пока нет. Рекомендаций станет больше по мере анализа песен.',relSame:'Та же тональность',relRel:'Параллельный мажор/минор',relUp:'+1 энергия',relDown:'−1 спокойнее',findMatches:'Найти подходящие песни',dNote:'Тональность и BPM вычисляются автоматически по 30-секундному превью, возможны ошибки. Данные чартов и превью: Deezer.',dSignIn:'Вошедшие пользователи сохраняют анализ в общий каталог, и он доступен всем.'},
+dPreviewNote:'Загружено 30-секундное превью. Тональность и темп — по превью, аккорды — только для превью.',mixTitle:'Хорошо сводится с',mixH:'Песни в совместимой тональности (та же, параллельная или соседняя), темп в пределах ±6% (включая половинный/двойной).',mixNone:'Совпадений пока нет. Рекомендаций станет больше по мере анализа песен.',relSame:'Та же тональность',relRel:'Параллельный мажор/минор',relUp:'+1 энергия',relDown:'−1 спокойнее',findMatches:'Найти подходящие песни',dNote:'Тональность и BPM вычисляются автоматически по 30-секундному превью, возможны ошибки. Данные чартов и превью: Deezer.',dSignIn:'Вошедшие пользователи сохраняют анализ в общий каталог, и он доступен всем.'},
 es:{navTool:'Herramienta',navDisc:'Descubrir',dTitle:'Descubrir canciones',dSub:'Las canciones más populares y nuevas del mundo, con tonalidad, BPM y acordes. Elige una para ver con cuáles mezcla.',dTrend:'Tendencias',dNew:'Novedades',dPlayed:'Lo más escuchado aquí',dRecent:'Añadidas recientemente',dAll:'Todo',dAllKeys:'Todas las tonalidades',dMatchCur:'Compatibles con la canción cargada',dBpm:'BPM',dLoading:'Cargando…',dLoadFail:'No se pudo cargar la lista. Inténtalo en un momento.',dEmptyCat:'El catálogo aún está vacío. Las canciones se añaden solas cuando usuarios con sesión navegan por las tendencias.',dNoMatch:'Ninguna canción coincide con el filtro.',dAnalyzing:'Analizando…',dPreview:'Escuchar fragmento',dMix:'Mezcla',dOpen:'Abrir',dPlays:'reproducciones',dNoPreview:'Esta canción no tiene fragmento.',
-dPreviewNote:'Se cargó un fragmento de 30 segundos. Tonalidad y tempo salen del fragmento, y los acordes cubren solo el fragmento.',mixTitle:'Mezcla bien con',mixH:'Canciones en tonalidad compatible en la rueda Camelot, con tempo dentro de ±6% (incluye mitad/doble).',mixNone:'Aún no hay coincidencias. Aparecerán más a medida que se analicen canciones.',relSame:'Misma tonalidad',relRel:'Relativa mayor/menor',relUp:'+1 energía',relDown:'−1 más calma',findMatches:'Buscar canciones compatibles',dNote:'La tonalidad y el BPM se calculan automáticamente con un fragmento de 30 segundos, así que puede haber errores. Datos de listas y fragmentos: Deezer.',dSignIn:'Los usuarios con sesión guardan los análisis en el catálogo compartido para todos.'}
+dPreviewNote:'Se cargó un fragmento de 30 segundos. Tonalidad y tempo salen del fragmento, y los acordes cubren solo el fragmento.',mixTitle:'Mezcla bien con',mixH:'Canciones en tonalidad compatible (la misma, la relativa o la vecina), con tempo dentro de ±6% (incluye mitad/doble).',mixNone:'Aún no hay coincidencias. Aparecerán más a medida que se analicen canciones.',relSame:'Misma tonalidad',relRel:'Relativa mayor/menor',relUp:'+1 energía',relDown:'−1 más calma',findMatches:'Buscar canciones compatibles',dNote:'La tonalidad y el BPM se calculan automáticamente con un fragmento de 30 segundos, así que puede haber errores. Datos de listas y fragmentos: Deezer.',dSignIn:'Los usuarios con sesión guardan los análisis en el catálogo compartido para todos.'}
 };
 for(const k in ID)Object.assign(I[k],ID[k]);
 const IX={
@@ -507,6 +507,39 @@ ar:{gateH:'تحتاج إلى حساب لاستخدام الأدوات',gateP:'ا
 ru:{gateH:'Для работы с инструментами нужен аккаунт',gateP:'Регистрация бесплатна и занимает меньше минуты. После входа всё открыто, а ваши песни и анализы сохраняются в аккаунте.',gatePClosed:'Регистрация сейчас закрыта. Если у вас есть аккаунт, войдите, чтобы продолжить.',gateUp:'Зарегистрироваться бесплатно',gateIn:'У меня есть аккаунт · Войти',gateHome:'На главную',gatePricing:'Цены и тарифы',gateWait:'Проверяем аккаунт…',gateLock:'Нужен вход'},
 es:{gateH:'Necesitas una cuenta para usar las herramientas',gateP:'Registrarte es gratis y lleva menos de un minuto. Al entrar, todo queda abierto y tus canciones y análisis se guardan en tu cuenta.',gatePClosed:'El registro está cerrado por ahora. Si tienes cuenta, inicia sesión para continuar.',gateUp:'Regístrate gratis',gateIn:'Ya tengo cuenta · Entrar',gateHome:'Volver al inicio',gatePricing:'Precios y planes',gateWait:'Comprobando tu cuenta…',gateLock:'Requiere iniciar sesión'}};
 for(const k in IGATE)Object.assign(I[k],IGATE[k]);
+/* qw: guest demo banner, first hint, separation confirmation, export CTA, page titles, not-found, skip link, settings */
+const IQW={
+he:{gbarT:'זה שיר הדוגמה. נרשמים בחינם כדי להעלות שירים משלכם, לשמור, להפריד ערוצים ולייצא.',gbarUp:'הרשמה בחינם',
+  firstHint:'גררו שיר לכאן או לחצו על "העלאת שיר" — או נסו קודם את שיר הדוגמה.',
+  sepConfH:'הפרדת ערוצים ב־AI',sepConfP:'ההפרדה עולה {n} נקודות (נשארו לך {b}). אורך משוער: {t}. אפשר להמשיך לגלוש באתר בינתיים.',
+  sepConfGo:'הפרדה · {n} נקודות',sepConfSkip:'לא לשאול שוב',sepEst:'כ־{a}–{b} דק׳',sepModel:'מוריד את מודל ה־AI (כ־80MB, חינם, פעם אחת)… {p}%',
+  expCta:'כדי לייצא ערוצים נפרדים צריך להפריד קודם.',expCtaBtn:'הפרדה ב־AI',expCtaCost:'{n} נקודות',
+  notFound:'העמוד לא נמצא — חזרנו לדף הבית.',skipLink:'דילוג לתוכן',billUsd:'שער דולר (₪ לדולר, למחיר משוער בשפות אחרות)',navDiscS:'גלה'},
+en:{gbarT:'This is the demo song. Sign up free to upload your own songs, save, separate stems and export.',gbarUp:'Sign up free',
+  firstHint:'Drag a song here or click "Upload song" — or try the demo song first.',
+  sepConfH:'AI stem separation',sepConfP:'Separation costs {n} points (you have {b}). Estimated time: {t}. You can keep browsing the site meanwhile.',
+  sepConfGo:'Separate · {n} points',sepConfSkip:'Don’t ask again',sepEst:'about {a}–{b} min',sepModel:'Downloading the AI model (about 80 MB, free, once)… {p}%',
+  expCta:'To export separate stems, separate the song first.',expCtaBtn:'AI separation',expCtaCost:'{n} points',
+  notFound:'Page not found — back to the home page.',skipLink:'Skip to content',billUsd:'USD rate (₪ per $, for the approximate price in other languages)',navDiscS:'Discover'},
+ar:{gbarT:'هذه أغنية تجريبية. سجّل مجانًا لرفع أغانيك وحفظها وفصل المسارات والتصدير.',gbarUp:'سجّل مجانًا',
+  firstHint:'اسحب أغنية إلى هنا أو اضغط «رفع أغنية» — أو جرّب الأغنية التجريبية أولًا.',
+  sepConfH:'فصل المسارات بالذكاء الاصطناعي',sepConfP:'يكلّف الفصل {n} نقاط (لديك {b}). الوقت التقديري: {t}. يمكنك متابعة التصفح في الموقع أثناء ذلك.',
+  sepConfGo:'فصل · {n} نقاط',sepConfSkip:'لا تسأل مجددًا',sepEst:'نحو {a}–{b} د',sepModel:'تحميل نموذج الذكاء الاصطناعي (نحو 80MB، مجانًا، مرة واحدة)… {p}%',
+  expCta:'لتصدير مسارات منفصلة يجب فصل الأغنية أولًا.',expCtaBtn:'فصل بالذكاء الاصطناعي',expCtaCost:'{n} نقاط',
+  notFound:'الصفحة غير موجودة — عدنا إلى الصفحة الرئيسية.',skipLink:'تخطّي إلى المحتوى',billUsd:'سعر الدولار (₪ لكل دولار، للسعر التقريبي باللغات الأخرى)',navDiscS:'اكتشف'},
+ru:{gbarT:'Это демо-песня. Зарегистрируйтесь бесплатно, чтобы загружать свои песни, сохранять, разделять на стемы и экспортировать.',gbarUp:'Бесплатная регистрация',
+  firstHint:'Перетащите песню сюда или нажмите «Загрузить песню» — или сначала попробуйте демо.',
+  sepConfH:'AI-разделение на стемы',sepConfP:'Разделение стоит {n} баллов (у вас {b}). Примерное время: {t}. Пока оно идёт, можно пользоваться сайтом.',
+  sepConfGo:'Разделить · {n} баллов',sepConfSkip:'Больше не спрашивать',sepEst:'около {a}–{b} мин',sepModel:'Загрузка AI-модели (около 80 МБ, бесплатно, один раз)… {p}%',
+  expCta:'Чтобы экспортировать отдельные стемы, сначала разделите песню.',expCtaBtn:'AI-разделение',expCtaCost:'{n} баллов',
+  notFound:'Страница не найдена — вернулись на главную.',skipLink:'К содержимому',billUsd:'Курс доллара (₪ за $, для примерной цены на других языках)',navDiscS:'Обзор'},
+es:{gbarT:'Esta es la canción demo. Regístrate gratis para subir tus canciones, guardar, separar pistas y exportar.',gbarUp:'Regístrate gratis',
+  firstHint:'Arrastra una canción aquí o pulsa «Subir canción» — o prueba primero la canción demo.',
+  sepConfH:'Separación de pistas con IA',sepConfP:'La separación cuesta {n} puntos (tienes {b}). Tiempo estimado: {t}. Mientras tanto puedes seguir navegando por el sitio.',
+  sepConfGo:'Separar · {n} puntos',sepConfSkip:'No volver a preguntar',sepEst:'unos {a}–{b} min',sepModel:'Descargando el modelo de IA (unos 80 MB, gratis, una vez)… {p}%',
+  expCta:'Para exportar pistas separadas, primero separa la canción.',expCtaBtn:'Separación con IA',expCtaCost:'{n} puntos',
+  notFound:'Página no encontrada — volvimos al inicio.',skipLink:'Saltar al contenido',billUsd:'Tipo de cambio del dólar (₪ por $, para el precio aproximado en otros idiomas)',navDiscS:'Descubrir'}};
+for(const k in IQW)Object.assign(I[k],IQW[k]);
 
 
 
@@ -595,7 +628,8 @@ function computeBands(x){
 }
 
 const OH=512,ON=1024,FPS=SR/OH;
-const envTime=f=>(f*OH+ON/2-OH/2)/SR;
+const ENV_LAG=330; /* qw: the flux peak of an onset sits ~15 ms after the frame centre (REVIEW-MUSIC 1.2) */
+const envTime=f=>(f*OH+ON/2-OH/2+ENV_LAG)/SR;
 async function computeOnset(x,prog){
   const fft=makeFFT(ON),w=hann(ON),re=new Float64Array(ON),im=new Float64Array(ON),prev=new Float32Array(ON/2);
   const frames=Math.max(1,Math.floor((x.length-ON)/OH)+1);
@@ -768,12 +802,18 @@ function detectChords(){
 function refineKey(){
   const cnt=new Map();for(const c of S.chords)if(c>=0)cnt.set(c,(cnt.get(c)||0)+1);
   const g=c=>cnt.get(c)||0,k=S.key.pc;
-  if(S.key.mode===0){const rel=mod(k+9,12)+12;if(g(rel)>1.2*g(k))S.key={pc:mod(k+9,12),mode:1}}
-  else{const rel=mod(k+3,12);if(g(rel)>1.2*g(k+12))S.key={pc:rel,mode:0}}
+  /* qw: relative major/minor tie-break — the chord on bar 1 of each 4-bar phrase (+ the first and last chord) is the tonic
+     far more often than not (REVIEW-MUSIC 1.3: Am–F–C–G was reported as C major) */
+  const ph=new Map(),d=typeof S.down==='number'?S.down:0;let first=-1,last=-1;
+  for(let b=0;b<S.chords.length;b++){const c=S.chords[b];if(c<0)continue;if(first<0)first=c;last=c;if(mod(b-d,16)===0)ph.set(c,(ph.get(c)||0)+1)}
+  if(first>=0)ph.set(first,(ph.get(first)||0)+1);if(last>=0)ph.set(last,(ph.get(last)||0)+1);
+  const p=c=>ph.get(c)||0;
+  if(S.key.mode===0){const rel=mod(k+9,12)+12;if(g(rel)>1.2*g(k)||(g(rel)>=0.8*g(k)&&p(rel)>=2*Math.max(1,p(k))))S.key={pc:mod(k+9,12),mode:1}}
+  else{const rel=mod(k+3,12);if(g(rel)>1.2*g(k+12)||(g(rel)>=0.8*g(k+12)&&p(rel)>=2*Math.max(1,p(k+12))))S.key={pc:rel,mode:0}}
 }
 function detectDownbeat(){
   const B=S.beats.length;if(!S.lowEnv){S.down=0;return}
-  const lowAt=t=>{const f=Math.round((t*SR-(ON/2-OH/2))/OH);let m=0;for(let d=-1;d<=1;d++)m=Math.max(m,S.lowEnv[f+d]||0);return m};
+  const lowAt=t=>{const f=Math.round((t*SR-(ON/2-OH/2+ENV_LAG))/OH);let m=0;for(let d=-1;d<=1;d++)m=Math.max(m,S.lowEnv[f+d]||0);return m};
   const ch=new Array(4).fill(0),lo=new Array(4).fill(0);let tc=0,tl=0;
   for(let b=0;b<B;b++){const p=b%4;const c=b>0&&S.chords[b]!==S.chords[b-1]?1:0;ch[p]+=c;tc+=c;const l=lowAt(S.beats[b]);lo[p]+=l;tl+=l}
   let best=0,bs=-1;
@@ -789,7 +829,7 @@ async function measureLoudness(buf){
   const oc=new OfflineAudioContext(nc,buf.length,sr);
   const src=oc.createBufferSource();src.buffer=buf;
   const hs=oc.createBiquadFilter();hs.type='highshelf';hs.frequency.value=1681.97;hs.gain.value=4.0;
-  const hp=oc.createBiquadFilter();hp.type='highpass';hp.frequency.value=38.13;hp.Q.value=0.5;
+  const hp=oc.createBiquadFilter();hp.type='highpass';hp.frequency.value=38.13;hp.Q.value=-6.02; /* qw: Web Audio highpass Q is in dB → Q≈0.5003 (BS.1770); 0.5 meant Q≈1.06 (REVIEW-MUSIC 1.5) */
   src.connect(hs).connect(hp).connect(oc.destination);src.start();
   const r=await oc.startRendering();
   const blk=Math.round(0.4*sr),hop=Math.round(0.1*sr),chs=[];for(let c=0;c<nc;c++)chs.push(r.getChannelData(c));
@@ -834,7 +874,16 @@ function computeWave(x){
 function flats(){if(S.acc===1)return false;if(S.acc===2)return true;if(!S.key)return false;const pc=mod(S.key.pc+S.transpose,12);return FLAT_MAJ.has(S.key.mode?mod(pc+3,12):pc)}
 function played(c){return c<0?c:mod(c%12+S.transpose-S.capo,12)+12*Math.floor(c/12)}
 function sounding(c){return c<0?c:mod(c%12+S.transpose,12)+12*Math.floor(c/12)}
-function chordName(c,ascii){if(c<0)return 'N.C.';const n=(ascii?(flats()?ASCII_F:ASCII_S):(flats()?FLAT:SHARP))[c%12];return n+(c>=12?'m':'')}
+/* qw: non-diatonic roots are spelled on the flat side (Db Eb Ab Bb) unless the key has ≥4 sharps, F♯ stays sharp unless the key
+   has ≥3 flats — so C major's bVII reads B♭, not A♯ (REVIEW-MUSIC §4). Diatonic roots follow the key signature as before. */
+const KEY_SHARPS=[0,-5,2,-3,4,-1,-6,1,-4,3,-2,5];
+function chordFlat(pc){
+  if(S.acc===1)return false;if(S.acc===2)return true;if(!S.key||!(pc===1||pc===3||pc===6||pc===8||pc===10))return flats();
+  const kp=mod(S.key.pc+S.transpose,12),maj=S.key.mode?mod(kp+3,12):kp;
+  if([0,2,4,5,7,9,11].some(d=>mod(maj+d,12)===pc))return flats();
+  const sh=KEY_SHARPS[maj];return pc===6?sh<=-3:sh<4;
+}
+function chordName(c,ascii){if(c<0)return 'N.C.';const fl=chordFlat(c%12),n=(ascii?(fl?ASCII_F:ASCII_S):(fl?FLAT:SHARP))[c%12];return n+(c>=12?'m':'')}
 function chordColor(c){if(c<0)return 'transparent';const h=(mod((c%12)*7,12))*30;return c>=12?`hsl(${h},45%,42%)`:`hsl(${h},62%,52%)`}
 function guitarSvg(c){
   if(c<0)return '<svg viewBox="0 0 100 122"><text class="txt" x="50" y="66" text-anchor="middle" font-size="13" fill="currentColor" opacity=".45" font-family="IBM Plex Mono,monospace">N.C.</text></svg>';
@@ -1231,27 +1280,29 @@ function showNotice(text,actions){
 }
 /* ---------- analysis pipeline ---------- */
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
+const ANG={n:0}; /* qw: a newer analyze() supersedes a running one (demo vs. an upload right after the tool opened) */
 async function analyze(buffer,name,demo,nosave){
+  const gen=++ANG.n,stale=()=>gen!==ANG.n;
   stop();P.pos=0;cancelSep(true);
   Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null,drumHits:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
-  const x=await toMono(buffer);
-  busy(t('bWave'),0.08);await tick();
+  const x=await toMono(buffer);if(stale())return;
+  busy(t('bWave'),0.08);await tick();if(stale())return;
   S.wave=computeWave(x);buildOverview();
-  const on=await computeOnset(x,p=>busy(t('bBeats'),0.1+p*0.3));
+  const on=await computeOnset(x,p=>busy(t('bBeats'),0.1+p*0.3));if(stale())return;
   S.env=on.env;S.lowEnv=on.low;
-  S.chroma=await computeChroma(x,p=>busy(t('bChords'),0.4+p*0.48));
-  busy(t('bTempo'),0.9);await tick();
+  S.chroma=await computeChroma(x,p=>busy(t('bChords'),0.4+p*0.48));if(stale())return;
+  busy(t('bTempo'),0.9);await tick();if(stale())return;
   const genv=new Float32Array(S.env.length);for(let i=0;i<genv.length;i++)genv[i]=S.env[i]+2*S.lowEnv[i];
   const g=fitGrid(genv,estimateTempo(S.env));S.bpm=g.bpm;S.offset=g.offset;
   buildBeats();recompute();
-  try{const L=await measureLoudness(buffer);S.lufs=L.lufs;S.peak=L.peak}catch(e){}
+  try{const L=await measureLoudness(buffer);if(stale())return;S.lufs=L.lufs;S.peak=L.peak}catch(e){}
   renderStats();busy(null);
   if(!demo&&!nosave){saveLib();if(buffer.duration>=60)offerCatalogMatch()}
 }
-function recompute(){S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
+function recompute(){S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
 function regrid(){buildBeats();S.chords=detectChords();detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
 
 async function synthDemo(o){
@@ -1304,7 +1355,7 @@ async function analyzeTrack(buffer,prog,hint){
   const g=fitGrid(genv,estimateTempo(on.env));
   const saved=S;let out;
   S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0,transpose:0,capo:0};
-  try{buildBeats();S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
+  try{buildBeats();S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
   finally{S=saved}
   prog(1);return {...base,...out};
 }
@@ -1423,15 +1474,49 @@ function aiRun(LR,len,job,prog){
     AI.w.postMessage({type:'run',LR,n:len,overlap:lowMem()?0.15:0.25},[LR.buffer]);
   });
 }
+/* qw: separation flow = (1) model download as a free step, (2) a confirmation with the price, balance and a time
+   estimate (skippable with "don't ask again"), (3) charge, (4) run. A failed download never costs a charge/refund. */
+const SEP_OK='chordroom.sepok';
+function sepEstimate(){const d=S.dur||240,gpu=AI.ready?AI.ep==='webgpu':!!navigator.gpu,per=gpu?0.3:1.6,a=Math.max(1,Math.round(d*per/60)),b=Math.max(a+1,Math.round(d*per*2/60));return t('sepEst',{a,b})}
+function sepConfirm(n,b){
+  return new Promise(ok=>{
+    const w=document.createElement('div');w.className='dlgwrap sepc';w.id='sepDlg';
+    w.innerHTML=`<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="sepH"><h3 id="sepH"></h3><p class="sepp"></p>
+      <label class="sepskip"><input type="checkbox"><span></span></label>
+      <div class="row2"><button type="button" class="btn solid go"></button><button type="button" class="btn ghost no"></button></div></div>`;
+    w.querySelector('h3').textContent=t('sepConfH');w.querySelector('.sepp').textContent=t('sepConfP',{n,b,t:sepEstimate()});
+    w.querySelector('.sepskip span').textContent=t('sepConfSkip');w.querySelector('.go').textContent=t('sepConfGo',{n});w.querySelector('.no').textContent=t('cancel');
+    const ret=document.activeElement,done=v=>{if(v&&w.querySelector('.sepskip input').checked)try{localStorage.setItem(SEP_OK,'1')}catch(e){}
+      w.remove();document.documentElement.classList.remove('dlg-open');if(ret&&ret.isConnected)ret.focus({preventScroll:true});ok(v)};
+    w.querySelector('.go').onclick=()=>done(true);w.querySelector('.no').onclick=()=>done(false);
+    w.addEventListener('click',e=>{if(e.target===w)done(false)});
+    w.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();done(false)}
+      else if(e.key==='Tab'){const f=[...w.querySelectorAll('input,button')],i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}});
+    document.body.appendChild(w);document.documentElement.classList.add('dlg-open');setTimeout(()=>w.querySelector('.go').focus(),30);
+  });
+}
 async function aiSeparate(){
   if(!S.buffer||AI.busy||AI.ext)return;
+  if(needAccount()){askAccount();return}
   if(!(await payFor('sep')))return;
-  const pay=await charge('sep',S.name);if(!pay)return;
-  logAct('separate',S.name);
-  AI.busy=true;const job=++AI.job;AI.pay=pay;renderStemsUI();
+  AI.busy=true;let job=++AI.job;AI.pay=null;renderStemsUI();
   const token=S.buffer;
+  if(!AI.ready){                                                        // free step: the model
+    try{await aiInit(job,(p,m)=>sepProgress(p,p<0.95?t('sepModel',{p:Math.min(100,Math.round(p/0.9*100))}):m));renderStemsUI()}
+    catch(e){console.error(e);if(job!==AI.job)return;if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}sepEnd(t('aiErr',{m:String(e.message||e).slice(0,80)}),true);return}
+    if(job!==AI.job||S.buffer!==token)return;
+  }
+  const paid=billingOn()&&!ACC.admin&&costOf('sep')>0;
+  let skip=false;try{skip=localStorage.getItem(SEP_OK)==='1'}catch(e){}
+  if(paid&&!skip){sepProgress(0,'');$('#sprog').hidden=true;
+    const ok=await sepConfirm(costOf('sep'),ACC.cred?ACC.cred.credits||0:0);
+    if(job!==AI.job||S.buffer!==token)return;
+    if(!ok){sepEnd(null);return}}
+  const pay=await charge('sep',S.name);if(!pay){if(job===AI.job)sepEnd(null);return}
+  if(job!==AI.job||S.buffer!==token){refund(pay);return}
+  logAct('separate',S.name);
+  AI.pay=pay;
   try{
-    if(!AI.ready){await aiInit(job,sepProgress);renderStemsUI()}
     sepProgress(0,t('aiRun',{p:0}));
     const [LR,len]=await stereo44();
     sepMark(pay);
@@ -1448,7 +1533,7 @@ async function aiSeparate(){
 }
 const AI_BYTES=78767446;
 function cancelSep(silent){
-  if(!AI.busy)return;AI.job++;sepUnmark();if(AI.pay){refund(AI.pay);AI.pay=null}
+  if(!AI.busy)return;AI.job++;sepUnmark();{const sd=$('#sepDlg');if(sd)sd.querySelector('.no').click()} /* qw */if(AI.pay){refund(AI.pay);AI.pay=null}
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
   else if(AI.w){AI.w.terminate();AI.w=null;AI.ready=false}
   sepEnd(silent?null:t('canceled'));
@@ -1680,9 +1765,17 @@ function renderExport(){
     l.querySelector('span').textContent=t(e.id)+(ok?'':` · ${t('needStems')}`);
     l.querySelector('input').onchange=ev=>{expSel[e.id]=ev.target.checked?1:0;renderDlCost()};box.appendChild(l)});
   renderDlCost();
+  /* qw: the greyed-out stem exports lead to the separation instead of a dead end */
+  let cta=$('#xcta');if(!cta){cta=document.createElement('div');cta.id='xcta';cta.className='xcta';box.before(cta)}
+  const need=!!S.buffer&&EXP.some(e=>!expOk(e))&&(typeof cfgOn!=='function'||cfgOn('ai'));cta.hidden=!need;
+  if(need){const n=billingOn()&&!ACC.admin?costOf('sep'):0;cta.innerHTML=`<span></span><button type="button" class="btn ghost"><b></b>${n?`<i class="cost"></i>`:''}</button>`;
+    cta.querySelector('span').textContent=t('expCta');cta.querySelector('b').textContent=t('expCtaBtn');if(n)cta.querySelector('i').textContent=t('expCtaCost',{n});
+    cta.querySelector('button').disabled=$('#aiBtn').disabled;
+    cta.querySelector('button').onclick=()=>{$('#rack').scrollIntoView({block:'center',behavior:'smooth'});aiSeparate()}}
 }
 function saveBlob(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
 async function download(){
+  if(needAccount()){askAccount();return}                              /* qw */
   const msg=$('#dlMsg'),btn=$('#dlBtn');msg.classList.remove('err');
   if(typeof cfgOn==='function'&&!cfgOn('dl')){msg.textContent=t('offByAdmin');msg.classList.add('err');return}
   const pick=EXP.filter(e=>expSel[e.id]&&expOk(e));
@@ -1768,7 +1861,7 @@ async function openLib(it){
       const ab=await (await fetch(url)).arrayBuffer();busy(t('bCloud'),0.3);
       const blob=new Blob([ab],{type:it.file_type||''});   // copy before decodeAudioData detaches the buffer
       const buf=await ac().decodeAudioData(ab);
-      await analyze(buf,it.name,false,true);restoreSaved(it);rememberSong(blob,{name:it.name});logAct('song_open',it.name);
+      await analyze(buf,it.name,false,true);if(S.buffer!==buf)return;restoreSaved(it);rememberSong(blob,{name:it.name});logAct('song_open',it.name);
       S.fileMeta={file_path:it.file_path,file_size:it.file_size,file_type:it.file_type};S.genre=it.genre||'';setSaveState('saved');
       $('#notice').hidden=true;return;
     }catch(e){console.warn(e);busy(null)}
@@ -2089,7 +2182,9 @@ function auDoneFill(){
   const pass=AU.done==='pass',g=$('#auGift'),b=BILL(),n=+b.signup||0;
   g.hidden=pass||!(billingOn()&&n>0);if(!g.hidden)g.querySelector('span').innerHTML=esc(t('auDoneGift',{n:'⁦'+n+'⁩'}));
 }
-$('#auDoneGo').onclick=()=>closeDlg();
+$('#auDoneGo').onclick=()=>{const fresh=AU.done==='new';closeDlg();if(!fresh)return;                     /* qw */
+  const v=GATE.v;if(!v||!GATED[v]&&v!=='tool')showView('tool');
+  setTimeout(()=>toast(t('firstHint'),[[t('upload'),()=>$('#file').click()]]),400)};
 /* ---- forgot password → code + new password ---- */
 $('#fgEmail').addEventListener('input',()=>auFe($('#fgEmail'),''));
 $('#fForgot').addEventListener('submit',e=>{e.preventDefault();auMsg('');
@@ -2403,7 +2498,7 @@ async function loadCloudLib(){
 async function cloudSave(item){if(!ACC.user||ACC.lib===null)return;try{await Backend.saveSong(item);ACC.lib=[item,...ACC.lib.filter(x=>x.name!==item.name)];loadProfile(false)}catch(e){console.warn(e)}}
 async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await Backend.deleteSong(name);ACC.lib=ACC.lib.filter(x=>x.name!==name);loadProfile(false)}catch(e){console.warn(e)}}
 /* ---------- points & plans ---------- */
-const DEF_BILL={on:true,signup:20,costs:{sep:5,stems:2},currency:'ILS',contact:'',plans:[{id:'basic',price:29,points:60,link:''},{id:'pro',price:59,points:150,link:'',best:true},{id:'studio',price:99,points:400,link:''}]};
+const DEF_BILL={on:true,signup:20,costs:{sep:5,stems:2},currency:'ILS',contact:'',usd_rate:3.7,plans:[{id:'basic',price:29,points:60,link:''},{id:'pro',price:59,points:150,link:'',best:true},{id:'studio',price:99,points:400,link:''}]};
 function BILL(){const b=(ACC.config&&ACC.config.billing)||{};return {...DEF_BILL,...b,costs:{...DEF_BILL.costs,...(b.costs||{})},plans:Array.isArray(b.plans)&&b.plans.length?b.plans:DEF_BILL.plans}}
 // the points tables/functions not installed yet in Supabase → behave as before (free) instead of blocking everyone
 const missingDb=e=>/does not exist|could not find|schema cache|PGRST20[0-9]|42703|42883/i.test(String((e&&(e.code||''))+' '+(e&&e.message||e)));
@@ -2599,7 +2694,7 @@ $('#udPlanBtn').onclick=()=>busyBtn($('#udPlanBtn'),async()=>{const m=ACC.admUse
   try{await Backend.adminSetPlan(m.id,$('#udPlan').value,+$('#udMonths').value);setMsg($('#udCredMsg'),t('planDone'));if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
 $('#udCred details').addEventListener('toggle',async e=>{if(e.target.open&&ACC.admUser){try{renderLedger($('#udLog'),await Backend.adminLedger(ACC.admUser.id,50))}catch(x){}}});
 function fillBilling(){
-  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;$('#bRef').value=refPts();$('#bRefMax').value=(()=>{const n=parseInt(b.referral_max,10);return isFinite(n)&&n>=0?n:20})();
+  const b=BILL();$('#bOn').checked=b.on!==false;$('#bSignup').value=b.signup;$('#bContact').value=b.contact||'';$('#bUsd').value=(+b.usd_rate>0?+b.usd_rate:3.7); /* qw */$('#bSep').value=b.costs.sep;$('#bStems').value=b.costs.stems;$('#bRef').value=refPts();$('#bRefMax').value=(()=>{const n=parseInt(b.referral_max,10);return isFinite(n)&&n>=0?n:20})();
   $('#bPlans').innerHTML=b.plans.map((p,i)=>`<div class="bplan" data-i="${i}"><b>${esc(planName(p.id))}</b>
     <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
     <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
@@ -2630,7 +2725,7 @@ $('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
   const b=BILL(),plans=[...document.querySelectorAll('#bPlans .bplan')].map((el,i)=>{const p=b.plans[i],f=k=>el.querySelector(`[data-f="${k}"]`).value;
     const v=f('variant').trim();
     return {id:p.id,price:Math.max(0,+f('price')||0),points:Math.max(0,parseInt(f('points'),10)||0),link:f('link').trim(),...(v?{variant:v}:{}),...(el.querySelector('.best input').checked?{best:true}:{})}});
-  const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),
+  const billing={...b,on:$('#bOn').checked,signup:Math.max(0,parseInt($('#bSignup').value,10)||0),contact:$('#bContact').value.trim(),usd_rate:Math.min(100,Math.max(0.1,parseFloat($('#bUsd').value)||3.7)), /* qw */
     costs:{sep:Math.max(1,parseInt($('#bSep').value,10)||1),stems:Math.max(1,parseInt($('#bStems').value,10)||1)},plans,
     referral:Math.min(1000,Math.max(0,parseInt($('#bRef').value,10)||0)),referral_max:Math.max(0,parseInt($('#bRefMax').value,10)||0)};
   const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
@@ -2811,7 +2906,7 @@ async function quickAnalyze(buffer){
   const saved=S;let out;
   S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0};
   try{
-    buildBeats();S.key=detectKey();S.chords=detectChords();refineKey();S.chords=detectChords();detectDownbeat();
+    buildBeats();S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();
     const prog=[];for(let b=S.down;b<S.chords.length&&prog.length<8;b++){const c=S.chords[b];if(c>=0&&c!==prog[prog.length-1])prog.push(c)}
     out={bpm:Math.round(S.bpm*10)/10,pc:S.key.pc,mode:S.key.mode,chords:prog};
   }finally{S=saved}
@@ -2985,6 +3080,8 @@ function showView(v,anchor){
   if((v!=='tool'||lock)&&P.playing)stop();
   if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
   else{stopPreview();if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  if(v==='tool'&&!lock)setTimeout(ensureSong,0);                      /* qw: the demo is analysed only when the tool is first shown */
+  renderGuestBar();
   if(window.DJ)j?DJ.show():DJ.hide();
   if(window.CRATE)v==='crate'&&!lock?CRATE.show():CRATE.hide();
   if(window.MASHUP)v==='mashup'&&!lock?MASHUP.show():MASHUP.hide();   // Mashup Studio (assets/mashup.js)
@@ -2995,17 +3092,31 @@ function showView(v,anchor){
   try{history.replaceState(null,'',v==='about'&&!anchor?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
   const tgt=anchor&&document.getElementById(anchor);
   if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
+  viewTitle(v,lock,!!anchor);
 }
+/* qw: document.title per view + focus to the view's h1 (screen readers, history, tabs) */
+function viewTitle(v,lock,anchored){
+  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),nm=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():(v==='terms'||v==='privacy')&&window.LEGAL?LEGAL.title(v,LANG):'';
+  document.title=v==='about'?`Chord Room · ${t('tagline')}`:`${lock?t('gateLock'):nm||v} · Chord Room`;
+  if(!VT.user)return;                                                    // only after a user navigation, not on boot
+  const sec=lock?'#gateView':VIEWS[v][0],h=!anchored&&$(sec)&&$(sec).querySelector('h1');
+  if(h){h.tabIndex=-1;try{h.focus({preventScroll:true})}catch(e){}}
+}
+const VT={user:false};document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{VT.user=true},800));
 /* ---------- sign-in gate: the tools (tool, Discover, DJ, Crate) need an account; home, pricing, terms and privacy stay open.
    Only when accounts are on (no backend configured = local file, everything open). Honest-user level: the tools run in the
    browser; what costs us (uploads, stems, catalog, assistant) is checked on the server anyway. ---------- */
-const GATED={tool:1,discover:1,dj:1,crate:1,mashup:1},GATE={v:null,locked:false};
+const GATED={discover:1,dj:1,crate:1,mashup:1},GATE={v:null,locked:false}; /* qw: the tool opens with the demo for guests; upload/save/separate/export ask for an account */
 const gated=v=>!!GATED[v]&&ACC.on&&!ACC.user;
 const needAccount=()=>ACC.on&&!ACC.user;
-function regate(){if(!GATE.v)return;const l=gated(GATE.v);if(l!==GATE.locked)showView(GATE.v);else if(l)renderGate(GATE.v)}
+function regate(){if(!GATE.v)return;const l=gated(GATE.v);if(l!==GATE.locked)showView(GATE.v);else if(l)renderGate(GATE.v);renderGuestBar()}
+/* qw: slim banner over the tool for guests */
+function renderGuestBar(){const el=$('#guestBar');if(!el)return;const on=needAccount()&&!$('#toolView').hidden&&AUTH.known;el.hidden=!on;if(!on)return;
+  el.innerHTML=`<span class="gbt">${esc(t('gbarT'))}</span><span class="gba"><button type="button" class="btn solid" data-g="up">${esc(t('gbarUp'))}</button><button type="button" class="btn ghost" data-g="in">${esc(t('signIn'))}</button></span>`}
+$('#guestBar').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b)openDlg(b.dataset.g)});
 function renderGate(v){
   const el=$('#gateView'),wait=!AUTH.known,up=signupOpen(),b=BILL(),gift=billingOn()&&+b.signup>0?+b.signup:0;
-  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),name=navEl?navEl.textContent.trim():'';
+  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),name=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():'';
   const ben=[gift?t('auBenGift').replace('{n}',gift):null,t('auBen1'),t('auBen2'),t('auBen3'),t('auBen4')].filter(Boolean);
   el.innerHTML=`<div class="gate-card" role="region" aria-labelledby="gateH">
     <div class="gate-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.3"/></svg></div>
@@ -3020,6 +3131,8 @@ function renderGate(v){
 }
 $('#gateView').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;
   if(g==='up'||g==='in')openDlg(g);else showView(g==='home'?'about':'pricing')});
+/* qw: skip link → the visible view's heading */
+$('#skipLink').onclick=()=>{const sec=Object.values(VIEWS).map(v=>$(v[0])).concat([$('#gateView')]).find(e=>e&&!e.hidden);if(!sec)return;const h=sec.querySelector('h1')||sec;h.tabIndex=-1;h.focus({preventScroll:true});h.scrollIntoView({block:'start'})};
 // uploading a song needs an account too (header button, drag & drop)
 function askAccount(){openDlg(signupOpen()?'up':'in')}
 $('#upLbl').addEventListener('click',e=>{if(needAccount()){e.preventDefault();askAccount()}});
@@ -3063,8 +3176,9 @@ $('#legalView').addEventListener('click',e=>{
   if(b.dataset.nav)showView(b.dataset.nav);else{window.scrollTo(0,0);$('#lgH').tabIndex=-1;$('#lgH').focus({preventScroll:true})}
 });
 // the About page is the home page (no hash); the tool lives at #tool
-const viewOfHash=()=>{const h=location.hash.slice(1);return h==='about-a11y'?'about':VIEWS[h]?h:'about'};
-const routeHash=()=>{const h=location.hash.slice(1);showView(viewOfHash(),h==='about-a11y'?h:null)};
+const viewOfHash=()=>{const h=location.hash.slice(1).split('#')[0];return h==='about-a11y'?'about':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
+const routeHash=()=>{const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();showView(v,h==='about-a11y'?h:null);
+  if(h&&v==='about'&&h!=='about-a11y'&&h!=='about')setTimeout(()=>toast(t('notFound')),300)}; /* qw: unknown hash → home + a notice */
 window.addEventListener('hashchange',routeHash);
 
 /* ---------- last song: the tool reopens it after a reload / browser restart (IndexedDB) ---------- */
@@ -3085,15 +3199,23 @@ function rememberState(item){if(!S.demo)LastDB.set('state',{...item,uid:AUTH.uid
 function rememberPos(){if(!S.buffer||S.demo)return;try{localStorage.setItem(POS_K,JSON.stringify({name:S.name,pos:P.playing?now():P.pos}))}catch(e){}}
 window.addEventListener('pagehide',rememberPos);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)rememberPos()});
+/* qw: the demo (or the last song) is loaded the first time the tool is shown, not at boot on the home page */
+const ENS={p:null};
+function ensureSong(){
+  if(S.buffer||ENS.p||!$('#busy').hidden||$('#toolView').hidden)return ENS.p;
+  ENS.p=(async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);if(S.buffer===buf)S.owner=null}catch(e){console.error(e);busy(null)}finally{ENS.p=null}})();
+  return ENS.p;
+}
 // signed in as someone else (or out): the tool must not keep showing the previous user's song
 async function userSwitched(uid,prev){
+  if(!S.buffer&&!ENS.p){return}                                // qw: nothing loaded yet → ensureSong decides when the tool opens
   if(S.demo){if(uid)restoreLast().catch(()=>{});return}      // demo on screen → this account's last song, if any
   if((S.owner||null)===(uid||null))return;
   // signing in right after working as a guest keeps that song: it becomes the new account's
   if(!prev&&uid&&!S.owner){S.owner=uid;for(const k of ['audio','state'])try{const v=await LastDB.get(k);if(v&&!v.uid)await LastDB.set(k,{...v,uid})}catch(e){}return}
   try{cancelSep(true);stop();closeFull&&closeFull()}catch(e){}
   if(await restoreLast())return;
-  try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);S.owner=null}catch(e){console.error(e);busy(null)}
+  try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);if(S.buffer===buf)S.owner=null}catch(e){console.error(e);busy(null)}
 }
 async function restoreLast(){
   await AUTH.ready;
@@ -3104,7 +3226,7 @@ async function restoreLast(){
   try{
     busy(t('bReading'),0.01);
     const buf=await ac().decodeAudioData(await a.blob.arrayBuffer());
-    await analyze(buf,a.name,false,true);S.owner=a.uid||null;
+    await analyze(buf,a.name,false,true);if(S.buffer!==buf)return true; /* qw: superseded by a newer load */S.owner=a.uid||null;
     let st=null;try{st=await LastDB.get('state')}catch(e){}
     if(!st||st.name!==a.name||(st.uid||null)!==(AUTH.uid||null))st=readLib().find(x=>x.name===a.name)||null;
     if(st&&st.chords&&Math.abs((st.dur||0)-buf.duration)<0.5){
@@ -3126,7 +3248,7 @@ async function loadFile(file){
   try{busy(t('bReading'),0.01);const ab=await file.arrayBuffer();const buf=await ac().decodeAudioData(ab);
     const saved=readLib().find(x=>x.name===name);
     setSaveState('');
-    await analyze(buf,name,false);S.genre=(saved&&saved.genre)||'';
+    await analyze(buf,name,false);if(S.buffer!==buf)return; /* qw: superseded by a newer load */S.genre=(saved&&saved.genre)||'';
     if(saved&&Math.abs(saved.dur-buf.duration)<0.5)restoreSaved(saved);
     rememberSong(file,{name});
     logAct('song_upload',`${name} · ${fmtS(buf.duration)}`);
@@ -3201,7 +3323,7 @@ $('#clickBtn').onclick=()=>{S.click=!S.click;$('#clickBtn').classList.toggle('on
 $('#aiBtn').onclick=aiSeparate;$('#cancelBtn').onclick=()=>cancelSep(false);
 $('#dlBtn').onclick=download;
 $('#editBtn').onclick=()=>{S.editing=!S.editing;$('#pop').hidden=true;renderSheet()};
-$('#libBtn').onclick=()=>{renderLib();$('#lib').hidden=false};$('#libClose').onclick=()=>$('#lib').hidden=true;
+$('#libBtn').onclick=()=>{if(needAccount()){askAccount();return}renderLib();$('#lib').hidden=false}; /* qw */$('#libClose').onclick=()=>$('#lib').hidden=true;
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
   if(!$('#djView').hidden||(!$('#mashupView').hidden&&e.key!=='Escape'))return; // the DJ and Mashup views have their own keys
@@ -3268,5 +3390,5 @@ applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();r
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
 document.addEventListener('DOMContentLoaded',()=>{hookPages();routeHash()});
 AUTH.ready.then(()=>setTimeout(sepCrashCheck,1500));
-(async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true)}catch(e){console.error(e);busy(null)}})();
+/* qw: no boot-time demo analysis — showView('tool') → ensureSong() */
 })();

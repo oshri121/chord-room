@@ -111,7 +111,13 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
-- Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching.
+- Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching (the word does not appear in UI copy).
+  Non-diatonic chord roots are spelled on the flat side (`chordFlat`); `refineKey` breaks the relative major/minor tie with the chord on
+  bar 1 of each 4-bar phrase. Onset frame times carry `ENV_LAG` (+15 ms); the LUFS highpass Q is in dB (−6.02).
+- SEO/sharing: `<head>` OG/Twitter/canonical point at `https://chord-room.pages.dev` (change with a custom domain), `assets/og.png`
+  (1200×630, regenerate with PIL if the brand changes), PNG icons + `apple-touch-icon.png`, `manifest.webmanifest`, `robots.txt`, `sitemap.xml`.
+  Pricing shows ≈ USD next to ₪ for non-Hebrew languages from `billing.usd_rate` (admin settings, default 3.7); plans without an
+  https checkout link render "coming soon" / "contact us" instead of a live CTA.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
 - Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,
@@ -150,8 +156,12 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
   answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
   the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
-- Sign-in gate: the tools (#tool, #discover, #dj, #crate, #mashup) need an account; signed out they show `#gateView` (`renderGate`,
-  class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. Upload/drag-drop/`loadFile`
+- Sign-in gate: #discover, #dj, #crate, #mashup need an account; signed out they show `#gateView` (`renderGate`,
+  class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. `#tool` is open to guests with the
+  demo song + a slim banner (`#guestBar`, `renderGuestBar`); upload / My songs / export / separation ask for an account. The demo (or
+  the last song) is analysed by `ensureSong()` the first time the tool is shown, never at boot on the home page; a newer `analyze()`
+  supersedes a running one (`ANG`). Separation: model download (free) → `sepConfirm` (price, balance, estimate, "don't ask again" in
+  `chordroom.sepok`) → `charge`. `showView` sets `document.title` per view and moves focus to the view's h1; unknown hashes → home + toast. Upload/drag-drop/`loadFile`
   ask for an account too (`needAccount`/`askAccount`). `regate()` re-routes on auth changes. Only when accounts are on
   (tests that exercise the tools without the mock stub `vendor/supabase.js` → local mode). The old `require_login` overlay
   (`#gate`) is retired and its admin toggle hidden. Client-side (honest-user) gate; paid/server things are checked server-side.

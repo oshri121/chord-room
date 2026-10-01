@@ -132,7 +132,7 @@ function applyRate(d){
     stSched(d,{semitones:semisOf(d),output:now+D.lat});
   }
   // decks synced to this one follow
-  for(const o of D.decks)if(o!==d&&o.sync&&o.track&&d.track&&D.masterI===d.i){const r=syncRate(o,d);if(Math.abs(r.r-o.rate)>1e-6){o.rate=r.r;o.k=r.k;applyRate(o);renderDeck(o)}}
+  for(const o of D.decks)if(o!==d&&o.sync&&o.track&&d.track&&D.masterI===d.i){const r=syncRate(o,d);if(Math.abs(r.r-o.rate)>1e-6){o.rate=r.r;o.k=r.k;o.tempo=clamp((o.rate-1)/o.range,-1,1);applyRate(o);renderDeck(o)}}
 }
 function applyKey(d){if(d.playing&&!d.braking)stSched(d,{semitones:semisOf(d),output:c.currentTime+D.lat});renderDeck(d);renderMatch();renderRecsSoon()}
 
@@ -141,6 +141,7 @@ const other=d=>D.decks[1-d.i];
 function syncRate(d,m){
   const mb=m.track.bpm*m.rate;let best={r:1,k:1},bd=9;
   for(const k of [0.5,1,2]){const r=mb*k/d.track.bpm,dd=Math.abs(Math.log(r));if(dd<bd){bd=dd;best={r,k}}}
+  best.r=clamp(best.r,1-d.range,1+d.range);                 /* qw: capped at the deck's tempo range, like a CDJ (REVIEW-MUSIC 1.7) */
   return best;
 }
 function alignPhase(d,m){

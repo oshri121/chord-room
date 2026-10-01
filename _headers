@@ -55,6 +55,12 @@
 /ai/worker.js
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
+# qw: the Open Graph image is fetched by link-preview bots (WhatsApp, Facebook, X) from other origins.
+/assets/og.png
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=86400
+
 # The logo in the sign-up / reset emails is loaded by mail clients from other origins.
 /assets/email/*
   ! Cross-Origin-Resource-Policy

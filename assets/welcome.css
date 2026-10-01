@@ -19,3 +19,4 @@ html.wl-open{overflow:hidden}
 @keyframes wlIn{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.wl{animation:none}.wlb{transition:none}}
 @media (max-width:420px){.wlgrid{grid-template-columns:1fr 1fr}.wlin{padding:24px 16px 18px}.wlin h2{font-size:19px}}
+.wlnote span{display:block} /* qw: Hebrew and English on separate lines */

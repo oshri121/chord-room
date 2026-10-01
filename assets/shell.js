@@ -15,7 +15,7 @@
   var scrim=document.getElementById('navScrim');
   var drawerT=document.getElementById('navDrawerT');
   var mq=window.matchMedia('(max-width:860px)');
-  var LEVELS=['c1','c2','c3','c4'];
+  var LEVELS=['c1','c2','s','c3','c4','c5']; /* qw: 's' = short tab names (.tsh spans) before the language picker shrinks and the icons go */
 
   /* labels owned by the shell (all five app languages) */
   var L={
@@ -34,10 +34,10 @@
     if(closeBtn)closeBtn.setAttribute('aria-label',l.close);
     if(burger)burger.setAttribute('aria-label',isOpen()?l.close:l.open);
     if(tabs)tabs.setAttribute('aria-label',l.nav);
-    var tl=document.querySelector('#navAbout span[data-i]');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
+    var tl=document.querySelector('#navAbout span[data-i]:not(.tsh)');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
     /* icon-only tabs/tools (compact levels) still show their name on hover */
     Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn,#signUpBtn'),function(b){
-      var s=b.querySelector('span[data-i]');if(s&&s.textContent&&b.title!==s.textContent)b.title=s.textContent;
+      var s=b.querySelector('span[data-i]:not(.tsh)');if(s&&s.textContent&&b.title!==s.textContent)b.title=s.textContent;
     });
   }
 

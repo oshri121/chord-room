@@ -3,28 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Chord Room</title>
-<meta name="description" content="BPM, key and chord detection, RGB DJ waveform, AI stem separation and MIDI export for FL Studio.">
+<title>Chord Room — קצב, סולם, אקורדים וערוצי AI מכל שיר</title>
+<meta name="description" content="Chord Room: זיהוי BPM, סולם ואקורדים לכל שיר, גל RGB לתקליטנים, הפרדת ערוצים ב־AI (שירה, תופים, בס) וייצוא WAV/MIDI ל־FL Studio — הכול בדפדפן. Tempo, key, chords and AI stems from any song.">
 <meta name="theme-color" content="#0B0B0C">
+<!-- qw: sharing + SEO (canonical = the Pages domain; change it when a custom domain is connected) -->
+<link rel="canonical" href="https://chord-room.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Chord Room">
+<meta property="og:locale" content="he_IL">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://chord-room.pages.dev/">
+<meta property="og:title" content="Chord Room — קצב, סולם, אקורדים וערוצי AI מכל שיר">
+<meta property="og:description" content="זיהוי BPM, סולם ואקורדים, גל RGB לתקליטנים, הפרדת ערוצים ב־AI וייצוא ל־FL Studio — הכול בדפדפן, בחינם להתחלה.">
+<meta property="og:image" content="https://chord-room.pages.dev/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Chord Room — tempo, key, chords and AI stems from any song">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chord Room — קצב, סולם, אקורדים וערוצי AI מכל שיר">
+<meta name="twitter:description" content="זיהוי BPM, סולם ואקורדים, גל RGB לתקליטנים, הפרדת ערוצים ב־AI וייצוא ל־FL Studio — הכול בדפדפן.">
+<meta name="twitter:image" content="https://chord-room.pages.dev/assets/og.png">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+<meta name="apple-mobile-web-app-title" content="Chord Room">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="assets/early.js?v=1"></script>
-<link rel="stylesheet" href="assets/app.css?v=17">
+<link rel="stylesheet" href="assets/app.css?v=18">
 <link rel="stylesheet" href="assets/dj.css?v=4">
 <link rel="stylesheet" href="assets/crate.css?v=6">
 <link rel="stylesheet" href="assets/mashup.css?v=1">
-<link rel="stylesheet" href="assets/shell.css?v=6">
-<link rel="stylesheet" href="assets/pages.css?v=4">
+<link rel="stylesheet" href="assets/shell.css?v=7">
+<link rel="stylesheet" href="assets/pages.css?v=5">
 <link rel="stylesheet" href="assets/auth.css?v=3">
-<link rel="stylesheet" href="assets/welcome.css?v=1">
-<link rel="stylesheet" href="assets/a11y.css?v=3">
-<link rel="stylesheet" href="assets/assistant.css?v=1">
+<link rel="stylesheet" href="assets/welcome.css?v=2">
+<link rel="stylesheet" href="assets/a11y.css?v=4">
+<link rel="stylesheet" href="assets/assistant.css?v=2">
 <link rel="stylesheet" href="assets/voice.css?v=1">
 </head>
 <body>
+<button type="button" class="skip" id="skipLink" data-i="skipLink"></button><!-- qw: skip link -->
 <header class="top" id="top">
   <div class="top-in">
     <div class="mark">
@@ -37,9 +58,9 @@
         <span class="tab-ind" aria-hidden="true"></span>
         <button type="button" id="navAbout" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span data-i="navHome"></span></button>
         <button type="button" id="navTool" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 4v16M15 7v10M19 10v4M21 12h0"/></svg><span data-i="navTool"></span></button>
-        <button type="button" id="navDisc" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span data-i="navDisc"></span></button>
-        <button type="button" id="navDj" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3"/></svg><span data-i="navDj"></span></button>
-        <button type="button" id="navCrate" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span data-i="navCrate"></span></button>
+        <button type="button" id="navDisc" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span data-i="navDisc"></span><span class="tsh" data-i="navDiscS"></span></button>
+        <button type="button" id="navDj" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3"/></svg><span data-i="navDj"></span><span class="tsh" data-i="navDjS"></span></button>
+        <button type="button" id="navCrate" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5-9 5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span data-i="navCrate"></span><span class="tsh" data-i="navCrateS"></span></button>
         <button type="button" id="navMashup" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h2.5c4.5 0 5 6 9.5 6H21"/><path d="M3 18h2.5c4.5 0 5-6 9.5-6"/><path d="M18 9l3 3-3 3"/></svg><span data-i="navMashup"></span></button>
         <button type="button" id="navPricing" class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18M9.5 3L12 8l2.5-5M12 8v13"/></svg><span data-i="navPricing"></span></button>
       </nav>
@@ -68,6 +89,7 @@
 <div class="banner" id="banner" hidden><b data-i="notice"></b><span id="bannerT"></span></div>
 
 <main class="wrap" id="toolView">
+  <div class="gbar" id="guestBar" hidden></div><!-- qw: guest demo banner -->
   <section class="track" aria-live="polite">
     <div>
       <div class="eyebrow"><span data-i="loaded"></span><span class="sst" id="saveState" hidden><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/></svg><span></span></span></div>
@@ -370,6 +392,7 @@
         <label class="tog" style="grid-column:1/-1"><span data-i="billingOn"></span><input type="checkbox" id="bOn"></label>
         <div class="fld"><label for="bSignup" data-i="billSignup"></label><input type="number" id="bSignup" min="0" step="1"></div>
         <div class="fld"><label for="bContact" data-i="billContact"></label><input type="text" id="bContact" dir="ltr" maxlength="200" placeholder="name@example.com"></div>
+        <div class="fld"><label for="bUsd" data-i="billUsd"></label><input type="number" id="bUsd" min="0.1" max="100" step="0.01" dir="ltr"></div><!-- qw -->
         <div class="fld"><label for="bSep" data-i="billSep"></label><input type="number" id="bSep" min="1" step="1"></div>
         <div class="fld"><label for="bStems" data-i="billStems"></label><input type="number" id="bStems" min="1" step="1"></div>
         <div class="fld"><label for="bRef" data-i="billRef"></label><input type="number" id="bRef" min="0" max="1000" step="1"></div>
@@ -387,20 +410,20 @@
 <script src="config.js?v=1"></script>
 <script src="vendor/supabase.js"></script>
 <script src="assets/backend.js?v=12"></script>
-<script src="assets/legal.js?v=1"></script>
-<script src="assets/app.js?v=27"></script>
-<script src="assets/dj-i18n.js?v=2"></script>
-<script src="assets/dj.js?v=6"></script>
+<script src="assets/legal.js?v=2"></script>
+<script src="assets/app.js?v=28"></script>
+<script src="assets/dj-i18n.js?v=3"></script>
+<script src="assets/dj.js?v=7"></script>
 <script src="assets/heblat.js?v=1"></script>
 <script src="assets/cues.js?v=1"></script>
-<script src="assets/crate.js?v=7"></script>
+<script src="assets/crate.js?v=8"></script>
 <script src="assets/mp3.js?v=1"></script>
 <script src="assets/mashup.js?v=1"></script>
-<script src="assets/pages.js?v=6"></script>
-<script src="assets/shell.js?v=6"></script>
+<script src="assets/pages.js?v=7"></script>
+<script src="assets/shell.js?v=7"></script>
 <script src="assets/bg.js?v=2"></script>
 <script src="assets/a11y.js?v=3"></script>
-<script src="assets/welcome.js?v=1"></script>
+<script src="assets/welcome.js?v=2"></script>
 <script src="assets/assistant.js?v=2"></script>
 <script src="assets/voice.js?v=1"></script>
 </body>

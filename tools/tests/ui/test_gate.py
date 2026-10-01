@@ -1,7 +1,9 @@
-"""Routing + sign-in gate (mock backend, accounts on): home is the About page, the tools (#tool #discover #dj #crate)
-show #gateView when signed out, pricing stays open, upload/gate buttons open the auth dialog, signing in opens the
-tools, signing out gates again, the brand goes home. Header sign-in/up buttons and gate layout checked in
-light/dark × he/en/ar × 375/1300-1440 px (no horizontal scroll)."""
+"""Routing + sign-in gate (mock backend, accounts on): home is the About page; the tool (#tool) is OPEN for guests with the
+demo song and a slim "sign up" banner, while #discover #dj #crate #mashup show #gateView when signed out; pricing stays
+open; upload / My songs / export / separation ask for an account (auth dialog); signing in opens the tools, hides the
+banner and keeps the song; signing out gates again; the brand goes home; an unknown hash → home + "page not found";
+document.title follows the view. Header sign-in/up buttons and gate layout checked in light/dark × he/en/ar × 375/1440 px
+(no horizontal scroll)."""
 import os, sys, time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import lib
@@ -12,22 +14,42 @@ def test(t, srv, b):
     pg.goto(srv.url()); lib.wait_booted(pg)
     t.eq('home (no hash) = About', lib.visible_views(pg), ['#aboutView'])
     t.check('first nav tab "בית" is active', pg.evaluate("document.querySelector('#navAbout').classList.contains('on')") and 'בית' in pg.inner_text('#navAbout'))
-    for nav, want, h in [('#navTool', '#gateView', '#tool'), ('#navDisc', '#gateView', '#discover'), ('#navDj', '#gateView', '#dj'),
+    t.check('home: no demo analysis at boot (tool empty, no busy overlay)', pg.evaluate("document.querySelector('#tname').textContent.trim()==='—'&&document.querySelector('#busy').hidden"), pg.inner_text('#tname'))
+    t.check('home title carries the tagline', pg.title().startswith('Chord Room ·'), pg.title())
+    for nav, want, h in [('#navDisc', '#gateView', '#discover'), ('#navDj', '#gateView', '#dj'),
                          ('#navCrate', '#gateView', '#crate'), ('#navPricing', '#pricingView', '#pricing')]:
         pg.click(nav); time.sleep(0.6)
         t.check(f'signed out: {nav} → {want} ({h})', lib.visible_views(pg) == [want] and pg.evaluate("location.hash") == h, (lib.visible_views(pg), pg.evaluate("location.hash")))
+    t.check('title per view (pricing)', pg.title().startswith('מחירים ·'), pg.title())
+    pg.click('#navTool'); time.sleep(0.6)
+    t.check('signed out: #navTool → the tool itself (guest demo)', lib.visible_views(pg) == ['#toolView'] and pg.evaluate("location.hash") == '#tool', lib.visible_views(pg))
+    lib.wait_tool_song(pg, 'שיר דוגמה')
+    t.check('guest banner shown over the demo', not pg.evaluate("document.querySelector('#guestBar').hidden") and 'הרשמה' in pg.inner_text('#guestBar'))
+    t.check('demo key agrees with its title (Am F C G → Am)', pg.inner_text('#sKey').strip() == 'Am', pg.inner_text('#sKey'))
+    t.check('export block leads to separation (CTA)', pg.is_visible('#xcta') and 'להפריד' in pg.inner_text('#xcta'))
+    t.shot(pg, 'tool_guest_light')
     pg.goto(srv.url('#tool')); lib.wait_booted(pg); time.sleep(0.5)
-    t.eq('deep link #tool → gate', lib.visible_views(pg), ['#gateView'])
+    t.eq('deep link #tool → tool (open for guests)', lib.visible_views(pg), ['#toolView'])
+    lib.wait_tool_song(pg)
+    for sel, what in [('#upLbl', 'upload'), ('#libBtn', 'My songs'), ('#dlBtn', 'export'), ('#aiBtn', 'separation')]:
+        pg.click(sel); time.sleep(0.6)
+        t.check(f'{what} asks for an account (auth dialog)', not pg.evaluate("document.querySelector('#authDlg').hidden"))
+        pg.keyboard.press('Escape'); time.sleep(0.4)
+    t.check('nothing charged / no separation started for a guest', pg.evaluate("document.querySelector('#sprog').hidden"))
+    pg.click('#guestBar [data-g=in]'); time.sleep(0.5)
+    t.check('banner "sign in" opens the dialog', not pg.evaluate("document.querySelector('#authDlg').hidden") and pg.is_visible('#fIn'))
+    pg.keyboard.press('Escape'); time.sleep(0.3)
+    pg.evaluate("location.hash='#crate'"); time.sleep(0.6)
+    t.eq('deep link #crate → gate', lib.visible_views(pg), ['#gateView'])
     t.check('gate has a heading', pg.evaluate("(document.querySelector('#gateView h1')||{}).textContent||''") != '')
     t.shot(pg, 'gate_light')
-    pg.click('#upLbl'); time.sleep(0.6)
-    t.check('upload asks for an account (auth dialog)', not pg.evaluate("document.querySelector('#authDlg').hidden"))
-    pg.keyboard.press('Escape'); time.sleep(0.4)
     pg.click('#gateView [data-g=in]'); time.sleep(0.5)
     t.check('gate "sign in" opens the dialog', not pg.evaluate("document.querySelector('#authDlg').hidden") and pg.is_visible('#fIn'))
     pg.keyboard.press('Escape'); time.sleep(0.3)
     lib.sign_up(pg, 'oshri', 'o@x.com'); time.sleep(1)
-    t.check('after sign-in: tool shown at #tool', lib.visible_views(pg) == ['#toolView'] and pg.evaluate("location.hash") == '#tool', lib.visible_views(pg))
+    t.check('after sign-in: the gated view opens (#crate)', lib.visible_views(pg) == ['#crateView'] and pg.evaluate("location.hash") == '#crate', lib.visible_views(pg))
+    pg.click('#navTool'); time.sleep(0.7)
+    t.check('tool after sign-in: banner gone, song kept', pg.evaluate("document.querySelector('#guestBar').hidden") and 'שיר דוגמה' in pg.inner_text('#tname'), pg.inner_text('#tname'))
     t.check('tool canvas laid out', (pg.evaluate("(document.querySelector('#toolView canvas')||{}).clientWidth") or 0) > 100)
     for nav, want in [('#navDisc', '#discover'), ('#navDj', '#djView'), ('#navCrate', '#crateView')]:
         pg.click(nav); time.sleep(0.7)
@@ -36,7 +58,27 @@ def test(t, srv, b):
     t.eq('after sign-out: gated again', lib.visible_views(pg), ['#gateView'])
     pg.click('#top .mark'); time.sleep(0.5)
     t.check('brand → home', lib.visible_views(pg) == ['#aboutView'] and pg.evaluate("location.hash") in ('', '#'), pg.evaluate("location.hash"))
+    pg.evaluate("location.hash='#nonsense'"); time.sleep(0.8)
+    t.check('unknown hash → home + "page not found" notice', lib.visible_views(pg) == ['#aboutView'] and not pg.evaluate("document.querySelector('#toast').hidden") and 'לא נמצא' in pg.inner_text('#toast'), pg.inner_text('#toast'))
+    lib.reload(pg); time.sleep(0.5); pg.keyboard.press('Tab'); time.sleep(0.3)
+    t.check('first Tab lands on the skip link, which becomes visible', pg.evaluate("document.activeElement===document.querySelector('#skipLink')&&document.querySelector('#skipLink').getBoundingClientRect().top>=0"), pg.evaluate("document.activeElement&&document.activeElement.id"))
+    pg.keyboard.press('Enter'); time.sleep(0.3)
+    t.check('skip link focuses the view heading', pg.evaluate("document.activeElement&&document.activeElement.tagName==='H1'"), pg.evaluate("document.activeElement&&document.activeElement.tagName"))
     t.eq('no CSP violations', lib.csp_violations(pg), [])
+    ctx.close()
+
+    t.section('sign-up from home → straight to the tool with a first hint')
+    ctx, pg = lib.page(b, srv, t, mock=lib.auth_mock(confirm=False), lang='en')
+    pg.goto(srv.url()); lib.wait_booted(pg)
+    pg.click('#signUpBtn'); time.sleep(0.4)
+    pg.type('#upUser', 'newbie'); pg.fill('#upEmail', 'n@x.com'); pg.type('#upPass', 'Sunset-Groove-2026'); pg.type('#upPass2', 'Sunset-Groove-2026'); time.sleep(0.8)
+    pg.keyboard.press('Enter'); time.sleep(0.6)
+    t.check('terms step', pg.is_visible('#fTerms'))
+    pg.click('label.au-chk:has(#auAgree)'); pg.click('label.au-chk:has(#auAge)')
+    pg.click('#auCreate'); lib.poll(pg, "!document.querySelector('#auDone').hidden", 10)
+    pg.click('#auDoneGo'); time.sleep(1)
+    t.check('"Let’s go" opens the tool', lib.visible_views(pg) == ['#toolView'], lib.visible_views(pg))
+    t.check('first hint toast', not pg.evaluate("document.querySelector('#toast').hidden") and 'Drag a song' in pg.inner_text('#toast'), pg.inner_text('#toast'))
     ctx.close()
 
     t.section('layout matrix')
@@ -51,4 +93,7 @@ def test(t, srv, b):
         pg.evaluate("location.hash='#crate'"); time.sleep(0.8)
         t.check(f'{th} {w} {lang}: gate shown, no h-scroll', lib.visible_views(pg) == ['#gateView'] and lib.scroll_width(pg) == w, lib.scroll_width(pg))
         t.shot(pg, f'gate_{th}_{w}_{lang}')
+        pg.evaluate("location.hash='#tool'"); lib.wait_tool_song(pg); time.sleep(0.5)
+        t.check(f'{th} {w} {lang}: guest tool + banner, no h-scroll', not pg.evaluate("document.querySelector('#guestBar').hidden") and lib.scroll_width(pg) == w, lib.scroll_width(pg))
+        t.shot(pg, f'tool_guest_{th}_{w}_{lang}')
         ctx.close()

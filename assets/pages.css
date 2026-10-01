@@ -453,3 +453,8 @@ html[lang="he"] .page .lg-toc summary,html[lang="ar"] .page .lg-toc summary{lett
 .page .pg-legal a{color:var(--ink2);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--acc-a) 60%,transparent);text-underline-offset:3px}
 .page .pg-legal a:hover{color:var(--ink);text-decoration-color:currentColor}
 @media (max-width:640px){.page .lg-meta>span[aria-hidden]{display:none}.page .lg-meta{flex-direction:column;gap:2px}}
+/* qw: approximate USD next to ₪ (non-Hebrew languages) + plans without a checkout link */
+.page .pg-usd{font:500 14px/1 var(--mono);color:var(--muted);margin-inline-start:2px}
+.page .pg-usdnote{margin:14px 2px 0;font-size:13px;color:var(--muted)}
+.page a.pg-btn.pg-soon{text-decoration:none}
+.page .pg-btn.pg-soon[disabled]{opacity:.6;cursor:default}

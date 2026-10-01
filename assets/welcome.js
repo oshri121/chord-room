@@ -17,7 +17,7 @@ function show(){
     <div class="wlbrand"><svg class="wllogo" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="7" fill="#0B0B0C"/><g fill="#fff"><rect x="7" y="14" width="2.4" height="6" rx="1"/><rect x="11" y="10" width="2.4" height="14" rx="1"/><rect x="15" y="6" width="2.4" height="22" rx="1"/><rect x="19" y="11" width="2.4" height="12" rx="1"/><rect x="23" y="13" width="2.4" height="8" rx="1"/></g><rect x="27" y="15" width="2.4" height="4" rx="1" fill="#E5322B"/></svg><span>CHORD ROOM</span></div>
     <h2 id="wlTitle"><span lang="he" dir="rtl">בחרו שפה</span><i aria-hidden="true">·</i><span lang="en" dir="ltr">Choose your language</span></h2>
     <div class="wlgrid">${LANGS.map(([c,n,w,dir])=>`<button type="button" class="wlb${c===guess?' sug':''}" data-l="${c}" lang="${c}" dir="${dir}"><b>${n}</b><small>${w}</small></button>`).join('')}</div>
-    <p class="wlnote" dir="auto">אפשר לשנות בכל רגע מהתפריט למעלה · You can change it any time from the top menu</p></div>`;
+    <p class="wlnote"><span lang="he" dir="rtl">אפשר לשנות בכל רגע מהתפריט למעלה</span><span lang="en" dir="ltr">You can change it any time from the top menu</span></p></div>`;
   document.body.appendChild(d);document.documentElement.classList.add('wl-open');
   const pick=c=>{try{CR.setLang(c,true)}catch(e){}d.classList.add('out');document.documentElement.classList.remove('wl-open');setTimeout(()=>d.remove(),260)};
   d.addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b)pick(b.dataset.l)});

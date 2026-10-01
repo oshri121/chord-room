@@ -69,6 +69,13 @@ def test(t, srv, b):
     lib.wait_tool_song(pg)
     t.check('AI button enabled for a signed-in user', pg.is_enabled('#aiBtn'))
     pg.evaluate("document.querySelector('#aiBtn').click()")
+    # model download is a free step: no charge until the confirmation dialog is accepted
+    lib.poll(pg, "!!document.querySelector('#sepDlg')", 240)
+    t.check('model downloaded first, then the confirmation (nothing charged yet)', pg.evaluate("(window.__pay||[]).length===0") and '5' in pg.inner_text('#sepDlg .sepp'), pg.evaluate("__pay"))
+    time.sleep(0.6); t.shot(pg, 'sep_confirm')
+    t.check('confirmation dialog is opaque and focused on its confirm button', pg.evaluate("getComputedStyle(document.querySelector('#sepDlg .dlg')).opacity==='1'&&document.activeElement===document.querySelector('#sepDlg .go')"))
+    t.check('floating buttons hidden while the dialog is open', pg.evaluate("['.a11y-fab','.rm-fab'].every(s=>!document.querySelector(s)||getComputedStyle(document.querySelector(s)).visibility==='hidden')"))
+    pg.click('#sepDlg .go')
     lib.poll(pg, "(window.__pay||[]).length>0", 20)
     t.eq('charged "sep" before the run', pg.evaluate("__pay[0]"), ['spend', 'sep'])
     lib.poll(pg, "/%/.test(document.querySelector('#smsg').textContent)&&!/מוריד|Download/.test(document.querySelector('#smsg').textContent)", 240)

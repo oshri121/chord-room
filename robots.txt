@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /ai/
+Disallow: /vendor/
+
+Sitemap: https://chord-room.pages.dev/sitemap.xml

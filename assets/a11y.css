@@ -221,3 +221,6 @@
 .a11y-statement dd{margin:0}
 .a11y-statement .a11y-upd{color:var(--muted);font-size:14px}
 .a11y-statement .a11y-ph{background:#FFF3B0;color:#5A4500;border:1px dashed #C9A200;border-radius:3px;padding:0 4px}
+
+/* qw: no floating button over an open dialog / sheet (sign-up, separation confirmation, language picker) */
+html.au-open .a11y-fab,html.dlg-open .a11y-fab,html.wl-open .a11y-fab{visibility:hidden}

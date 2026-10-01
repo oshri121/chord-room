@@ -52,6 +52,8 @@ def test(t, srv, b):
         out['toast'] = pg.evaluate("(document.querySelector('#toast')||{}).textContent||''")[:80]
         a = pg.query_selector('#toast button')
         if a: a.evaluate('e=>e.click()'); time.sleep(0.6)
+        # plans without a checkout link render "coming soon" / "contact us": a javascript: contact must never become a link
+        out['soon'] = pg.evaluate("(()=>{const a=[...document.querySelectorAll('#pricingView .pg-soon')];return {n:a.length,hrefs:a.map(x=>x.getAttribute('href')||''),disabled:a.filter(x=>x.disabled).length}})()")
     safe('contact', contact)
     def tool():
         pg.evaluate("location.hash='#tool'"); lib.wait_tool_song(pg)
@@ -118,7 +120,8 @@ def test(t, srv, b):
     t.eq('no request to the attacker host', sorted(set(u[:60] for u in evil)), [])
     t.eq('zero CSP violations', acc['viol'], [])
     t.eq('no CSP console messages', sorted(set(cons)), [])
-    t.check('contact toast shows the payload as text', 'javascript:' in out.get('toast', ''), out.get('toast'))
+    so = out.get('soon') or {}
+    t.check('pricing: javascript: contact → disabled "coming soon" buttons, no link, no live CTA', so.get('n', 0) >= 1 and so.get('disabled') == so.get('n') and not any(h for h in so.get('hrefs', [])), so)
     t.check('tool: Signalsmith Stretch loaded under CSP', out.get('signalsmith'))
     t.check('tool: MP3 export downloaded (worker + lamejs)', (out.get('mp3') or '').endswith(('.mp3', '.zip')), out.get('mp3'))
     t.check('AI: model loaded and separation started (worker under /ai/*)', len(out.get('ai', [])) >= 2, out.get('ai', [])[-3:])
