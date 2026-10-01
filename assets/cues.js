@@ -1,5 +1,5 @@
 /* Automatic DJ cue points from the song's structure.
-   window.CUES.detect(audioBuffer, {bpm, offset, down}) → Promise<[{k, t, bar}]>, k in
+   window.CUES.detect(audioBuffer, {bpm, offset, down}[, features]) → Promise<[{k, t, bar}]>, k in
    intro · vocal · break · build · drop · outro (hot cues A–F, colours below). Times are in seconds, on bar starts.
 
    How: the song is rendered offline at 16 kHz into five band envelopes (50 ms frames): everything, lows (<110 Hz:
@@ -48,9 +48,9 @@ async function features(buf){
   return {mono,lo,hi,vm:median(vm,9),vs:vs?median(vs,9):null};
 }
 
-async function detect(buf,grid){
+async function detect(buf,grid,pre){
   const bpm=grid&&grid.bpm;if(!buf||!bpm||!isFinite(bpm)||buf.duration<20)return [];
-  const F=await features(buf);
+  const F=pre&&pre.mono&&pre.lo?pre:await features(buf);   // pre = features(buf) already computed (Extended reuses them)
   const T=60/bpm,B=4*T,fd=((grid.offset||0)%T+T)%T+(grid.down||0)*T,dur=buf.duration;
   // bars: bar k starts at fd + k·B (k may be negative for a pickup before the first downbeat)
   const k0=-Math.floor(fd/B),nb=Math.floor((dur-fd)/B)-k0;if(nb<16)return [];

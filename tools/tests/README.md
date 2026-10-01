@@ -31,6 +31,7 @@ lib.py            shared UI helpers (server, browser contexts, mock injection, s
 run_all.sh        the runner
 fixtures/         p0/p1/p2.mp3 (30 s previews, 1.1 MB) · gen_edm.py (synthesises a 90 s EDM track with a known structure)
                   · gen_media.py (4 s tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF + cover PNG for the Converter test; needs ffmpeg for all but WAV)
+                  · gen_club.py (195 s, 128 BPM club track with a known 7-section arrangement, 44.1 kHz WAV, for the Extended test)
 mock/             mockb.js (mock backend) · auth_ext.js (e-mail codes, recovery) · evil.js (every field is an XSS payload)
 ui/test_*.py      Playwright tests (Python, sync API)
 slow/test_*.py    same style, opt-in with --slow (real Demucs model in the browser)
@@ -67,7 +68,7 @@ that the builders have not fixed yet, so the suite stays green and the report st
 
 ### Conventions
 
-* **Accounts.** `#discover`, `#dj`, `#crate`, `#mashup` and `#convert` need an account; `#tool` is open to guests with the demo song
+* **Accounts.** `#discover`, `#dj`, `#crate`, `#mashup`, `#convert` and `#extended` need an account; `#tool` is open to guests with the demo song
   (upload / My songs / export / separation open the auth dialog). The demo is analysed the first time the tool is shown,
   not at boot: a test that lands on the home page and needs the song must open `#tool` (or call `lib.wait_tool_song`
   after navigating there). Either sign in through the mock
@@ -128,6 +129,7 @@ unless `--keep-pg`.
 | ui/test_assistant_ui | Roomy panel: a11y + placement vs the a11y button (RTL/LTR), gate, suggestions per view, streaming + stop, request format and ctx, safe markdown, error states + retry, 2000-char cap, history rules, per-user sessionStorage, 5 languages, dark, lift above Discover player / Deezer bar, 375 px sheet + focus trap, teaser once, zero CSP violations |
 | slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
 | ui/test_convert | Converter: gate, every fixture (tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF from `fixtures/gen_media.py`) → MP3 with tags + cover kept (m4a/mp4/aiff through ffmpeg.wasm, loaded lazily), WAV 24-bit/48 k/mono + normalise/trim/fades verified from the header, FLAC/OGG/M4A targets with cover + BPM/key (mutagen), unique names, ZIP, cancel, options remembered, activity logged, Images tab (500 px JPG, WebP), he/ar/ru/es × dark × 375 px, zero CSP violations (110) |
+| ui/test_extended | Extended generator on `fixtures/gen_club.py` (quick DSP stems): gate; BPM 128, key as a name, intro/verse/build/drop/break/drop/outro on the true bars (±1), Phrase lock ≥ 90 %, Groove ≥ 60 %; settings change the plan live (+90 s → +30 s, drop phrase repeated), relabel from the chip popover (Esc returns focus), drag a boundary on the canvas (snaps to bars), reset; generate +60 s / 32 / 32 Drums → checklist + ready; in the exported WAV: duration = plan ± 1 beat, every block-start kick where the source has it (≤ 5 ms), DJ intro without vocal energy, unmodified blocks bit-identical (corr > 0.99); MP3 320 (mutagen: duration, TBPM/TKEY, Serato Markers2, title "(Extended Mix)"), WAV 24-bit 48 kHz; activity; A/B switch at the mapped spot + T key, loop block, hover tooltip; AI upgrade with a stubbed `CR.separateBuffer`; 96 preset × style × length plans valid + filtered/percussion renders; hide frees quick stems + render; he/ar RTL, dark, 375 px, zero CSP violations; a drifting live track (`gen_club.make_drift`, tempo ramp ±1.5 %): BPM refitted to 120 ± 0.3, every bar line ≤ 40 ms from the true downbeat; list rows of made blocks titled by role (≈ 140 s) |
 | ui/test_assistant_md | `ROOMY._render` against 33 hostile markdown inputs: only allowed elements/attributes/hrefs, nothing executes, fast on pathological input |
 
 ### Known app issues the suite reports (not failures)

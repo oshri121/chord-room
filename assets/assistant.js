@@ -22,7 +22,7 @@ const API = '/api/assistant';
 const MAX = 2000;                                   // characters per message (the server refuses more)
 const HIST = 24;                                    // messages per request
 const BODY_MAX = 30000;                             // bytes (server limit 32 KB)
-const LINKS = ['#tool', '#discover', '#dj', '#crate', '#mashup', '#pricing', '#terms', '#privacy', '#'];
+const LINKS = ['#tool', '#discover', '#dj', '#crate', '#mashup', '#convert', '#extended', '#pricing', '#terms', '#privacy', '#'];
 const SS = 'chordroom.rm.v1';                       // sessionStorage: conversation per account
 const LS_SEEN = 'chordroom.rm.seen';                // localStorage: the one-time hello bubble was shown
 
@@ -249,7 +249,7 @@ function dropAll() {
 }
 
 /* ---------- what the user is looking at ---------- */
-const VIEW_OF = [['#toolView', 'tool'], ['#discover', 'discover'], ['#djView', 'dj'], ['#crateView', 'crate'], ['#mashupView', 'mashup'], ['#pricingView', 'pricing'], ['#aboutView', 'home']];
+const VIEW_OF = [['#toolView', 'tool'], ['#discover', 'discover'], ['#djView', 'dj'], ['#crateView', 'crate'], ['#mashupView', 'mashup'], ['#convertView', 'convert'], ['#extendedView', 'extended'], ['#pricingView', 'pricing'], ['#aboutView', 'home']];
 function view() {
   if (document.documentElement.classList.contains('home')) return 'home';
   for (const [sel, v] of VIEW_OF) { const e = $(sel); if (e && !e.hidden) return v; }

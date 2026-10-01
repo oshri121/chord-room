@@ -92,6 +92,21 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (500/1000/1500 px square centre-crop or original; jpg/png/webp). Options in localStorage `chordroom.convert.v1`; up to 50
   files, 300 MB each. Activity `convert` ("<n> files → <fmt>"). Test: `tools/tests/ui/test_convert.py` (fixtures from
   `tools/tests/fixtures/gen_media.py`, system ffmpeg + mutagen when present).
+- Extended generator (`#extendedView`, hash `#extended`, nav "אקסטנדד", gated): `assets/extended.js/css` (strings inside, heuristics
+  documented in the file header), talks only through `window.CR` (+ `CUES._features`/`CUES.detect(buf,grid,features)`, `CR.chromaOf`,
+  `CRATE.tagMp3`). An EDIT of the song itself: nothing composed, vocals/melody/tempo unchanged, every block = original audio or some stems.
+  Load (file / My Songs / `CR.toolSong()`; decoded at the file's own rate so unmodified blocks stay bit-identical) → analysis checklist
+  (analyzeTrack, quick DSP stems by default, "Upgrade to AI stems" = `CR.separateBuffer` 'sep' flow) → per-bar features → sections on a
+  4-bar phrase lattice (Intro/Verse/Pre-Chorus/Build/Drop/Break/Chorus/Bridge/Outro, colours = cue colours) + Groove confidence + Phrase
+  lock; the user relabels (chip/canvas popover) and drags boundaries (snap to bars). `makePlan` (presets DJ/Club/Radio/Performance, +30…+2 min
+  or custom, intro/outro 16/32/64 bars × Drums/Drums+bass/Full/Filtered/Percussion/Original): DJ intro loop from stems (a mixable original
+  intro counts), the whole original in order, phrase repeats (16/8/4 bars) of drops/breaks to reach the length, DJ outro mirrored; every block
+  says where it came from. `renderAudio` = OfflineAudioContext, whole-sample starts, contiguous blocks merged, 20 ms equal-power joins
+  ending on the downbeat, stem gains + Biquad sweeps, Signalsmith only for drifting grids (live drift: beat phase tracked per 2 bars by DP +
+  unwrapped, its linear part refits the BPM, the rest = per-bar offsets; kept only if the hits fit better). Tracks > 15 min are refused (memory).
+  Preview A/B on the render (T switches at the mapped spot, L loops the selected block); export MP3 320 (+ Serato cues intro/drop/outro) / WAV 16/24 at 44.1/48 kHz,
+  "Artist - Title (Extended Mix)", activity `extended_export`. Settings in `chordroom.extended.v1:<uid|guest>`; hide frees quick stems + render.
+  Test: `tools/tests/ui/test_extended.py` (fixture `tools/tests/fixtures/gen_club.py`).
 - Home = the About page (no hash); the tool is `#tool`. First nav tab "בית" is `#navAbout`; the brand mark goes home.
   `html.home` (set by an inline script before paint) hides the tool until the router runs.
 - Owner & roles (schema.sql "Owner & roles"): `profiles.owner` (the first account; can't be demoted/blocked). Only the owner
@@ -173,7 +188,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
   answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
   the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
-- Sign-in gate: #discover, #dj, #crate, #mashup, #convert need an account; signed out they show `#gateView` (`renderGate`,
+- Sign-in gate: #discover, #dj, #crate, #mashup, #convert, #extended need an account; signed out they show `#gateView` (`renderGate`,
   class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. `#tool` is open to guests with the
   demo song + a slim banner (`#guestBar`, `renderGuestBar`); upload / My songs / export / separation ask for an account. The demo (or
   the last song) is analysed by `ensureSong()` the first time the tool is shown, never at boot on the home page; a newer `analyze()`

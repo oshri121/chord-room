@@ -233,7 +233,7 @@ def poll(pg, js, timeout=30, arg=None, every=0.2):
         time.sleep(every)
     raise TimeoutError(f'poll timed out after {timeout}s: {js[:120]}' + (f' (last error: {last})' if last else ''))
 
-VIEWS = ['#aboutView', '#toolView', '#discover', '#djView', '#crateView', '#mashupView', '#convertView', '#pricingView', '#gateView', '#legalView']
+VIEWS = ['#aboutView', '#toolView', '#discover', '#djView', '#crateView', '#mashupView', '#convertView', '#extendedView', '#pricingView', '#gateView', '#legalView']
 def visible_views(pg):
     return pg.evaluate("s=>s.filter(x=>{const e=document.querySelector(x);return e&&!e.hidden})", VIEWS)
 

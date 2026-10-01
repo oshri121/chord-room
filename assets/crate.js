@@ -1103,6 +1103,7 @@ window.CRATE={
   show(){if(!C.built)build();C.visible=true;renderAll();lookupArtists()},
   hide(){C.visible=false;dd=0;plStop();const o=$('#crOver');if(o)o.hidden=true},
   lang(){if(C.built)renderAll()},
+  tagMp3, // ID3 TBPM/TKEY/COMM + Serato Markers2 cues into an MP3 (used by the Extended generator export)
   _C:C,_tagMp3:tagMp3,_tagFlac:tagFlac,_latOf:latOf,_usbName:usbName,_parseName:parseName // for tests
 };
 CR.applyLang();
