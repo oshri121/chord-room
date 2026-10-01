@@ -189,7 +189,16 @@ const M={built:false,visible:false,slots:[newSlot(0),newSlot(1)],tempo:'B',custo
   msg:'',msgErr:false,pair:null,lastO:null,pickFor:0,pickFrom:null,drag:null,hover:null,lastBeat:null};
 const CACHE=new Map();                    // song key → {an, cues, stems, kind}: analysis + separated stems for this session
 const songKey=(name,buf)=>name+'|'+Math.round(buf.duration*1000)+'|'+buf.length;
-function cachePut(k,v){const o=CACHE.get(k)||{};CACHE.delete(k);CACHE.set(k,{...o,...v});while(CACHE.size>4){const first=CACHE.keys().next().value;CACHE.delete(first)}}
+// memory cap: stems are 4 stereo float32 buffers per song (≈340 MB for 4 min), so keep the stems of the two slots' songs
+// plus at most ~120 M floats more; analysis/cues stay cached for everything (tiny). Evicts least-recently-used first.
+const CACHE_FLOATS=120e6,stemFloats=st=>st?Object.values(st).reduce((a,b)=>a+(b&&b.length?b.length*b.numberOfChannels:0),0):0;
+function cachePut(k,v){const o=CACHE.get(k)||{};CACHE.delete(k);CACHE.set(k,{...o,...v});
+  const live=new Set(M.slots.map(s=>s.song&&s.song.key).filter(Boolean));
+  let tot=0;const ks=[...CACHE.keys()].reverse();      // newest first
+  for(const key of ks){const e=CACHE.get(key);if(!e.stems)continue;tot+=stemFloats(e.stems);if(tot>CACHE_FLOATS&&!live.has(key)){e.stems=null;e.kind=null}}
+  while(CACHE.size>12){const first=CACHE.keys().next().value;CACHE.delete(first)}}
+// leaving the view: drop cached stems that no slot is using (a paid separation of the loaded songs is kept)
+function cacheTrim(){const live=new Set(M.slots.map(s=>s.song&&s.song.key).filter(Boolean));for(const [k,e] of CACHE)if(e.stems&&!live.has(k)){e.stems=null;e.kind=null}}
 
 /* ---------- model ---------- */
 const song=i=>M.slots[i].song;
@@ -1047,7 +1056,7 @@ document.addEventListener('cr-user',e=>setOwner(e.detail&&e.detail.uid));
 {const u=CR.user&&CR.user();if(u&&u.known)setOwner(u.uid)}
 window.MASHUP={
   show(){if(M.owner===undefined){const u=CR.user();setOwner(u&&u.uid)}if(!M.built)build();M.visible=true;CR.stopTool();renderAll();requestAnimationFrame(()=>{sizeCanvas();drawSoon()})},
-  hide(){if(!M.visible)return;M.visible=false;stop(true);closePick();if(M.built)$('#mashupView').querySelectorAll('.mxslot').forEach(x=>x.classList.remove('over'))},
+  hide(){if(!M.visible)return;M.visible=false;stop(true);closePick();if(!M.exporting)cacheTrim();if(M.built)$('#mashupView').querySelectorAll('.mxslot').forEach(x=>x.classList.remove('over'))},
   lang(){if(M.built)renderAll()},
   // for tests
   _M:M,_E:E,model,heard,play,stop,loadInto,exportMix,vocalStart,keyOpts,CACHE

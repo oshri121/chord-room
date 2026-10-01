@@ -21,6 +21,6 @@ def test(t, srv, b):
         t.eq(f'hash #{h} → {view}', lib.visible_views(pg), [view])
         if h == 'discover':
             t.check('Discover lists the /api/deezer mock tracks', lib.poll(pg, "document.querySelectorAll('.drow').length", 15))
-    t.check('nav label for Crate (he)', pg.inner_text('#navCrate').strip() == 'ניתוח ספרייה', pg.inner_text('#navCrate'))
+    t.check('nav label for Crate (he)', pg.inner_text('#navCrate').strip() in ('ניתוח ספרייה','ספרייה'), pg.inner_text('#navCrate'))  # short label when the header is tight
     t.eq('no CSP violations', lib.csp_violations(pg), [])
     t.shot(pg, 'tool')
