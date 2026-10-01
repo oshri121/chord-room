@@ -1,0 +1,21 @@
+ffmpeg.wasm core 0.12.10 -- vendor/ffmpeg/
+==========================================
+
+FFmpeg compiled to WebAssembly (single-thread build, no SharedArrayBuffer needed), from the npm package
+@ffmpeg/core@0.12.10 (https://www.npmjs.com/package/@ffmpeg/core, https://github.com/ffmpegwasm/ffmpeg.wasm).
+
+Files
+  ffmpeg-core-0.12.10.js        the unmodified `dist/umd/ffmpeg-core.js` (Emscripten glue, defines createFFmpegCore)
+  ffmpeg-core-0.12.10.wasm.bin  `dist/umd/ffmpeg-core.wasm` (32,232,419 bytes, sha256
+                                9f57947a5bd530d8f00c5b3f2cb2a3492faa7e5d823315342d6a8656d0a6b7b7) compressed with
+                                gzip -9 (10.2 MB) so it fits Cloudflare Pages' 25 MB per-file limit; the browser
+                                inflates it with DecompressionStream and hands the bytes to the glue as `wasmBinary`.
+                                It is byte-for-byte the published wasm once inflated.
+
+The driver that talks to it is ours: assets/ffmpeg-worker.js (a classic Web Worker that imports the glue and runs
+`exec`), used by the Converter (assets/convert.js) only for formats the browser cannot decode or encode itself.
+
+License: GPL-2.0-or-later (the build links libx264, libmp3lame, libvorbis, libopus and others; see the FFmpeg
+project's LICENSE.md and the ffmpeg.wasm repository for the full list and texts). We ship these files unmodified,
+as a separate component loaded at run time, and this notice names the source so the corresponding source code is
+available from the links above.

@@ -30,6 +30,7 @@ and `_routes.json` routes `/tools/*` through it — `node/functions.test.mjs` as
 lib.py            shared UI helpers (server, browser contexts, mock injection, sign-in, checker) — read its docstring
 run_all.sh        the runner
 fixtures/         p0/p1/p2.mp3 (30 s previews, 1.1 MB) · gen_edm.py (synthesises a 90 s EDM track with a known structure)
+                  · gen_media.py (4 s tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF + cover PNG for the Converter test; needs ffmpeg for all but WAV)
 mock/             mockb.js (mock backend) · auth_ext.js (e-mail codes, recovery) · evil.js (every field is an XSS payload)
 ui/test_*.py      Playwright tests (Python, sync API)
 slow/test_*.py    same style, opt-in with --slow (real Demucs model in the browser)
@@ -66,7 +67,7 @@ that the builders have not fixed yet, so the suite stays green and the report st
 
 ### Conventions
 
-* **Accounts.** The tools (`#tool`, `#discover`, `#dj`, `#crate`) need an account. Either sign in through the mock
+* **Accounts.** The tools (`#tool`, `#discover`, `#dj`, `#crate`, `#mashup`, `#convert`) need an account. Either sign in through the mock
   backend (`mock=True`, `lib.sign_up/sign_in/sign_out`) or run in local mode with `accounts=False`, which stubs
   `vendor/supabase.js` so `Backend.enabled` is false and there is no gate. Never both.
 * **Mock backend.** `mock/mockb.js` implements `window.__MOCK_BACKEND` (honoured by `assets/backend.js` only on
@@ -121,6 +122,7 @@ unless `--keep-pg`.
 | ui/test_security | hostile backend + poisoned localStorage under the real CSP through every flow (home, pricing, tool + Signalsmith + MP3 export, AI separation start, Discover, DJ demo, Crate, account + all admin tabs): nothing executes, no injected markup, no request to the attacker host, zero CSP violations, each flow still works |
 | ui/test_assistant_ui | Roomy panel: a11y + placement vs the a11y button (RTL/LTR), gate, suggestions per view, streaming + stop, request format and ctx, safe markdown, error states + retry, 2000-char cap, history rules, per-user sessionStorage, 5 languages, dark, lift above Discover player / Deezer bar, 375 px sheet + focus trap, teaser once, zero CSP violations |
 | slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
+| ui/test_convert | Converter: gate, every fixture (tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF from `fixtures/gen_media.py`) → MP3 with tags + cover kept (m4a/mp4/aiff through ffmpeg.wasm, loaded lazily), WAV 24-bit/48 k/mono + normalise/trim/fades verified from the header, FLAC/OGG/M4A targets with cover + BPM/key (mutagen), unique names, ZIP, cancel, options remembered, activity logged, Images tab (500 px JPG, WebP), he/ar/ru/es × dark × 375 px, zero CSP violations (110) |
 | ui/test_assistant_md | `ROOMY._render` against 33 hostile markdown inputs: only allowed elements/attributes/hrefs, nothing executes, fast on pathological input |
 
 ### Known app issues the suite reports (not failures)

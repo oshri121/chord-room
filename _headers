@@ -5,9 +5,12 @@
 #
 # CSP notes
 # - script-src: our own files only (no inline scripts: assets/early.js sets the home class + saved theme).
-#   'wasm-unsafe-eval' = WebAssembly (Signalsmith Stretch, lamejs is plain JS). blob: = the AudioWorklets and
-#   workers we build from strings (YIN, recorder, Signalsmith). No 'unsafe-inline', no 'unsafe-eval', and
-#   no api.deezer.com: JSONP is only the local-dev fallback, production goes through /api/deezer.
+#   'wasm-unsafe-eval' = WebAssembly (Signalsmith Stretch, ffmpeg.wasm in the Converter; lamejs is plain JS).
+#   blob: = the AudioWorklets and workers we build from strings (YIN, recorder, Signalsmith). No 'unsafe-inline',
+#   no 'unsafe-eval', and no api.deezer.com: JSONP is only the local-dev fallback, production goes through /api/deezer.
+#   The Converter's ffmpeg worker (assets/ffmpeg-worker.js, importScripts of vendor/ffmpeg/*.js, wasm bytes fetched
+#   by the page from vendor/ffmpeg/*.wasm.bin over connect-src 'self') runs under this same policy: it needs nothing
+#   beyond 'self' + 'wasm-unsafe-eval' (the glue has no eval / new Function), so the policy did not change for it.
 # - style-src: 'unsafe-inline' is needed for style="" attributes (index.html + rendered templates); injected
 #   <style> elements stay blocked through style-src-elem.
 # - img/media/connect: Supabase (avatars, signed song URLs, REST, realtime) and Deezer's CDN (*.dzcdn.net:
@@ -46,6 +49,9 @@
 # supabase.js has no version in its file name: a day, so an update reaches everyone.
 /vendor/supabase.js
   Cache-Control: public, max-age=86400
+# ffmpeg.wasm (Converter): version in the file names, loaded once per browser (10 MB) and then served from the cache.
+/vendor/ffmpeg/*
+  Cache-Control: public, max-age=31536000, immutable
 
 # AI model: the weight/graph/runtime chunks are fixed for this model; the manifest and the worker can change.
 /ai/model/*.bin

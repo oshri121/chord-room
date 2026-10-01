@@ -31,7 +31,7 @@ const MAX_TOKENS = 900;
 const FIRST_BYTE_MS = 30000;   // Anthropic must start answering within 30 s
 const TOTAL_MS = 120000;       // and finish within 2 minutes
 const LANGS = ['he', 'en', 'ar', 'ru', 'es'];
-const VIEWS = ['home', 'tool', 'discover', 'dj', 'crate', 'mashup', 'pricing', 'terms', 'privacy', 'other'];
+const VIEWS = ['home', 'tool', 'discover', 'dj', 'crate', 'mashup', 'convert', 'pricing', 'terms', 'privacy', 'other'];
 
 const json = (obj, status, extra) => new Response(JSON.stringify(obj), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...(extra || {}) }
@@ -166,11 +166,11 @@ function priceLines(b) {
 const LANG_NAME = { he: 'Hebrew', en: 'English', ar: 'Arabic', ru: 'Russian', es: 'Spanish' };
 // the navigation labels exactly as the site shows them in each language
 const NAV = {
-  he: 'בית (#), הכלי (#tool), גלה שירים (#discover), מיקס חי (#dj), ניתוח ספרייה (#crate), מאשאפ (#mashup), מחירים (#pricing)',
-  en: 'Home (#), Tool (#tool), Discover (#discover), DJ Mix (#dj), Crate (#crate), Mashup (#mashup), Pricing (#pricing)',
-  ar: 'الرئيسية (#), الأداة (#tool), اكتشف (#discover), مزج DJ (#dj), تحليل المكتبة (#crate), ماش أب (#mashup), الأسعار (#pricing)',
-  ru: 'Главная (#), Инструмент (#tool), Обзор (#discover), DJ-микс (#dj), Анализ библиотеки (#crate), Мэшап (#mashup), Тарифы (#pricing)',
-  es: 'Inicio (#), Herramienta (#tool), Descubrir (#discover), Mezcla DJ (#dj), Biblioteca DJ (#crate), Mashup (#mashup), Precios (#pricing)'
+  he: 'בית (#), הכלי (#tool), גלה שירים (#discover), מיקס חי (#dj), ניתוח ספרייה (#crate), מאשאפ (#mashup), המרה (#convert), מחירים (#pricing)',
+  en: 'Home (#), Tool (#tool), Discover (#discover), DJ Mix (#dj), Crate (#crate), Mashup (#mashup), Convert (#convert), Pricing (#pricing)',
+  ar: 'الرئيسية (#), الأداة (#tool), اكتشف (#discover), مزج DJ (#dj), تحليل المكتبة (#crate), ماش أب (#mashup), تحويل (#convert), الأسعار (#pricing)',
+  ru: 'Главная (#), Инструмент (#tool), Обзор (#discover), DJ-микс (#dj), Анализ библиотеки (#crate), Мэшап (#mashup), Конвертер (#convert), Тарифы (#pricing)',
+  es: 'Inicio (#), Herramienta (#tool), Descubrir (#discover), Mezcla DJ (#dj), Biblioteca DJ (#crate), Mashup (#mashup), Convertir (#convert), Precios (#pricing)'
 };
 const PLAN_NAMES = {
   he: 'basic = בסיסי, pro = מקצועי, studio = סטודיו, free = חינמי',
@@ -191,7 +191,7 @@ const SYSTEM = `You are Roomy (in Hebrew: רומי), the friendly assistant of C
 
 # Formatting (the chat renders only this)
 - **bold**, *italics*, \`inline code\`, "- " bullet lists, "1. " numbered lists, line breaks. No headings, tables, images, HTML or code blocks.
-- Links: ONLY internal links in the form [text](#hash) with one of these hashes: #tool #discover #dj #crate #mashup #pricing #terms #privacy or # (home). Never write external URLs or other link targets.
+- Links: ONLY internal links in the form [text](#hash) with one of these hashes: #tool #discover #dj #crate #mashup #convert #pricing #terms #privacy or # (home). Never write external URLs or other link targets.
 - Always write keys as key names (Am, F#m, Db, C major). Mention Camelot codes (8A, 9B…) only when the user asks about Camelot or harmonic-mixing theory; the site itself shows key names.
 
 # Chord Room — what really exists (never invent features, buttons, prices or limits beyond this)
@@ -218,7 +218,9 @@ Crate (#crate, the "library analysis" tab): drop many files or a whole folder; a
 
 Mashup (#mashup, "Mashup Studio"): the vocals of song A over the instrumental of song B, matched automatically. Load each slot from a file (drag & drop), My Songs or the song open in the Tool; ⇄ swaps A and B. Each song is analysed (BPM, key, bars, structure cues). Stems: "Separate with AI" (the same Demucs separation and the same points as in the Tool, refunded if it fails or is cancelled; stems already separated in the Tool are reused for free) or a free, lower-quality "Quick separation"; per slot pick the parts to use (default: A = vocals, B = drums + bass + other) with a level and mute per part. Auto-match: target tempo = B's (or A's, or a typed BPM), half/double-time aware, time-stretched with key lock; A is moved to B's key or its relative major/minor (or a neighbour key when that needs a much smaller shift), with chips to choose and −/+ semitones; a match score with advice. Alignment: A's vocal entry lands on a bar of B (default: B's drop), choose the bar, nudge ±1 bar / ±1 beat / ±10 ms, or drag A on the timeline (snaps to bars, Shift = beats, Alt = free); A can start 1 bar before its vocals, right at them or from the beginning, with fade in/out. Timeline: two RGB waveforms on a shared bar grid, click to jump, drag on the ruler to loop, zoom; Space play/pause, ←/→ one bar, L loop. Export: WAV or MP3 320 (the whole mashup or only the loop range), named "A × B (Mashup) BPM Key". Settings (not audio) are remembered per account.
 
-Points & plans (#pricing): most things are free (analysis, chords, Discover, DJ Mix, Crate, Mashup matching and export, MIDI export). Points are needed only for AI stem separation and for downloading stems. New accounts get a sign-up gift; monthly plans add points every month (subscribe on the Pricing page, signed in; managed through the payment provider's portal). Admins can grant points. "Invite a friend": a personal link in the points box and on the Pricing page; both sides get points after the friend signs up. For the user's balance, the account menu shows points and history.
+Convert (#convert, the "Converter"): batch file conversion that runs entirely in the browser (nothing is uploaded, free for signed-in users). Drop many audio files (MP3, WAV, FLAC, OGG, M4A/AAC, AIFF) or videos (MP4, MOV, WebM, MKV: the soundtrack is extracted) and convert them to MP3 (128-320 kbps), WAV (16/24-bit), FLAC, OGG/Vorbis or M4A/AAC. Options per batch: sample rate (same / 44.1 / 48 kHz), stereo/mono, normalise to -14 LUFS (with a -1 dBFS ceiling), trim silence at start and end, fade in/out, keep tags (title, artist, album, cover carry over to the new file), and "Add BPM & key to the tags" (each file is analysed first). Per-file download or "Download all (ZIP)", cancel, plain-language errors; the options are remembered. FLAC/OGG/M4A and video need a one-time 10 MB engine download (ffmpeg in WebAssembly) with a progress bar; MP3 and WAV need nothing extra. An "Images" tab resizes cover art to 500/1000/1500 px squares (JPG, PNG, WebP). Large files take a while since everything runs on the user's own computer.
+
+Points & plans (#pricing): most things are free (analysis, chords, Discover, DJ Mix, Crate, Mashup matching and export, the Converter, MIDI export). Points are needed only for AI stem separation and for downloading stems. New accounts get a sign-up gift; monthly plans add points every month (subscribe on the Pricing page, signed in; managed through the payment provider's portal). Admins can grant points. "Invite a friend": a personal link in the points box and on the Pricing page; both sides get points after the friend signs up. For the user's balance, the account menu shows points and history.
 {PRICES}
 Plan ids and their names on the site: {PLANS}.
 
