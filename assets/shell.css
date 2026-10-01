@@ -135,7 +135,7 @@ html[dir="rtl"] .burger span:nth-child(3){right:11px;left:17px}
 .top.c3 .langw .lgl{inset-inline-start:11px;color:var(--ink)}
 .top.c3 .langw .sel option{color:var(--ink)}
 .top.c4 .tab svg{display:none}
-.top.c4 .tab{padding:0 10px}
+.top.c4 .tab{padding:0 7px} /* converter: 8 tabs; Russian labels need the extra 3 px per side at 1300 px */
 .top.c4 .mark .wm{letter-spacing:.08em}
 /* qw: c5 (last step before the drawer): logo only, tighter tabs and buttons — the labels of the primary actions stay */
 .top.c5 .mark .wm{display:none}

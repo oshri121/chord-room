@@ -75,6 +75,23 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (sources → stem gains → fade → Signalsmith Stretch, or a DelayNode of the same latency when a slot needs no change → level →
   limiter); export renders the same `schedule()` offline → WAV / MP3 320 "A × B (Mashup) BPM Key", logs `mashup_export`.
   Settings (not audio) per account in `chordroom.mashup.v1:<uid|guest>`. Verified: A downbeats on B downbeats ≤0.5 ms (export + preview).
+- Converter (`#convertView`, hash `#convert`, nav "המרה", gated): `assets/convert.js/css` (strings inside), talks only through
+  `window.CR` (`CR.loudness` = `measureLoudness`, `CR.analyzeTrack`, `CR.zip`, `CR.saveBlob`, `CR.log`). Batch audio/video → MP3
+  (lamejs via `window.MP3`), WAV 16/24-bit (own writer, LIST INFO + `id3 ` chunk), FLAC / OGG-Vorbis / M4A-AAC (ffmpeg.wasm).
+  Decode: `decodeAudioData` first; video containers, AIFF/WMA/… and anything the browser rejects go through ffmpeg
+  (`-f wav pcm_f32le` + `-f ffmetadata`). ffmpeg.wasm = `vendor/ffmpeg/ffmpeg-core-0.12.10.js` (unmodified UMD glue, GPL, see
+  `vendor/ffmpeg/LICENSE.txt`) + `ffmpeg-core-0.12.10.wasm.bin` (the 32 MB wasm gzipped to 10 MB for the 25 MB Pages limit;
+  inflated with `DecompressionStream` and passed as `wasmBinary`), driven by our classic worker `assets/ffmpeg-worker.js`
+  (`load` / `run` messages; a cancel terminates the worker and the next job reloads from the kept gz bytes). Loaded lazily with
+  a progress bar; `_headers` caches `/vendor/ffmpeg/*` immutable; the CSP needed no change (`'self'` + `'wasm-unsafe-eval'`).
+  libopus crashes in this build → OGG is Vorbis (`-q:a` 3–8 ≈ 112–256 kbps). Processing: trim silence (−50 dBFS), mono/stereo,
+  resample through an OfflineAudioContext, −14 LUFS normalise with a −1 dBFS ceiling, linear fades. Tags: own readers (ID3v2
+  in MP3/WAV/AIFF incl. APIC, Vorbis comments + PICTURE in FLAC/OGG, iTunes ilst in MP4/M4A/MOV, ID3v1 fallback) → written as
+  ID3v2.3 (MP3, WAV `id3 ` chunk), `-metadata` + attached_pic / `METADATA_BLOCK_PICTURE` (ffmpeg targets), `tmpo` for M4A BPM;
+  "BPM & key into tags" = `CR.analyzeTrack` → TBPM/TKEY (off by default). "Images" tab = canvas resize/convert of cover art
+  (500/1000/1500 px square centre-crop or original; jpg/png/webp). Options in localStorage `chordroom.convert.v1`; up to 50
+  files, 300 MB each. Activity `convert` ("<n> files → <fmt>"). Test: `tools/tests/ui/test_convert.py` (fixtures from
+  `tools/tests/fixtures/gen_media.py`, system ffmpeg + mutagen when present).
 - Home = the About page (no hash); the tool is `#tool`. First nav tab "בית" is `#navAbout`; the brand mark goes home.
   `html.home` (set by an inline script before paint) hides the tool until the router runs.
 - Owner & roles (schema.sql "Owner & roles"): `profiles.owner` (the first account; can't be demoted/blocked). Only the owner
@@ -156,7 +173,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Anthropic API key = Cloudflare secret `ANTHROPIC_API_KEY` (model `ASSISTANT_MODEL`, default Haiku 4.5), NDJSON stream,
   answers rendered from DOM nodes (tiny markdown, internal hash links only). The list of site features the bot knows is in
   the Function's system prompt, so update it when features change. `supabase/assistant.sql` runs after schema.sql.
-- Sign-in gate: #discover, #dj, #crate, #mashup need an account; signed out they show `#gateView` (`renderGate`,
+- Sign-in gate: #discover, #dj, #crate, #mashup, #convert need an account; signed out they show `#gateView` (`renderGate`,
   class `signgate`, strings IGATE) with sign-up / sign-in; home, pricing, terms, privacy stay open. `#tool` is open to guests with the
   demo song + a slim banner (`#guestBar`, `renderGuestBar`); upload / My songs / export / separation ask for an account. The demo (or
   the last song) is analysed by `ensureSong()` the first time the tool is shown, never at boot on the home page; a newer `analyze()`

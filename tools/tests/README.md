@@ -30,6 +30,7 @@ and `_routes.json` routes `/tools/*` through it — `node/functions.test.mjs` as
 lib.py            shared UI helpers (server, browser contexts, mock injection, sign-in, checker) — read its docstring
 run_all.sh        the runner
 fixtures/         p0/p1/p2.mp3 (30 s previews, 1.1 MB) · gen_edm.py (synthesises a 90 s EDM track with a known structure)
+                  · gen_media.py (4 s tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF + cover PNG for the Converter test; needs ffmpeg for all but WAV)
 mock/             mockb.js (mock backend) · auth_ext.js (e-mail codes, recovery) · evil.js (every field is an XSS payload)
 ui/test_*.py      Playwright tests (Python, sync API)
 slow/test_*.py    same style, opt-in with --slow (real Demucs model in the browser)
@@ -66,7 +67,7 @@ that the builders have not fixed yet, so the suite stays green and the report st
 
 ### Conventions
 
-* **Accounts.** `#discover`, `#dj`, `#crate` and `#mashup` need an account; `#tool` is open to guests with the demo song
+* **Accounts.** `#discover`, `#dj`, `#crate`, `#mashup` and `#convert` need an account; `#tool` is open to guests with the demo song
   (upload / My songs / export / separation open the auth dialog). The demo is analysed the first time the tool is shown,
   not at boot: a test that lands on the home page and needs the song must open `#tool` (or call `lib.wait_tool_song`
   after navigating there). Either sign in through the mock
@@ -125,7 +126,8 @@ unless `--keep-pg`.
 | ui/test_crate_cues | synthetic EDM track (`fixtures/gen_edm.py`): BPM 128 and all six cues on the true bars; overview play/seek, grid moves shift cues, flag drag snaps to bars; rekordbox XML, Traktor NML, Serato GEOB in the ZIP MP3; reload keeps rows. Two **known issues** reported via `t.known` (see below) |
 | ui/test_security | hostile backend + poisoned localStorage under the real CSP through every flow (home, pricing, tool + Signalsmith + MP3 export, AI separation start, Discover, DJ demo, Crate, account + all admin tabs): nothing executes, no injected markup, no request to the attacker host, zero CSP violations, each flow still works |
 | ui/test_assistant_ui | Roomy panel: a11y + placement vs the a11y button (RTL/LTR), gate, suggestions per view, streaming + stop, request format and ctx, safe markdown, error states + retry, 2000-char cap, history rules, per-user sessionStorage, 5 languages, dark, lift above Discover player / Deezer bar, 375 px sheet + focus trap, teaser once, zero CSP violations |
-| slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: model download first (free), confirmation dialog with the price, 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
+| slow/test_separation | `ai/worker.js?v=2` with the real model on 12 s of p0.mp3: init → 'p'/'blk'/'done' protocol, blocks cover the input without gaps, stems finite and additive (sum = mix within 2 %), energy spread over drums/bass/other/vocals; in the app: 'sep' charged before the run, cancel refunds, chip back to the balance. Not an old-vs-new comparison (the pre-streaming worker is not in the repo) |
+| ui/test_convert | Converter: gate, every fixture (tagged MP3/WAV/FLAC/OGG/M4A/MP4/AIFF from `fixtures/gen_media.py`) → MP3 with tags + cover kept (m4a/mp4/aiff through ffmpeg.wasm, loaded lazily), WAV 24-bit/48 k/mono + normalise/trim/fades verified from the header, FLAC/OGG/M4A targets with cover + BPM/key (mutagen), unique names, ZIP, cancel, options remembered, activity logged, Images tab (500 px JPG, WebP), he/ar/ru/es × dark × 375 px, zero CSP violations (110) |
 | ui/test_assistant_md | `ROOMY._render` against 33 hostile markdown inputs: only allowed elements/attributes/hrefs, nothing executes, fast on pathological input |
 
 ### Known app issues the suite reports (not failures)

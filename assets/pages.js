@@ -415,6 +415,8 @@ he: {
   f7k: 'מאשאפ', f7h: 'שירה משיר אחד, ביט משיר אחר',
   f7p: 'טוענים שני שירים, ו־Chord Room מתאים ביניהם לבד: קצב, סולם ותיבות. מאזינים, מזיזים ומייצאים מאשאפ מוכן.',
   f7l: ['הפרדה ב־AI של השירה והביט, או הפרדה מהירה בחינם', 'התאמת קצב עם שמירה על הסולם, והזזת השירה לסולם המתאים (או למקביל)', 'השירה נכנסת בדיוק על תיבה של הביט, עם הזזה בפעמה או ב־10 מילישניות', 'ציר זמן עם שני גלי קול, לופ וכניסה/יציאה הדרגתית, וייצוא ל־WAV או MP3'],
+  f8k: 'המרה', f8h: 'כל קובץ, בפורמט שאתם צריכים', f8p: 'גוררים ערימה של קבצי אודיו או וידאו ומקבלים MP3, WAV, FLAC, OGG או M4A, עם התגיות והעטיפה. הכול רץ בדפדפן: שום קובץ לא עולה לשרת.',
+  f8l: ['המרה של הרבה קבצים בבת אחת, גם חילוץ הפסקול מווידאו (MP4, MOV, WebM, MKV)', 'קצב דגימה, עומק ביטים או קצב סיביות, סטריאו/מונו, נרמול ל־\u2066−14 LUFS\u2069, חיתוך שקט וכניסה/יציאה הדרגתית', 'שם השיר, האמן, האלבום והעטיפה עוברים לקובץ החדש, ואפשר להוסיף BPM וסולם לתגיות', 'הורדה של כל התוצאות ב־ZIP, והקטנת עטיפות ל־500/1000/1500 פיקסלים'],
   f4l: ['WAV ו־MP3 ב־320 kbps: ערוצים, אינסטרומנטלי ומקור', 'MIDI לפסנתר: אקורדים, קו בס ומלודיית השירה',
     'תופים ל־MIDI: קיק, סנר והיי־האט מערוץ התופים, מיושרים ל־1/16', 'הכל בקצב ובסולם שבחרתם, ומתחיל בתיבה 1'],
   f5k: 'חשבון ונקודות', f5h: 'הספרייה שלכם, איתכם בכל מקום',
@@ -451,6 +453,8 @@ en: {
   f7k: 'Mashup', f7h: 'Vocals from one song, the beat from another',
   f7p: 'Load two songs and Chord Room matches them for you: tempo, key and bars. Listen, nudge and export a finished mashup.',
   f7l: ['AI separation of the vocals and the beat, or a free quick separation', 'Tempo matching with key lock, and the vocals moved to a matching key (or its relative)', 'The vocals land right on one of the beat\'s bars, nudge by a beat or 10 ms', 'Two-lane waveform timeline, loop and fades, export to WAV or MP3'],
+  f8k: 'Convert', f8h: 'Any file, in the format you need', f8p: 'Drop a pile of audio or video files and get MP3, WAV, FLAC, OGG or M4A with their tags and cover. Everything runs in the browser: no file is uploaded.',
+  f8l: ['Many files at once, including the soundtrack of videos (MP4, MOV, WebM, MKV)', 'Sample rate, bit depth or bitrate, stereo/mono, −14 LUFS normalisation, silence trimming and fades', 'Title, artist, album and cover carry over to the new file; BPM and key can be added to the tags', 'Download every result as one ZIP, and resize cover art to 500/1000/1500 px'],
   f4l: ['WAV and MP3 320 kbps: stems, instrumental and original', 'Piano MIDI: chords, bass line and vocal melody',
     'Drums to MIDI: kick, snare and hi-hat from the drums stem, quantised to 1/16', 'Everything in your chosen tempo and key, starting at bar 1'],
   f5k: 'Account & points', f5h: 'Your library, wherever you are',
@@ -487,6 +491,8 @@ ar: {
   f7k: 'ماش أب', f7h: 'الغناء من أغنية والإيقاع من أخرى',
   f7p: 'حمّل أغنيتين وسيطابق Chord Room بينهما تلقائيًا: الإيقاع والمقام والمازورات. استمع وحرّك وصدّر ماش أب جاهزًا.',
   f7l: ['فصل الغناء والإيقاع بالذكاء الاصطناعي، أو فصل سريع مجاني', 'مطابقة الإيقاع مع الحفاظ على المقام، ونقل الغناء إلى مقام متوافق (أو نسبي)', 'يدخل الغناء تمامًا على مازورة من الإيقاع، مع تحريك بنبضة أو 10 ms', 'خط زمني بموجتين، تكرار ودخول/خروج تدريجي، وتصدير WAV أو MP3'],
+  f8k: 'تحويل', f8h: 'أي ملف، بالصيغة التي تحتاجها', f8p: 'اسحب كومة من ملفات الصوت أو الفيديو واحصل على MP3 أو WAV أو FLAC أو OGG أو M4A مع الوسوم والغلاف. كل شيء يعمل في المتصفح: لا يُرفع أي ملف.',
+  f8l: ['ملفات كثيرة دفعة واحدة، بما فيها استخراج الصوت من الفيديو (MP4, MOV, WebM, MKV)', 'معدل العينات، عمق البت أو معدل البت، ستيريو/أحادي، تطبيع إلى \u2066−14 LUFS\u2069، قص الصمت ودخول/خروج تدريجي', 'العنوان والفنان والألبوم والغلاف تنتقل إلى الملف الجديد، ويمكن إضافة BPM والمقام إلى الوسوم', 'تنزيل كل النتائج في ملف ZIP واحد، وتصغير الأغلفة إلى 500/1000/1500 بكسل'],
   f4l: ['WAV وMP3 بجودة 320 kbps: المسارات والنسخة الموسيقية والأصل', 'MIDI للبيانو: الكوردات وخط الباص ولحن الغناء',
     'الطبول إلى MIDI: الكيك والسنير والهاي هات من مسار الطبول، مضبوطة على 1/16', 'كل شيء بالإيقاع والمقام اللذين اخترتهما، بدءًا من المازورة 1'],
   f5k: 'الحساب والنقاط', f5h: 'مكتبتك معك أينما كنت',
@@ -523,6 +529,8 @@ ru: {
   f7k: 'Мэшап', f7h: 'Вокал из одной песни, бит из другой',
   f7p: 'Загрузите две песни, и Chord Room сам сведёт их по темпу, тональности и тактам. Послушайте, подвиньте и экспортируйте готовый мэшап.',
   f7l: ['AI-разделение вокала и бита или бесплатное быстрое разделение', 'Подгонка темпа с сохранением тональности и перенос вокала в подходящую (или параллельную) тональность', 'Вокал входит ровно на такт бита, сдвиг на долю или на 10 мс', 'Таймлайн с двумя волнами, луп и плавные вход/выход, экспорт в WAV или MP3'],
+  f8k: 'Конвертер', f8h: 'Любой файл — в нужном формате', f8p: 'Перетащите стопку аудио- или видеофайлов и получите MP3, WAV, FLAC, OGG или M4A с тегами и обложкой. Всё работает в браузере: ни один файл не загружается.',
+  f8l: ['Много файлов сразу, включая звуковую дорожку видео (MP4, MOV, WebM, MKV)', 'Частота дискретизации, разрядность или битрейт, стерео/моно, нормализация до −14 LUFS, обрезка тишины и плавные переходы', 'Название, исполнитель, альбом и обложка переходят в новый файл; в теги можно добавить BPM и тональность', 'Все результаты одним ZIP, а обложки — в 500/1000/1500 px'],
   f4l: ['WAV и MP3 320 kbps: стемы, инструментал и оригинал', 'Фортепианный MIDI: аккорды, бас-линия и вокальная мелодия',
     'Барабаны в MIDI: бочка, малый и хай-хэт из стема барабанов, с квантизацией 1/16', 'Всё в выбранном темпе и тональности, с первого такта'],
   f5k: 'Аккаунт и баллы', f5h: 'Ваша библиотека всегда с вами',
@@ -559,6 +567,8 @@ es: {
   f7k: 'Mashup', f7h: 'La voz de una canción, la base de otra',
   f7p: 'Carga dos canciones y Chord Room las ajusta por ti: tempo, tonalidad y compases. Escucha, ajusta y exporta un mashup terminado.',
   f7l: ['Separación con IA de la voz y la base, o una separación rápida gratis', 'Ajuste de tempo sin cambiar la tonalidad, y la voz movida a una tonalidad compatible (o su relativa)', 'La voz entra justo en un compás de la base; ajuste por tiempo o por 10 ms', 'Línea de tiempo con dos ondas, bucle y fundidos, exportación a WAV o MP3'],
+  f8k: 'Convertir', f8h: 'Cualquier archivo, en el formato que necesitas', f8p: 'Arrastra un montón de archivos de audio o vídeo y obtén MP3, WAV, FLAC, OGG o M4A con sus etiquetas y carátula. Todo se ejecuta en el navegador: no se sube ningún archivo.',
+  f8l: ['Muchos archivos a la vez, incluida la pista de audio de los vídeos (MP4, MOV, WebM, MKV)', 'Frecuencia de muestreo, profundidad de bits o bitrate, estéreo/mono, normalización a −14 LUFS, recorte de silencio y fundidos', 'Título, artista, álbum y carátula pasan al archivo nuevo; se pueden añadir BPM y tonalidad a las etiquetas', 'Descarga todos los resultados en un ZIP, y reduce carátulas a 500/1000/1500 px'],
   f4l: ['WAV y MP3 a 320 kbps: pistas, instrumental y original', 'MIDI de piano: acordes, línea de bajo y melodía vocal',
     'Batería a MIDI: bombo, caja y hi-hat desde la pista de batería, cuantizados a 1/16', 'Todo en el tempo y la tonalidad que elijas, desde el compás 1'],
   f5k: 'Cuenta y puntos', f5h: 'Tu biblioteca, donde estés',
@@ -648,6 +658,7 @@ const IP = {
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>',
   coin: '<circle cx="12" cy="12" r="9"/><path d="M12 7.2l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',
   merge: '<path d="M3 6h2.5c4.5 0 5 6 9.5 6H21"/><path d="M3 18h2.5c4.5 0 5-6 9.5-6"/><path d="M18 9l3 3-3 3"/>',
+  convert: '<path d="M4 7h11l-3-3M20 17H9l3 3"/><path d="M4 7v3M20 17v-3"/>',
   play: '<path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="none"/>'
 };
 function ic(n, cls) { return '<svg class="pg-ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + IP[n] + '</svg>'; }
@@ -784,6 +795,23 @@ function artCrate() {
     '<rect x="16" y="180" width="448" height="96" rx="9" fill="#0f0f12" stroke="#23232a"/>' + grid +
     '<g fill="#FF3B3B" opacity=".9">' + lo + '</g><g fill="#2BE36F" opacity=".85" style="mix-blend-mode:screen">' + mi + '</g><g fill="#3D7BFF" style="mix-blend-mode:screen">' + hi + '</g>' + fl + '</svg>';
 }
+function artConvert() {
+  /* a queue of files turning into another format: source chips → arrow → target chips, with progress bars */
+  const rows = [['WAV', 'MP3', 1, '#2F8CFF'], ['MP4', 'MP3', 1, '#B66DFF'], ['FLAC', 'M4A', 0.72, '#FF7A1A'], ['AIFF', 'FLAC', 0.35, '#2BD46A'], ['M4A', 'WAV', 0, '#4a4a54']];
+  let g = '<text class="pg-am dim sm" x="40" y="30">SOURCE</text><text class="pg-am dim sm" x="226" y="30">TARGET</text><text class="pg-am dim sm" x="326" y="30">PROGRESS</text>';
+  rows.forEach((r, i) => {
+    const y = 42 + i * 40, w = Math.round(110 * r[2]);
+    g += '<g class="pg-drow" style="--i:' + i + '"><rect x="24" y="' + y + '" width="432" height="32" rx="7" fill="' + (i === 1 ? 'rgba(255,255,255,.07)' : 'transparent') + '"/>' +
+      '<rect x="36" y="' + (y + 6) + '" width="54" height="20" rx="5" fill="#26262c"/><text class="pg-am" x="63" y="' + (y + 20.5) + '" text-anchor="middle">' + r[0] + '</text>' +
+      '<path d="M104 ' + (y + 16) + 'h18M117 ' + (y + 11) + 'l5 5-5 5" fill="none" stroke="' + r[3] + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<rect x="134" y="' + (y + 12) + '" width="' + (72 - i * 9) + '" height="8" rx="4" fill="#4a4a54"/>' +
+      '<rect x="226" y="' + (y + 6) + '" width="54" height="20" rx="5" fill="' + (r[2] >= 1 ? '#fff' : '#26262c') + '"/><text class="pg-am ' + (r[2] >= 1 ? 'ink' : '') + '" x="253" y="' + (y + 20.5) + '" text-anchor="middle">' + r[1] + '</text>' +
+      '<rect x="326" y="' + (y + 13) + '" width="110" height="6" rx="3" fill="#26262c"/>' + (w ? '<rect x="326" y="' + (y + 13) + '" width="' + w + '" height="6" rx="3" fill="' + r[3] + '"/>' : '') +
+      (r[2] >= 1 ? '<path d="M443 ' + (y + 16) + 'l3 3 6-6" fill="none" stroke="#2BD46A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' : '') + '</g>';
+  });
+  g += '<rect x="96" y="246" width="288" height="30" rx="8" fill="#141418" stroke="#2a2a31"/><text class="pg-am dim" x="240" y="266" text-anchor="middle">ON DEVICE · NOTHING UPLOADED</text>';
+  return '<svg viewBox="0 0 480 290" aria-hidden="true" focusable="false">' + g + '</svg>';
+}
 function artExport() {
   const files = [['WAV', '#2F8CFF'], ['MP3 320', '#FF7A1A'], ['MIDI', '#B66DFF']];
   let g = '';
@@ -888,7 +916,7 @@ function renderAbout(el, billing) {
   const payOn = !billing || billing.on !== false;
   const feats = [
     ['wave', 'blue', artTool(), 'tool', 1], ['compass', 'orange', artDisc(), 'discover', 2], ['decks', 'purple', artDj(), 'dj', 3],
-    ['layers', 'blue', artCrate(), 'crate', 6], ['merge', 'orange', artMashup(), 'mashup', 7], ['export', 'purple', artExport(), null, 4], ['user', 'blue', artAcc(), null, 5]
+    ['layers', 'blue', artCrate(), 'crate', 6], ['merge', 'orange', artMashup(), 'mashup', 7], ['convert', 'purple', artConvert(), 'convert', 8], ['export', 'blue', artExport(), null, 4], ['user', 'blue', artAcc(), null, 5]
   ];
   const fList = k => k === 5 ? (payOn ? t('f5lPts') : []).concat(t('f5l')) : t('f' + k + 'l');
   const featHtml = '<section class="pg-sec" aria-labelledby="pgFeatH">' + sh(t('featEyebrow'), t('featH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFeatH">') +
