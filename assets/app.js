@@ -1520,6 +1520,8 @@ function aiRun(LR,len,job,prog){
 /* qw: separation flow = (1) model download as a free step, (2) a confirmation with the price, balance and a time
    estimate (skippable with "don't ask again"), (3) charge, (4) run. A failed download never costs a charge/refund. */
 const SEP_OK='chordroom.sepok';
+/* sec: "don't ask again" consents are kept per account (another account on the same browser is asked again) */
+const okKey=k=>{let u='guest';try{u=AUTH.uid||'guest'}catch(e){}return k+':'+u};
 function sepEstimate(){const d=S.dur||240,gpu=AI.ready?AI.ep==='webgpu':!!navigator.gpu,per=gpu?0.3:1.6,a=Math.max(1,Math.round(d*per/60)),b=Math.max(a+1,Math.round(d*per*2/60));return t('sepEst',{a,b})}
 function sepConfirm(n,b){
   return new Promise(ok=>{
@@ -1529,7 +1531,7 @@ function sepConfirm(n,b){
       <div class="row2"><button type="button" class="btn solid go"></button><button type="button" class="btn ghost no"></button></div></div>`;
     w.querySelector('h3').textContent=t('sepConfH');w.querySelector('.sepp').textContent=t('sepConfP',{n,b,t:sepEstimate()});
     w.querySelector('.sepskip span').textContent=t('sepConfSkip');w.querySelector('.go').textContent=t('sepConfGo',{n});w.querySelector('.no').textContent=t('cancel');
-    const ret=document.activeElement,done=v=>{if(v&&w.querySelector('.sepskip input').checked)try{localStorage.setItem(SEP_OK,'1')}catch(e){}
+    const ret=document.activeElement,done=v=>{if(v&&w.querySelector('.sepskip input').checked)try{localStorage.setItem(okKey(SEP_OK),'1')}catch(e){}
       w.remove();document.documentElement.classList.remove('dlg-open');if(ret&&ret.isConnected)ret.focus({preventScroll:true});ok(v)};
     w.querySelector('.go').onclick=()=>done(true);w.querySelector('.no').onclick=()=>done(false);
     w.addEventListener('click',e=>{if(e.target===w)done(false)});
@@ -1550,7 +1552,7 @@ async function aiSeparate(){
     if(job!==AI.job||S.buffer!==token)return;
   }
   const paid=billingOn()&&!ACC.admin&&unitPrice('sep')>0;
-  let skip=false;try{skip=localStorage.getItem(SEP_OK)==='1'}catch(e){}
+  let skip=false;try{skip=localStorage.getItem(okKey(SEP_OK))==='1'}catch(e){}
   if(paid&&!skip){sepProgress(0,'');$('#sprog').hidden=true;
     const ok=await sepConfirm(unitPrice('sep'),ACC.cred?ACC.cred.credits||0:0);
     if(job!==AI.job||S.buffer!==token)return;
@@ -1765,10 +1767,17 @@ function wav(L,R,sr){
 }
 const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+/* sec: ZIP entry + download names: no '..' / absolute / drive paths, no control or bidi-override characters, no Windows-reserved
+   names (CON, NUL, COM1…) or characters, no trailing dots/spaces; '/' only between folder segments; duplicates get ' (2)' */
+const RESERVED_WIN=/^(?:CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])(?:\.|$)/i;
+function safeSeg(x){let s=String(x??'').normalize('NFC').replace(/[\u0000-\u001F\u007F\u200E\u200F\u202A-\u202E\u2066-\u2069]/g,'').replace(/[<>:"|?*\\]/g,'_').replace(/\s+/g,' ').trim().replace(/[. ]+$/,'');
+  if(s==='.'||s==='..'||/^\.+$/.test(s))s='';if(RESERVED_WIN.test(s))s='_'+s;return s.slice(0,180)}
+function zipName(n,used){let p=String(n??'').split(/[/\\]+/).map(safeSeg).filter(Boolean).join('/')||'file';
+  if(used){let k=2;const m=p.match(/^(.*?)(\.[^./]{1,8})?$/);while(used.has(p.toLowerCase()))p=`${m[1]} (${k++})${m[2]||''}`;used.add(p.toLowerCase())}return p}
 function zip(files){
-  const parts=[],cen=[];let off=0;const enc=new TextEncoder();
+  const parts=[],cen=[];let off=0;const enc=new TextEncoder(),used=new Set();
   for(const f of files){
-    const nm=enc.encode(f.name),crc=crc32(f.data),sz=f.data.length;
+    const nm=enc.encode(zipName(f.name,used)),   /* sec */crc=crc32(f.data),sz=f.data.length;
     const h=new DataView(new ArrayBuffer(30));
     h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint16(10,0,true);h.setUint16(12,33,true);
     h.setUint32(14,crc,true);h.setUint32(18,sz,true);h.setUint32(22,sz,true);h.setUint16(26,nm.length,true);h.setUint16(28,0,true);
@@ -1816,7 +1825,7 @@ function renderExport(){
     cta.querySelector('button').disabled=$('#aiBtn').disabled;
     cta.querySelector('button').onclick=()=>{$('#rack').scrollIntoView({block:'center',behavior:'smooth'});aiSeparate()}}
 }
-function saveBlob(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+function saveBlob(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=safeSeg(String(filename??'').replace(/[/\\]+/g,'_'))||'download';   /* sec */document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
 async function download(){
   if(needAccount()){askAccount();return}                              /* qw */
   const msg=$('#dlMsg'),btn=$('#dlBtn');msg.classList.remove('err');
@@ -2669,8 +2678,8 @@ function priceOf(kind,qty){
 }
 const priceChip=(kind,qty)=>{const p=priceOf(kind,qty);return p.free||!p.total?'':p.total===1?t('pvChip1'):t('pvChip',{t:fmtPts(p.total)})};
 let prT=0;function pricesChanged(){if(prT)return;prT=setTimeout(()=>{prT=0;document.dispatchEvent(new CustomEvent('cr-prices'))},0)}
-function payOkGet(kind){try{const o=JSON.parse(localStorage.getItem(PAYOK_K)||'{}');return +o[kind]||0}catch(e){return 0}}
-function payOkSet(kind,n){try{const o=JSON.parse(localStorage.getItem(PAYOK_K)||'{}');o[kind]=n;localStorage.setItem(PAYOK_K,JSON.stringify(o))}catch(e){}}
+function payOkGet(kind){try{const o=JSON.parse(localStorage.getItem(okKey(PAYOK_K))||'{}');return +o[kind]||0}catch(e){return 0}}
+function payOkSet(kind,n){try{const k=okKey(PAYOK_K),o=JSON.parse(localStorage.getItem(k)||'{}');o[kind]=n;localStorage.setItem(k,JSON.stringify(o))}catch(e){}}   /* sec: per account */
 // the confirmation (same look as the separation dialog) → 'go' | 'part' | 'buy' | null
 function ptsConfirm(o){
   return new Promise(ok=>{
@@ -2999,15 +3008,18 @@ async function dz(path,params){
     s.src=`https://api.deezer.com/${path}?${q}${q?'&':''}output=jsonp&callback=${cb}`;document.head.appendChild(s)});
 }
 function rowFromTrack(t,album){
-  const id='dz:'+t.id;const r=DC.rows[id]||{id,ext:t.id,a:null,status:'idle',plays:0};
-  Object.assign(r,{title:t.title_short||t.title,artist:(t.artist&&t.artist.name)||'',album:(album&&album.title)||(t.album&&t.album.title)||'',
-    cover:(album&&album.cover_medium)||(t.album&&t.album.cover_medium)||r.cover||'',preview:t.preview||r.preview||'',link:t.link||r.link||'',
+  /* sec: Deezer data is third-party input too — numeric ids only, strings capped, covers/previews only from Deezer's CDN, links only to deezer.com */
+  const s=v=>v==null?'':String(v).slice(0,300),ext=+String(t.id??'').replace(/[^0-9]/g,'').slice(0,15)||0,cv=(album&&album.cover_medium)||(t.album&&t.album.cover_medium),pv=t.preview;
+  const id='dz:'+ext;const r=DC.rows[id]||{id,ext,a:null,status:'idle',plays:0};
+  Object.assign(r,{title:s(t.title_short||t.title),artist:s(t.artist&&t.artist.name),album:s((album&&album.title)||(t.album&&t.album.title)),
+    cover:coverOk(cv)?cv:(r.cover||''),preview:pvOk(pv)?pv:(r.preview||''),link:linkOk(t.link)?t.link:(r.link||''),
     release:(album&&album.release_date)||r.release||null,dur:t.duration||r.dur||0,dz:true});
   return DC.rows[id]=r;
 }
 // catalog rows are written by other users: Deezer's own data wins; covers only from Deezer's image CDN, links only to deezer.com
 const coverOk=u=>typeof u==='string'&&/^https:\/\/[a-z0-9-]+\.dzcdn\.net\/[^\s"'<>]*$/i.test(u);
 const linkOk=u=>typeof u==='string'&&/^https:\/\/www\.deezer\.com\/[^\s"'<>]*$/i.test(u);
+const pvOk=u=>typeof u==='string'&&/^https:\/\/[a-z0-9-]+\.dzcdn\.net\/[^\s"'<>]*$/i.test(u);   /* sec: previews only from Deezer's CDN */
 function rowFromCatalog(c){
   const r=DC.rows[c.id]||{id:c.id,ext:c.ext_id,status:'idle'},txt=(v,d)=>v!=null&&v!==''?String(v).slice(0,300):(d||'');
   if(!r.dz)Object.assign(r,{title:txt(c.title,r.title),artist:txt(c.artist,r.artist),album:txt(c.album,r.album),cover:coverOk(c.cover)?c.cover:(r.cover||''),link:linkOk(c.link)?c.link:(r.link||'')});
@@ -3104,7 +3116,7 @@ async function freshPreview(r){
   if(r.preview&&!/exp=(\d+)/.test(r.preview))return r.preview;
   const exp=+((r.preview||"").match(/exp=(\d+)/)||[])[1]||0;
   if(r.preview&&exp*1000>Date.now()+60e3)return r.preview;
-  const d=await dz(`track/${r.ext}`);r.preview=d.preview||'';return r.preview;
+  const d=await dz(`track/${r.ext}`);r.preview=pvOk(d.preview)?d.preview:'';return r.preview;   /* sec */
 }
 
 /* analysis of the 30 s preview: key, BPM and the opening chords */
@@ -3556,6 +3568,16 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='+'||e.key==='='){zoom(-1)}else if(e.key==='-'){zoom(1)}
   else if(e.key==='Escape'){$('#pop').hidden=true;$('#mix').hidden=true;$('#lib').hidden=true;$('#acc').hidden=true;$('#admin').hidden=true;closeDlg()}
 });
+/* fix (a11y): My songs / account panels and the admin overlay take the focus when they open and give it back to the button
+   that opened them when they close; the admin overlay covers the whole page, so Tab stays inside it */
+(()=>{const FOC='button:not([disabled]),[href],input:not([type=hidden]):not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  for(const id of ['lib','acc','admin']){const el=document.getElementById(id);if(!el)continue;let opener=null;
+    new MutationObserver(()=>{
+      if(!el.hidden){if(!opener)opener=document.activeElement;setTimeout(()=>{if(el.hidden||el.contains(document.activeElement))return;const f=[...el.querySelectorAll(FOC)].find(x=>x.offsetParent);if(f)f.focus({preventScroll:true})},0)}
+      else{const a=document.activeElement;if((!a||a===document.body||el.contains(a))&&opener&&opener.isConnected&&opener!==document.body)opener.focus({preventScroll:true});opener=null}
+    }).observe(el,{attributes:true,attributeFilter:['hidden']});
+    if(id==='admin')el.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const f=[...el.querySelectorAll(FOC)].filter(x=>x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&(document.activeElement===a||!el.contains(document.activeElement))){e.preventDefault();z.focus()}else if(!e.shiftKey&&(document.activeElement===z||!el.contains(document.activeElement))){e.preventDefault();a.focus()}})}})();
 ov.addEventListener('pointerdown',e=>{if(!S.dur)return;const r=ov.getBoundingClientRect();seek((e.clientX-r.left)/r.width*S.dur)});
 let drag=null;
 zm.addEventListener('pointerdown',e=>{if(!S.dur)return;zm.setPointerCapture(e.pointerId);drag={x:e.clientX,t:now(),was:P.playing};if(P.playing)stop();zm.classList.add('drag')});
@@ -3589,7 +3611,7 @@ window.CR={
   toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur,
     stems:S.stems?{vocals:S.stems[0],drums:S.stems[1],bass:S.stems[2],other:S.stems[3]}:null,stemKind:S.stemKind||null}:null,
   stopTool:()=>{if(P.playing)stop();stopPreview()},
-  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,crc32,flats,keyName,
+  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,zipName,crc32,flats,keyName,
   setLang:(l,c)=>setLang(l,c),
   log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid}),
   /* Mashup Studio (assets/mashup.js) */

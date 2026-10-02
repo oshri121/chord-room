@@ -52,3 +52,23 @@ def test(t, srv, b):
     for a in ['sign_in', 'view', 'crate_analyze', 'song_upload']:
         t.check(f'logged action {a}', a in acts, sorted(acts))
     t.shot(pg, 'admin_activity')
+
+    t.section("\"don't ask again\" is per account (sec)")
+    lib.close_dialogs(pg); pg.evaluate("document.querySelector('#adminClose')&&document.querySelector('#adminClose').click()")
+    lib.sign_out(pg); lib.sign_in(pg, 'dana@example.com', 'password1')
+    pay = lambda: pg.evaluate("window.__pay=null;CR.payN('convert',1).then(p=>{window.__pay=p||'none'});0")
+    pay(); lib.poll(pg, "!!document.querySelector('#ptsDlg')", 15); time.sleep(0.2)
+    has_skip = pg.evaluate("(()=>{const s=document.querySelector('#ptsDlg .sepskip');return !!s&&!s.hidden})()")
+    t.check('dana: points dialog with a "don\'t ask again" box', has_skip)
+    pg.evaluate("document.querySelector('#ptsDlg .sepskip input').click()"); pg.click('#ptsDlg .go')
+    lib.poll(pg, "!!window.__pay", 10); pg.evaluate("CR.settleN(window.__pay,1)"); time.sleep(0.5)
+    pay(); time.sleep(1.2)
+    t.check('dana: the next convert charge is not asked again', not pg.evaluate("!!document.querySelector('#ptsDlg')") and pg.evaluate("!!window.__pay&&window.__pay!=='none'"), pg.evaluate("window.__pay"))
+    lib.poll(pg, "!!window.__pay", 10); pg.evaluate("CR.settleN(window.__pay,1)"); time.sleep(0.3)
+    t.check('consent stored under the account id, not shared', pg.evaluate("!!localStorage.getItem('chordroom.payok.v1:u0')&&!localStorage.getItem('chordroom.payok.v1')"))
+    lib.sign_out(pg); lib.sign_up(pg, 'kai_x', 'kai@x.com')
+    pay(); time.sleep(0.3)
+    try: lib.poll(pg, "!!document.querySelector('#ptsDlg')", 10); asked = True
+    except TimeoutError: asked = False
+    t.check("another account on the same browser is asked again", asked)
+    if asked: pg.click('#ptsDlg .no')

@@ -122,7 +122,7 @@ def test(t, srv, b):
     t.check('ledger: "usb ×3 Renamed copies (ZIP)"', any(r[0] == 'spend' and r[1] == 'usb ×3 Renamed copies (ZIP)' and r[2] == -3 for r in ledger(pg)), ledger(pg)[-3:])
     lib.poll(pg, "!CRATE._C.zipBusy", 10)
     t.check('ZIP settled: no crash journal left', pg.evaluate("localStorage.getItem('chordroom.payjobs.v1')") is None)
-    pg.evaluate("localStorage.setItem('chordroom.payok.v1',JSON.stringify({usb:10}))")
+    pg.evaluate("localStorage.setItem('chordroom.payok.v1:'+Backend.user.id,JSON.stringify({usb:10}))")   # per account (sec)
     n0 = len(ledger(pg))
     with pg.expect_download(timeout=60000) as dl: pg.evaluate("document.querySelector('#crZip').click();document.querySelector('#crZip').click()")
     lib.poll(pg, "!CRATE._C.zipBusy", 10); time.sleep(0.5)
@@ -135,7 +135,7 @@ def test(t, srv, b):
     new = ledger(pg)[n0:]
     t.check('ZIP fails → charged 3 and the 3 points come back', bal(pg) == 14 and [r[0] for r in new] == ['spend', 'refund'] and new[1][2] == 3, new)
     t.check('… with an error message', "Couldn't read" in pg.inner_text('#crMsg'), pg.inner_text('#crMsg'))
-    pg.evaluate("localStorage.removeItem('chordroom.payok.v1')")
+    pg.evaluate("localStorage.removeItem('chordroom.payok.v1:'+Backend.user.id)")
 
     t.section('a batch charge whose page died is refunded on the next visit')
     J = "JSON.parse(localStorage.getItem('chordroom.payjobs.v1')||'[]')"
@@ -157,14 +157,14 @@ def test(t, srv, b):
     lib.poll(pg, "__mock.profiles.find(p=>p.id===Backend.user.id).credits===29", 5)
     t.check('that tab died (lock gone) → refunded', bal(pg) == 29 and pg.evaluate(f"{J}.length") == 0, bal(pg))
     # a job running in THIS tab: journaled while it runs, never refunded by the check, gone after settleN
-    pg.evaluate("localStorage.setItem('chordroom.payok.v1',JSON.stringify({usb:10}))")
+    pg.evaluate("localStorage.setItem('chordroom.payok.v1:'+Backend.user.id,JSON.stringify({usb:10}))")   # per account (sec)
     pay(pg, 'usb', 2); r = paid(pg)
     t.check('payN journals the running job', r and r.get('id') and pg.evaluate(f"{J}.map(j=>j.id+':'+j.qty).join()") == f"{r.get('id')}:2", (r, pg.evaluate(J)))
     pg.evaluate("CR._payJobsCheck()"); time.sleep(0.8)
     t.eq('running here → not refunded', bal(pg), 27)
     pg.evaluate("CR.settleN(window.__p,0)"); time.sleep(0.3)
     t.check('settleN(pay, 0) → journal empty, nothing refunded', pg.evaluate(f"{J}.length") == 0 and bal(pg) == 27, (bal(pg), pg.evaluate(J)))
-    pg.evaluate("localStorage.removeItem('chordroom.payok.v1')")
+    pg.evaluate("localStorage.removeItem('chordroom.payok.v1:'+Backend.user.id)")
 
     # ------------------------------------------------------------------ 3. plan discount, short of points
     t.section('Pro plan −10 % and rounding')
@@ -206,7 +206,7 @@ def test(t, srv, b):
     pay(pg, 'usb', 4); d = wait_dlg(pg)
     t.check('another kind still asks', d is not None, d)
     pg.click('#ptsDlg .no'); t.check('cancel → null, nothing charged', paid(pg) is None and bal(pg) == 14)
-    pg.evaluate("localStorage.removeItem('chordroom.payok.v1')")
+    pg.evaluate("localStorage.removeItem('chordroom.payok.v1:'+Backend.user.id)")
     t.eq('zero CSP violations', lib.csp_violations(pg), [])
     ctx.close()
 

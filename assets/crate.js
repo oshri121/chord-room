@@ -498,9 +498,12 @@ function exportXml(){
   if(folderSegs(C.folder).length)setMsg(t('crXmlDone'));else setMsg(t('crXmlNoFolder'),true);
   renderMsg();
 }
+/* sec: ZIP names go through CR.zipName first (no CON/NUL…, control or bidi characters) so the M3U8 lines match the entries;
+   one line per field — a CR/LF (or other control character) in a file name must not add playlist lines */
+const m3l=x=>String(x??'').replace(/[\u0000-\u001F\u007F]+/g,' ').trim();
 function m3u(rows,nameOf){
   const L=['#EXTM3U','#PLAYLIST:Chord Room'];
-  for(const r of rows){const p=parseName(r.name);L.push(`#EXTINF:${Math.round(r.dur||0)},${p.artist?p.artist+' - ':''}${p.title}`,nameOf(r))}
+  for(const r of rows){const p=parseName(r.name);L.push(`#EXTINF:${Math.round(r.dur||0)},${p.artist?m3l(p.artist)+' - ':''}${m3l(p.title)}`,m3l(nameOf(r)))}
   return L.join('\n')+'\n';
 }
 function exportM3u(){
@@ -528,7 +531,7 @@ async function exportZip(force){
     const files=[],used=new Set();let i=0;
     for(const r of rows){
       setMsg(t('crZipBusy',{p:Math.round(i/rows.length*100)}));renderMsg();await CR.tick();
-      let nm=renamed(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
+      let nm=CR.zipName?CR.zipName(renamed(r)):renamed(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
       used.add(nm.toLowerCase());r._zn=nm;
       let data;try{data=new Uint8Array(await r.file.arrayBuffer())}catch(e){console.warn('zip read',r.name,e);bad++;i++;used.delete(nm.toLowerCase());r._zn=null;continue}
       if(r.ext==='mp3')try{data=tagMp3(data,{bpm:String(Math.round(r.bpm)),key:rbKey(r.key),cam:keyStr(r.key),cues:cueList(r)})}catch(e){console.warn('id3',r.name,e)}
@@ -878,7 +881,7 @@ async function exportUsb(force){
     const files=[],used=new Set();let i=0,other=0;
     for(const r of rows){
       setMsg(t('crZipBusy',{p:Math.round(i/rows.length*100)}));renderMsg();await CR.tick();
-      let nm=usbName(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
+      let nm=CR.zipName?CR.zipName(usbName(r)):usbName(r);if(used.has(nm.toLowerCase())){let k=2;const b=baseOf(nm);while(used.has(`${b} (${k}).${r.ext}`.toLowerCase()))k++;nm=`${b} (${k})`+(r.ext?'.'+r.ext:'')}
       used.add(nm.toLowerCase());r._zn=nm;
       const lat=latOf(r),bpm=String(Math.round(r.bpm)),key=rbKey(r.key);
       let data;try{data=new Uint8Array(await r.file.arrayBuffer())}catch(e){console.warn('usb read',r.name,e);bad++;i++;used.delete(nm.toLowerCase());r._zn=null;continue}
@@ -888,7 +891,7 @@ async function exportUsb(force){
       files.push({name:nm,data});i++;
     }
     const inZip=rows.filter(r=>r._zn);if(!inZip.length)throw new Error('no files');
-    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...inZip.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${latStr(latOf(r))}`,r._zn])].join('\n')+'\n')});
+    files.push({name:'Chord Room.m3u8',data:new TextEncoder().encode(['#EXTM3U','#PLAYLIST:Chord Room',...inZip.flatMap(r=>[`#EXTINF:${Math.round(r.dur||0)},${m3l(latStr(latOf(r)))}`,m3l(r._zn)])].join('\n')+'\n')});
     setMsg(t('crZipBusy',{p:100}));renderMsg();await CR.tick();
     const blob=CR.zip(files);
     CR.saveBlob(blob,'chord-room-usb.zip');logExp('usb',inZip.length);ok=true;

@@ -542,7 +542,7 @@ function build(){
 <input type="file" id="djFile" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" hidden>
 <div class="djmenu" id="djMenu" hidden></div>
 <div class="djnote" id="djNote" role="status" hidden></div>
-<div class="djpick" id="djPick" hidden><div class="pkin"><div class="pkh"><b data-i="djLibTitle"></b><button type="button" class="btn ghost" id="djPickX" data-i="djClose"></button></div>
+<div class="djpick" id="djPick" role="dialog" aria-modal="true" aria-labelledby="djPickH" hidden><div class="pkin"><div class="pkh"><b id="djPickH" data-i="djLibTitle"></b><button type="button" class="btn ghost" id="djPickX" data-i="djClose"></button></div>
   <input type="search" id="djPickQ" data-ip="djLibSearch"><p class="pkn" id="djPickN"></p><ul id="djPickL"></ul></div></div>`;
   D.built=true;wire();CR.applyLang();renderAll();
 }
@@ -588,7 +588,7 @@ function wire(){
       const a=b.dataset.act;
       if(a==='cue'){b.addEventListener('pointerdown',e=>{e.preventDefault();ensure().then(()=>cueDown(dk()))});b.addEventListener('pointerup',()=>dk()&&cueUp(dk()));b.addEventListener('pointerleave',()=>dk()&&cueUp(dk()));return}
       if(a==='bendUp'||a==='bendDown'){const f=a==='bendUp'?1.04:0.96;b.addEventListener('pointerdown',e=>{e.preventDefault();const d=dk();if(d)setBend(d,f)});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{const d=dk();if(d&&d.bend!==1)setBend(d,1)}));return}
-      b.addEventListener('click',e=>ensure().then(()=>act(a,e)));
+      b.addEventListener('click',()=>ensure().then(()=>act(a,{currentTarget:b})));   /* fix: e.currentTarget is null after the await → LOAD threw and never opened its menu */
     });
     const tf=el.querySelector('.tfader');
     tf.addEventListener('input',()=>{const d=dk();if(d)setTempo(d,-(+tf.value),true)});
@@ -628,9 +628,13 @@ function wire(){
   $('#djRec').onclick=()=>recToggle();
   $('#djDemoBoth').onclick=()=>ensure().then(()=>{loadDemo(D.decks[0],0);loadDemo(D.decks[1],1);D.demoN=2});
   $('#djFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)loadFile(D.decks[D.pickFor],f)};
-  $('#djPickX').onclick=()=>{$('#djPick').hidden=true};
-  $('#djPick').addEventListener('click',e=>{if(e.target.id==='djPick')$('#djPick').hidden=true});
+  $('#djPickX').onclick=()=>closePick();
+  $('#djPick').addEventListener('click',e=>{if(e.target.id==='djPick')closePick()});
   $('#djPickQ').oninput=renderPick;
+  /* fix (a11y): the song picker is modal — Tab stays inside, Esc closes, the focus goes back to the deck's LOAD button */
+  $('#djPick').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closePick()}
+    else if(e.key==='Tab'){const f=[...$('#djPick .pkin').querySelectorAll('button:not([disabled]),input')].filter(x=>x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
   document.addEventListener('pointerdown',e=>{const m=$('#djMenu');if(m&&!m.hidden&&!m.contains(e.target)&&!e.target.closest('.dkload'))m.hidden=true});
   window.addEventListener('resize',()=>{if(D.visible)sizeAll()});
   window.addEventListener('scroll',()=>{const m=$('#djMenu');if(m&&!m.hidden&&Math.abs(window.scrollY-(D.menuY||0))>40)m.hidden=true},{passive:true});
@@ -645,6 +649,7 @@ function openMenu(i,btn){
   m.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{m.hidden=true;const d=D.decks[i],k=b.dataset.m;
     if(k==='upload')$('#djFile').click();else if(k==='tool')loadTool(d);else if(k==='demo')loadDemo(d);else openPick(i)});
 }
+function closePick(){$('#djPick').hidden=true;const b=document.querySelector(`.dk[data-d="${D.pickFor}"] [data-act=load]`);if(b)b.focus({preventScroll:true})}   /* fix (a11y) */
 function openPick(i){D.pickFor=i;$('#djPick').hidden=false;$('#djPickQ').value='';renderPick();setTimeout(()=>$('#djPickQ').focus(),30)}
 function renderPick(){
   const q=$('#djPickQ').value.trim().toLowerCase(),ul=$('#djPickL'),signed=CR.signedIn();
