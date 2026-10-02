@@ -1026,6 +1026,7 @@ function drawZoom(tm){
     for(let x=0;x<W;x++){const ta=tl+x*pt;let i0=Math.floor(ta*w.rate),i1=Math.max(i0+1,Math.floor((ta+pt)*w.rate));if(i1<=0||i0>=w.len)continue;i0=Math.max(0,i0);i1=Math.min(w.len,i1);cols.push([x,...sliceRange(w,i0,i1)])}
     drawWave(g,cols,cy,h/2*.94);
   }
+  gdDraw('under',g,tl,pt,top,h,W,H);/* griddrag */
   if(S.beats.length){
     const T=60/S.bpm,first=S.beats[0];
     const b0=Math.max(0,Math.floor((tl-first)/T)),b1=Math.min(S.beats.length-1,Math.ceil((tl+win-first)/T));
@@ -1044,6 +1045,7 @@ function drawZoom(tm){
     }
   }
   S.cues.forEach((c,i)=>{if(c==null)return;const x=(c-tl)/pt;if(x<-20||x>W+20)return;g.fillStyle=HC_COL[i];g.fillRect(x-dpr*.5,top,1.5*dpr,h);g.beginPath();g.moveTo(x,top);g.lineTo(x+14*dpr,top);g.lineTo(x+14*dpr,top+12*dpr);g.lineTo(x,top+16*dpr);g.fill();g.fillStyle='#000';g.font=`700 ${10*dpr}px IBM Plex Mono, monospace`;g.fillText('ABCDEFGH'[i],x+3*dpr,top+10*dpr)});
+  gdDraw('over',g,tl,pt,top,h,W,H);/* griddrag */
   const px=Math.round(W/2);
   g.fillStyle='#E5322B';g.fillRect(px-dpr,top,2*dpr,h);
   g.beginPath();g.moveTo(px-6*dpr,top);g.lineTo(px+6*dpr,top);g.lineTo(px,top+7*dpr);g.fill();
@@ -1177,6 +1179,7 @@ function renderStats(){
   $('#play').disabled=!S.buffer;
   renderHarm();renderLoop();renderCues();
   $('#clickBtn').classList.toggle('on',S.click);
+  gdUI();/* griddrag */
 }
 function ltrNode(x){const e=document.createElement('span');e.dir='ltr';e.className='ltr';e.textContent=x;return e}
 function rstBtn(kind){const b=document.createElement('button');b.type='button';b.className='rst';b.title=t('resetL');b.setAttribute('aria-label',t('resetL'));
@@ -1340,7 +1343,7 @@ async function analyze(buffer,name,demo,nosave){
   busy(t('bTempo'),0.9);await tick();if(stale())return;
   const genv=new Float32Array(S.env.length);for(let i=0;i<genv.length;i++)genv[i]=S.env[i]+2*S.lowEnv[i];
   const g=fitGrid(genv,estimateTempo(S.env));S.bpm=g.bpm;S.offset=g.offset;
-  buildBeats();recompute();
+  buildBeats();recompute();S.gridDet={bpm:S.bpm,offset:S.offset,down:S.down,buf:buffer};/* griddrag: "back to the detected grid" */
   try{const L=await measureLoudness(buffer);if(stale())return;S.lufs=L.lufs;S.peak=L.peak}catch(e){}
   renderStats();busy(null);
   if(!demo&&!nosave){saveLib();if(buffer.duration>=60)offerCatalogMatch()}
@@ -3504,11 +3507,12 @@ function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='functi
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
-$('#bpmD').onclick=()=>{if(S.bpm*2<=300){S.bpm*=2;regrid()}};
-$('#bpmH').onclick=()=>{if(S.bpm/2>=40){S.bpm/=2;regrid()}};
-$('#gL').onclick=()=>{S.offset-=0.01;regrid()};
-$('#gR').onclick=()=>{S.offset+=0.01;regrid()};
-$('#gBar').onclick=()=>{S.down=(S.down+1)%4;renderSheet();saveLibSoon();dirty=true};
+/* griddrag: every grid button is an undo step */
+$('#bpmD').onclick=()=>{if(S.bpm*2<=300){gdPush();S.bpm*=2;regrid()}};
+$('#bpmH').onclick=()=>{if(S.bpm/2>=40){gdPush();S.bpm/=2;regrid()}};
+$('#gL').onclick=()=>{gdPush();S.offset-=0.01;regrid()};
+$('#gR').onclick=()=>{gdPush();S.offset+=0.01;regrid()};
+$('#gBar').onclick=()=>{gdPush();S.down=(S.down+1)%4;renderSheet();renderStats();saveLibSoon();dirty=true};
 document.querySelectorAll('[data-wm]').forEach(b=>b.onclick=()=>{S.wmode=b.dataset.wm;buildOverview();renderStats()});
 document.querySelectorAll('[data-dg]').forEach(b=>b.onclick=()=>{S.diag=b.dataset.dg;renderStats();renderChips();lastBeat=-2;dirty=true});
 document.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{S.acc=+b.dataset.acc;renderAll()});
@@ -3558,9 +3562,9 @@ document.addEventListener('keydown',e=>{
 });
 ov.addEventListener('pointerdown',e=>{if(!S.dur)return;const r=ov.getBoundingClientRect();seek((e.clientX-r.left)/r.width*S.dur)});
 let drag=null;
-zm.addEventListener('pointerdown',e=>{if(!S.dur)return;zm.setPointerCapture(e.pointerId);drag={x:e.clientX,t:now(),was:P.playing};if(P.playing)stop();zm.classList.add('drag')});
-zm.addEventListener('pointermove',e=>{if(!drag)return;const r=zm.getBoundingClientRect();P.pos=Math.max(0,Math.min(S.dur,drag.t-(e.clientX-drag.x)/r.width*S.win));dirty=true});
-const endDrag=()=>{if(!drag)return;zm.classList.remove('drag');const w=drag.was;drag=null;if(S.loop&&(P.pos<S.loop.ls||P.pos>S.loop.le)){S.loop=null;renderLoop()}if(w)play()};
+zm.addEventListener('pointerdown',e=>{if(!S.dur)return;if(gdDown(e))return;/* griddrag */zm.setPointerCapture(e.pointerId);drag={x:e.clientX,t:now(),was:P.playing};if(P.playing)stop();zm.classList.add('drag')});
+zm.addEventListener('pointermove',e=>{if(GD.drag){gdMove(e);return}gdCursor(e);/* griddrag */if(!drag)return;const r=zm.getBoundingClientRect();P.pos=Math.max(0,Math.min(S.dur,drag.t-(e.clientX-drag.x)/r.width*S.win));dirty=true});
+const endDrag=e=>{if(GD.drag){gdUp(e);return}/* griddrag */if(!drag)return;zm.classList.remove('drag');const w=drag.was;drag=null;if(S.loop&&(P.pos<S.loop.ls||P.pos>S.loop.le)){S.loop=null;renderLoop()}if(w)play()};
 zm.addEventListener('pointerup',endDrag);zm.addEventListener('pointercancel',endDrag);
 zm.addEventListener('wheel',e=>{if(!S.dur)return;e.preventDefault();if(Math.abs(e.deltaY)>Math.abs(e.deltaX))zoom(e.deltaY>0?1:-1);else seek(now()+e.deltaX/400*S.win)},{passive:false});
 let dd=0;
@@ -3612,6 +3616,185 @@ Object.assign(window.CR,{
   getTranspose:()=>S.transpose,
   setTranspose:v=>{if(!S.key)return false;v=Math.max(-12,Math.min(12,Math.round(v)));if(v!==S.transpose)setT(v===0?0:v-S.transpose);return S.transpose===v}
 });
+/* ---------- griddrag: move / stretch the beat grid with the mouse on the zoomed waveform (FL Studio style) ----------
+   Grid mode (#gEdit) or Alt/Shift held while dragging: drag = move the grid (S.offset), the audio stays put. The grabbed line
+   snaps to a hit within 20 ms (magnet on the canvas; Ctrl/⌘ = free). In grid mode a drag on a bar number (or Alt+Shift+drag
+   anywhere) stretches the tempo with bar 1 fixed (S.bpm, anchor = S.beats[S.down]); a double click / double tap on a line =
+   a bar starts there (S.down). Arrows ±1 ms (Shift ±10 ms) while the toggle is on or focused; Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y)
+   undo / redo every grid edit (also ◀ ▶ ÷2 ×2 and the bar button). While dragging, the per-beat data (chords, user edits,
+   downbeat, hot cues sitting on a grid line) rides along by beat index; when the drag ends the chords are re-detected from
+   the chroma on the new grid (user edits kept) and saved with the song (saveLibSoon). Loops are cleared like regrid(). */
+var GD=null;
+{const IGD={
+he:{gdEdit:'גרירה',gdEditT:'גרירה: הזזת הגריד בגרירה על הגל (כמו ב־FL Studio)',gdUndo:'ביטול (Ctrl+Z)',gdRedo:'ביצוע מחדש (Ctrl+Shift+Z)',gdReset:'חזרה לגריד שזוהה',
+  gdHint:'גוררים את הגל כדי להזיז את הגריד (במצב רגיל: מחזיקים Alt או Shift) · הקו נצמד למכה הקרובה, Ctrl/⌘ = חופשי · גרירת מספר תיבה מתאימה את הקצב (תיבה 1 נשארת במקום) · לחיצה כפולה על קו = כאן מתחילה תיבה · ← → מילישנייה, Shift עשר · Ctrl+Z ביטול',
+  gdStat:'גריד {d} מהזיהוי · {bpm}',gdDownSet:'מעכשיו כאן מתחילה תיבה'},
+en:{gdEdit:'Drag',gdEditT:'Drag the grid: move it by dragging the waveform (like FL Studio)',gdUndo:'Undo (Ctrl+Z)',gdRedo:'Redo (Ctrl+Shift+Z)',gdReset:'Back to the detected grid',
+  gdHint:'Drag the waveform to move the grid (in normal mode: hold Alt or Shift) · the line snaps to the nearest hit, Ctrl/⌘ = free · drag a bar number to fit the tempo (bar 1 stays put) · double-click a line = a bar starts here · ← → 1 ms, Shift 10 ms · Ctrl+Z undo',
+  gdStat:'Grid {d} from detected · {bpm}',gdDownSet:'A bar starts here now'},
+ar:{gdEdit:'سحب',gdEditT:'سحب الشبكة: حرّكها بالسحب على الموجة (كما في FL Studio)',gdUndo:'تراجع (Ctrl+Z)',gdRedo:'إعادة (Ctrl+Shift+Z)',gdReset:'العودة إلى الشبكة المكتشفة',
+  gdHint:'اسحب الموجة لتحريك الشبكة (في الوضع العادي: اضغط Alt أو Shift) · يلتصق الخط بأقرب ضربة، Ctrl/⌘ = بحرية · اسحب رقم المازورة لضبط الإيقاع (تبقى المازورة 1 مكانها) · نقر مزدوج على خط = تبدأ مازورة هنا · ← → ‏1 ms، Shift ‏10 ms · Ctrl+Z تراجع',
+  gdStat:'الشبكة {d} عن المكتشفة · {bpm}',gdDownSet:'تبدأ مازورة هنا الآن'},
+ru:{gdEdit:'Тянуть',gdEditT:'Тянуть сетку: двигать её, перетаскивая волну (как в FL Studio)',gdUndo:'Отменить (Ctrl+Z)',gdRedo:'Повторить (Ctrl+Shift+Z)',gdReset:'Вернуть найденную сетку',
+  gdHint:'Тяните волну, чтобы сдвинуть сетку (в обычном режиме — с Alt или Shift) · линия прилипает к ближайшему удару, Ctrl/⌘ — свободно · тяните номер такта, чтобы подогнать темп (такт 1 на месте) · двойной клик по линии = здесь начинается такт · ← → 1 мс, Shift 10 мс · Ctrl+Z отмена',
+  gdStat:'Сетка {d} от найденной · {bpm}',gdDownSet:'Теперь здесь начинается такт'},
+es:{gdEdit:'Arrastrar',gdEditT:'Arrastrar la rejilla: muévela arrastrando la onda (como en FL Studio)',gdUndo:'Deshacer (Ctrl+Z)',gdRedo:'Rehacer (Ctrl+Shift+Z)',gdReset:'Volver a la rejilla detectada',
+  gdHint:'Arrastra la onda para mover la rejilla (en modo normal: mantén Alt o Shift) · la línea se pega al golpe más cercano, Ctrl/⌘ = libre · arrastra un número de compás para ajustar el tempo (el compás 1 no se mueve) · doble clic en una línea = aquí empieza un compás · ← → 1 ms, Shift 10 ms · Ctrl+Z deshacer',
+  gdStat:'Rejilla {d} respecto a la detectada · {bpm}',gdDownSet:'Aquí empieza un compás ahora'}};
+for(const k in IGD)Object.assign(I[k],IGD[k]);}
+GD={on:false,drag:null,undo:[],redo:[],buf:null,snap:null,kb:null,kbT:0,cT:0,hover:false,tap:null,acc:'#22D3D3'};
+const gdClamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const gdCan=()=>!!(S.buffer&&S.chroma&&S.beats.length&&S.bpm);
+function gdFresh(){if(GD.buf!==S.buffer){GD.buf=S.buffer;GD.undo=[];GD.redo=[];GD.kb=null}}
+/* hit onset near t (seconds) in an AudioBuffer: strongest rise of the 1 ms peak envelope within ±tol, refined to the first
+   sample of that rise above 20 % of it. null when there is no clear hit. Also used by Mashup (CR.onsetNear). */
+function onsetNear(buf,t,tol){
+  if(!buf||!(t>=0))return null;tol=tol||0.02;
+  const sr=buf.sampleRate,Bk=Math.max(1,Math.round(sr/1000)),chs=[];for(let i=0;i<Math.min(2,buf.numberOfChannels);i++)chs.push(buf.getChannelData(i));
+  const len=chs[0].length,pre=15,post=4,i0=Math.floor((t-tol)*1000)-pre,i1=Math.ceil((t+tol)*1000)+post,n=i1-i0+1;if(n<=pre+post)return null;
+  const val=j=>{let v=0;for(const c of chs)v+=c[j];return Math.abs(v)};
+  const e=new Float32Array(n);for(let k=0;k<n;k++){const a=(i0+k)*Bk;if(a<0||a>=len)continue;let m=0;for(let j=a;j<Math.min(len,a+Bk);j++){const v=val(j);if(v>m)m=v}e[k]=m}
+  let best=-1,bs=0,lo0=0;
+  for(let k=pre;k<n-post;k++){let lo=Infinity,hi=0;for(let q=k-pre;q<k;q++)if(e[q]<lo)lo=e[q];for(let q=k;q<=k+post;q++)if(e[q]>hi)hi=e[q];const r=hi-lo;if(r>bs*1.0001&&hi>2.5*lo&&r>0.01){bs=r;best=k;lo0=lo}}
+  if(best<0)return null;
+  // the strongest rise can peak a few ms after the attack: walk back to the first block of that rise above 20 % of it
+  const thr=lo0+0.2*bs;let k=best;while(k<n-1&&e[k]<thr)k++;while(k>1&&e[k-1]>=thr)k--;
+  const a=Math.max(0,(i0+k-1)*Bk),z=Math.min(len,(i0+k+1)*Bk);let at=-1;for(let j=a;j<z;j++)if(val(j)>=thr){at=j;break}
+  if(at<0)return null;const tt=at/sr;return Math.abs(tt-t)<=tol?tt:null;
+}
+// everything a grid edit changes (undo/redo snapshot; `beats` too while a drag runs)
+function gdState(){return {bpm:S.bpm,offset:S.offset,down:S.down,beats:S.beats.slice(),chords:S.chords?Int8Array.from(S.chords):null,edited:[...S.edited],cues:S.cues.slice()}}
+function gdPush(st){gdFresh();GD.undo.push(st||gdState());if(GD.undo.length>60)GD.undo.shift();GD.redo=[]}
+function gdNear(b,tm){const T=60/b.bpm,i=Math.round((tm-b.beats[0])/T);return i>=0&&i<b.beats.length&&Math.abs(b.beats[i]-tm)<0.012?i:-1}
+/* new grid (bpm, offset) from the base state b; beat bi of b is now at time tn → per-beat data shifts by k beats */
+function gdApply(b,bpm,off,bi,tn){
+  S.bpm=bpm;S.offset=off;buildBeats();
+  const B=S.beats.length;if(!B)return 0;const k=Math.round((tn-S.beats[0])/(60/bpm))-bi;
+  if(b.chords){const c=new Int8Array(B),L=b.chords.length;for(let j=0;j<B;j++)c[j]=b.chords[gdClamp(j-k,0,L-1)];S.chords=c}
+  S.edited=new Set(b.edited.map(i=>i+k).filter(i=>i>=0&&i<B));
+  S.down=mod(b.down+k,4);
+  S.cues=b.cues.map(c=>{if(c==null)return c;const i=gdNear(b,c);return i>=0&&S.beats[i+k]!=null?S.beats[i+k]:c});
+  return k;
+}
+function gdRestore(st){S.bpm=st.bpm;S.offset=st.offset;buildBeats();S.down=st.down;S.chords=st.chords?Int8Array.from(st.chords):null;S.edited=new Set(st.edited);S.cues=st.cues.slice();
+  S.loop=null;renderAll();saveLibSoon();dirty=true}
+// the drag (or key burst) is over: chords re-detected on the new grid, user edits kept, saved with the song
+function gdCommit(){
+  clearTimeout(GD.cT);GD.kb=null;
+  if(S.chroma&&S.beats.length&&S.key){const keep=[...S.edited].map(i=>[i,S.chords[i]]);S.chords=detectChords();for(const [i,c] of keep)if(i<S.chords.length)S.chords[i]=c}
+  renderAll();saveLibSoon();dirty=true;gdSay();
+}
+function gdUndo(){gdFresh();if(!GD.undo.length)return false;if(GD.drag)gdCancel();GD.redo.push(gdState());gdRestore(GD.undo.pop());gdSay();return true}
+function gdRedo(){gdFresh();if(!GD.redo.length)return false;if(GD.drag)gdCancel();GD.undo.push(gdState());gdRestore(GD.redo.pop());gdSay();return true}
+function gdReset(){const d=S.gridDet;if(!d||d.buf!==S.buffer||!gdCan())return;if(d.bpm===S.bpm&&d.offset===S.offset&&d.down===S.down)return;
+  gdPush();S.bpm=d.bpm;S.offset=d.offset;buildBeats();S.down=d.down;S.loop=null;gdCommit()}
+function gdSetOn(v){GD.on=!!v&&gdCan();if(!GD.on&&GD.drag)gdCancel();gdUI();dirty=true}
+// bar-1 time and the shift against the detected grid (sub-beat part) for the status line
+function gdDelta(){const d=S.gridDet;if(!d||d.buf!==S.buffer||!S.beats.length)return null;const T=60/S.bpm,T0=60/d.bpm,b1=S.beats[S.down]??S.beats[0],d1=mod(d.offset,T0)+mod(d.down,4)*T0;
+  let x=b1-d1;x-=Math.round(x/T)*T;return x}
+function gdFmtMs(x){const ms=Math.round(x*10000)/10;return (ms>0?'+':ms<0?'−':'±')+Math.abs(ms).toFixed(1)+' ms'}
+function gdSay(){const el=$('#gdStat');if(!el)return;const x=gdDelta();el.textContent=x==null?'':t('gdStat',{d:'⁦'+gdFmtMs(x)+'⁩',bpm:'\u2066'+fmtBpm(Math.round(S.bpm*100)/100)+' BPM\u2069'})}
+function gdUI(){
+  if(!GD)return;gdFresh();const can=gdCan();if(!can&&GD.on)GD.on=false;
+  const b=$('#gEdit');if(!b)return;b.disabled=!can;b.classList.toggle('on',GD.on);b.setAttribute('aria-pressed',GD.on?'true':'false');
+  $('#gdX').hidden=!GD.on;$('#gdHint').hidden=!GD.on;
+  $('#gUndo').disabled=!GD.undo.length;$('#gRedo').disabled=!GD.redo.length;
+  const d=S.gridDet;$('#gReset').disabled=!(d&&d.buf===S.buffer&&(d.bpm!==S.bpm||d.offset!==S.offset||d.down!==S.down));
+  zm.classList.toggle('gd',GD.on);gdSay();
+}
+// pointer → time on the zoomed view (CSS px; the playhead sits in the middle)
+function gdAt(e){const r=zm.getBoundingClientRect(),spp=S.win/r.width,x=e.clientX-r.left,y=e.clientY-r.top;return {r,spp,x,y,tm:now()-S.win/2+x*spp}}
+function gdHandle(p){ // a bar-number tab at the bottom of the canvas (grid mode)
+  if(!GD.on||p.y<p.r.height-22)return -1;const T=60/S.bpm,f=S.beats[0],d=S.down;
+  const i=d+4*Math.round((p.tm-(f+d*T))/(4*T));return i>=0&&i<S.beats.length&&Math.abs((S.beats[i]-p.tm)/p.spp)<=12?i:-1}
+function gdDown(e){
+  if(!S.dur||e.button>0||!gdCan())return false;
+  const mod_=e.altKey||e.shiftKey;if(!GD.on&&!mod_)return false;
+  gdFresh();const p=gdAt(e),T=60/S.bpm,b=gdState(),B=b.beats.length;
+  const h=gdHandle(p);let stretch=h>=0||(e.altKey&&e.shiftKey);
+  let gi=gdClamp(Math.round((p.tm-b.beats[0])/T),0,B-1);
+  const ai=gdClamp(b.down,0,B-1);
+  if(stretch){gi=h>=0?h:gdClamp(b.down+4*Math.round((p.tm-b.beats[ai])/(4*T)),0,B-1);if(Math.abs(gi-ai)<2)stretch=false}
+  if(!stretch)gi=gdClamp(Math.round((p.tm-b.beats[0])/T),0,B-1);
+  try{zm.setPointerCapture(e.pointerId)}catch(x){}
+  e.preventDefault();
+  GD.drag={x:e.clientX,y:e.clientY,spp:p.spp,b,gi,ai,stretch,moved:false,k:0,touch:e.pointerType==='touch',tm:p.tm};
+  zm.classList.add('gdrag');dirty=true;return true;
+}
+function gdMove(e){
+  const d=GD.drag;if(!d)return;const dx=e.clientX-d.x;
+  if(!d.moved){if(Math.abs(dx)<(d.touch?4:2))return;d.moved=true;if(S.loop){S.loop=null;renderLoop();restart()}}
+  let dt=dx*d.spp;const free=e.ctrlKey||e.metaKey,tg=d.b.beats[d.gi]+dt;
+  GD.snap=null;if(!free){const o=onsetNear(S.buffer,tg,0.02);if(o!=null){GD.snap=o;dt=o-d.b.beats[d.gi]}}
+  let k;
+  if(d.stretch){const ta=d.b.beats[d.ai],n=d.gi-d.ai,T=(d.b.beats[d.gi]+dt-ta)/n;if(!(T>0))return;const bpm=gdClamp(60/T,40,300);k=gdApply(d.b,bpm,ta,d.ai,ta)}
+  else k=gdApply(d.b,d.b.bpm,d.b.offset+dt,d.gi,d.b.beats[d.gi]+dt);
+  d.line=d.gi+k;if(k!==d.k){d.k=k;renderSheet()}
+  dirty=true;
+}
+function gdUp(e){
+  const d=GD.drag;if(!d)return;GD.drag=null;zm.classList.remove('gdrag');GD.snap=null;
+  if(d.moved){const {beats,...st}=d.b;gdPush(st);gdCommit();GD.tap=null;return}
+  // double click / double tap on a grid line → a bar starts there
+  const now_=performance.now(),tp=GD.tap;GD.tap={at:now_,x:e.clientX,y:e.clientY};
+  if(tp&&now_-tp.at<400&&Math.abs(tp.x-e.clientX)<12&&Math.abs(tp.y-e.clientY)<12){
+    GD.tap=null;const p=gdAt(e),T=60/S.bpm,i=Math.round((p.tm-S.beats[0])/T);
+    if(i>=0&&i<S.beats.length&&Math.abs((S.beats[i]-p.tm)/p.spp)<=12&&mod(i,4)!==S.down){gdPush();S.down=mod(i,4);renderSheet();renderStats();buildOverview();saveLibSoon();dirty=true;
+      const el=$('#gdStat');if(el)el.textContent=t('gdDownSet')}
+  }
+  dirty=true;
+}
+function gdCancel(){const d=GD.drag;if(!d)return;GD.drag=null;zm.classList.remove('gdrag');GD.snap=null;if(d.moved){const {beats,...st}=d.b;gdRestore(st)}dirty=true}
+// arrow keys: ±1 ms (Shift ±10 ms); one undo step per burst, chords re-timed 350 ms after the last key
+function gdNudge(ms){
+  if(!gdCan())return;gdFresh();const tn=performance.now();
+  if(!GD.kb||tn-GD.kbT>900){gdPush();GD.kb={b:gdState(),acc:0};if(S.loop){S.loop=null;renderLoop();restart()}}
+  GD.kbT=tn;const kb=GD.kb;kb.acc=Math.round((kb.acc+ms/1000)*1e6)/1e6;const i=gdClamp(kb.b.down,0,kb.b.beats.length-1);
+  const k=gdApply(kb.b,kb.b.bpm,kb.b.offset+kb.acc,i,kb.b.beats[i]+kb.acc);if(k!==kb.k){kb.k=k;renderSheet()}
+  dirty=true;gdSay();clearTimeout(GD.cT);GD.cT=setTimeout(gdCommit,350);
+}
+function gdCursor(e){if(GD.drag)return;let c='';if(gdCan()){if(GD.on)c=gdHandle(gdAt(e))>=0?'gdh':'gd';else if(e.altKey||e.shiftKey)c=e.altKey&&e.shiftKey?'gdh':'gd'}
+  zm.classList.toggle('gd',c==='gd');zm.classList.toggle('gdh',c==='gdh')}
+// drawn on the zoom canvas by drawZoom (under = before the beat grid, over = on top)
+function gdDraw(layer,g,tl,pt,top,h,W,H){
+  if(!GD||!(GD.on||GD.drag)||!S.beats.length)return;
+  const T=60/S.bpm,first=S.beats[0],b0=Math.max(0,Math.floor((tl-first)/T)),b1=Math.min(S.beats.length-1,Math.ceil((tl+W*pt-first)/T)),X=tm=>(tm-tl)/pt;
+  if(layer==='under'){
+    if(GD.on){g.fillStyle=GD.acc;g.fillRect(0,top,W,2*dpr);
+      for(let b=b0;b<=b1;b++)if(mod(b-S.down,4)===0){const x=Math.round(X(S.beats[b]));g.fillStyle='rgba(34,211,211,.2)';g.fillRect(x-dpr,H-19*dpr,26*dpr,17*dpr);g.fillStyle=GD.acc;g.fillRect(x-dpr,H-19*dpr,26*dpr,1.5*dpr)}}
+    return;
+  }
+  const d=GD.drag;
+  if(d&&d.moved){
+    if(d.stretch){const xa=Math.round(X(S.beats[S.down]??first));g.fillStyle='#FFB020';g.fillRect(xa-dpr,top,2*dpr,h);g.beginPath();g.arc(xa,top+8*dpr,4*dpr,0,Math.PI*2);g.fill()}
+    const ln=S.beats[d.line??d.gi];if(ln!=null){const x=Math.round(X(ln));g.fillStyle=GD.acc;g.fillRect(x-dpr,top,2*dpr,h)}
+  }
+  if(GD.snap!=null){const x=X(GD.snap),y=top+6*dpr,s=dpr;g.strokeStyle=GD.acc;g.lineWidth=3*s;g.lineCap='butt';
+    g.beginPath();g.moveTo(x-5*s,y);g.lineTo(x-5*s,y+6*s);g.arc(x,y+6*s,5*s,Math.PI,0,true);g.lineTo(x+5*s,y);g.stroke();   // magnet: a U with two poles
+    g.fillStyle='#EDEDEF';g.fillRect(x-6.5*s,y-1*s,3*s,3*s);g.fillRect(x+3.5*s,y-1*s,3*s,3*s)}
+}
+/* wiring */
+$('#gEdit').onclick=()=>{gdSetOn(!GD.on)};
+$('#gUndo').onclick=()=>gdUndo();$('#gRedo').onclick=()=>gdRedo();$('#gReset').onclick=gdReset;
+zm.addEventListener('pointerenter',()=>{GD.hover=true});zm.addEventListener('pointerleave',()=>{GD.hover=false;zm.classList.remove('gdh');if(!GD.on)zm.classList.remove('gd')});
+const gdModKey=e=>{if(GD.hover&&(e.key==='Alt'||e.key==='Shift')&&!GD.drag){if(!GD.on){const on=e.type==='keydown'&&gdCan();zm.classList.toggle('gd',on&&!(e.altKey&&e.shiftKey));zm.classList.toggle('gdh',on&&e.altKey&&e.shiftKey)}}};
+document.addEventListener('keyup',gdModKey);
+document.addEventListener('keydown',e=>{
+  gdModKey(e);
+  if($('#toolView').hidden||e.target.closest('input,textarea,select,[contenteditable]'))return;
+  if(['#authDlg','#acc','#admin','#lib'].some(q=>$(q)&&!$(q).hidden)||!$('#pop').hidden)return;
+  const k=(e.key||'').toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&!e.altKey&&(k==='z'||k==='y')){gdFresh();if(!GD.undo.length&&!GD.redo.length)return;e.preventDefault();if(k==='y'||e.shiftKey)gdRedo();else gdUndo();return}
+  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&(GD.on||document.activeElement===$('#gEdit'))&&gdCan()){
+    e.preventDefault();e.stopImmediatePropagation();gdNudge((e.key==='ArrowRight'?1:-1)*(e.shiftKey?10:1))}
+  else if(e.key==='Escape'&&GD.drag){gdCancel()}
+},true);
+// Mashup + tests
+Object.assign(window.CR,{onsetNear,
+  _gd:{st:()=>({on:GD.on,bpm:S.bpm,offset:S.offset,down:S.down,beats:S.beats.length?[S.beats[0],S.beats[S.beats.length-1],S.beats.length]:null,b1:S.beats[S.down]??null,
+    chords:S.chords?Array.from(S.chords):null,edited:[...S.edited],cues:S.cues.slice(),win:S.win,pos:P.pos,undo:GD.undo.length,redo:GD.redo.length,snap:GD.snap,
+    drag:!!GD.drag,det:S.gridDet?{bpm:S.gridDet.bpm,offset:S.gridDet.offset,down:S.gridDet.down}:null,loop:S.loop}),
+    fresh:()=>S.chroma?Array.from(detectChords()):null,seek:x=>seek(x),setOn:gdSetOn}});
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount().catch(e=>console.warn(e));
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran

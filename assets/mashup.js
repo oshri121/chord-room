@@ -171,6 +171,30 @@ es:{navMashup:'Mashup',mxEyebrow:'Voz × base · ajuste automático',mxTitle:'Es
   mxErrLoad:'No se pudo cargar la canción. Inténtalo de nuevo.',mxErrLib:'No se pudo descargar la canción de tu cuenta.',mxEmptyLane:'Carga una canción',mxBig:'El archivo es demasiado grande (más de 250 MB).'}
 });
 
+/* griddrag: grid mode (move a song's grid against its audio), A drag snapping, lock, undo (he / en / ar / ru / es) */
+CR.addStrings({
+he:{mxGrid:'גריד',mxGridT:'גריד: גוררים על שיר כדי להזיז את הגריד שלו מול הקול שלו (תיקון תיבה ראשונה שגויה)',
+  mxGridHelp:'מצב גריד: גוררים על A או על B כדי להזיז את הגריד של אותו שיר מול הקול שלו (נצמד למכה, Ctrl/⌘ חופשי). בסוף הגרירה A ננעל שוב על התיבות של B · ← → מזיזים את הגריד של השיר שגררתם אחרון במילישנייה (Shift עשר) · Ctrl+Z ביטול',
+  mxTlHelp:'לחיצה קופצת לשם · גוררים את A כדי להזיז (נצמד לתיבות, Shift לפעמות, Ctrl/⌘ חופשי) · גרירה על הסרגל יוצרת לופ · Ctrl+Z ביטול',
+  mxLockOn:'נעול: התיבה של A יושבת בדיוק על תיבה {n} של B',mxLockOff:'A זז {ms} מתיבה {n} של B'},
+en:{mxGrid:'Grid',mxGridT:'Grid: drag on a song to move its grid against its audio (fix a wrong downbeat)',
+  mxGridHelp:'Grid mode: drag on A or B to move that song\'s grid against its audio (snaps to a hit, Ctrl/⌘ = free). When you let go, A locks onto B\'s bars again · ← → move the last dragged song\'s grid by 1 ms (Shift 10 ms) · Ctrl+Z undo',
+  mxTlHelp:'Click to jump · drag A to move it (snaps to bars, Shift = beats, Ctrl/⌘ = free) · drag on the ruler to loop · Ctrl+Z undo',
+  mxLockOn:'Locked: A\'s bar sits exactly on bar {n} of B',mxLockOff:'A is {ms} off bar {n} of B'},
+ar:{mxGrid:'الشبكة',mxGridT:'الشبكة: اسحب على أغنية لتحريك شبكتها مقابل صوتها (لتصحيح بداية مازورة خاطئة)',
+  mxGridHelp:'وضع الشبكة: اسحب على A أو B لتحريك شبكة تلك الأغنية مقابل صوتها (يلتصق بأقرب ضربة، Ctrl/⌘ بحرية). عند الإفلات يُقفل A من جديد على مازورات B · ← → تحرّك شبكة آخر أغنية سحبتها 1 ms ‏(Shift ‏10 ms) · Ctrl+Z تراجع',
+  mxTlHelp:'انقر للانتقال · اسحب A لتحريكه (يلتصق بالمازورات، Shift للنبضات، Ctrl/⌘ بحرية) · اسحب على المسطرة لإنشاء تكرار · Ctrl+Z تراجع',
+  mxLockOn:'مقفل: مازورة A تقع تمامًا على المازورة {n} من B',mxLockOff:'A مُزاح {ms} عن المازورة {n} من B'},
+ru:{mxGrid:'Сетка',mxGridT:'Сетка: тяните по песне, чтобы сдвинуть её сетку относительно звука (исправить неверную сильную долю)',
+  mxGridHelp:'Режим сетки: тяните по A или B, чтобы сдвинуть сетку этой песни относительно её звука (прилипает к удару, Ctrl/⌘ — свободно). Когда отпустите, A снова встанет на такты B · ← → сдвигают сетку последней песни на 1 мс (Shift — 10 мс) · Ctrl+Z отмена',
+  mxTlHelp:'Клик — перейти · тяните A, чтобы сдвинуть (к тактам, Shift — к долям, Ctrl/⌘ — свободно) · протяните по линейке — луп · Ctrl+Z отмена',
+  mxLockOn:'Зафиксировано: такт A стоит ровно на такте {n} у B',mxLockOff:'A смещён на {ms} от такта {n} у B'},
+es:{mxGrid:'Rejilla',mxGridT:'Rejilla: arrastra sobre una canción para mover su rejilla respecto a su audio (corregir un primer tiempo equivocado)',
+  mxGridHelp:'Modo rejilla: arrastra sobre A o B para mover la rejilla de esa canción respecto a su audio (se pega al golpe, Ctrl/⌘ = libre). Al soltar, A vuelve a fijarse en los compases de B · ← → mueven la rejilla de la última canción arrastrada 1 ms (Shift 10 ms) · Ctrl+Z deshacer',
+  mxTlHelp:'Clic para saltar · arrastra A para moverlo (se ajusta a compases, Shift = tiempos, Ctrl/⌘ = libre) · arrastra en la regla para hacer un bucle · Ctrl+Z deshacer',
+  mxLockOn:'Fijado: el compás de A cae justo en el compás {n} de B',mxLockOff:'A está {ms} fuera del compás {n} de B'}
+});
+
 /* ---------- constants & state ---------- */
 const IDS=['vocals','drums','bass','other'];
 const LET=['A','B'];
@@ -186,7 +210,8 @@ const QW=(()=>{const s=document.currentScript&&document.currentScript.src;try{re
 const newSlot=i=>({i,use:{...DEF_USE[i]},gain:{vocals:1,drums:1,bass:1,other:1},mute:{vocals:false,drums:false,bass:false,other:false},song:null,loading:null,tok:0});
 const M={built:false,visible:false,slots:[newSlot(0),newSlot(1)],tempo:'B',custom:0,semis:null,align:null,nudge:0,fadeIn:4,fadeOut:4,startA:'pre',
   vol:[1,1],fmt:'wav',onlyLoop:false,loop:null,loopOn:false,loopBars:8,zoom:1,view0:0,pos:0,owner:undefined,exporting:false,exp:null,
-  msg:'',msgErr:false,pair:null,lastO:null,pickFor:0,pickFrom:null,drag:null,hover:null,lastBeat:null};
+  msg:'',msgErr:false,pair:null,lastO:null,pickFor:0,pickFrom:null,drag:null,hover:null,lastBeat:null,
+  gridOn:false,gLane:0,undo:[],redo:[],gk:null};   /* griddrag: grid mode, the lane the arrows move, undo/redo of alignment + grid edits */
 const CACHE=new Map();                    // song key → {an, cues, stems, kind}: analysis + separated stems for this session
 const songKey=(name,buf)=>name+'|'+Math.round(buf.duration*1000)+'|'+buf.length;
 // memory cap: stems are 4 stereo float32 buffers per song (≈340 MB for 4 min), so keep the stems of the two slots' songs
@@ -283,6 +308,37 @@ function mapPos(p,a,b){
   return p;
 }
 const loopT=o=>M.loop&&o?{a:o.bar0+M.loop.a*o.bar,b:o.bar0+M.loop.b*o.bar}:null;
+
+/* ---------- griddrag: a song's own grid (fix a wrong downbeat), undo ----------
+   Moving slot i's grid by d source seconds: its first downbeat (offset/down) moves by d; A's vocal entry (on one of A's bars)
+   rides along, so after the edit A's corrected bar locks onto B's bar `align` again; B's structure cues ride along and, when
+   B's first downbeat wraps past a bar, `align`/loop are renumbered so A stays on the same musical bar of B. */
+const tlOf=(i,o,src)=>i?src/o.rB:o.anchor+(src-o.vA)/o.rA;           // source seconds of slot i → timeline
+function gridBase(i){const s=song(i);return s?{key:s.key,an:s.an,vStart:s.vStart,cues:s.cues}:null}
+function gridShift(i,d,b,o){
+  const s=song(i);if(!s||!b||s.key!==b.key)return;const A=b.an,T=60/A.bpm,bar=4*T,fd=firstDown(A),raw=fd+d,fdN=mod(raw,bar),off=mod(fdN,T);
+  s.an={...A,offset:off,down:Math.round((fdN-off)/T)%4};s.gfix=true;
+  if(b.vStart){let vt=b.vStart.t+d;while(vt<0)vt+=bar;while(vt>=s.buffer.duration&&vt-bar>=0)vt-=bar;s.vStart={...b.vStart,t:vt}}else s.vStart=null;
+  s.cues=(b.cues||[]).map(c=>({...c,t:Math.max(0,c.t+d)}));
+  cachePut(s.key,{an:s.an,cues:s.cues});
+  if(i===1&&o&&o.rB){const w=Math.round((raw-fdN)/(o.bar*o.rB));if(w){if(M.align!=null)M.align+=w;if(M.loop)M.loop={a:M.loop.a+w,b:M.loop.b+w}}}
+}
+function mSnap(){return {align:M.align,nudge:M.nudge,loop:M.loop,g:[gridBase(0),gridBase(1)]}}
+function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null}
+function mRestore(sn){M.align=sn.align;M.nudge=sn.nudge;M.loop=sn.loop;
+  sn.g.forEach((x,i)=>{const s=song(i);if(x&&s&&s.key===x.key){s.an=x.an;s.vStart=x.vStart;s.cues=x.cues;cachePut(s.key,{an:s.an,cues:s.cues})}});changed()}
+const sameSongs=sn=>sn.g.every((x,i)=>(x?x.key:null)===(song(i)?song(i).key:null));
+function mUndo(){while(M.undo.length&&!sameSongs(M.undo[M.undo.length-1]))M.undo.pop();if(!M.undo.length)return false;M.redo.push(mSnap());mRestore(M.undo.pop());M.gk=null;return true}
+function mRedo(){while(M.redo.length&&!sameSongs(M.redo[M.redo.length-1]))M.redo.pop();if(!M.redo.length)return false;M.undo.push(mSnap());mRestore(M.redo.pop());M.gk=null;return true}
+const mClearUndo=()=>{M.undo=[];M.redo=[];M.gk=null};
+// arrow keys in grid mode: the last dragged lane's grid ±1 ms (Shift ±10 ms), one undo step per burst
+function gridKey(ms){
+  const o=model();let i=M.gLane;if(!song(i))i=song(0)?0:1;const s=song(i);if(!o||!s)return;
+  const tn=performance.now();if(!M.gk||M.gk.i!==i||tn-M.gk.t>900){const sn=mSnap();mPush(sn);M.gk={i,b:sn.g[i],acc:0,o}}
+  const k=M.gk;k.t=tn;k.acc=Math.round((k.acc+ms/1000)*1e6)/1e6;
+  const al=M.undo[M.undo.length-1];M.align=al.align;M.loop=al.loop;     // renumbering is computed from the burst's start
+  gridShift(i,k.acc,k.b,k.o);changed();
+}
 
 /* ---------- audio engine ---------- */
 let c=null;
@@ -416,7 +472,7 @@ async function loadInto(i,getBuf,name,hint,pre){
     cachePut(key,{an:a,cues,...(stems&&kind!=='tool'?{stems,kind}:{})});
     sl.song={key,name,buffer,an:a,cues,stems,kind,cached:!!(hit&&hit.stems&&stems===hit.stems),wave:null,waveKey:'',vStart:null,sep:null};
     sl.loading=null;
-    M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;
+    M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();
     applyPair();
     const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;
     save();renderAll();updWave(i);
@@ -436,11 +492,11 @@ function loadLib(i,it){
   loadInto(i,async()=>{let ab;try{const url=await CR.songFileUrl(it.file_path);const r=await fetch(url);if(!r.ok)throw new Error('http '+r.status);ab=await r.arrayBuffer()}catch(e){throw Object.assign(e,{lib:true})}return CR.ac().decodeAudioData(ab)},it.name,it);
 }
 function loadTool(i){const s=CR.toolSong();if(!s){setMsg(t('mxNoTool'),true);return}loadInto(i,null,s.name,null,s)}
-function clearSlot(i){const sl=M.slots[i];sl.tok++;if(sl.song&&sl.song.sep)sl.song.sep.ctl.abort();stop();sl.song=null;sl.loading=null;M.align=null;M.nudge=0;M.semis=null;M.loop=null;M.loopOn=false;const o=model();M.pos=o?o.t0:0;M.lastO=o;save();renderAll()}
+function clearSlot(i){const sl=M.slots[i];sl.tok++;if(sl.song&&sl.song.sep)sl.song.sep.ctl.abort();stop();sl.song=null;sl.loading=null;mClearUndo();M.align=null;M.nudge=0;M.semis=null;M.loop=null;M.loopOn=false;const o=model();M.pos=o?o.t0:0;M.lastO=o;save();renderAll()}
 function swap(){
   stop();const a=M.slots[0],b=M.slots[1];[a.song,b.song]=[b.song,a.song];[a.loading,b.loading]=[b.loading,a.loading];a.tok++;b.tok++;
   for(const s of [a.song,b.song])if(s){s.vStart=null;s.waveKey=''}
-  M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;applyPair();
+  M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();applyPair();
   const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;save();renderAll();updWave(0);updWave(1);
 }
 
@@ -501,7 +557,8 @@ function save(){
     const a=song(0),b=song(1);
     const o={v:1,tempo:M.tempo,custom:M.custom,fadeIn:M.fadeIn,fadeOut:M.fadeOut,startA:M.startA,vol:M.vol,fmt:M.fmt,onlyLoop:M.onlyLoop,loopBars:M.loopBars,
       use:M.slots.map(s=>s.use),gain:M.slots.map(s=>s.gain),
-      pair:a&&b?{a:a.name,b:b.name,semis:M.semis,align:M.align,nudge:M.nudge,loop:M.loop}:M.pair};
+      pair:a&&b?{a:a.name,b:b.name,semis:M.semis,align:M.align,nudge:M.nudge,loop:M.loop,
+        grid:[a,b].map(s=>s.gfix?{bpm:s.an.bpm,offset:s.an.offset,down:s.an.down}:null)}:M.pair};   /* griddrag: grid fixes */
     M.pair=o.pair;try{localStorage.setItem(lsKey(),JSON.stringify(o))}catch(e){}
   },250);
 }
@@ -527,7 +584,9 @@ function load(){
   const p=o.pair;
   if(p&&typeof p==='object'&&typeof p.a==='string'&&typeof p.b==='string'){
     const L=p.loop&&typeof p.loop==='object'&&typeof p.loop.a==='number'&&typeof p.loop.b==='number'&&isFinite(p.loop.a)&&isFinite(p.loop.b)&&p.loop.b>p.loop.a?{a:clamp(p.loop.a,-64,4096),b:clamp(p.loop.b,-64,4096)}:null;
-    M.pair={a:p.a.slice(0,300),b:p.b.slice(0,300),semis:Number.isInteger(p.semis)?clamp(p.semis,-12,12):null,align:Number.isInteger(p.align)?clamp(p.align,-64,4096):null,nudge:num(p.nudge,-4,4,0),loop:L};
+    const G=x=>x&&typeof x==='object'&&typeof x.bpm==='number'&&isFinite(x.bpm)&&typeof x.offset==='number'&&isFinite(x.offset)&&Number.isInteger(x.down)?{bpm:clamp(x.bpm,20,400),offset:clamp(x.offset,0,10),down:mod(x.down,4)}:null;
+    M.pair={a:p.a.slice(0,300),b:p.b.slice(0,300),semis:Number.isInteger(p.semis)?clamp(p.semis,-12,12):null,align:Number.isInteger(p.align)?clamp(p.align,-64,4096):null,nudge:num(p.nudge,-4,4,0),loop:L,
+      grid:Array.isArray(p.grid)?[G(p.grid[0]),G(p.grid[1])]:[null,null]};
   }
 }
 // the same two songs as last time → their fine-tuning comes back
@@ -535,6 +594,7 @@ function applyPair(){
   const a=song(0),b=song(1),p=M.pair;
   if(!a||!b||!p||p.a!==a.name||p.b!==b.name)return;
   M.semis=p.semis;M.align=p.align;M.nudge=p.nudge;M.loop=p.loop;
+  (p.grid||[]).forEach((g,i)=>{const s=song(i);if(g&&s&&Math.abs(g.bpm-s.an.bpm)<0.01){s.an={...s.an,offset:g.offset,down:g.down};s.gfix=true;s.vStart=null}});   /* griddrag */
 }
 function setOwner(uid){
   uid=uid||null;if(M.owner===uid)return;
@@ -559,6 +619,7 @@ const IC={
   zout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>',
   ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>',
   bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v16M15 4v16M3 12h3M18 12h3M5 10l-2 2 2 2M19 10l2 2-2 2"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>'
 };
 function build(){
@@ -595,6 +656,7 @@ function build(){
           <output class="mono" id="mxOff"></output>
           <button type="button" class="btn ghost" data-nd="ms">+10</button><button type="button" class="btn ghost" data-nd="beat">›</button><button type="button" class="btn ghost" data-nd="bar">»</button>
         </div>
+        <p class="mxlock" id="mxLock" role="status" aria-live="polite"></p>
         <div class="mxrow3">
           <label class="mxfl"><span data-i="mxStartA"></span><select class="sel" id="mxStartA"></select></label>
           <label class="mxfl"><span data-i="mxFadeIn"></span><select class="sel" id="mxFi"></select></label>
@@ -611,6 +673,7 @@ function build(){
       <button type="button" class="mxib" id="mxStop" data-it="mxStop">${IC.stop}</button>
       <span class="mxtime mono" id="mxTime" dir="ltr"></span><span class="mxbb mono" id="mxBB" dir="ltr"></span>
       <span class="mxsp"></span>
+      <button type="button" class="mxib mxgridb" id="mxGrid" aria-pressed="false" data-it="mxGridT">${IC.grid}<span data-i="mxGrid"></span></button>
       <button type="button" class="mxib mxloop" id="mxLoop" aria-pressed="false">${IC.loop}<span data-i="mxLoop"></span></button>
       <select class="mxsel" id="mxLoopN"></select>
       <button type="button" class="mxib" id="mxZo" data-it="mxZoomOut">${IC.zout}</button><button type="button" class="mxib" id="mxZi" data-it="mxZoomIn">${IC.zin}</button>
@@ -620,6 +683,7 @@ function build(){
       <label class="mxvol"><span class="mxlet a" dir="ltr">A</span><span class="vh" data-i="mxVolA"></span><input type="range" id="mxVolA" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolAo"></output></label>
       <label class="mxvol"><span class="mxlet b" dir="ltr">B</span><span class="vh" data-i="mxVolB"></span><input type="range" id="mxVolB" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolBo"></output></label>
       <p class="mxhelp"><span data-i="mxTlHelp"></span> · <span data-i="mxKeysH"></span></p>
+      <p class="mxghelp" id="mxGHelp" data-i="mxGridHelp" hidden></p>
     </div>
   </section>
   <section class="mxexp" aria-labelledby="mxExpH">
@@ -650,7 +714,7 @@ function wire(){
       if(a==='file'){M.pickFor=i;$('#mxIn').value='';$('#mxIn').click()}
       else if(a==='lib')openPick(i,b);else if(a==='tool')loadTool(i);else if(a==='clear')clearSlot(i);
       else if(a==='ai'||a==='quick')separate(i,a);else if(a==='cancel'){const s=song(i);if(s&&s.sep)s.sep.ctl.abort()}
-      else if(a==='half'||a==='double'){const s=song(i);if(s){s.an={...s.an,bpm:s.an.bpm*(a==='half'?0.5:2)};s.vStart=null;cachePut(s.key,{an:s.an});M.align=null;M.nudge=0;M.lastO=null;renderAll();restart()}}
+      else if(a==='half'||a==='double'){const s=song(i);if(s){mPush();s.an={...s.an,bpm:s.an.bpm*(a==='half'?0.5:2)};s.vStart=null;cachePut(s.key,{an:s.an});M.align=null;M.nudge=0;M.lastO=null;renderAll();restart()}}
       else if(a==='use'||a==='mute'){const sl=M.slots[i],id=b.dataset.id;if(a==='use')sl.use[id]=!sl.use[id];else sl.mute[id]=!sl.mute[id];renderSlot(i);liveGains();updWave(i);save()}
       return;
     }
@@ -665,11 +729,12 @@ function wire(){
   $('#mxBpm').onchange=()=>renderMatch();
   $('#mxKDn').onclick=()=>{M.semis=clamp(semis()-1,-12,12);changed()};
   $('#mxKUp').onclick=()=>{M.semis=clamp(semis()+1,-12,12);changed()};
-  $('#mxAlign').onchange=e=>{M.align=+e.target.value;M.nudge=0;changed()};
+  $('#mxAlign').onchange=e=>{mPush();M.align=+e.target.value;M.nudge=0;changed()};
   $('#mxStartA').onchange=e=>{M.startA=e.target.value;changed()};
   $('#mxFi').onchange=e=>{M.fadeIn=+e.target.value;changed()};
   $('#mxFo').onchange=e=>{M.fadeOut=+e.target.value;changed()};
-  $('#mxReset').onclick=()=>{M.align=null;M.nudge=0;M.semis=null;changed()};
+  $('#mxReset').onclick=()=>{mPush();M.align=null;M.nudge=0;M.semis=null;changed()};
+  $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;renderTransport();drawSoon()};   /* griddrag */
   $('#mxPlay').onclick=toggle;$('#mxStop').onclick=()=>stop();
   $('#mxLoop').onclick=loopToggle;
   $('#mxLoopN').onchange=e=>{M.loopBars=+e.target.value;if(M.loopOn&&M.loop){M.loop={a:M.loop.a,b:M.loop.a+M.loopBars};restart()}save();drawSoon();renderTransport()};
@@ -706,7 +771,7 @@ function trap(e,box){const f=[...box.querySelectorAll('button:not([disabled]),in
 function changed(noRenderInput){M.lastO=null;renderMatch(noRenderInput);drawSoon();restart();save();renderExport()}
 function nudge(k){
   const o=model();if(!o||!o.hasA||!o.hasB)return;
-  if(M.align==null)M.align=o.align;
+  mPush();if(M.align==null)M.align=o.align;
   if(k==='bar'||k==='-bar')M.align+=k[0]==='-'?-1:1;
   else{M.nudge+=(k[0]==='-'?-1:1)*(k.endsWith('beat')?o.beat:0.01);M.nudge=Math.round(M.nudge*10000)/10000;
     // whole bars go into `align`, the rest stays a nudge within ±½ bar
@@ -824,6 +889,7 @@ function renderMatch(keepInput){
     if(al.options.length!==o.nBars||al.dataset.sig!==cs.map(x=>x.k+x.bar).join()+o.alignAuto+LANG()){al.innerHTML=opts.join('');al.dataset.sig=cs.map(x=>x.k+x.bar).join()+o.alignAuto+LANG()}
     al.value=String(clamp(o.align,0,o.nBars-1));
   }else al.innerHTML='';
+  {const lk=$('#mxLock');if(lk){lk.textContent=A&&B?(Math.abs(M.nudge)<5e-4?t('mxLockOn',{n:o.align+1}):t('mxLockOff',{n:o.align+1,ms:'\u2066'+(M.nudge>0?'+':'−')+Math.abs(Math.round(M.nudge*1000))+' ms\u2069'})):'';lk.classList.toggle('on',!!(A&&B)&&Math.abs(M.nudge)<5e-4)}}   /* griddrag */
   $('#mxOff').textContent=`${M.nudge>=0?'+':'−'}${Math.abs(Math.round(M.nudge*1000))} ms`;$('#mxOff').title=t('mxOffset',{ms:Math.round(M.nudge*1000)});
   $('#mxNudge').querySelectorAll('button').forEach(b=>{b.disabled=!(A&&B);const k=b.dataset.nd,u=t(k.endsWith('bar')?'mxUBar':k.endsWith('beat')?'mxUBeat':'mxUMs'),lab=t(k[0]==='-'?'mxEarlier':'mxLater',{x:u});b.title=lab;b.setAttribute('aria-label',lab)});
   const sel=(id,list,val)=>{const e=$(id);e.innerHTML=list.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('');e.value=String(val)};
@@ -868,6 +934,7 @@ function renderTransport(){
   const lb=$('#mxLoop');lb.classList.toggle('on',M.loopOn);lb.setAttribute('aria-pressed',String(M.loopOn));lb.title=t('mxLoopT',{n:M.loopBars});lb.disabled=!o;
   const ln=$('#mxLoopN');const ls=[4,8,16].map(n=>`<option value="${n}">${esc(t('mxLoopBars',{n}))}</option>`).join('');if(ln.dataset.l!==LANG()){ln.innerHTML=ls;ln.dataset.l=LANG()}ln.value=String(M.loopBars);ln.setAttribute('aria-label',t('mxLoop'));
   $('#mxZi').disabled=!o||M.zoom>=32;$('#mxZo').disabled=!o||M.zoom<=1;
+  {const gb=$('#mxGrid');if(!o)M.gridOn=false;gb.disabled=!o;gb.classList.toggle('on',M.gridOn);gb.setAttribute('aria-pressed',String(M.gridOn));$('#mxGHelp').hidden=!M.gridOn;$('#mxTl').classList.toggle('grid',M.gridOn)}   /* griddrag */
   $('#mxVolA').value=M.vol[0];$('#mxVolAo').textContent=Math.round(M.vol[0]*100)+'%';$('#mxVolB').value=M.vol[1];$('#mxVolBo').textContent=Math.round(M.vol[1]*100)+'%';
   $('#mxVolA').disabled=!(o&&o.hasA);$('#mxVolB').disabled=!(o&&o.hasB);
   const a=song(0),b=song(1);
@@ -953,6 +1020,20 @@ function drawStatic(o){
   g.globalCompositeOperation='lighter';
   drawLane(g,o,v,0,TL.top[0],TL.lane,col);drawLane(g,o,v,1,TL.top[1],TL.lane,col);
   g.globalCompositeOperation='source-over';
+  // griddrag: each song's own bar lines in its lane (A's that sit on one of B's bars = locked, brighter); grid drag preview
+  for(const i of [0,1]){
+    const s=song(i);if(!s||!s.an||(i===0&&!o.hasA)||(i===1&&!o.hasB))continue;
+    const gd=M.drag&&M.drag.kind==='grid'&&M.drag.i===i&&M.drag.moved?M.drag:null,A=s.an,bs=240/A.bpm,fd=firstDown(A)+(gd?gd.dSrc:0);
+    const sa=srcPos(i,o,v.v0),sz=srcPos(i,o,v.v0+v.span),k0=Math.floor((sa-fd)/bs)-1,k1=Math.ceil((sz-fd)/bs)+1,y=TL.top[i];
+    if(k1-k0>TL.W/3)continue;
+    for(let k=k0;k<=k1;k++){const src=fd+k*bs;if(src<0||src>s.buffer.duration)continue;const tl=tlOf(i,o,src),x=Math.round(xOf(v,tl))+0.5;if(x<0||x>TL.W)continue;
+      const lock=i===0&&o.hasB&&!gd&&Math.abs(mod(tl-o.bar0+o.bar/2,o.bar)-o.bar/2)<0.001;
+      g.fillStyle=gd?'#22D3D3':lock?col.hi:i?col.b:col.a;g.globalAlpha=gd?0.95:lock?0.85:0.6;g.fillRect(x-0.5,y,gd||lock?2:1,TL.lane);
+      g.globalAlpha=1;g.fillRect(x-(gd?3:2),y,gd?6:4,3)}
+    if(gd&&gd.snap!=null){const x=xOf(v,tlOf(i,o,gd.snap)),yy=y+6;g.strokeStyle='#22D3D3';g.lineWidth=2.5;g.beginPath();g.moveTo(x-4,yy);g.lineTo(x-4,yy+5);g.arc(x,yy+5,4,Math.PI,0,true);g.lineTo(x+4,yy);g.stroke();
+      g.fillStyle='#EDEDEF';g.fillRect(x-5.5,yy-2,3,3);g.fillRect(x+2.5,yy-2,3,3)}
+  }
+  if(M.gridOn){g.fillStyle='#22D3D3';g.fillRect(0,TL.ruler,TL.W,2)}
   // lane labels
   for(const i of [0,1]){const y=TL.top[i];g.fillStyle=i?col.b:col.a;g.fillRect(0,y,3,TL.lane);g.font='600 11px '+tok('--mono');g.fillText(LET[i],8,y+11)}
   // B's structure cues
@@ -961,8 +1042,9 @@ function drawStatic(o){
     g.fillStyle=cs;g.fillRect(Math.round(x),TL.top[1],2,TL.lane);g.beginPath();g.moveTo(x,TL.top[1]);g.lineTo(x+14,TL.top[1]);g.lineTo(x+14,TL.top[1]+12);g.lineTo(x,TL.top[1]+12);g.fill();
     g.fillStyle='#0A0A0C';g.font='700 9px '+tok('--mono');g.fillText((CUES.NAME[cu.k]||cu.k)[0],x+4,TL.top[1]+6.5)}
   // A's vocal entry = the anchor, shown on both lanes
-  if(o.hasA&&o.hasB){const x=Math.round(xOf(v,o.anchor))+0.5;if(x>=0&&x<=TL.W){g.strokeStyle=col.a;g.lineWidth=1.5;g.setLineDash([4,3]);g.beginPath();g.moveTo(x,TL.top[0]);g.lineTo(x,TL.top[1]+TL.lane);g.stroke();g.setLineDash([]);
-    g.fillStyle=col.a;g.beginPath();g.moveTo(x-5,TL.top[0]);g.lineTo(x+5,TL.top[0]);g.lineTo(x,TL.top[0]+7);g.fill()}}
+  if(o.hasA&&o.hasB){const x=Math.round(xOf(v,o.anchor))+0.5,lock=Math.abs(M.nudge)<5e-4;if(x>=0&&x<=TL.W){g.strokeStyle=lock?col.hi:col.a;g.lineWidth=lock?2:1.5;if(!lock)g.setLineDash([4,3]);g.beginPath();g.moveTo(x,TL.top[0]);g.lineTo(x,TL.top[1]+TL.lane);g.stroke();g.setLineDash([]);
+    g.fillStyle=col.a;g.beginPath();g.moveTo(x-5,TL.top[0]);g.lineTo(x+5,TL.top[0]);g.lineTo(x,TL.top[0]+7);g.fill();
+    if(lock){const ly=TL.top[1]-TL.gap-1;g.fillStyle=col.hi;g.fillRect(x+4,ly-6,8,6);g.strokeStyle=col.hi;g.lineWidth=1.5;g.beginPath();g.arc(x+8,ly-6,2.6,Math.PI,0);g.stroke()}}}   /* griddrag: downbeat lock */
   // loop range
   const lt=loopT(o);if(lt){const x0=xOf(v,lt.a),x1=xOf(v,lt.b);g.fillStyle=M.loopOn?'rgba(255,176,32,.16)':'rgba(255,255,255,.06)';g.fillRect(x0,TL.ruler,x1-x0,TL.H-TL.ruler);
     g.fillStyle=M.loopOn?tok('--warn')||'#FFB020':col.text;g.fillRect(x0,0,Math.max(2,x1-x0),4)}
@@ -982,8 +1064,11 @@ function wireTimeline(){
   box.addEventListener('pointerdown',e=>{
     const o=model();if(!o||e.button>0)return;const p=tAt(e);box.setPointerCapture(e.pointerId);e.preventDefault();
     const zone=p.y<TL.ruler?'ruler':p.y<TL.top[1]-TL.gap/2?'a':'b';
+    const gi=zone==='a'?0:1;   /* griddrag: grid mode → the lane's song grid moves against its audio */
     if(zone==='ruler'){const k=Math.floor((p.t-o.bar0)/o.bar);M.drag={kind:'loop',x:e.clientX,a:k,b:k+1,t:p.t}}
-    else if(zone==='a'&&o.hasA&&o.hasB)M.drag={kind:'a',x:e.clientX,anchor:o.anchor,t:p.t};
+    else if(M.gridOn&&zone!=='ruler'&&song(gi)&&song(gi).an&&(gi?o.hasB:o.hasA)){const s=song(gi),bs=240/s.an.bpm,fd=firstDown(s.an),ps=srcPos(gi,o,p.t);
+      M.drag={kind:'grid',i:gi,x:e.clientX,t:p.t,r:gi?o.rB:o.rA,g:fd+Math.round((ps-fd)/bs)*bs,dSrc:0,snap:null,base:gridBase(gi),sn:mSnap(),o};M.gLane=gi}
+    else if(zone==='a'&&o.hasA&&o.hasB)M.drag={kind:'a',x:e.clientX,anchor:o.anchor,t:p.t,sn:mSnap()};
     else M.drag={kind:'seek',x:e.clientX,t:p.t};
     kick();
   });
@@ -991,11 +1076,16 @@ function wireTimeline(){
     const d=M.drag;if(!d){return}const p=tAt(e),o=p.o;if(Math.abs(e.clientX-d.x)>3)d.moved=true;if(!d.moved)return;
     if(d.kind==='loop'){const k0=Math.floor((d.t-o.bar0)/o.bar),k=Math.round((p.t-o.bar0)/o.bar);d.a=Math.min(k0,k);d.b=Math.max(k0+1,k);if(d.b<=d.a)d.b=d.a+1}
     else if(d.kind==='a'){
-      const na=d.anchor+(p.t-d.t),rel=na-o.bar0;
-      if(e.altKey){const k=Math.round(rel/o.bar);M.align=k;M.nudge=Math.round((rel-k*o.bar)*1000)/1000}
+      const na=d.anchor+(p.t-d.t),rel=na-o.bar0,was=M.align+'|'+M.nudge;
+      if(e.altKey||e.ctrlKey||e.metaKey){const k=Math.round(rel/o.bar);M.align=k;M.nudge=Math.round((rel-k*o.bar)*1000)/1000}   // free (griddrag: Ctrl/⌘ too)
       else if(e.shiftKey){const q=Math.round(rel/o.beat)*o.beat,k=Math.round(q/o.bar);M.align=k;M.nudge=Math.round((q-k*o.bar)*10000)/10000}
       else{M.align=Math.round(rel/o.bar);M.nudge=0}
-      M.lastO=null;TL.dirty=true;renderMatch();
+      M.lastO=null;TL.dirty=true;renderMatch();if(was!==M.align+'|'+M.nudge&&E.playing)restart();   // the preview follows
+    }
+    else if(d.kind==='grid'){   /* griddrag: preview only; applied when the drag ends */
+      let ds=(p.t-d.t)*d.r;d.snap=null;
+      if(!(e.ctrlKey||e.metaKey)&&CR.onsetNear){const q=CR.onsetNear(song(d.i).buffer,d.g+ds,0.02);if(q!=null){d.snap=q;ds=q-d.g}}
+      d.dSrc=ds;TL.dirty=true;
     }
     kick();
   });
@@ -1003,12 +1093,13 @@ function wireTimeline(){
     const d=M.drag;if(!d)return;M.drag=null;const p=tAt(e),o=p.o;
     if(!d.moved||d.kind==='seek'){const x=clamp(p.t,o.t0,o.t1-0.02);if(E.playing)startAt(x,model());else{M.pos=x;renderTransport()}}
     else if(d.kind==='loop'){M.loop={a:d.a,b:d.b};M.loopOn=true;save();renderTransport();renderExport();if(E.playing){const lt=loopT(o),h=heard();if(h<lt.a||h>=lt.b)startAt(lt.a,o)}}
-    else if(d.kind==='a')changed();
+    else if(d.kind==='a'){if(d.sn.align!==M.align||d.sn.nudge!==M.nudge)mPush(d.sn);changed()}
+    else if(d.kind==='grid'){if(Math.abs(d.dSrc)>1e-6){mPush(d.sn);gridShift(d.i,d.dSrc,d.base,d.o);changed()}}   /* griddrag */
     drawSoon();
   };
   box.addEventListener('pointerup',end);box.addEventListener('pointercancel',()=>{M.drag=null;drawSoon()});
   box.addEventListener('wheel',e=>{const o=model();if(!o||M.zoom<=1)return;e.preventDefault();const v=viewOf(o);M.view0=clamp(M.view0+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)/600*v.span,o.t0,o.t1-v.span);drawSoon()},{passive:false});
-  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();box.style.cursor=!o?'default':y<TL.ruler?'col-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
+  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();box.style.cursor=!o?'default':y<TL.ruler?'col-resize':M.gridOn?'ew-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
 }
 
 /* ---------- export ---------- */
@@ -1060,8 +1151,16 @@ document.addEventListener('keydown',e=>{
   if(document.querySelector('.rm-panel:not([hidden]),#authDlg:not([hidden])')&&e.target.closest('.rm-panel,#authDlg'))return;
   const o=model();if(!o)return;
   if(e.code==='Space'){if(e.target.closest('button,label,a'))return;e.preventDefault();toggle()}
-  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(e.target.closest('.mxslot'))return;e.preventDefault();const x=clamp(heard()+(e.key==='ArrowRight'?1:-1)*o.bar,o.t0,o.t1-0.05);if(E.playing)startAt(x,o);else{M.pos=x;renderTransport();kick()}}
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(e.target.closest('.mxslot'))return;e.preventDefault();
+    if(M.gridOn||document.activeElement===$('#mxGrid')){gridKey((e.key==='ArrowRight'?1:-1)*(e.shiftKey?10:1));return}   /* griddrag */const x=clamp(heard()+(e.key==='ArrowRight'?1:-1)*o.bar,o.t0,o.t1-0.05);if(E.playing)startAt(x,o);else{M.pos=x;renderTransport();kick()}}
   else if(e.key==='l'||e.key==='L')loopToggle();
+});
+
+/* griddrag: Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y) undo / redo alignment and grid edits */
+document.addEventListener('keydown',e=>{
+  if(!M.visible||!(e.ctrlKey||e.metaKey)||e.altKey)return;const k=(e.key||'').toLowerCase();if(k!=='z'&&k!=='y')return;
+  if(e.target.closest('input,textarea,select,[contenteditable]')||!$('#mxPick').hidden)return;
+  if((k==='y'||e.shiftKey)?mRedo():mUndo())e.preventDefault();
 });
 
 /* ---------- public ---------- */
@@ -1072,7 +1171,7 @@ window.MASHUP={
   hide(){if(!M.visible)return;M.visible=false;stop(true);closePick();if(!M.exporting)cacheTrim();if(M.built)$('#mashupView').querySelectorAll('.mxslot').forEach(x=>x.classList.remove('over'))},
   lang(){if(M.built)renderAll()},
   // for tests
-  _M:M,_E:E,model,heard,play,stop,loadInto,exportMix,vocalStart,keyOpts,CACHE
+  _M:M,_E:E,model,heard,play,stop,loadInto,exportMix,vocalStart,keyOpts,CACHE,undo:mUndo,redo:mRedo
 };
 CR.applyLang();
 if($('#mashupView')&&!$('#mashupView').hidden)MASHUP.show();

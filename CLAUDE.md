@@ -174,6 +174,17 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   https checkout link render "coming soon" / "contact us" instead of a live CTA.
 - Last song: the tool reopens the last loaded song after a reload (IndexedDB `chordroom`/`kv`: `audio` = blob+name, `state` = the lib
   item from `saveLib`; play position in localStorage `chordroom.lastpos`). `rememberSong(blob,info)` is called by every loader.
+- Grid drag (`/* griddrag */` in app.js, block before boot): toggle `#gEdit` ("Drag", aria-pressed) next to ◀ ▶ 1 / ÷2 ×2, or Alt/Shift held
+  while dragging the zoom canvas: drag = move the grid (`S.offset`, audio stays put), the grabbed line snaps to a hit within 20 ms
+  (`onsetNear(buf,t,tol)` = strongest rise of the 1 ms peak envelope, also `CR.onsetNear`; magnet drawn; Ctrl/⌘ = free); in grid mode a
+  drag on a bar-number tab (or Alt+Shift) stretches the tempo with bar 1 (`S.beats[S.down]`) fixed; double click/tap on a line = `S.down`;
+  arrows ±1 ms / Shift ±10 ms when the toggle is on or focused; Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y) undo/redo every grid edit (the old grid
+  buttons too, `gdPush`); `#gdX` undo/redo/reset (`S.gridDet` = detected grid, set in `analyze`). While dragging, chords/edits/downbeat and
+  hot cues on a grid line ride along by beat index (`gdApply`); on release chords are re-detected (`gdCommit`, user edits kept) + `saveLibSoon`.
+  Mashup: "Grid" toggle (`#mxGrid`): drag on a lane = move that song's own grid (preview while dragging, applied on release: `gridShift`
+  moves offset/down, A's vocal entry and B's cues ride along, B's bar renumbering keeps `align`), saved per pair (`pair.grid`); each lane
+  draws its own bar lines, the A↔B downbeat lock is highlighted (`#mxLock`); A drag: bars / Shift beats / Ctrl⌘ or Alt free; `M.undo/redo`
+  (Ctrl+Z). Crate overview: Shift/Alt+drag = grid + cues by whole beats (Ctrl/⌘ free) via `shiftGrid`. Test: `tools/tests/ui/test_griddrag.py`.
 - Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,
   quantised to 1/16), GM channel 10 (36/38/42). Tested on synthetic drums (`drumHits`, `drumsMidi`).
 - Invite a friend: `?ref=<code>` is stored in localStorage `chordroom.ref`; after sign-in `claim_referral(code)` (once, within 3 days
