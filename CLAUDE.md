@@ -161,7 +161,15 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
   owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`). `_headers` = strict CSP (no inline scripts: `assets/early.js`), frame-ancestors none,
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23] (server audit
+  2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
+  adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
+  plans[].link/variant only owner/full admin (+ INSERT policy so a 'settings' role can save via upsert), no sign-up gift
+  without an email. `supabase/security_v3.sql` = that block + `assistant.sql` verbatim (owner runs it once; the test checks
+  it). assistant.sql: confirmed email required, site-wide ceiling `billing.assistant_site_daily` (default 3000, 0 = off) →
+  `why:'site_limit'` → the Function answers 503 busy; the Function also trims the conversation to 12 000 chars.
+  `_middleware.js` matches hidden paths on a normalised path (decoded, `//`, `\`, `..`, case) and `_routes.json` carries case
+  variants; only `/ai/worker.js` (not `/ai/*`) skips the page CSP. Tests: `sql/test_security_v3.py`, `node/security_v3.test.mjs`. `_headers` = strict CSP (no inline scripts: `assets/early.js`), frame-ancestors none,
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).

@@ -31,8 +31,9 @@
 
 # The AI worker (ONNX Runtime) gets its CSP from its own response. Its embind glue may build functions with
 # new Function() on the WebGPU path, which a strict policy would break, so it runs without the page policy.
-# It is our own, unmodified build and never touches the DOM or user HTML.
-/ai/*
+# It is our own, unmodified build and never touches the DOM or user HTML. Only the worker script itself is exempt:
+# with /ai/* every unknown /ai/... URL (Pages answers it with index.html, the SPA fallback) was a CSP-free page.
+/ai/worker.js
   ! Content-Security-Policy
 
 # Caching. HTML is always revalidated (Pages' default), so a deploy with new ?v= numbers is seen at once.
