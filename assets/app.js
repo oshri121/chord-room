@@ -709,13 +709,12 @@ async function computeChroma(x,prog){
   const kmin=Math.floor(45*CN/SR),kmax=Math.ceil(2300*CN/SR),R=10;
   const frames=Math.max(1,Math.floor((x.length-CN)/CH)+1);
   const tre=new Float32Array(frames*12),bas=new Float32Array(frames*12),en=new Float32Array(frames);
-  for(let f=0;f<frames;f++){
+  // keep only tonal peaks that stand out from the local spectral floor (drums are broadband); calls fn(freq, height)
+  const peaks=(f,fn)=>{
     const off=f*CH;
     for(let i=0;i<CN;i++){re[i]=(x[off+i]||0)*w[i];im[i]=0}
     fft(re,im);
     for(let k=0;k<CN/2;k++){M[k]=Math.sqrt(re[k]*re[k]+im[k]*im[k]);cs[k+1]=cs[k]+M[k]}
-    let e=0;
-    // keep only tonal peaks that stand out from the local spectral floor (drums are broadband)
     for(let k=kmin;k<=kmax;k++){
       const m=M[k];if(m<=M[k-1]||m<M[k+1])continue;
       const lo=Math.max(0,k-R),hi=Math.min(CN/2,k+R+1),avg=(cs[hi]-cs[lo])/(hi-lo);
@@ -723,15 +722,27 @@ async function computeChroma(x,prog){
       const la=Math.log(M[k-1]+1e-12),lb=Math.log(m+1e-12),lc=Math.log(M[k+1]+1e-12);
       const den=la-2*lb+lc,d=den?0.5*(la-lc)/den:0;
       const fq=(k+d)*SR/CN;if(fq<50||fq>2200)continue;
-      const p=mod(Math.round(69+12*Math.log2(fq/440)),12),v=m-avg;
+      fn(fq,m-avg);
+    }
+  };
+  /* chords: tuning (A ≠ 440 — old recordings, slowed/sped-up edits): circular mean of the peaks' offset from the equal-tempered
+     grid over ≤ 1/6 of the frames, then every peak is binned against the corrected grid */
+  let tun=0;
+  {const nT=Math.min(120,Math.ceil(frames/6));let sx=0,sy=0;
+    for(let i=0;i<nT;i++){peaks(Math.floor((i+0.5)*frames/nT),(fq,v)=>{if(fq<100||fq>1500)return;const a=2*Math.PI*(12*Math.log2(fq/440));sx+=v*Math.cos(a);sy+=v*Math.sin(a)});if(i%30===29)await tick()}
+    if(sx||sy){const r=Math.hypot(sx,sy);tun=Math.atan2(sy,sx)/(2*Math.PI);if(Math.abs(tun)<0.08||r<1e-9)tun=0}}
+  for(let f=0;f<frames;f++){
+    let e=0;
+    peaks(f,(fq,v)=>{
+      const p=mod(Math.round(69+12*Math.log2(fq/440)-tun),12);
       e+=v;
       if(fq>=130)tre[f*12+p]+=v;
       if(fq<=180)bas[f*12+p]+=v;
-    }
+    });
     en[f]=e;
     if(f%60===0){prog(f/frames);await tick()}
   }
-  return {tre,bas,en,frames};
+  return {tre,bas,en,frames,tun};
 }
 
 function estimateTempo(env){
@@ -778,11 +789,11 @@ function pearson(a,b){const n=a.length;let ma=0,mb=0;for(let i=0;i<n;i++){ma+=a[
 function detectKey(){
   const ch=S.chroma,tot=new Float64Array(12);
   for(let f=0;f<ch.frames;f++)for(let p=0;p<12;p++)tot[p]+=Math.sqrt(ch.tre[f*12+p])+0.5*Math.sqrt(ch.bas[f*12+p]);
-  let best={pc:0,mode:0},bs=-2;
+  let best={pc:0,mode:0},bs=-2;S.keyR=new Float64Array(24); /* chords: all 24 correlations, refineKey uses them as a tie-breaker */
   for(let k=0;k<12;k++)for(let mode=0;mode<2;mode++){
     const prof=mode?KMIN:KMAJ,rot=new Array(12);
     for(let p=0;p<12;p++)rot[p]=prof[mod(p-k,12)];
-    const r=pearson(tot,rot);if(r>bs){bs=r;best={pc:k,mode}}
+    const r=pearson(tot,rot);S.keyR[k+12*mode]=r;if(r>bs){bs=r;best={pc:k,mode}}
   }
   return best;
 }
@@ -793,44 +804,70 @@ function diatonic(key){
   else{add(k,1);add(k+3,0);add(k+5,1);add(k+7,1);add(k+7,0);add(k+8,0);add(k+10,0)}
   return s;
 }
-function detectChords(){
-  const ch=S.chroma,beats=S.beats,T=60/S.bpm,B=beats.length;
+/* chords: the chord per beat (REVIEW-MUSIC §7).
+   1. beat-synchronous chroma: every 8192-sample frame counts for a beat by the (squared) share of its Hann window that lies
+      inside the beat, so the next chord's downbeat no longer leaks into the last beat of the old one (changes came out early);
+   2. 24 triad templates with harmonics + N.C.; the bass supports a chord when it plays its root (1), third (.6) or fifth (.5),
+      so an inversion (C/E, G/B) is read as itself instead of the chord built on the bass note;
+   3. frames are averaged as √magnitude, so a sustained chord tone outweighs a melody note that comes and goes within the beat;
+   4. Viterbi with a change penalty that depends on the beat in the bar once the downbeat is known (meter=true: cheaper on
+      beat 1, dearer on 2/4);
+   5. anticipations: see the end of detectChords.
+   CHP = the weights, tuned on the tools/tests/ui/test_chords.py benchmark (and checked for one-beat blips on real previews). */
+const CHP={pen:0.2,wb:0.25,dia:0.04,metre:[0.75,1.3,1,1.3],wpow:2,inv3:0.6,inv5:0.5,push:0.02};
+// chroma of the spans [st[i], en[i]) (increasing): treble vector (unit length), bass (max = 1) and tonal energy per span
+function spanChroma(st,en){
+  const ch=S.chroma,B=st.length,H=CN/2/SR;
+  const F=u=>u<=-1?0:u>=1?1:(u+1)/2+Math.sin(Math.PI*u)/(2*Math.PI);   // Hann window CDF on [-1,1]
   const vec=[],bass=[],E=new Float32Array(B);
   let fi=0;
   for(let b=0;b<B;b++){
-    const t0=beats[b]+Math.min(0.15,T*0.3),t1=beats[b]+T+Math.min(0.05,T*0.1),v=new Float64Array(12),bv=new Float64Array(12);let c=0;
-    while(fi<ch.frames&&chromaTime(fi)<t0)fi++;
-    let j=fi;
-    for(;j<ch.frames&&chromaTime(j)<t1;j++){for(let p=0;p<12;p++){v[p]+=ch.tre[j*12+p];bv[p]+=ch.bas[j*12+p]}E[b]+=ch.en[j];c++}
-    if(!c){const k=Math.min(ch.frames-1,Math.max(0,Math.round((t0*SR-CN/2)/CH)));for(let p=0;p<12;p++){v[p]=ch.tre[k*12+p];bv[p]=ch.bas[k*12+p]}E[b]=ch.en[k];c=1}
-    let n=0,bm=1e-9;for(let p=0;p<12;p++){v[p]=Math.sqrt(v[p]/c);n+=v[p]*v[p];bv[p]=Math.sqrt(bv[p]/c);bm=Math.max(bm,bv[p])}
+    const s=st[b],e=en[b],v=new Float64Array(12),bv=new Float64Array(12);let W=0;
+    while(fi<ch.frames&&chromaTime(fi)+H<=s)fi++;
+    for(let j=fi;j<ch.frames;j++){
+      const c=chromaTime(j);if(c-H>=e)break;
+      const w=Math.pow(F((e-c)/H)-F((s-c)/H),CHP.wpow);if(w<1e-3)continue;
+      for(let p=0;p<12;p++){v[p]+=w*Math.sqrt(ch.tre[j*12+p]);bv[p]+=w*Math.sqrt(ch.bas[j*12+p])}E[b]+=w*ch.en[j];W+=w;
+    }
+    if(W<1e-6){const k=Math.min(ch.frames-1,Math.max(0,Math.round(((s+e)/2*SR-CN/2)/CH)));for(let p=0;p<12;p++){v[p]=Math.sqrt(ch.tre[k*12+p]);bv[p]=Math.sqrt(ch.bas[k*12+p])}E[b]=ch.en[k];W=1}
+    let n=0,bm=1e-9;for(let p=0;p<12;p++){v[p]/=W;n+=v[p]*v[p];bv[p]/=W;bm=Math.max(bm,bv[p])}
     n=Math.sqrt(n)||1;for(let p=0;p<12;p++){v[p]/=n;bv[p]/=bm}
-    vec.push(v);bass.push(bv);E[b]/=c;
+    vec.push(v);bass.push(bv);E[b]/=W;
   }
-  const sorted=[...E].sort((a,b)=>a-b),med=sorted[sorted.length>>1]||0;
-  const dia=diatonic(S.key),NS=25;
+  return {vec,bass,E};
+}
+function beatChroma(){const b=S.beats,T=60/S.bpm;return spanChroma(b,b.map((t,i)=>i+1<b.length?b[i+1]:t+T))}
+let TPL=null;
+function chordTpl(){
+  if(TPL)return TPL;TPL=[];
   // harmonic-aware templates: each chord tone also brings its 3rd and 5th harmonics
-  const H=[[0,1.75],[7,.33],[4,.2]],TPL=[];
+  const H=[[0,1.75],[7,.33],[4,.2]];
   for(let q=0;q<2;q++)for(let r=0;r<12;r++){
     const t=new Float64Array(12);
     for(const [iv,w] of [[0,1],[q?3:4,.9],[7,.9]])for(const [h,hw] of H)t[(r+iv+h)%12]+=w*hw;
     let n=0;for(let p=0;p<12;p++)n+=t[p]*t[p];n=Math.sqrt(n);for(let p=0;p<12;p++)t[p]/=n;
     TPL[r+12*q]=t;
   }
-  const emit=b=>{
+  return TPL;
+}
+function detectChords(meter){
+  const B=S.beats.length,NS=25;if(!B)return new Int8Array(0);
+  const {vec,bass,E}=beatChroma(),TP=chordTpl();
+  const sorted=[...E].sort((a,b)=>a-b),med=sorted[sorted.length>>1]||0;
+  const dia=diatonic(S.key),d0=typeof S.down==='number'?S.down:0;
+  const fit=(bv,r,q)=>Math.max(bv[r],CHP.inv3*bv[(r+(q?3:4))%12],CHP.inv5*bv[(r+7)%12]);
+  const score=(v,bv,c)=>{const t=TP[c];let d=0;for(let p=0;p<12;p++)d+=t[p]*v[p];return d+CHP.wb*fit(bv,c%12,c>=12?1:0)};
+  const em=[];
+  for(let b=0;b<B;b++){
     const out=new Float64Array(NS);
-    if(E[b]<0.08*med){out.fill(0);out[24]=1;return out}
-    const v=vec[b],bv=bass[b];
-    for(let q=0;q<2;q++)for(let r=0;r<12;r++){
-      const t=TPL[r+12*q];let d=0;for(let p=0;p<12;p++)d+=t[p]*v[p];
-      const s=d+0.25*bv[r]-0.08*bv[(r+(q?3:4))%12]+(dia.has(r+12*q)?0.04:0);
-      out[r+12*q]=s;
-    }
-    out[24]=0.2;return out;
-  };
-  const pen=0.15,back=[];let prev=emit(0);
+    if(E[b]<0.08*med){out[24]=1;em.push(out);continue}
+    for(let c=0;c<24;c++)out[c]=score(vec[b],bass[b],c)+(dia.has(c)?CHP.dia:0);
+    out[24]=0.2;em.push(out);
+  }
+  const back=[];let prev=em[0];
   for(let b=1;b<B;b++){
-    const e=emit(b),cur=new Float64Array(NS),bk=new Int8Array(NS);
+    const e=em[b],cur=new Float64Array(NS),bk=new Int8Array(NS);
+    const pen=CHP.pen*(meter?CHP.metre[mod(b-d0,4)]:1);
     let mi=0;for(let s=1;s<NS;s++)if(prev[s]>prev[mi])mi=s;
     for(let s=0;s<NS;s++){
       if(prev[s]>=prev[mi]-pen){cur[s]=prev[s]+e[s];bk[s]=s}else{cur[s]=prev[mi]-pen+e[s];bk[s]=mi}
@@ -840,25 +877,49 @@ function detectChords(){
   const res=new Int8Array(B);
   let s=0;for(let i=1;i<NS;i++)if(prev[i]>prev[s])s=i;
   for(let b=B-1;b>=0;b--){res[b]=s===24?-1:s;if(b>0)s=back[b-1][s]}
+  /* anticipations ("pushed" chords): a change whose first half-beat still sounds like the old chord starts on the "and".
+     S.antic = those beats (detectDownbeat counts them on the next beat); with the meter known, the ones on beat 2 or 4 move
+     to the next beat 1/3, where a chord sheet writes them */
+  const cand=[];for(let b=1;b+1<B;b++)if(res[b]!==res[b-1]&&res[b]===res[b+1]&&res[b]>=0&&res[b-1]>=0)cand.push(b);
+  S.antic=new Set();
+  if(cand.length){
+    const T=60/S.bpm,h=spanChroma(cand.map(b=>S.beats[b]),cand.map(b=>S.beats[b]+T/2));
+    cand.forEach((b,i)=>{if(score(h.vec[i],h.bass[i],res[b-1])>score(h.vec[i],h.bass[i],res[b])+CHP.push){S.antic.add(b);if(meter&&mod(b-d0,2)===1)res[b]=res[b-1]}});
+  }
   return res;
 }
+/* chords: the full chord pass every analysis path uses (tool, DJ/Crate analyzeTrack, Discover previews): chords → downbeat →
+   key check → chords again with the bar-position prior → downbeat */
+function chordPass(){S.chords=detectChords(false);detectDownbeat();refineKey();S.chords=detectChords(true);detectDownbeat()}
+/* chords: the key from the chords (REVIEW-MUSIC 1.3: ii–V–I and pad-heavy songs came out on the dominant, Am–F–C–G as C).
+   Every key is scored by: share of beats on its diatonic chords (+ a major V in minor, half credit for the usual borrowed
+   chords), share on its tonic triad, its cadences (V→I counts most, IV→I a little), how often bar 1 of a 4-bar phrase and the
+   first/last chord are its tonic, plus the chroma-profile correlation as a tie-breaker. */
 function refineKey(){
-  const cnt=new Map();for(const c of S.chords)if(c>=0)cnt.set(c,(cnt.get(c)||0)+1);
-  const g=c=>cnt.get(c)||0,k=S.key.pc;
-  /* qw: relative major/minor tie-break — the chord on bar 1 of each 4-bar phrase (+ the first and last chord) is the tonic
-     far more often than not (REVIEW-MUSIC 1.3: Am–F–C–G was reported as C major) */
-  const ph=new Map(),d=typeof S.down==='number'?S.down:0;let first=-1,last=-1;
-  for(let b=0;b<S.chords.length;b++){const c=S.chords[b];if(c<0)continue;if(first<0)first=c;last=c;if(mod(b-d,16)===0)ph.set(c,(ph.get(c)||0)+1)}
-  if(first>=0)ph.set(first,(ph.get(first)||0)+1);if(last>=0)ph.set(last,(ph.get(last)||0)+1);
-  const p=c=>ph.get(c)||0;
-  if(S.key.mode===0){const rel=mod(k+9,12)+12;if(g(rel)>1.2*g(k)||(g(rel)>=0.8*g(k)&&p(rel)>=2*Math.max(1,p(k))))S.key={pc:mod(k+9,12),mode:1}}
-  else{const rel=mod(k+3,12);if(g(rel)>1.2*g(k+12)||(g(rel)>=0.8*g(k+12)&&p(rel)>=2*Math.max(1,p(k+12))))S.key={pc:rel,mode:0}}
+  const C=S.chords,d=typeof S.down==='number'?S.down:0,R=S.keyR;let N=0,ch=0;
+  const beats=new Float64Array(24),ph=new Float64Array(24),tr=new Map();let prev=-1,first=-1,last=-1,nph=0;
+  for(let b=0;b<C.length;b++){const c=C[b];if(c<0)continue;N++;beats[c]++;if(first<0)first=c;last=c;
+    if(mod(b-d,16)===0){ph[c]++;nph++}
+    if(prev>=0&&c!==prev){ch++;const k=prev*24+c;tr.set(k,(tr.get(k)||0)+1)}prev=c}
+  if(!N)return;
+  ph[first]++;ph[last]++;nph+=2;
+  const T=(a,b)=>tr.get(a*24+b)||0;
+  let best=null,bs=-1e9;
+  for(let pc=0;pc<12;pc++)for(let mode=0;mode<2;mode++){
+    const k={pc,mode},dia=diatonic(k),ton=pc+12*mode,V=mod(pc+7,12),IV=mod(pc+5,12)+12*mode;
+    const bor=mode?[mod(pc+5,12)]:[mod(pc+10,12),mod(pc+5,12)+12,mod(pc+8,12)];   // minor: IV (dorian); major: bVII, iv, bVI
+    let fit=0;for(let c=0;c<24;c++)if(beats[c])fit+=beats[c]*(dia.has(c)?1:bor.includes(c)?0.5:0);
+    const cad=(T(V,ton)+0.5*T(V+12,ton)+0.4*T(IV,ton))/Math.max(1,ch);
+    const sc=fit/N+0.5*beats[ton]/N+0.6*cad+0.25*ph[ton]/nph+0.4*(R?R[pc+12*mode]:0);
+    if(sc>bs){bs=sc;best=k}
+  }
+  if(best)S.key=best;
 }
 function detectDownbeat(){
   const B=S.beats.length;if(!S.lowEnv){S.down=0;return}
   const lowAt=t=>{const f=Math.round((t*SR-(ON/2-OH/2+ENV_LAG))/OH);let m=0;for(let d=-1;d<=1;d++)m=Math.max(m,S.lowEnv[f+d]||0);return m};
   const ch=new Array(4).fill(0),lo=new Array(4).fill(0);let tc=0,tl=0;
-  for(let b=0;b<B;b++){const p=b%4;const c=b>0&&S.chords[b]!==S.chords[b-1]?1:0;ch[p]+=c;tc+=c;const l=lowAt(S.beats[b]);lo[p]+=l;tl+=l}
+  for(let b=0;b<B;b++){const p=b%4;const c=b>0&&S.chords[b]!==S.chords[b-1]?1:0;ch[(S.antic&&S.antic.has(b)?p+1:p)%4]+=c;tc+=c;const l=lowAt(S.beats[b]);lo[p]+=l;tl+=l} /* chords: a pushed change counts on the beat it anticipates */
   let best=0,bs=-1;
   for(let p=0;p<4;p++){const s=(tc?ch[p]/tc:0)+0.6*(tl?lo[p]/tl:0);if(s>bs){bs=s;best=p}}
   S.down=best;
@@ -1084,15 +1145,20 @@ function applyFx(){
   ensureFx().then(()=>{
     if(!P.playing)return;
     if(!P.fx){restart();return}
-    const c=ac(),tt=now();if(!P.playing)return;
+    const c=ac();now();if(!P.playing)return;
     P.srcs.forEach(x=>x.playbackRate.setTargetAtTime(S.rate,c.currentTime,0.01));
     FX.node.schedule({semitones:fxSemis(),output:c.currentTime+FX.lat});
-    P.startPos=tt;P.startCtx=c.currentTime;P.rate=S.rate;
+    /* chords: the new rate is heard only FX.lat later — keep the old segment until then (posAt), so the playhead and the
+       chord display don't jump ahead by FX.lat·Δrate on every tempo nudge */
+    const at=c.currentTime+FX.lat;let sp=posAt(at);if(P.loop&&sp>=P.loop.le&&P.startPos<P.loop.le)sp=P.loop.ls+mod(sp-P.loop.ls,P.loop.le-P.loop.ls);
+    P.seg0={startPos:P.startPos,startCtx:P.startCtx,rate:P.rate,until:at};P.startPos=sp;P.startCtx=at;P.rate=S.rate;
   }).catch(e=>{console.warn(e);showNotice(t('fxFail'))});
 }
+/* chords: source position whose sound reaches the destination at context time t (the old segment until a live tempo change lands) */
+function posAt(t){const g=P.seg0&&t<P.seg0.until?P.seg0:P;return g.startPos+Math.max(0,t-g.startCtx)*g.rate}
 function now(){
   if(!P.playing)return P.pos;
-  let tt=P.startPos+Math.max(0,ac().currentTime-P.startCtx)*P.rate;
+  let tt=posAt(ac().currentTime);
   if(P.loop){const {ls,le}=P.loop;if(P.startPos<le&&tt>=le)tt=ls+mod(tt-ls,le-ls);return tt}
   if(tt>=S.dur){endPlayback();return S.dur}
   return tt;
@@ -1112,7 +1178,24 @@ function play(){
     s.start(when,Math.min(P.pos,buf.duration-0.001));return [s,g]};
   if(S.stems){const r=S.stems.map((b,i)=>mk(b,stemGain(i)));P.srcs=r.map(x=>x[0]);P.gains=r.map(x=>x[1])}
   else{const r=mk(S.buffer,1);P.srcs=[r[0]];P.gains=[]}
-  P.startCtx=when+(fx?FX.lat:0);P.startPos=P.pos;P.rate=fx?S.rate:1;P.fx=fx;P.playing=true;lastClick=P.pos-0.001;setIcon();
+  P.startCtx=when+(fx?FX.lat:0);P.startPos=P.pos;P.rate=fx?S.rate:1;P.fx=fx;P.seg0=null;P.playing=true;lastClick=P.pos-0.001;setIcon();
+}
+/* chords: what the listener hears NOW entered the destination one output latency ago (device/OS buffer: ~10–40 ms wired,
+   150–300 ms Bluetooth). The playhead, the chord sheet and "now/next" follow the heard position; scheduling (metronome, loops,
+   seek, stop) keeps using now(). heardCtx() = context time of the sample leaving the speakers right now: getOutputTimestamp()
+   extrapolated to this instant (smooth, unlike currentTime, which jumps by whole render buffers); else currentTime − outputLatency. */
+function heardCtx(){
+  const c=ac(),ct=c.currentTime;let h=NaN;
+  try{if(c.getOutputTimestamp){const o=c.getOutputTimestamp();if(o&&o.performanceTime>0&&o.contextTime>0)h=o.contextTime+(performance.now()-o.performanceTime)/1000}}catch(e){}
+  if(!(h<=ct+0.01&&h>ct-1))h=ct-Math.min(0.8,(c.outputLatency||0)||(c.baseLatency||0));
+  return h;
+}
+function heard(){
+  if(!P.playing)return P.pos;
+  const tt=now();if(!P.playing)return tt;
+  let x=posAt(heardCtx());
+  if(P.loop){const {ls,le}=P.loop;if(P.startPos<le&&x>=le)x=ls+mod(x-ls,le-ls)}
+  return Math.max(0,Math.min(S.dur,x));
 }
 function killSources(){P.srcs.forEach(x=>{try{x.onended=null;x.stop()}catch(e){}});P.srcs=[];P.gains=[];
   // let the stretch tail ring out, then idle the node (a quick restart cancels this)
@@ -1197,7 +1280,7 @@ function renderCues(){
 function cueHit(i,clear){
   if(!S.dur)return;
   if(clear){S.cues[i]=null}
-  else if(S.cues[i]==null){let tt=now();if(S.beats.length){const T=60/S.bpm,b=Math.round((tt-S.beats[0])/T);tt=S.beats[Math.max(0,Math.min(S.beats.length-1,b))]}S.cues[i]=tt}
+  else if(S.cues[i]==null){let tt=heard(); /* chords: the cue goes where you heard it */if(S.beats.length){const T=60/S.bpm,b=Math.round((tt-S.beats[0])/T);tt=S.beats[Math.max(0,Math.min(S.beats.length-1,b))]}S.cues[i]=tt}
   else{seek(S.cues[i]);if(!P.playing&&S.buffer)play()}
   renderCues();dirty=true;saveLibSoon();
 }
@@ -1255,7 +1338,7 @@ function updateNow(tm){
 }
 let lastT=-1;
 function loop(){
-  const tm=now();
+  const tm=heard(); /* chords: draw what is heard, not what was just scheduled (output latency) */
   if(tm!==lastT||dirty){drawZoom(tm);drawOverview(tm);$('#time').innerHTML=`${fmt(tm/S.rate)} <span>/ ${fmtS(S.dur/S.rate)}</span>`;updateNow(tm);lastT=tm;dirty=false}
   requestAnimationFrame(loop);
 }
@@ -1345,8 +1428,8 @@ async function analyze(buffer,name,demo,nosave){
   renderStats();busy(null);
   if(!demo&&!nosave){saveLib();if(buffer.duration>=60)offerCatalogMatch()}
 }
-function recompute(){S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();S.edited=new Set();renderAll();dirty=true}
-function regrid(){buildBeats();S.chords=detectChords();detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
+function recompute(){S.key=detectKey();chordPass();S.edited=new Set();renderAll();dirty=true}
+function regrid(){buildBeats();S.chords=detectChords(false);detectDownbeat();S.chords=detectChords(true);detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
 
 async function synthDemo(o){
   o=o||{};const sr=44100,T=60/(o.bpm||120),lead=0.3,barsN=o.bars||16,dur=lead+barsN*4*T+1,sh=o.shift||0,intro=o.intro||0;
@@ -1398,7 +1481,7 @@ async function analyzeTrack(buffer,prog,hint){
   const g=fitGrid(genv,estimateTempo(on.env));
   const saved=S;let out;
   S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0,transpose:0,capo:0};
-  try{buildBeats();S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
+  try{buildBeats();S.key=detectKey();chordPass();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
   finally{S=saved}
   prog(1);return {...base,...out};
 }
@@ -3117,7 +3200,7 @@ async function quickAnalyze(buffer){
   const saved=S;let out;
   S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0};
   try{
-    buildBeats();S.key=detectKey();S.chords=detectChords();detectDownbeat();refineKey();S.chords=detectChords();detectDownbeat();
+    buildBeats();S.key=detectKey();chordPass();
     const prog=[];for(let b=S.down;b<S.chords.length&&prog.length<8;b++){const c=S.chords[b];if(c>=0&&c!==prog[prog.length-1])prog.push(c)}
     out={bpm:Math.round(S.bpm*10)/10,pc:S.key.pc,mode:S.key.mode,chords:prog};
   }finally{S=saved}

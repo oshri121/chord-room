@@ -166,8 +166,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching (the word does not appear in UI copy).
-  Non-diatonic chord roots are spelled on the flat side (`chordFlat`); `refineKey` breaks the relative major/minor tie with the chord on
-  bar 1 of each 4-bar phrase. Onset frame times carry `ENV_LAG` (+15 ms); the LUFS highpass Q is in dB (−6.02).
+  Non-diatonic chord roots are spelled on the flat side (`chordFlat`). Onset frame times carry `ENV_LAG` (+15 ms); the LUFS highpass Q is in dB (−6.02).
+- Chords (`/* chords */`): `computeChroma` (tuning-corrected) → `detectKey` → `chordPass()` (beat-synchronous `spanChroma`, 24 triads + N.C.,
+  inversion-tolerant bass, Viterbi with a bar-position prior, pushed changes moved to the bar; `refineKey` = key from the chords; weights `CHP`)
+  in every path (tool, `analyzeTrack`, `quickAnalyze`, `regrid`); playhead/sheet/now-next draw `heard()` (getOutputTimestamp), scheduling keeps
+  `now()`. Benchmark with ground truth: `tools/tests/ui/test_chords.py` (`fixtures/gen_chords.py`).
 - SEO/sharing: `<head>` OG/Twitter/canonical point at `https://chord-room.pages.dev` (change with a custom domain), `assets/og.png`
   (1200×630, regenerate with PIL if the brand changes), PNG icons + `apple-touch-icon.png`, `manifest.webmanifest`, `robots.txt`, `sitemap.xml`.
   Pricing shows ≈ USD next to ₪ for non-Hebrew languages from `billing.usd_rate` (admin settings, default 3.7); plans without an

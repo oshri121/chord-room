@@ -214,14 +214,77 @@ Effort: S < 1 day, M 2–5 days, L > 1 week. "Pay" = who would pay for it in Isr
 1. LUFS K-weighting highpass Q in dB → +1…+3 LU on real music (1.5).
 2. −15 ms grid bias → lead-0 songs lose bar 1, all cues/grids 15 ms early (1.2).
 3. Tempo folded outside 84–156 BPM; half-time 150 → 100 (1.1).
-4. Minor keys with i–VI–III–VII reported as the relative major (0/5); ii–V–I reported as the dominant (1.3).
-5. Slash chords misread (25 %), 7ths absent, A♯ for B♭ (1.4, 4).
+4. ~~Minor keys with i–VI–III–VII reported as the relative major (0/5); ii–V–I reported as the dominant (1.3).~~ Fixed (§7: key from the chords).
+5. ~~Slash chords misread (25 %)~~, ~~A♯ for B♭~~ — fixed (§7, `chordFlat`); 7ths still shown as triads (1.4, 4).
 6. Serato cues ignored on files that already have `Serato Markers_` (E2).
 7. MIDI/WAV export not on FL's bar grid (E1).
 8. Drums MIDI: snare on every beat, hats = snares on the synthetic test (1.6).
 9. Off-beat bass / loud off-beat hats pull the grid half a beat (1.1, 1.2).
 10. No PFL / no MIDI controller in the DJ view (3).
 
-Reproduce: `python3 run_acc.py tempo|keychords|extra|meter`, `python3 run_lufs.py`, `python3 run_cues.py`,
+---
+
+## 7. Chords and the chord display during playback — fixed (2026-10-02)
+
+Owner's report: "while the song plays, the chords it shows are not right for singing / playing along".
+
+**Benchmark** (`tools/tests/fixtures/gen_chords.py` + `tools/tests/chordscore.py`, run by `tools/tests/ui/test_chords.py`): 29 songs
+with known beats, key and chord per beat — piano with inharmonic partials and voice-led inversions, strummed guitar, pads, a bass
+with approach notes / walking lines / slash basses, drums, a vocal-like lead with passing tones, suspensions and anticipations, room
+reverb, ±6 ms human timing; 70–150 BPM, 12 keys (sharp and flat, major and minor), changes per bar / 2 beats / 2 bars, 7ths, 9ths,
+sus, dim, a borrowed bVII, a pickup, chords pushed an 8th early, a 4 % tempo drift, −42 / +28 cents tuning, 3/4, a modulation; plus
+a "+hard" tier (vocal 2.2×, bass 1.8×, 2.5× reverb, some through MP3 96 kbps). Score = MIREX majmin per true beat (7ths count as
+their triad, sus/dim excluded), 20 ms frame accuracy vs the *sounding* chords, change F1 (±1 beat), key, bar lines, spelling.
+Real previews (p0–p3 + a 75 s FMA song) were used as a "no one-beat flicker" check (no ground truth exists for them).
+
+| (browser, real upload path) | before | after |
+|---|---|---|
+| majmin per beat, 29 songs | **0.960** (worst 0.688) | **0.999** (worst 0.969) |
+| majmin per beat, hard tier (12) | 0.897 (worst 0.688) | 0.994 (worst 0.953) |
+| slash chords C–G/B–Am–Em/G–F–C/E | 0.688 | 1.000 |
+| pushed changes (chord on the "and" of 4) | 0.762, every change a beat early, bar 1 lost | 1.000, changes on the bar line |
+| walking bass Gm7–C7–Fmaj7–Dm7 | 0.875 (Dm7 → F) | 1.000 |
+| sustain-pedal ballad with inversions | 0.714 | 1.000 |
+| key exact, 29 songs / hard tier | 23 / 3 of 12 (5 / 7 on the dominant) | 28 / 10 (rest = the relative of an ambiguous vi–IV–I–V loop) |
+| bar lines on the true downbeat | 26/27 | 27/27 |
+| real previews: one-beat chord blips | 0–6 per preview, changes a beat before the bar | 0–2, changes on the bar lines |
+
+Root causes (measured):
+1. **Late-biased beat window → changes shown early.** Each beat averaged frames centred up to `beat+T+50 ms` with a 372 ms window, so
+   ~30 % of the last frames already held the next chord: on real previews most changes came out one beat early (e.g. "F F F A | A A A Dm"),
+   and every anticipated change landed on beat 4. Now `spanChroma` weights each frame by the (squared) share of its Hann window inside the beat.
+2. **Bass = root, always.** `+0.25·bass[root] − 0.08·bass[third]` read every inversion as the chord on the bass note (C/E → Em, G/B → Bm,
+   Ab/C → Cm) and a walking bass's passing note as a new root. Now the bass supports a chord through its root (1), third (.6) or fifth (.5).
+3. **Melody notes counted like chord tones.** Frames are now averaged as √magnitude (a note that comes and goes within the beat weighs less).
+4. **No meter in the Viterbi.** The change penalty is now 0.75× on beat 1, 1.3× on 2/4 once the downbeat is known (second pass), and a
+   change whose first half-beat still sounds like the old chord is an anticipation: counted on the next beat for the downbeat vote and moved
+   to the bar line (that is where a chord sheet writes it). 3/4 songs are unaffected (100 %).
+5. **Key from the profile only.** ii–V–I, pad-heavy and slash-chord songs came out on the dominant (Bb → F, C → G, G → D). `refineKey`
+   now scores all 24 keys from the detected chords (diatonic share, tonic share, V→I / IV→I cadences, phrase starts, first/last chord)
+   with the profile correlation as a tie-breaker. Spelling follows (no wrong-signature names left except inside a modulation).
+6. **Tuning** is estimated (circular mean of the peaks' cent offsets on ≤ 120 frames) and corrected before binning: −42 c → measured −41.8 c.
+   It mattered little in practice (round-to-nearest already survives ±45 c), but it removes the cliff at a quarter tone.
+7. **Display timing.** Measured by recording what reaches `AudioContext.destination` (`mock/audiotap.js`) and comparing it with the
+   highlighted sheet cell every frame: the Signalsmith latency was already compensated correctly (click-track: 119.7 ms vs `latency()`
+   120 ms), but the **output latency was not** — the playhead, the sheet and "now/next" ran ahead of the sound by the device latency
+   (36 ms in headless Chromium; 150–300 ms on Bluetooth headphones). With a 0.6 s output latency (latencyHint 0.3) the old display led
+   by 689 ms and showed the heard chord on 50 % of the beats. Now `heard()` maps `getOutputTimestamp()` (extrapolated per frame;
+   `outputLatency` as fallback) through the playback segments: lead −5…−14 ms in all three cases (100 %; −10 % + key +2; +12 % / key −3
+   with 0.6 s latency), the right chord on 100 % of the beats. A live tempo change now keeps the old segment until it is heard (`P.seg0`):
+   before, each nudge jumped the playhead by 120 ms × Δrate. Cue points set with the keyboard land where you heard them.
+   Transposition / capo / edit: labels move by exactly the semitones, capo shows the played shapes, the editor still works (tested).
+
+Not changed (by design / out of scope): the vocabulary is still 24 triads + N.C. — 7ths, sus and dim collapse to their triad (the
+triad is right 100 % of the time on the 7th-heavy songs); one global key, so the spelling inside a modulation follows the home key
+(F♯ for G♭ in the D♭ section); the grid is constant-tempo (4 % drift → 0.969); 70–80 BPM ballads still get ×2 tempo (REVIEW 1.1), so the
+sheet shows each bar as two — the chords per beat are right.
+
+Performance (4-minute song, headless Chromium, alternating runs on a loaded 2-CPU box): upload → sheet 16.8 s → 17.9 s median (+6 %,
+the tuning pre-pass); the chord stage itself is ≈ 10–25 ms per song. The pre-pass yields every 30 frames, so the page never blocks longer than before.
+
+Reproduce: `python3 tools/tests/ui/test_chords.py` (`CR_CHORDS_FULL=1` for every song + the hard tier); before/after harness and the
+node runner of the DSP section used for tuning `CHP` are in the session scratchpad (`ch/nbench.py`, `ch/play2.py`, `ch/perf.py`).
+
+Reproduce (§1–6): `python3 run_acc.py tempo|keychords|extra|meter`, `python3 run_lufs.py`, `python3 run_cues.py`,
 `python3 run_export.py`, `python3 run_dj.py`, `python3 run_drums.py` (slow, real model) from the scratchpad
 `review_f/` folder; outputs in `review_f/out/*.json|log`.
