@@ -61,7 +61,10 @@ def test(t, srv, b):
     pg.evaluate("location.hash='#nonsense'"); time.sleep(0.8)
     t.check('unknown hash → home + "page not found" notice', lib.visible_views(pg) == ['#aboutView'] and not pg.evaluate("document.querySelector('#toast').hidden") and 'לא נמצא' in pg.inner_text('#toast'), pg.inner_text('#toast'))
     lib.reload(pg); time.sleep(0.5); pg.keyboard.press('Tab'); time.sleep(0.3)
-    t.check('first Tab lands on the skip link, which becomes visible', pg.evaluate("document.activeElement===document.querySelector('#skipLink')&&document.querySelector('#skipLink').getBoundingClientRect().top>=0"), pg.evaluate("document.activeElement&&document.activeElement.id"))
+    skip_js = "document.activeElement===document.querySelector('#skipLink')&&document.querySelector('#skipLink').getBoundingClientRect().top>=0"
+    try: lib.poll(pg, skip_js, 3)          # it slides in with a 0.15 s transition, slower on a busy machine
+    except Exception: pass
+    t.check('first Tab lands on the skip link, which becomes visible', pg.evaluate(skip_js), pg.evaluate("document.activeElement&&document.activeElement.id"))
     pg.keyboard.press('Enter'); time.sleep(0.3)
     t.check('skip link focuses the view heading', pg.evaluate("document.activeElement&&document.activeElement.tagName==='H1'"), pg.evaluate("document.activeElement&&document.activeElement.tagName"))
     t.eq('no CSP violations', lib.csp_violations(pg), [])

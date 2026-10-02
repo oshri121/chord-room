@@ -26,6 +26,7 @@ const DEFAULT_MODEL = 'claude-haiku-4-5-20251001';
 const MAX_BODY = 32 * 1024;
 const MAX_MSGS = 24;
 const MAX_CHARS = 2000;
+const MAX_TOTAL = 12000;       // whole conversation sent to the model: oldest turns are dropped above this (cost ceiling)
 const MAX_CTX = 1536;
 const MAX_TOKENS = 900;
 const FIRST_BYTE_MS = 30000;   // Anthropic must start answering within 30 s
@@ -82,6 +83,13 @@ function validMessages(list) {
   }
   while (out.length && out[0].role !== 'user') out.shift();         // …and to start with the user
   if (!out.length || out[out.length - 1].role !== 'user') return null;
+  // cost ceiling: 24 × 2000 chars of Hebrew is ~50k input tokens per message; keep only the newest turns
+  let total = out.reduce((n, m) => n + m.content.length, 0);
+  while (out.length > 1 && total > MAX_TOTAL) {
+    total -= out.shift().content.length;
+    while (out.length > 1 && out[0].role !== 'user') total -= out.shift().content.length;
+  }
+  if (out[out.length - 1].content.length > MAX_TOTAL) out[out.length - 1].content = out[out.length - 1].content.slice(-MAX_TOTAL);
   return out;
 }
 
@@ -350,6 +358,7 @@ export async function onRequestPost({ request, env }) {
     if (why === 'slow') return json({ error: 'slow' }, 429, { 'retry-after': '60' });
     if (why === 'blocked') return json({ error: 'blocked' }, 403);
     if (why === 'off') return json({ error: 'off' }, 503);
+    if (why === 'site_limit') return json({ error: 'busy' }, 503, { 'retry-after': '3600' });   // site-wide daily ceiling
     if (why === 'auth') return json({ error: 'auth' }, 401);
     return json({ error: 'quota_unavailable' }, 502);
   }

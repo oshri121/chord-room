@@ -11,7 +11,15 @@
 --   assistant_daily       0…100000        messages per day for free accounts (default 30)
 --   assistant_daily_plan  0…100000        messages per day while a paid plan is active (default 150)
 -- e.g.  update public.site_config set billing = billing || '{"assistant_daily": 20, "assistant_daily_plan": 200}' where id = 1;
+--   assistant_site_daily  0…1000000     messages per day for the WHOLE SITE (all non-admin accounts together; default
+--                                       3000; 0 = no site cap). A cost ceiling: many fake accounts can't multiply the bill.
 -- Admins and the owner are unlimited (only a burst limit of 30 per minute; everyone else 8 per minute).
+-- Accounts whose email is not confirmed (and Supabase "anonymous" sessions, which have no email) get no answers.
+
+-- site-wide counter per day (private: not reachable through the API)
+create schema if not exists private;
+create table if not exists private.assistant_site (day date primary key, count integer not null default 0);
+revoke all on private.assistant_site from public, anon, authenticated;
 
 create table if not exists public.assistant_usage (
   user_id  uuid not null references auth.users(id) on delete cascade,
@@ -63,16 +71,20 @@ language sql stable as $$
 $$;
 revoke all on function private.assistant_prices(jsonb) from public, anon, authenticated;
 
--- spend one message. {ok:true, left, limit, me:{plan,credits}, billing} or {ok:false, why: auth|blocked|off|limit|slow}
+-- spend one message. {ok:true, left, limit, me:{plan,credits}, billing} or {ok:false, why: auth|blocked|off|limit|slow|site_limit}
 create or replace function public.assistant_use() returns jsonb
 language plpgsql security definer set search_path = public as $$
 declare uid uuid := auth.uid(); me public.profiles; b jsonb; lim integer; d date := private.assistant_today();
-        r public.assistant_usage; cap integer; nb integer; nat timestamptz;
+        r public.assistant_usage; cap integer; nb integer; nat timestamptz; site integer; used integer;
 begin
   if uid is null then return jsonb_build_object('ok', false, 'why', 'auth'); end if;
   select * into me from public.profiles where id = uid;
   if not found then return jsonb_build_object('ok', false, 'why', 'auth'); end if;
   if me.blocked and not me.owner then return jsonb_build_object('ok', false, 'why', 'blocked'); end if;
+  -- confirmed email only (an anonymous Supabase session or an unconfirmed sign-up must not cost API money)
+  if not me.owner and not exists (select 1 from auth.users u where u.id = uid and u.email_confirmed_at is not null) then
+    return jsonb_build_object('ok', false, 'why', 'auth');
+  end if;
   select coalesce(billing, '{}'::jsonb) into b from public.site_config where id = 1;
   b := coalesce(b, '{}'::jsonb);
   lim := private.assistant_limit(me, b);
@@ -91,6 +103,15 @@ begin
   end if;
   if lim is not null and r.count >= lim then
     return jsonb_build_object('ok', false, 'why', 'limit', 'left', 0, 'limit', lim);
+  end if;
+  -- the site-wide ceiling (admins/owner are not counted and never refused)
+  if lim is not null then
+    site := greatest(0, least(1000000, coalesce(public.safe_int(b->>'assistant_site_daily'), 3000)));
+    insert into private.assistant_site (day) values (d) on conflict do nothing;
+    select count into used from private.assistant_site where day = d for update;
+    if site > 0 and used >= site then return jsonb_build_object('ok', false, 'why', 'site_limit'); end if;
+    update private.assistant_site set count = count + 1 where day = d;
+    if random() < 0.01 then delete from private.assistant_site where day < d - 60; end if;
   end if;
   update public.assistant_usage set count = count + 1, burst = nb, burst_at = nat where user_id = uid and day = d;
   perform public.log_activity('assistant', '');                        -- no message content (privacy)
@@ -112,6 +133,9 @@ begin
   select * into me from public.profiles where id = uid;
   if not found then return jsonb_build_object('ok', false, 'why', 'auth'); end if;
   if me.blocked and not me.owner then return jsonb_build_object('ok', false, 'why', 'blocked'); end if;
+  if not me.owner and not exists (select 1 from auth.users u where u.id = uid and u.email_confirmed_at is not null) then
+    return jsonb_build_object('ok', false, 'why', 'auth');
+  end if;
   select coalesce(billing, '{}'::jsonb) into b from public.site_config where id = 1;
   b := coalesce(b, '{}'::jsonb);
   lim := private.assistant_limit(me, b);
@@ -136,6 +160,9 @@ begin
   end if;
   if b ? 'assistant_daily_plan' and coalesce(public.safe_int(b->>'assistant_daily_plan'), -1) not between 0 and 100000 then
     raise exception 'bad billing: assistant_daily_plan' using errcode = '22023';
+  end if;
+  if b ? 'assistant_site_daily' and coalesce(public.safe_int(b->>'assistant_site_daily'), -1) not between 0 and 1000000 then
+    raise exception 'bad billing: assistant_site_daily' using errcode = '22023';
   end if;
   return new;
 end $$;
