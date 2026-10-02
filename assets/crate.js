@@ -196,15 +196,15 @@ es:{crPayT:'Analizar {n} canciones',crUsbPayT:'USB para Pioneer · {n} canciones
 });
 CR.addStrings({
 he:{ovPlay:'ניגון',ovPause:'השהיה',ovGrid:'גריד',ovBeatM:'הזזת הגריד פעימה אחורה',ovBeatP:'הזזת הגריד פעימה קדימה',ovFineM:'הזזה עדינה אחורה (10ms)',ovFineP:'הזזה עדינה קדימה (10ms)',
-  ovBarHere:'כאן מתחילה תיבה',ovReset:'איפוס',ovHint:'לחיצה על הגל מנגנת משם · גוררים דגל כדי להזיז נקודת קיו (נצמד לתיבות, Alt = חופשי)',ovDragT:'אפשר לגרור'},
+  ovBarHere:'כאן מתחילה תיבה',ovReset:'איפוס',ovHint:'לחיצה על הגל מנגנת משם · גוררים דגל כדי להזיז נקודת קיו (נצמד לתיבות, Alt = חופשי) · Shift+גרירה על הגל מזיזה את הגריד (בפעמות שלמות, Ctrl/⌘ = חופשי)',ovDragT:'אפשר לגרור'},
 en:{ovPlay:'Play',ovPause:'Pause',ovGrid:'Grid',ovBeatM:'Move the grid one beat back',ovBeatP:'Move the grid one beat forward',ovFineM:'Nudge back (10 ms)',ovFineP:'Nudge forward (10 ms)',
-  ovBarHere:'A bar starts here',ovReset:'Reset',ovHint:'Click the waveform to play from there · drag a flag to move a cue (snaps to bars, Alt = free)',ovDragT:'drag to move'},
+  ovBarHere:'A bar starts here',ovReset:'Reset',ovHint:'Click the waveform to play from there · drag a flag to move a cue (snaps to bars, Alt = free) · Shift+drag the waveform to move the grid (whole beats, Ctrl/⌘ = free)',ovDragT:'drag to move'},
 ar:{ovPlay:'تشغيل',ovPause:'إيقاف مؤقت',ovGrid:'الشبكة',ovBeatM:'تحريك الشبكة نبضة للخلف',ovBeatP:'تحريك الشبكة نبضة للأمام',ovFineM:'تحريك دقيق للخلف (10ms)',ovFineP:'تحريك دقيق للأمام (10ms)',
-  ovBarHere:'هنا يبدأ مازورة',ovReset:'إعادة ضبط',ovHint:'انقر على الموجة للتشغيل من هناك · اسحب علمًا لتحريك نقطة Cue (تلتصق بالمازورات، Alt = حر)',ovDragT:'يمكن السحب'},
+  ovBarHere:'هنا يبدأ مازورة',ovReset:'إعادة ضبط',ovHint:'انقر على الموجة للتشغيل من هناك · اسحب علمًا لتحريك نقطة Cue (تلتصق بالمازورات، Alt = حر) · Shift+سحب على الموجة يحرّك الشبكة (بنبضات كاملة، Ctrl/⌘ = حر)',ovDragT:'يمكن السحب'},
 ru:{ovPlay:'Играть',ovPause:'Пауза',ovGrid:'Сетка',ovBeatM:'Сдвинуть сетку на долю назад',ovBeatP:'Сдвинуть сетку на долю вперёд',ovFineM:'Точно назад (10 мс)',ovFineP:'Точно вперёд (10 мс)',
-  ovBarHere:'Здесь начинается такт',ovReset:'Сброс',ovHint:'Клик по волне — играть оттуда · перетащите флажок, чтобы сдвинуть cue (прилипает к тактам, Alt — свободно)',ovDragT:'можно перетащить'},
+  ovBarHere:'Здесь начинается такт',ovReset:'Сброс',ovHint:'Клик по волне — играть оттуда · перетащите флажок, чтобы сдвинуть cue (прилипает к тактам, Alt — свободно) · Shift+перетаскивание волны двигает сетку (на целые доли, Ctrl/⌘ — свободно)',ovDragT:'можно перетащить'},
 es:{ovPlay:'Reproducir',ovPause:'Pausa',ovGrid:'Rejilla',ovBeatM:'Mover la rejilla un tiempo atrás',ovBeatP:'Mover la rejilla un tiempo adelante',ovFineM:'Ajuste fino atrás (10 ms)',ovFineP:'Ajuste fino adelante (10 ms)',
-  ovBarHere:'Aquí empieza un compás',ovReset:'Restablecer',ovHint:'Haz clic en la onda para sonar desde ahí · arrastra una bandera para mover un cue (se ajusta a compases, Alt = libre)',ovDragT:'se puede arrastrar'}
+  ovBarHere:'Aquí empieza un compás',ovReset:'Restablecer',ovHint:'Haz clic en la onda para sonar desde ahí · arrastra una bandera para mover un cue (se ajusta a compases, Alt = libre) · Shift+arrastrar la onda mueve la rejilla (tiempos enteros, Ctrl/⌘ = libre)',ovDragT:'se puede arrastrar'}
 });
 
 /* ---------- constants & state ---------- */
@@ -770,6 +770,15 @@ function ovPointer(e){
   const r=byId(box.dataset.ovr);if(!r||!r.dur)return;
   const rect=box.getBoundingClientRect(),tAt=cx=>Math.max(0,Math.min(r.dur,(cx-rect.left)/rect.width*r.dur));
   const flag=e.target.closest('.cuef'),cue=flag&&cueList(r).find(c=>c.k===flag.dataset.cue);
+  /* griddrag: Shift/Alt+drag on the waveform = move the grid with its cues (whole beats; Ctrl/⌘ = free), a click still plays */
+  if(!cue&&(e.shiftKey||e.altKey)&&r.bpm>0){
+    e.preventDefault();const x0=e.clientX,g0=r.gsh||0,cs=cueList(r),c0=cs.map(c=>c.t),T=60/r.bpm,cv=box.querySelector('canvas');let moved=false,d=0;
+    const put=x=>{r.gsh=g0+x;cs.forEach((c,i)=>{c.t=Math.max(0,c0[i]+x)});box.querySelectorAll('.cuef').forEach(f=>{const c=cs.find(y=>y.k===f.dataset.cue);if(c)f.style.left=(c.t/r.dur*100).toFixed(2)+'%'});if(cv)drawOverview(cv,r)};
+    const mv=ev=>{if(Math.abs(ev.clientX-x0)>3)moved=true;if(!moved)return;d=(ev.clientX-x0)/rect.width*r.dur;if(!(ev.ctrlKey||ev.metaKey))d=Math.round(d/T)*T;put(d)};
+    const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);put(0);
+      if(moved&&d)shiftGrid(r,d);else if(moved)renderRow(r);else plPlay(r,tAt(x0))};
+    box.style.cursor='ew-resize';window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);return;
+  }
   if(!cue){plPlay(r,tAt(e.clientX));return}
   e.preventDefault();const x0=e.clientX,t0=cue.t;let moved=false;
   const mv=ev=>{if(Math.abs(ev.clientX-x0)>3)moved=true;if(!moved)return;let tn=tAt(ev.clientX);if(!ev.altKey&&r.bpm>0)tn=snapBar(r,tn);cue.t=Math.max(0,Math.round(tn*1000)/1000);
