@@ -760,7 +760,7 @@ html[dir="rtl"] .lib,html[dir="rtl"] .acc,html[dir="rtl"] .mix{animation-name:cr
 .refpill{font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;color:#fff;background:var(--acc-grad)}
 .refbox>p{margin:4px 0 10px}
 .refrow{display:flex;gap:8px}
-.refurl{flex:1;min-width:0;font:13px/1.2 "IBM Plex Mono",ui-monospace,monospace;padding:9px 10px;border:1px solid var(--field-bd);border-radius:var(--r-sm,8px);background:var(--field);color:inherit}
+.refurl{flex:1;min-width:0;width:0;/* fix: no intrinsic input width → the pricing invite card fits 375 px (ru) */font:13px/1.2 "IBM Plex Mono",ui-monospace,monospace;padding:9px 10px;border:1px solid var(--field-bd);border-radius:var(--r-sm,8px);background:var(--field);color:inherit}
 .refrow2{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
 .refrow2 .btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 .refrow2 .ic{width:16px;height:16px}

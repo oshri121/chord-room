@@ -57,7 +57,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   partial refunds = what was paid, caps 20 refunds + 1000 units a day so a failed 300-song folder fits). The guard clamps costs 0…100 / discount 0…90 and accepts any
   `^[a-z][a-z_]{1,23}$` kind. App (`/* ---------- points v2 */` after `refund()`): `priceOf/unitPrice/priceChip` (client estimate, same
   formula), `payForN(kind,qty)` → ONE dialog `#ptsDlg` (calc, plan line, balance before→after, short → "Only the first K" / "Buy points",
-  "don't ask again up to N points" per kind in `chordroom.payok.v1`), `chargeN`, `refundN(pay,k)`, `payN` (ask+charge; journals the charge in localStorage `chordroom.payjobs.v1` + holds a Web Lock
+  "don't ask again up to N points" per kind in `chordroom.payok.v1:<uid|guest>`), `chargeN`, `refundN(pay,k)`, `payN` (ask+charge; journals the charge in localStorage `chordroom.payjobs.v1` + holds a Web Lock
   `crpay:<id>` while it runs → every caller ends with `settleN(pay,failed)`; `progressN(pay,done)` = delivered units; `payJobsCheck` on
   `cr-user` refunds jobs whose page died — lock not held anywhere — minus delivered units),
   `paySongs([{name,size}])` → {ok, commit(item)} (asks once for the songs not in charged_songs, `commit` = spend_song AFTER the
@@ -160,6 +160,13 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `handle_new_user`) → 6-digit email code (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
   (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
   owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
+- Client hardening (`/* sec */`): every ZIP entry goes through `zipName` (app.js `zip()`, also `CR.zipName`; no `..`/absolute/drive
+  paths, control/bidi characters, Windows device names or reserved characters; duplicates → ` (2)`) and every download name through
+  `safeSeg` (`saveBlob`); Crate M3U8 fields are one line each (`m3l`) and point at the sanitised ZIP names; Deezer API data is
+  validated like catalog rows (`rowFromTrack`: numeric ids, covers/previews only `*.dzcdn.net` (`coverOk`/`pvOk`), links only
+  www.deezer.com). Tests: `ui/test_security.py` (+ `fixtures/gen_evil.py`: hostile file names + ID3 tags + Deezer JSON) and
+  `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
+  FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
   client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23] (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
@@ -237,7 +244,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   demo song + a slim banner (`#guestBar`, `renderGuestBar`); upload / My songs / export / separation ask for an account. The demo (or
   the last song) is analysed by `ensureSong()` the first time the tool is shown, never at boot on the home page; a newer `analyze()`
   supersedes a running one (`ANG`). Separation: model download (free) → `sepConfirm` (price, balance, estimate, "don't ask again" in
-  `chordroom.sepok`) → `charge`. `showView` sets `document.title` per view and moves focus to the view's h1; unknown hashes → home + toast. Upload/drag-drop/`loadFile`
+  `chordroom.sepok:<uid|guest>`; both consents are per account) → `charge`. `showView` sets `document.title` per view and moves focus to the view's h1; unknown hashes → home + toast. Upload/drag-drop/`loadFile`
   ask for an account too (`needAccount`/`askAccount`). `regate()` re-routes on auth changes. Only when accounts are on
   (tests that exercise the tools without the mock stub `vendor/supabase.js` → local mode). The old `require_login` overlay
   (`#gate`) is retired and its admin toggle hidden. Client-side (honest-user) gate; paid/server things are checked server-side.
