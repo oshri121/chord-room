@@ -148,7 +148,7 @@ en: {
   incFree: ['BPM, key, Camelot and loudness', 'Chords, chord sheet and diagrams', 'Discover and DJ Mix', 'Piano MIDI export'],
   incAll: 'Everything in Free', incPts: '{pts} added every month',
   best: 'Recommended', current: 'Your plan',
-  btnSignup: 'Sign up free', btnSubSignup: 'Sign up to subscribe', btnSub: 'Subscribe', btnYour: 'Your plan', btnIncl: 'Included in your plan', btnSoon: 'Coming soon', btnContact: 'Contact us', usdNote: 'Prices are in Israeli shekels (₪); the dollar amount is approximate',
+  btnSignup: 'Sign up free', btnSubSignup: 'Sign up to subscribe', btnSub: 'Subscribe', btnYour: 'Your plan', btnIncl: 'Included in your plan', btnSoon: 'Coming soon', btnContact: 'Contact us', usdNote: 'Dollar price converted from the shekel price; the checkout shows the exact amount',
   offH: 'Everything is free right now', offP: 'No points needed at the moment — every feature, including AI stem separation and stem downloads, is free to use.',
   tblEyebrow: 'Price list', tblH: 'What costs points', tblA: 'Action', tblC: 'Cost',
   rowSep: 'AI stem separation (vocals, drums, bass, other)', rowDl: 'Stems download (WAV / MP3)',
@@ -224,7 +224,7 @@ ar: {
   incFree: ['BPM والمقام وكاميلوت والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ', 'تصدير MIDI للبيانو'],
   incAll: 'كل ما في الباقة المجانية', incPts: '{pts} تُضاف كل شهر',
   best: 'موصى بها', current: 'باقتك',
-  btnSignup: 'سجّل مجانًا', btnSubSignup: 'سجّل للاشتراك', btnSub: 'اشترك', btnYour: 'باقتك', btnIncl: 'مشمول في باقتك', btnSoon: 'قريبًا', btnContact: 'راسلونا', usdNote: 'الأسعار بالشيكل الإسرائيلي (₪)؛ المبلغ بالدولار تقريبي',
+  btnSignup: 'سجّل مجانًا', btnSubSignup: 'سجّل للاشتراك', btnSub: 'اشترك', btnYour: 'باقتك', btnIncl: 'مشمول في باقتك', btnSoon: 'قريبًا', btnContact: 'راسلونا', usdNote: 'السعر بالدولار محوَّل من سعر الشيكل؛ صفحة الدفع تعرض المبلغ الدقيق',
   offH: 'كل شيء مجاني حاليًا', offP: 'لا حاجة إلى نقاط في الوقت الحالي — كل الميزات، بما فيها فصل المسارات بالذكاء الاصطناعي وتنزيلها، مجانية الاستخدام.',
   tblEyebrow: 'قائمة الأسعار', tblH: 'ما الذي يكلّف نقاطًا', tblA: 'الإجراء', tblC: 'التكلفة',
   rowSep: 'فصل المسارات بالذكاء الاصطناعي (الغناء، الطبول، الباص، باقي الآلات)', rowDl: 'تنزيل المسارات (WAV / MP3)',
@@ -300,7 +300,7 @@ ru: {
   incFree: ['BPM, тональность и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор и DJ-микс', 'Экспорт фортепианного MIDI'],
   incAll: 'Всё из бесплатного тарифа', incPts: '+{pts} каждый месяц',
   best: 'Рекомендуем', current: 'Ваш тариф',
-  btnSignup: 'Бесплатная регистрация', btnSubSignup: 'Зарегистрироваться и подписаться', btnSub: 'Подписаться', btnYour: 'Ваш тариф', btnIncl: 'Входит в ваш тариф', btnSoon: 'Скоро', btnContact: 'Напишите нам', usdNote: 'Цены в израильских шекелях (₪); сумма в долларах приблизительная',
+  btnSignup: 'Бесплатная регистрация', btnSubSignup: 'Зарегистрироваться и подписаться', btnSub: 'Подписаться', btnYour: 'Ваш тариф', btnIncl: 'Входит в ваш тариф', btnSoon: 'Скоро', btnContact: 'Напишите нам', usdNote: 'Цена в долларах пересчитана из цены в шекелях; точная сумма — на странице оплаты',
   offH: 'Сейчас всё бесплатно', offP: 'Баллы сейчас не нужны — все функции, включая разделение на стемы с AI и скачивание стемов, доступны бесплатно.',
   tblEyebrow: 'Прайс', tblH: 'За что списываются баллы', tblA: 'Действие', tblC: 'Стоимость',
   rowSep: 'Разделение на стемы с AI (вокал, барабаны, бас, остальное)', rowDl: 'Скачивание стемов (WAV / MP3)',
@@ -376,7 +376,7 @@ es: {
   incFree: ['BPM, tonalidad, Camelot y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir y Mezcla DJ', 'Exportación MIDI de piano'],
   incAll: 'Todo lo del plan Gratis', incPts: '+{pts} cada mes',
   best: 'Recomendado', current: 'Tu plan',
-  btnSignup: 'Regístrate gratis', btnSubSignup: 'Regístrate para suscribirte', btnSub: 'Suscribirse', btnYour: 'Tu plan', btnIncl: 'Incluido en tu plan', btnSoon: 'Próximamente', btnContact: 'Escríbenos', usdNote: 'Precios en shékels israelíes (₪); el importe en dólares es aproximado',
+  btnSignup: 'Regístrate gratis', btnSubSignup: 'Regístrate para suscribirte', btnSub: 'Suscribirse', btnYour: 'Tu plan', btnIncl: 'Incluido en tu plan', btnSoon: 'Próximamente', btnContact: 'Escríbenos', usdNote: 'Precio en dólares convertido del precio en shékels; el pago muestra el importe exacto',
   offH: 'Ahora mismo todo es gratis', offP: 'No necesitas puntos por ahora: todas las funciones, incluida la separación de pistas con IA y su descarga, son gratis.',
   tblEyebrow: 'Tarifas', tblH: 'Qué cuesta puntos', tblA: 'Acción', tblC: 'Coste',
   rowSep: 'Separación de pistas con IA (voz, batería, bajo, resto)', rowDl: 'Descarga de pistas (WAV / MP3)',
@@ -725,22 +725,25 @@ function fmtDate(iso) { try { return new Intl.DateTimeFormat(loc(), { day: 'nume
 function money(v, cur) {
   cur = cur || 'ILS';
   let parts;
-  try { parts = new Intl.NumberFormat(loc(), { style: 'currency', currency: cur, maximumFractionDigits: v % 1 ? 2 : 0, minimumFractionDigits: 0 }).formatToParts(v); }
+  try { parts = new Intl.NumberFormat(loc(), { style: 'currency', currency: cur, currencyDisplay: cur === 'USD' ? 'narrowSymbol' : 'symbol', maximumFractionDigits: v % 1 ? 2 : 0, minimumFractionDigits: 0 }).formatToParts(v); }
   catch (e) { parts = [{ type: 'integer', value: String(v) }, { type: 'literal', value: ' ' }, { type: 'currency', value: cur }]; }
   let h = '';
   for (const p of parts) {
-    if (p.type === 'currency') h += '<span class="pg-cur">' + esc(p.value) + '</span>';
+    if (p.type === 'currency') h += '<span class="pg-cur">' + esc(cur === 'USD' ? '$' : p.value) + '</span>';
     else if (p.type === 'literal') continue;
     else if (p.type === 'minusSign') h += '<b>−</b>';
     else h += '<b>' + esc(p.value.replace(/[‎‏]/g, '')) + '</b>';
   }
   return '<span class="pg-price" dir="ltr">' + h.replace(/<\/b><b>/g, '') + '</span>';
 }
-/* qw: approximate USD next to the shekel price for non-Hebrew languages (fixed rate billing.usd_rate, default 3.7) */
-function usdApprox(v, cur, billing) {
-  if (L() === 'he' || (cur || 'ILS') !== 'ILS' || !(v > 0)) return '';
-  const rate = +(billing && billing.usd_rate) > 0 ? +billing.usd_rate : 3.7, usd = Math.round(v / rate);
-  return '<span class="pg-usd" dir="ltr" title="' + esc(t('usdNote')) + '">≈ $' + usd + '</span>';
+/* Prices are kept in shekels. Hebrew shows ₪; every other language shows dollars instead (plan.price_usd when the admin set
+   one, else price / billing.usd_rate rounded, default rate 3.7). The checkout itself charges in the payment provider's currency. */
+function usdRate(billing) { return +(billing && billing.usd_rate) > 0 ? +billing.usd_rate : 3.7; }
+function showMoney(v, cur, billing, p) {
+  cur = cur || 'ILS';
+  if (L() === 'he' || cur !== 'ILS') return money(v, cur);
+  const usd = p && +p.price_usd > 0 ? +p.price_usd : (v > 0 ? Math.max(1, Math.round(v / usdRate(billing))) : 0);
+  return '<span title="' + esc(t('usdNote')) + '">' + money(usd, 'USD') + '</span>';
 }
 
 /* ---------- icons (24px grid, stroke) ---------- */
@@ -1145,7 +1148,7 @@ function renderPricing(el, billing, state) {
     const isCurFree = myPlan === 'free';
     cards += '<article class="pg-plan' + (isCurFree ? ' cur' : '') + ' rv" style="--acc:var(--ink);--i:0">' +
       (isCurFree ? '<span class="pg-flag cur">' + t('current') + '</span>' : '') +
-      '<h3>' + esc(planName('free')) + '</h3><div class="pg-pw">' + money(0, cur) + '<span class="pg-per">' + t('perMonth') + '</span></div>' +
+      '<h3>' + esc(planName('free')) + '</h3><div class="pg-pw">' + showMoney(0, cur, billing) + '<span class="pg-per">' + t('perMonth') + '</span></div>' +
       (signup ? '<div class="pg-ppts"><b dir="ltr" data-count="' + signup + '">' + fmtN(signup) + '</b><span>' + plWord('ptsL', signup) + ' · ' + t('oneTime') + '</span></div>' + buys(signup) : '') +
       '<ul class="pg-list">' + t('incFree').map(s => '<li>' + ic('check') + '<span>' + s + '</span></li>').join('') + '</ul>' +
       '<div class="pg-pact">' + (!state.signedIn ? btn('signup') : isCurFree ? btn('your') : btn('incl')) + '</div></article>';
@@ -1153,7 +1156,7 @@ function renderPricing(el, billing, state) {
       const isCur = myPlan === p.id, pts = +p.points || 0;
       cards += '<article class="pg-plan' + (p.best ? ' best' : '') + (isCur ? ' cur' : '') + ' rv" style="--acc:var(--pg-' + accs[i % 3] + ');--i:' + (i + 1) + '">' +
         (p.best ? '<span class="pg-flag best">' + ic('spark') + t('best') + '</span>' : '') + (isCur ? '<span class="pg-flag cur">' + t('current') + '</span>' : '') +
-        '<h3>' + esc(planName(p.id)) + '</h3><div class="pg-pw">' + money(+p.price || 0, cur) + '<span class="pg-per">' + t('perMonth') + '</span>' + usdApprox(+p.price || 0, cur, billing) + '</div>' +
+        '<h3>' + esc(planName(p.id)) + '</h3><div class="pg-pw">' + showMoney(+p.price || 0, cur, billing, p) + '<span class="pg-per">' + t('perMonth') + '</span></div>' +
         '<div class="pg-ppts"><b dir="ltr" data-count="' + pts + '">' + fmtN(pts) + '</b><span>' + plWord('ptsL', pts) + ' · ' + t('perMonth') + '</span></div>' + buys(pts) +
         '<ul class="pg-list"><li>' + ic('check') + '<span>' + t('incAll') + '</span></li><li>' + ic('check') + '<span>' + fill(t('incPts'), { pts: pl('pts', pts) }) + '</span></li>' +
         (disc(p) > 0 ? '<li class="pg-disc">' + ic('spark') + '<span>' + fill(t('incDisc'), { d: pct(disc(p)) }) + '</span></li>' : '') + '</ul>' +
