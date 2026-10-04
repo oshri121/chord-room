@@ -11,25 +11,34 @@ with a centred vocal-like tone, 8-bar build with a noise riser, 16-bar drop, 16-
    (popover radio group) and drag a boundary on the canvas (snaps to bars), then "back to the detected sections".
    All 96 preset × style × length plans keep the whole original in order and only repeat whole phrases; Performance Edit
    adds a build + drop cycle; filtered / percussion / drums+bass club renders have the planned length, no NaN, no clipping.
-4. Generate with DJ Extended, +60 s, intro 32 / outro 32 (Drums): checklist ends with every step done and "ready";
-   export WAV 16-bit 44.1 kHz and check the render itself:
+4. Generate with DJ Extended, +60 s, intro 32 / outro 32 (Drums): the first minute is playable before the whole render is done
+   (head render), checklist ends with every step done and "ready"; export WAV 16-bit 44.1 kHz and check the render itself:
      - duration = planned length ± 1 beat; planned = original + 60 s here (the mixable original intro/outro count),
      - every join is on the bar grid: the kick onset at each block start sits where it sits in the source (≤ 5 ms),
      - the DJ intro's first 16 bars carry no vocal energy (1.1–1.3 kHz band < 5 % of the verse's),
-     - unmodified blocks are the source itself (correlation > 0.99).
+     - unmodified blocks are the source itself (correlation > 0.99),
+     - tools/tests/extq.py at every join: no high-band excess over both sources (≤ 3 dB, a click), the incoming beats continue
+       the outgoing grid (≤ 2 ms against the true bar lines), full-mix level steps within 1.5 LU of what the music does there,
+       no sung line cut (fixture truth); repeated blocks have their source's loudness (± 0.5 LU); the DJ intro's last 4 bars
+       are within 1.5 LU of the original's first 4 (no jump when the song starts); the loop seams score ≥ 0.8; the intro's
+       layers enter on 8-bar phrase lines; the outro ends ON the final bar line with a decaying one-beat tail (silent end),
+     - quality chip ≥ 85, joins navigator (hear a join = 4 bars before → 4 after, then it stops).
 5. Export MP3 320 (duration via mutagen, TBPM + Serato Markers2 GEOB) and WAV 24-bit 48 kHz (header + duration);
    file names "<name> (Extended Mix)"; activity `extended_export` logged.
 6. Preview A/B: play the extended version, switch to the original at the mapped spot, loop a block, stop, hover tooltip.
    Leaving the view frees the quick stems + render; "Upgrade to AI stems" (CR.separateBuffer stubbed) re-analyses, generate again.
 7. he + ar RTL (values stay LTR), dark (really dark), 375 px without horizontal scroll, zero CSP violations, no page errors.
+7b. A sung pop song (fixtures/gen_styles.py 'pop': pickups, lines over bar lines), Club Extended +2 min, measured by extq against
+   the song's truth: whole repeated phrases, no sung line cut at any join, no click, beats continue (≤ 2 ms), the singer in the
+   drums-only DJ intro/outro ≤ −12 dB, ends on the final bar line with a tail.
 8. A drifting live track (gen_club.make_drift, tempo ramp +-1.5 %): BPM refitted, every bar line on the true downbeat (<= 40 ms);
    the arrangement list titles made blocks by their role ('DJ intro' / 'DJ outro', 'from <section> · ...' below).
 """
 import os, sys, re, json, time, wave, struct, tempfile
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-import lib
+import lib, extq
 sys.path.insert(0, lib.FIX)
-import gen_club
+import gen_club, gen_styles
 import numpy as np
 
 try:
@@ -38,6 +47,7 @@ except ImportError:
     mutagen = None
 
 FX = tempfile.mkdtemp(prefix='cr-club-')
+POP, POP_T = gen_styles.make('pop', os.path.join(FX, 'Synth Pop - Vocal Song.wav'), voc_stem=True)   # 100 BPM, sung lines over bar lines
 WAV = gen_club.make(os.path.join(FX, 'Test Artist - Club Track.wav'))
 BEAT, BAR = gen_club.BEAT, gen_club.BAR
 
@@ -171,17 +181,33 @@ def test(t, srv, b):
 
     # ------------------------------------------------------------------ 4. generate + check the render
     t.section('generate (+60 s, intro 32, outro 32, drums)')
-    plan = pg.evaluate("(()=>{const p=EXTENDED._plan();return {len:p.len,P:p.P,B:p.B,bars:p.bars,added:p.added,tail:p.tail,blocks:p.blocks.map(b=>({...b,lab:EXTENDED._secs()[b.sec].lab,t0:EXTENDED._outBar(b.o0),t1:EXTENDED._outBar(b.o1),s0:EXTENDED._srcBar(b.sa),s1:EXTENDED._srcBar(b.sb)}))}})()")
+    plan = pg.evaluate("(()=>{const p=EXTENDED._planInfo();return {...p,added:EXTENDED._plan().added}})()")
     t.check('planned length = original + 60 s (± 1 bar)', abs(plan['added'] - 60) <= BAR, plan['added'])
-    t.check('plan: DJ intro = 16 bars of drums before the mixable original intro', [x['role'] for x in plan['blocks'][:2]] == ['intro', 'orig'] and plan['blocks'][1]['o0'] == 16 and all(x['mask'] and x['mask']['drums'] and not x['mask']['vocals'] and not x['mask']['bass'] for x in plan['blocks'] if x['role'] == 'intro'), [(x['role'], x['sa'], x['sb']) for x in plan['blocks'][:3]])
+    intro = [x for x in plan['blocks'] if x['role'] == 'intro']
+    # drums only: the drums stem, or the mix itself where the original has nothing but drums (bars 0–16 of the fixture)
+    t.check('plan: DJ intro = 16 bars of drums before the mixable original intro', plan['blocks'][0]['role'] == 'intro' and next(x for x in plan['blocks'] if x['role'] == 'orig')['o0'] == 16 and sum(x['sb'] - x['sa'] for x in intro) == 16
+            and all((x['mask'] and x['mask']['drums'] and not x['mask']['vocals'] and not x['mask']['bass']) or (x['useMix'] and x['sb'] <= 16) for x in intro), [(x['role'], x['sa'], x['sb'], x['mask'], x['useMix']) for x in plan['blocks'][:4]])
     t.check('plan: the whole original, in order, unchanged', [(x['sa'], x['sb']) for x in plan['blocks'] if x['role'] == 'orig'] == [(s['a'], s['b']) for s in secs])
-    t.check('plan: DJ outro of 16 bars ends the track on a bar line', plan['blocks'][-1]['role'] == 'outro' and plan['tail'] == 0 and sum(x['sb'] - x['sa'] for x in plan['blocks'] if x['role'] == 'outro') == 16)
+    t.check('plan: DJ outro of 16 bars, then one more downbeat hit ringing out over a beat', plan['blocks'][-1]['role'] == 'outro' and plan['endHit'] and abs(plan['tail'] - BEAT) < 0.01 and sum(x['sb'] - x['sa'] for x in plan['blocks'] if x['role'] == 'outro') == 16, (plan['tail'], plan['endHit']))
+    def stage_key(x): return json.dumps([x['mask'], x['eq'], x['ft']])
+    ch = [x['o0'] for a, x in zip(intro, intro[1:]) if stage_key(a) != stage_key(x)]
+    t.check('DJ intro: the layers change only on 8-bar phrase lines (kick + hats → full kit)', len(ch) >= 1 and all(o % 8 == 0 for o in ch) and intro[0]['eq'] == 'kh', (ch, [x['eq'] for x in intro]))
+    lp = plan['loops']['intro']
+    t.check('DJ intro loop: seamless (the bar after it sounds like its first bar ≥ 0.8), alternates two similar phrases', lp['A']['seam'] >= 0.8 and lp['B'] and lp['B']['a'] != lp['A']['a'], lp)
     t0 = time.time()
     pg.click('#exSet [data-a="gen"]')
     lib.poll(pg, "EXTENDED._X.stage==='generating'&&document.querySelectorAll('#exPlan .exsteps li').length===11", 10)
-    time.sleep(0.6); t.shot(pg, '05-generating', full_page=True)
+    lib.poll(pg, "(EXTENDED._X.render&&EXTENDED._X.rpart)||EXTENDED._X.stage==='done'", 60, every=0.03)
+    head = pg.evaluate("({part:EXTENDED._X.rpart,dur:EXTENDED._X.render&&EXTENDED._X.render.duration,stage:EXTENDED._X.stage,dis:document.querySelector('#exPlay').disabled})")
+    t.check('preview starts fast: the first minute is playable while the rest renders', head['part'] and 59 < head['dur'] < 61 and head['stage'] == 'generating' and not head['dis'], head)
+    pg.click('#exPlay'); lib.poll(pg, "EXTENDED._X.pb.playing", 5)
+    time.sleep(0.4); t.shot(pg, '05-generating', full_page=True)
     lib.poll(pg, "EXTENDED._X.stage==='done'", 120)
     print('  generate %.1fs' % (time.time() - t0))
+    time.sleep(0.3)
+    sw = pg.evaluate("({p:EXTENDED._X.pb.playing,h:EXTENDED._heard(),full:!EXTENDED._X.rpart,dur:EXTENDED._X.render.duration})")
+    t.check('the full render took over without stopping the preview', sw['p'] and sw['full'] and abs(sw['dur'] - plan['len']) < 0.05 and 0.3 < sw['h'] < 30, sw)
+    pg.click('#exStopB')
     t.check('checklist: every step done, "ready" shown', pg.evaluate("Object.values(EXTENDED._X.steps).every(s=>s==='done')&&Object.keys(EXTENDED._X.steps).length===11&&!!document.querySelector('#exReady')"))
     time.sleep(1.8); t.shot(pg, '06-ready', full_page=True)
     # WAV 16-bit 44.1 kHz
@@ -198,7 +224,7 @@ def test(t, srv, b):
     kick_labs = ('intro', 'verse', 'drop', 'outro')
     res = []
     for x in plan['blocks']:
-        if x['lab'] not in kick_labs: continue
+        if x['lab'] not in kick_labs or (x['mask'] and not x['mask'].get('bass') and x['eq']): continue   # 'kh' stages: no kick body to time
         o = onset_near(env, sr, x['t0']); s0 = onset_near(senv, sr, x['s0'])
         if o is None or s0 is None: continue
         res.append(((o - x['t0']) - (s0 - x['s0'])) * 1000)
@@ -216,6 +242,23 @@ def test(t, srv, b):
         best = max(float(np.corrcoef(ra, S[i0 + lag:][:n, 0])[0, 1]) for lag in (-1, 0, 1) if len(S[i0 + lag:][:n, 0]) == n == len(ra))
         cors.append(best)
     t.check('unmodified blocks are the source itself (correlation > 0.99)', len(cors) == 7 and min(cors) > 0.99, [round(c, 5) for c in cors])
+    # independent join / loudness / ending metrics on the exported render (tools/tests/extq.py) against the fixture's truth
+    M = extq.measure(R, sr, S, plan, gen_club.truth()); Sm = extq.summary(M)
+    print('  extq', json.dumps(Sm))
+    J = M['joins']
+    t.check('joins: no click (high band ≤ 3 dB over both sources at every join)', J and all(j['click_db'] <= 3 for j in J), [(j['t'], j['click_db']) for j in J])
+    gm = [j['grid_ms'] for j in J if j['grid_ms'] is not None]   # None = after the song's last bar (no beat to continue)
+    t.check('joins: the incoming beats continue the outgoing grid (≤ 2 ms)', len(gm) >= 2 and all(abs(g) <= 2 for g in gm), [(j['t'], j['grid_ms']) for j in J])
+    t.check('joins: full-mix level steps within 1.5 LU of what the music does there', all(j['step_lu'] is None or j['step_lu'] <= 1.5 for j in J), [(j['t'], j['step_lu']) for j in J])
+    t.check('joins: no sung line cut (the verse lines of the fixture)', Sm['vocal_cuts'] == 0, [(j['t'], j['vocal_cut']) for j in J if j['vocal_cut']])
+    t.check('repeated blocks keep their source loudness (± 0.5 LU)', all(abs(b['d']) <= 0.5 for b in M['blocks_lu']), M['blocks_lu'])
+    oi = next(x for x in plan['blocks'] if x['role'] == 'orig'); Rs = extq.Sig(R, sr)
+    d_int = Rs.lu(oi['t0'] - 4 * BAR, oi['t0']) - Rs.lu(oi['t0'], oi['t0'] + 4 * BAR)
+    t.check('DJ intro → original: last 4 intro bars within 1.5 LU of the first 4 original bars', abs(d_int) <= 1.5, round(d_int, 2))
+    e = M['ending']
+    t.check('outro ends ON the final bar line, then a decaying one-beat tail and silence', e['on_bar'] and BEAT * 0.8 < e['tail_s'] < BEAT * 1.2 and e['end_db'] < -40, e)
+    q = pg.evaluate("EXTENDED._quality()")
+    t.check('quality (in the app, measured on the render): ≥ 85, every join clean, seams ≥ 0.8, no vocal cuts', q and q['score'] >= 85 and q['clean'] == 100 and q['seam'] >= 0.8 and q['cuts'] == 0, q and {k: q[k] for k in q if k != 'joins'})
 
     # ------------------------------------------------------------------ 5. MP3 + WAV 24/48
     t.section('export MP3 320 + Serato cues, WAV 24-bit 48 kHz, activity')
@@ -251,8 +294,21 @@ def test(t, srv, b):
     t.check('activity label in the admin strings (5 languages)', pg.evaluate("['he','en','ar','ru','es'].every(l=>{CR.setLang(l);return CR.t('act_extended_export')!=='act_extended_export'})"))
     pg.evaluate("CR.setLang('en')")
 
-    # ------------------------------------------------------------------ 6. preview A/B + loop
-    t.section('preview A/B, loop a block')
+    # ------------------------------------------------------------------ 6. preview: joins, quality, A/B + loop
+    t.section('preview before download: joins navigator, quality chip, A/B, loop a block')
+    pv = pg.evaluate("({pv:!document.querySelector('#exPv').hidden,q:document.querySelector('#exPv .exq b')&&document.querySelector('#exPv .exq b').textContent,n:EXTENDED.joinList().length,lab:document.querySelector('#exPv .exjl').textContent,dl:document.querySelector('#exExp [data-a=exp]').textContent,note:document.querySelector('#exExp .exdlnote').textContent})")
+    t.check('preview row: joins navigator + quality chip; the paid step says Download and that listening is free', pv['pv'] and pv['q'] and int(pv['q']) >= 85 and pv['n'] >= 3 and 'Download' in pv['dl'] and 'free' in pv['note'], pv)
+    pg.click('#exPv [data-jn="next"]'); time.sleep(0.25)
+    jn = pg.evaluate("(()=>{const P=EXTENDED._X.pb,j=EXTENDED.joinList()[EXTENDED._X.join],B=EXTENDED._plan().B;return {i:EXTENDED._X.join,p0:P.p0,until:P.until,t:j.t,B,playing:P.playing,lab:document.querySelector('#exPv .exjl').textContent}})()")
+    t.check('next join: plays 4 bars before → 4 bars after it, label "Join 1 of N"', jn['i'] == 0 and jn['playing'] and abs(jn['p0'] - max(0, jn['t'] - 4 * jn['B'])) < 0.05 and abs(jn['until'] - (jn['t'] + 4 * jn['B'])) < 0.05 and jn['lab'].startswith('Join 1 of'), jn)
+    pg.keyboard.press('j'); time.sleep(0.2)
+    t.check('J = the next join', pg.evaluate("EXTENDED._X.join") == 1)
+    pg.click('#exPv [data-a="q"]')
+    t.check('quality details: clean joins / loop seams / level jumps / vocal cuts', pg.evaluate("!document.querySelector('#exQp').hidden&&document.querySelectorAll('#exQp .exqr').length===4&&document.querySelector('#exPv [data-a=q]').getAttribute('aria-expanded')==='true'"))
+    t.shot(pg, '06b-preview-joins', full_page=False)
+    pg.evaluate("document.querySelector('#exVol').value='40';document.querySelector('#exVol').dispatchEvent(new Event('input',{bubbles:true}))")
+    t.check('volume: saved in the settings, applied to the preview', abs(pg.evaluate("EXTENDED._X.set.vol") - 0.4) < 1e-6)
+    pg.click('#exStopB')
     pg.click('#exAB [data-pb="B"]')
     lib.poll(pg, "EXTENDED._X.pb.playing&&EXTENDED._X.pb.which==='B'", 5)
     vb_t = vb['t0'] + 5
@@ -312,6 +368,8 @@ def test(t, srv, b):
         nav = pg.evaluate("document.querySelector('#navExtended span[data-i=navExtended]').textContent")
         t.check(f'{lang}: nav label + title translated', nav in ('אקסטנדד', 'إكستندد', 'Extended') and pg.evaluate("document.querySelector('#extendedView h1').textContent") not in ('', 'exTitle', 'Extended Generator'), nav)
         t.eq(f'{lang} {w}px: no horizontal scroll', lib.scroll_width(pg), w)
+        t.check(f'{lang} {w}px: preview controls stay inside the console', pg.evaluate("""(()=>{const d=document.querySelector('#exDeck').getBoundingClientRect();
+            return ['#exPlay','#exAB','#exVol','#exPv .exjn','#exPv .exq'].every(s=>{const e=document.querySelector(s);if(!e)return true;const r=e.getBoundingClientRect();return r.left>=d.left-1&&r.right<=d.right+1})})()"""))
         if lang in ('he', 'ar'):
             t.check(f'{lang}: times / BPM values stay LTR', pg.evaluate("[...document.querySelectorAll('#extendedView .exbkt,#exStats dd,#exTime,#exTl')].every(e=>getComputedStyle(e).direction==='ltr')"))
         if theme == 'dark': t.check(f'{lang}: dark background really dark', lib.page_luma(pg, '.exset') < 80, lib.page_luma(pg, '.exset'))
@@ -319,9 +377,26 @@ def test(t, srv, b):
         t.shot(pg, f'08-{lang}-{theme}-{w}', full_page=True)
     t.check('zero CSP violations', lib.csp_violations(pg) == [], lib.csp_violations(pg))
 
+    # ------------------------------------------------------------------ 7b. a sung pop song: body repeats never chop a line
+    t.section('pop song with vocals (pickups, lines over bar lines): Club Extended +2 min (16/16: the body grows)')
+    pg.set_viewport_size({'width': 1300, 'height': 900}); pg.evaluate("CR.setLang('en')")
+    pg.evaluate("document.querySelector('#exIn').value=''"); pg.set_input_files('#exIn', POP)
+    lib.poll(pg, "EXTENDED._X.stage==='analyzing'", 20); lib.poll(pg, "EXTENDED._X.stage==='ready'||!!EXTENDED._X.msg", 200)
+    pg.click('#exSet [data-ps="club"]'); pg.click('#exSet [data-a="gen"]'); lib.poll(pg, "EXTENDED._X.stage==='done'", 120)
+    pp = pg.evaluate("EXTENDED._planInfo()")
+    pg.click('#exExp [data-fm="wav16"]'); pg.click('#exExp [data-sr="44100"]')
+    with pg.expect_download(timeout=150000) as d: pg.click('#exExp [data-a="exp"]')
+    sr2, R2 = read_wav(str(d.value.path())); _, S2 = read_wav(POP); _, V2 = read_wav(POP + '.voc.wav')
+    M2 = extq.measure(R2, sr2, S2, pp, POP_T, V2); S2m = extq.summary(M2); print('  extq pop', json.dumps(S2m))
+    reps = [b for b in pp['blocks'] if b['role'] == 'rep']
+    t.check('pop: the body is extended by whole repeated phrases', len(reps) >= 1 and all((b['sb'] - b['sa']) % 4 == 0 for b in reps), [(b['sa'], b['sb']) for b in reps])
+    t.check('pop: no sung line cut at any join (truth: every phrase incl. pickups)', S2m['vocal_cuts'] == 0, [(j['t'], j['vocal_cut']) for j in M2['joins'] if j['vocal_cut']])
+    t.check('pop: no click, beats continue (≤ 2 ms)', S2m['clicks'] == 0 and S2m['grid_max'] <= 2, (S2m['click_max'], S2m['grid_max']))
+    t.check('pop: the DJ intro/outro drums carry the singer ≤ −12 dB (quick split)', S2m['bleed_max'] <= -12, M2.get('bleed_db'))
+    t.check('pop: ends on the final bar line with a tail', S2m['ending']['on_bar'] and S2m['ending']['end_db'] < -40, S2m['ending'])
+
     # ------------------------------------------------------------------ 8. a drifting live track: the grid follows the beats
     t.section('drifting tempo (live feel, ±1.5 %): grid tracked, BPM refitted, labels in the list')
-    pg.set_viewport_size({'width': 1300, 'height': 900}); pg.evaluate("CR.setLang('en')")
     DW, downs = gen_club.make_drift(os.path.join(FX, 'Live Band - Drift.wav'))
     pg.evaluate("document.querySelector('#exIn').value=''"); pg.set_input_files('#exIn', DW)
     lib.poll(pg, "EXTENDED._X.stage==='analyzing'", 20); lib.poll(pg, "EXTENDED._X.stage==='ready'||!!EXTENDED._X.msg", 200)

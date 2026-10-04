@@ -80,6 +80,12 @@ def make(path, seed=11, lead=0.5, hat_gain=0.03):
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())
     return path
 
+def truth(lead=0.5):
+    """the same shape as gen_styles truth (for tools/tests/extq.py): bar starts, sections, sung phrases (2-bar lines, 8 % breath)"""
+    db = [lead + k * BAR for k in range(BARS + 1)]
+    voc = [(lead + b * BAR, lead + b * BAR + 0.92 * 2 * BAR) for b in range(16, 32, 2)]
+    return dict(style='club', bpm=BPM, downbeats=db, sections=SECTIONS, vocal=voc, live=False, sr=SR)
+
 if __name__ == '__main__':
     print(make(sys.argv[1] if len(sys.argv) > 1 else 'club_test.wav'))
 

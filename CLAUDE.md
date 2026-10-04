@@ -124,14 +124,28 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (analyzeTrack, quick DSP stems by default, "Upgrade to AI stems" = `CR.separateBuffer` 'sep' flow) → per-bar features → sections on a
   4-bar phrase lattice (Intro/Verse/Pre-Chorus/Build/Drop/Break/Chorus/Bridge/Outro, colours = cue colours) + Groove confidence + Phrase
   lock; the user relabels (chip/canvas popover) and drags boundaries (snap to bars). `makePlan` (presets DJ/Club/Radio/Performance, +30…+2 min
-  or custom, intro/outro 16/32/64 bars × Drums/Drums+bass/Full/Filtered/Percussion/Original): DJ intro loop from stems (a mixable original
-  intro counts), the whole original in order, phrase repeats (16/8/4 bars) of drops/breaks to reach the length, DJ outro mirrored; every block
-  says where it came from. `renderAudio` = OfflineAudioContext, whole-sample starts, contiguous blocks merged, 20 ms equal-power joins
-  ending on the downbeat, stem gains + Biquad sweeps, Signalsmith only for drifting grids (live drift: beat phase tracked per 2 bars by DP +
-  unwrapped, its linear part refits the BPM, the rest = per-bar offsets; kept only if the hits fit better). Tracks > 15 min are refused (memory).
-  Preview A/B on the render (T switches at the mapped spot, L loops the selected block); export MP3 320 (+ Serato cues intro/drop/outro) / WAV 16/24 at 44.1/48 kHz,
-  "Artist - Title (Extended Mix)", activity `extended_export`. Settings in `chordroom.extended.v1:<uid|guest>`; hide frees quick stems + render.
-  Test: `tools/tests/ui/test_extended.py` (fixture `tools/tests/fixtures/gen_club.py`).
+  or custom, intro/outro 16/32/64 bars × Drums/Drums+bass/Full/Filtered/Percussion/Original), redesigned from measurements (`REVIEW-EXTENDED.md`):
+  `stemEnv` (own JS biquads) → singer per frame from the vocals stem's share of the mix's 550 Hz–4 kHz band (`va` precise / `vp` high-recall),
+  drum pattern per bar, `barSim`/`seamOf`. DJ intro/outro = `loopCands`/`pickLoop` (8- and 4-bar loops scored by drums, singer ×2.6 with the
+  quick split, seam = the bar after ≈ its first bar, groove; phrase B alternates with A; the mix itself when it has only drums; a last bar
+  carrying the next line's pickup is replaced by the bar before it) through `stagesOf` on 8-bar lines (eq 'kh' kick + hats → full kit → bass →
+  music only when 'other' is clean; 'kb' bleed cut), each stage's level matched to the same stems in the original next to it; the outro ends on
+  `endHit` (one more downbeat ringing for a beat). Body = `bodyCands`: the last 16/8/4 bars before any section end, scored by seam, singer
+  (`joinVocal`: tail ≤ 1 beat, pickup laid in, the outgoing pickup ducked = mix minus vocals stem sample-aligned) and level jolt; pass 1 only
+  risk < .35, then the intro/outro grow by 8-bar phrases up to 64 (`p.grown`, note in the plan), then risk < .95 (`p.short` if still short).
+  `joinsOf`: crossfade 6/12/30 ms by the incoming hit, `relShift` (±12 ms, only against a bar with the same drum pattern), tail/pre/duck.
+  `renderAudio` = OfflineAudioContext, whole-sample starts, contiguous blocks merged, joins ending on the downbeat (every segment's gain is
+  0 until its fade: an unset gain made a −52 dBFS tick), stem gains + eq/Biquad sweeps + kick restore (quick split: bass-stem lows < 115 Hz
+  gated on drum hits), Signalsmith only for drifting grids (live drift: beat phase tracked per 2 bars by DP + unwrapped, its linear part refits
+  the BPM, the rest = per-bar offsets; kept only if the hits fit better); `opt.until` renders the first minute first. Tracks > 15 min are refused.
+  `qualityOf` after every render (level step vs intent, seam, singer, shift per join) → Quality chip + details (`#exPv`).
+  Preview (free) in the deck: big `#exPlay`, A/B (T switches at the mapped spot), joins navigator `#exPv` (prev/next, "Hear this join" = 4 bars
+  before → 4 after, J / Shift+J, ticks on the timeline), L loops the selected block, volume `#exVol` (saved), the render's waveform; the head
+  render plays while the rest renders (`X.rpart`, `swapRender`). Download (paid, points v2 'extended'): MP3 320 (+ Serato cues intro/drop/outro) /
+  WAV 16/24 at 44.1/48 kHz, "Artist - Title (Extended Mix)", activity `extended_export`. Settings in `chordroom.extended.v1:<uid|guest>`; hide frees
+  quick stems + render. `EXTENDED._planInfo()` = blocks with output/source times (incl. the sub-beat shift), joins, quality (tests).
+  Tests: `tools/tests/ui/test_extended.py` (fixtures `gen_club.py` + `gen_styles.py` 'pop'; independent metrics `tools/tests/extq.py`),
+  heavy matrix `tools/tests/slow/test_extended_matrix.py` (6 styles × 2 presets, `--slow`).
 - Home = the About page (no hash); the tool is `#tool`. First nav tab "בית" is `#navAbout`; the brand mark goes home.
   `html.home` (set by an inline script before paint) hides the tool until the router runs.
 - Owner & roles (schema.sql "Owner & roles"): `profiles.owner` (the first account; can't be demoted/blocked). Only the owner

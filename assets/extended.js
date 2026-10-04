@@ -4,6 +4,7 @@
  * of its stems), cut and repeated on the song's own bar grid. Talks to the app only through window.CR (bridge at the end of
  * app.js). Settings (never audio) are kept per account in localStorage `chordroom.extended.v1:<uid|guest>`. Only the current
  * song's stems are kept in memory; leaving the view frees the free (quick) stems and the render (paid AI stems are kept).
+ * Measured design notes (why each rule exists, with numbers): REVIEW-EXTENDED.md.
  *
  * 1. Analysis (all in the browser):
  *    CR.analyzeTrack → BPM, key, beat grid (offset + downbeat) and the RGB waveform; stems from the free quick DSP split
@@ -12,6 +13,13 @@
  *    (all, lows <110 Hz, highs >6 kHz, centre/side 0.8–3.5 kHz), CR.chromaOf → chroma frames. Everything is averaged per BAR
  *    (bar k starts at firstDownbeat + k·bar) and normalised to its 90th percentile over the music:
  *      lo (kick + bass), dr (drums stem), vo (vocals stem), md (other stem), hi, fu (all), and a 24-bin chroma vector.
+ *    stemEnv (own JS biquads, 1024-sample frames): vocals stem and mix in the voice band (550 Hz–4 kHz), drums stem lows/highs.
+ *      Singer present in a frame = vocals stem ≥ 15 % of its 95th pct AND ≥ 45 % of the mix's voice band (7-frame medians; 30 % with AI
+ *      stems), runs < 120 ms dropped, gaps < 250 ms bridged → va (share per bar); vp = the high-recall version (10 % / 35 %) used at cuts,
+ *      where a miss costs more than a false alarm. vocShare / vocRun (seconds of singing from a time).
+ *      (Full-band vocal/mix RMS does not work: the kick dominates the RMS, singing bars read 0.1–0.2.)
+ *    Rhythm pattern per bar = 16 steps × (lows, highs) of the drum envelope rises; barSim(i,j) = .4 chroma + .35 groove + .25 layer
+ *    levels (drums-only material: groove + drum level).
  * 2. Sections (a heuristic, the user can relabel and drag boundaries):
  *    novelty(k) = |features(k−4…k) − features(k…k+4)| + 0.6·(1 − cos chroma), the 4-bar phrase lattice is the offset that
  *    collects the most novelty (and the CUES.detect bars); boundaries = lattice bars with novelty ≥ ⅓ of its 95th percentile
@@ -30,24 +38,47 @@
  *    unwrapped, so it may grow to whole beats; its straight-line part = a slightly wrong BPM → folded into the bar length (the
  *    BPM shown/tagged follows), the rest → per-bar offsets. Kept only when the hits then fit the grid clearly better.
  *    Phrase lock = mean over inner section boundaries of 1 (on an 8-bar line from the first music bar) / .75 (4) / .25 (2) / 0.
- * 3. Arrangement (deterministic; every block = source bar range + stems mask + filter + crossfade, and says where it came from):
- *    DJ intro of N bars: if the original intro is already mixable (drums, no vocals) only N − its length is added in front of
- *    it, else N bars. Built from the best 4/8/16-bar loop inside one section (steady drums, little vocal bleed; bass/other
- *    when the style uses them), styles: Drums · Drums + bass (bass enters at the halfway phrase) · Full instrumental ·
- *    Filtered (low-pass opens 250 Hz → 16 kHz) · Percussion (high-passed drums, then the full kit) · Original (the original
- *    intro's last phrase repeated). Then the whole original, in order. DJ outro mirrors it (vocals out → mids out → drums,
- *    ending on a bar line). The rest of the requested length is added in whole phrases (16/8/4 bars, never mid-phrase) by
- *    repeating the last phrase of a drop/chorus (similar energy by construction) or a break; Performance Edit first inserts
- *    an extra Build → Drop cycle after the last drop. Nothing of the original is ever removed.
+ * 3. Arrangement (deterministic; every block = source bar range + stems mask + eq/filter + level, and says where it came from):
+ *    DJ intro of N bars (only N − its length in front of an original intro that is already mixable = drums, no singer).
+ *    Loop source (loopCands/pickLoop): 8-bar phrases on the lattice, scored by drum level and steadiness, the singer (×2.6 with
+ *    the quick split: its drums stem keeps consonants and short syllables, measured −4…−10 dB of the vocal; also at the loop's edges),
+ *    8- and 4-bar loops compete (a clean 4-bar groove beats an 8-bar one with a singer), the SEAM (the bar
+ *    after the loop ≈ its first bar, or the bar before it ≈ its last: jumping back is what the ear expects) and the groove
+ *    inside; a second similar phrase B (barSim ≥ .82) alternates with A every phrase so 32 bars are not one loop ×4. A loop
+ *    whose MIX has nothing the stage would remove (no singer, no other music) is played from the mix itself (no separation
+ *    artefacts, the kick keeps its body); a last bar that carries the next line's pickup is replaced by the bar before it (same
+ *    groove, no "and-" every loop). Stages on phrase lines (stagesOf): kick + hats ('kh' = −15 dB wide cut at 1.4 kHz:
+ *    claps/snare body and most bleed out) → full kit → + bass → + music (only when the music stem is clean: the quick split
+ *    leaves the singer in 'other', measured −0.6…−4 dB) / Filtered (low-pass 380 Hz, opens over the last 8 bars) /
+ *    Percussion (no kick, then the kit). Drum stages from bars with a singer get a gentler −7 dB cut ('kb'). Each stage's
+ *    level is matched to the SAME stems in the first bars of the original after it (±6 dB) — no jump when the song starts.
+ *    Then the whole original, in order. DJ outro mirrors it (vocals out first → bass → drums → kick + hats) from a late loop
+ *    and ends ON a downbeat: one more hit of the loop that rings out over a beat (endHit), never a hard cut at a bar line.
+ *    Body (bodyCands): whole phrases (16/8/4) where the track itself allows it — the last w bars of a section played again
+ *    right after it (it may span sections: a pre-chorus + chorus phrase); scored by the seam (seamOf), the level jolt, the singer
+ *    (joinVocal: a line may not run over the cut by more than the one-beat tail; the incoming pickup is laid in and the outgoing
+ *    vocals step aside = 'duck', mix minus the sample-aligned vocals stem; the outgoing side's own pickup into what follows is ducked
+ *    too), drops/choruses first, then breaks, ≤ 2 repeats per section. Pass 1 only repeats that cut no line; what is still missing
+ *    lengthens the DJ intro/outro by 8-bar phrases (≤ 64, said in the plan); only then repeats with a possible (never a certain) cut.
+ *    Performance Edit first inserts an extra Build → Drop cycle after the last drop. Nothing of the original is ever removed.
+ *    Joins (joinsOf): sub-beat shift (relShift: the incoming bar's drum onsets cross-correlated with the bar the outgoing source
+ *    would have played or its last bar, ±12 ms, only when both have the same drum pattern and the match is clear: across different
+ *    patterns it lines up wrongly, and on a live track the drift-corrected grid is already within the players' ±7 ms), crossfade
+ *    6 / 12 / 30 ms by how hard the incoming downbeat hits, the singer's tail / pickup (vocals stem, ≤ 1 beat).
  * 4. Render: OfflineAudioContext, every block sample-accurately on the output bar grid (bar = 240/BPM, the original tempo),
- *    blocks that continue the source are merged into one segment (bit-identical to the source when unmasked); joins get a
- *    20 ms equal-power crossfade that ENDS on the downbeat (the new block's downbeat is never softened; the source's own
- *    pickup before bar 1 is laid over the end of the DJ intro). Stems per block by gain automation, filters by BiquadFilter
- *    automation, normalised only when it would clip. A track whose beat drifts gets per-bar source times; when a block then
- *    needs > 0.2 % speed change it is pitch-corrected with the vendored Signalsmith Stretch.
- * 5. Preview A/B plays the original or the render (position mapped through the blocks); export = WAV 16/24-bit or MP3 320 at
- *    44.1/48 kHz, "Artist - Title (Extended Mix)", optional Serato cue markers (intro / drop / outro of the new arrangement,
- *    via CRATE.tagMp3), logged as `extended_export`.
+ *    blocks that continue the source are merged into one segment (bit-identical to the source when unmasked); joins get an
+ *    equal-power crossfade that ENDS on the downbeat; every segment's gain is 0 until its fade starts (an unset gain is 1: the
+ *    first sample of a source started before its curve made a −52 dBFS tick at most joins). Stems per block by gain
+ *    automation, eq/filters by BiquadFilter automation, kick restore for drums-only stages of the quick split (the kick's body
+ *    goes to its bass stem: −30 dB after 100 ms; its lows below 115 Hz come back gated on the drum hits), normalised only when
+ *    it would clip. A drifting beat gets per-bar source times; a block needing > 0.2 % speed change goes through Signalsmith
+ *    Stretch. The first minute is rendered first (while the checklist animates) so the preview starts at once.
+ *    qualityOf (after every render, on the render): per join the level step against what was meant (the music's own step for
+ *    full-mix joins, the planned stage levels for stem joins), the seam, the singer, the shift → Quality score + chip.
+ * 5. Preview (free): big play, A/B against the original at the mapped spot, joins navigator (each join: 4 bars before → 4
+ *    after, J / Shift+J), loop a block, volume, the render's own waveform; then Download (the paid step, points v2) = WAV
+ *    16/24-bit or MP3 320 at 44.1/48 kHz, "Artist - Title (Extended Mix)", optional Serato cue markers (intro / drop / outro of
+ *    the new arrangement, via CRATE.tagMp3), logged as `extended_export`.
  */
 (function(){
 'use strict';
@@ -73,7 +104,7 @@ he:{navExtended:'אקסטנדד',navExtendedS:'אקסטנדד',exEyebrow:'ערי
   exSepFail:'ההפרדה לא הצליחה: {m}',exSepBusy:'הפרדה אחרת רצה עכשיו. חכו שתסתיים.',
   exOrig:'מקור',exExt:'אקסטנדד',exPlayO:'ניגון המקור',exPlayE:'ניגון האקסטנדד',exPause:'השהיה',exStop:'עצירה',exAB:'A/B',exABT:'מעבר בין המקור לאקסטנדד באותה נקודה בשיר (T)',
   exLoopBlk:'לופ על הבלוק',exLoopT:'מנגנים שוב ושוב את הבלוק שנבחר (L)',exZoomIn:'הגדלה',exZoomOut:'הקטנה',exPlanned:'מתוכנן',exStale:'ההגדרות השתנו. מייצרים שוב כדי לשמוע אותן.',
-  exTlHelp:'לוחצים על חלק כדי לשנות את הסוג שלו · גוררים את הקצה שלו כדי להזיז (נצמד לתיבות) · לוחצים על בלוק כדי לראות מאיפה הוא נלקח',exKeys:'Space ניגון · ← → תיבה · T מקור/אקסטנדד · L לופ',
+  exTlHelp:'לוחצים על חלק כדי לשנות את הסוג שלו · גוררים את הקצה שלו כדי להזיז (נצמד לתיבות) · לוחצים על בלוק כדי לראות מאיפה הוא נלקח',exKeys:'Space ניגון · ← → תיבה · T מקור/אקסטנדד · L לופ · J המעבר הבא',
   exTlAria:'ציר זמן: {n}, המקור ({a}) מעל גרסת האקסטנדד ({b})',exPickBlk:'בוחרים בלוק בגרסת האקסטנדד כדי לראות מאיפה הוא נלקח.',
   exFromS:'מתוך {sec}',exFrom:'נלקח מ־{sec} · {t} · תיבות {b}',exBarsN:'{n} תיבות',exFull:'המיקס המלא',exPlus:' + ',
   exWhyOrig:'המקור, בלי שינוי',exWhyIntro:'אינטרו לדיג׳יי: לופ של המשפט הכי יציב',exWhyOutro:'אאוטרו לדיג׳יי: מסתיים בדיוק על קו תיבה',exWhyRep:'משפט שחוזר כדי להאריך את {sec}',exWhyCycle:'סבב נוסף של בילד ודרופ',
@@ -86,8 +117,9 @@ he:{navExtended:'אקסטנדד',navExtendedS:'אקסטנדד',exEyebrow:'ערי
   exGen:'יצירת אקסטנדד',exGenAgain:'יצירה מחדש',exGenBusy:'מייצרים…',exCancel:'ביטול',
   exPlanH:'העיבוד המתוכנן',exPlanSum:'{len} · ארוך יותר ב־{add} · {n} בלוקים',exOver:'האינטרו והאאוטרו לבד מוסיפים {x}, יותר מה־{t} שביקשתם.',exTarget:'יעד: {t}',
   exR_intro:'אינטרו לדיג׳יי',exR_orig:'מקור',exR_rep:'חזרה',exR_cycle:'סבב נוסף',exR_outro:'אאוטרו לדיג׳יי',
-  exExpH:'ייצוא',exExpP:'{len} · {bpm} BPM · {k}',exRate:'קצב דגימה',exCues:'נקודות קיו ל־Serato בתוך ה־MP3 (אינטרו, דרופ, אאוטרו)',exExpBtn:'ייצוא',
-  exRendering:'מעבדים… {p}%',exDone:'נשמר: {f} ({s} MB).',exExpFail:'הייצוא נכשל. נסו WAV.',exNeedGen:'קודם מייצרים את גרסת האקסטנדד.'},
+  exExpH:'הורדה',exExpP:'{len} · {bpm} BPM · {k}',exRate:'קצב דגימה',exCues:'נקודות קיו ל־Serato בתוך ה־MP3 (אינטרו, דרופ, אאוטרו)',exExpBtn:'הורדה',
+  exRendering:'מעבדים… {p}%',exDone:'נשמר: {f} ({s} MB).',exExpFail:'הייצוא נכשל. נסו WAV.',exNeedGen:'קודם מייצרים את גרסת האקסטנדד.',
+  exJoins:'מעברים',exJoinN:'מעבר {i} מתוך {n}',exJoinPrev:'המעבר הקודם',exJoinNext:'המעבר הבא',exJoinPlay:'האזנה למעבר',exJoinPlayT:'מנגן 4 תיבות לפני המעבר ו־4 תיבות אחריו (J)',exVol:'עוצמה',exQ:'איכות',exQT:'כמה נקייה העריכה, כפי שנמדד על האודיו שנוצר',exQClean:'מעברים נקיים',exQSeam:'חיבורי לופ',exQLu:'קפיצות עוצמה',exQCuts:'חיתוכי שירה',exQNone:'אין',exQBleed:'השירה דולפת לתופים של ההפרדה המהירה באינטרו או באאוטרו. הפרדת AI נותנת אינטרו נקי.',exQAi:'שדרוג לערוצי AI לאינטרו נקי יותר',exHead:'מעבדים את ההמשך… אפשר כבר להאזין',exDlNote:'ההאזנה בחינם. נקודות יורדות רק כשמורידים.',exJoinOk:'נקי',exJoinWarn:'כדאי להאזין',exFxKH:'קיק והיי־האט',exFxLp:'פילטר סגור',exGrown:'בתוך השירה אין מקום נקי לחזרה נוספת, אז האינטרו והאאוטרו לדיג׳יי התארכו ב־{x}.',exShortBy:'אי אפשר להאריך עוד בלי לחתוך את השירה: יצא קצר ב־{x} ממה שביקשתם.'},
 en:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'An edit of the track itself · on its bar grid',exTitle:'Extended Generator',
   exSub:'Create a DJ extended version from any track. It is an edit of the song itself: the vocals, melody and tempo stay exactly as they are.',
   exDrop:'Drop a track here',exDropH:'MP3, WAV, M4A, FLAC, OGG · up to 250 MB',exFile:'File',exLib:'My Songs',exTool:'From the tool',exReplace:'Replace:',
@@ -105,7 +137,7 @@ en:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'An edit of the track i
   exSepFail:'The separation didn\'t work: {m}',exSepBusy:'Another separation is running. Wait for it to finish.',
   exOrig:'Original',exExt:'Extended',exPlayO:'Play the original',exPlayE:'Play the extended version',exPause:'Pause',exStop:'Stop',exAB:'A/B',exABT:'Switch between the original and the extended version at the same spot (T)',
   exLoopBlk:'Loop block',exLoopT:'Repeat the selected block (L)',exZoomIn:'Zoom in',exZoomOut:'Zoom out',exPlanned:'planned',exStale:'Settings changed. Generate again to hear them.',
-  exTlHelp:'Click a section to change its type · drag its edge to move it (snaps to bars) · click a block to see where it came from',exKeys:'Space play · ← → one bar · T original/extended · L loop',
+  exTlHelp:'Click a section to change its type · drag its edge to move it (snaps to bars) · click a block to see where it came from',exKeys:'Space play · ← → one bar · T original/extended · L loop · J next join',
   exTlAria:'Timeline: {n}, the original ({a}) above the extended version ({b})',exPickBlk:'Pick a block of the extended version to see where it came from.',
   exFromS:'from {sec}',exFrom:'From {sec} · {t} · bars {b}',exBarsN:'{n} bars',exFull:'Full mix',exPlus:' + ',
   exWhyOrig:'The original, unchanged',exWhyIntro:'DJ intro: a loop of the steadiest phrase',exWhyOutro:'DJ outro: ends right on a bar line',exWhyRep:'Phrase repeated to extend {sec}',exWhyCycle:'An extra build and drop',
@@ -118,8 +150,9 @@ en:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'An edit of the track i
   exGen:'Generate extended',exGenAgain:'Generate again',exGenBusy:'Generating…',exCancel:'Cancel',
   exPlanH:'Planned arrangement',exPlanSum:'{len} · {add} longer · {n} blocks',exOver:'The intro and outro alone add {x}, more than the {t} you asked for.',exTarget:'target {t}',
   exR_intro:'DJ intro',exR_orig:'Original',exR_rep:'Repeat',exR_cycle:'Extra cycle',exR_outro:'DJ outro',
-  exExpH:'Export',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Sample rate',exCues:'Serato cue points in the MP3 (intro, drop, outro)',exExpBtn:'Export',
-  exRendering:'Rendering… {p}%',exDone:'Saved {f} ({s} MB).',exExpFail:'The export failed. Try WAV.',exNeedGen:'Generate the extended version first.'},
+  exExpH:'Download',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Sample rate',exCues:'Serato cue points in the MP3 (intro, drop, outro)',exExpBtn:'Download',
+  exRendering:'Rendering… {p}%',exDone:'Saved {f} ({s} MB).',exExpFail:'The export failed. Try WAV.',exNeedGen:'Generate the extended version first.',
+  exJoins:'Joins',exJoinN:'Join {i} of {n}',exJoinPrev:'Previous join',exJoinNext:'Next join',exJoinPlay:'Hear this join',exJoinPlayT:'Plays 4 bars before the join and 4 bars after it (J)',exVol:'Volume',exQ:'Quality',exQT:'How clean the edit is, measured on the rendered audio',exQClean:'Clean joins',exQSeam:'Loop seams',exQLu:'Level jumps',exQCuts:'Vocal cuts',exQNone:'none',exQBleed:'The singer leaks into the quick-split drums in the intro or outro. AI stems give a clean intro.',exQAi:'Upgrade to AI stems for a cleaner intro',exHead:'Rendering the rest… you can already listen',exDlNote:'Listening is free. Points are charged only when you download.',exJoinOk:'clean',exJoinWarn:'worth a listen',exFxKH:'kick + hats',exFxLp:'filtered',exGrown:'The vocals leave no clean place for another repeat, so the DJ intro and outro got {x} longer.',exShortBy:'More can\'t be added without cutting the vocals: {x} shorter than you asked.'},
 ar:{navExtended:'إكستندد',navExtendedS:'إكستندد',exEyebrow:'تحرير للأغنية نفسها · على شبكة المازورات',exTitle:'مولّد الإكستندد',
   exSub:'أنشئ نسخة إكستندد للدي جي من أي أغنية. إنه تحرير للأغنية نفسها: الغناء واللحن والإيقاع تبقى كما هي تمامًا.',
   exDrop:'اسحب أغنية إلى هنا',exDropH:'MP3, WAV, M4A, FLAC, OGG · حتى 250 MB',exFile:'ملف',exLib:'أغانيّ',exTool:'من الأداة',exReplace:'استبدال:',
@@ -137,7 +170,7 @@ ar:{navExtended:'إكستندد',navExtendedS:'إكستندد',exEyebrow:'تحر
   exSepFail:'لم ينجح الفصل: {m}',exSepBusy:'هناك فصل آخر قيد التشغيل. انتظر حتى ينتهي.',
   exOrig:'الأصل',exExt:'إكستندد',exPlayO:'تشغيل الأصل',exPlayE:'تشغيل نسخة الإكستندد',exPause:'إيقاف مؤقت',exStop:'إيقاف',exAB:'A/B',exABT:'التبديل بين الأصل والإكستندد عند النقطة نفسها (T)',
   exLoopBlk:'تكرار المقطع',exLoopT:'تكرار المقطع المحدد (L)',exZoomIn:'تكبير',exZoomOut:'تصغير',exPlanned:'مخطَّط',exStale:'تغيّرت الإعدادات. أنشئ من جديد لتسمعها.',
-  exTlHelp:'انقر قسمًا لتغيير نوعه · اسحب طرفه لتحريكه (يلتصق بالمازورات) · انقر مقطعًا لترى من أين أُخذ',exKeys:'Space تشغيل · ← → مازورة · T الأصل/الإكستندد · L تكرار',
+  exTlHelp:'انقر قسمًا لتغيير نوعه · اسحب طرفه لتحريكه (يلتصق بالمازورات) · انقر مقطعًا لترى من أين أُخذ',exKeys:'Space تشغيل · ← → مازورة · T الأصل/الإكستندد · L تكرار · J الانتقال التالي',
   exTlAria:'الخط الزمني: {n}، الأصل ({a}) فوق نسخة الإكستندد ({b})',exPickBlk:'اختر مقطعًا من نسخة الإكستندد لترى من أين أُخذ.',
   exFromS:'من {sec}',exFrom:'من {sec} · {t} · المازورات {b}',exBarsN:'{n} مازورات',exFull:'المزيج الكامل',exPlus:' + ',
   exWhyOrig:'الأصل دون تغيير',exWhyIntro:'مقدمة للدي جي: تكرار للجملة الأكثر ثباتًا',exWhyOutro:'خاتمة للدي جي: تنتهي تمامًا على خط مازورة',exWhyRep:'جملة مكرّرة لإطالة {sec}',exWhyCycle:'دورة إضافية من التصاعد والدروب',
@@ -150,8 +183,9 @@ ar:{navExtended:'إكستندد',navExtendedS:'إكستندد',exEyebrow:'تحر
   exGen:'إنشاء إكستندد',exGenAgain:'إنشاء من جديد',exGenBusy:'جارٍ الإنشاء…',exCancel:'إلغاء',
   exPlanH:'التوزيع المخطَّط',exPlanSum:'{len} · أطول بـ {add} · {n} مقاطع',exOver:'المقدمة والخاتمة وحدهما تضيفان {x}، أكثر من {t} المطلوبة.',exTarget:'الهدف: {t}',
   exR_intro:'مقدمة الدي جي',exR_orig:'الأصل',exR_rep:'تكرار',exR_cycle:'دورة إضافية',exR_outro:'خاتمة الدي جي',
-  exExpH:'تصدير',exExpP:'{len} · {bpm} BPM · {k}',exRate:'معدل العيّنات',exCues:'نقاط Serato داخل ملف MP3 (المقدمة، الدروب، الخاتمة)',exExpBtn:'تصدير',
-  exRendering:'معالجة… {p}%',exDone:'تم الحفظ: {f} ({s} MB).',exExpFail:'فشل التصدير. جرّب WAV.',exNeedGen:'أنشئ نسخة الإكستندد أولًا.'},
+  exExpH:'تنزيل',exExpP:'{len} · {bpm} BPM · {k}',exRate:'معدل العيّنات',exCues:'نقاط Serato داخل ملف MP3 (المقدمة، الدروب، الخاتمة)',exExpBtn:'تنزيل',
+  exRendering:'معالجة… {p}%',exDone:'تم الحفظ: {f} ({s} MB).',exExpFail:'فشل التصدير. جرّب WAV.',exNeedGen:'أنشئ نسخة الإكستندد أولًا.',
+  exJoins:'الانتقالات',exJoinN:'الانتقال {i} من {n}',exJoinPrev:'الانتقال السابق',exJoinNext:'الانتقال التالي',exJoinPlay:'استمع إلى الانتقال',exJoinPlayT:'يشغّل 4 مازورات قبل الانتقال و4 مازورات بعده (J)',exVol:'مستوى الصوت',exQ:'الجودة',exQT:'مدى نظافة التحرير، مقاسة على الصوت الناتج',exQClean:'انتقالات نظيفة',exQSeam:'وصلات الحلقات',exQLu:'قفزات في مستوى الصوت',exQCuts:'قطع في الغناء',exQNone:'لا يوجد',exQBleed:'الغناء يتسرّب إلى طبول الفصل السريع في المقدمة أو الخاتمة. فصل AI يعطي مقدمة نظيفة.',exQAi:'الترقية إلى مسارات AI لمقدمة أنظف',exHead:'نعالج الباقي… يمكنك الاستماع الآن',exDlNote:'الاستماع مجاني. تُخصم النقاط عند التنزيل فقط.',exJoinOk:'نظيف',exJoinWarn:'يستحق الاستماع',exFxKH:'كيك وهاي هات',exFxLp:'مع فلتر',exGrown:'لا يترك الغناء مكانًا نظيفًا لتكرار آخر، لذا أصبحت مقدمة الدي جي وخاتمته أطول بـ {x}.',exShortBy:'لا يمكن الإضافة أكثر دون قطع الغناء: أقصر بـ {x} مما طلبت.'},
 ru:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Монтаж самого трека · по сетке тактов',exTitle:'Генератор Extended',
   exSub:'Сделайте DJ extended-версию любого трека. Это монтаж самой песни: вокал, мелодия и темп остаются точно такими же.',
   exDrop:'Перетащите трек сюда',exDropH:'MP3, WAV, M4A, FLAC, OGG · до 250 МБ',exFile:'Файл',exLib:'Мои песни',exTool:'Из инструмента',exReplace:'Заменить:',
@@ -169,7 +203,7 @@ ru:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Монтаж само�
   exSepFail:'Разделение не удалось: {m}',exSepBusy:'Уже идёт другое разделение. Дождитесь его окончания.',
   exOrig:'Оригинал',exExt:'Extended',exPlayO:'Играть оригинал',exPlayE:'Играть extended-версию',exPause:'Пауза',exStop:'Стоп',exAB:'A/B',exABT:'Переключиться между оригиналом и extended в том же месте (T)',
   exLoopBlk:'Луп блока',exLoopT:'Повторять выбранный блок (L)',exZoomIn:'Приблизить',exZoomOut:'Отдалить',exPlanned:'план',exStale:'Настройки изменились. Создайте версию заново, чтобы их услышать.',
-  exTlHelp:'Клик по части — сменить её тип · тяните её край, чтобы сдвинуть (по тактам) · клик по блоку — откуда он взят',exKeys:'Space — пуск · ← → такт · T — оригинал/extended · L — луп',
+  exTlHelp:'Клик по части — сменить её тип · тяните её край, чтобы сдвинуть (по тактам) · клик по блоку — откуда он взят',exKeys:'Space — пуск · ← → такт · T — оригинал/extended · L — луп · J — следующий стык',
   exTlAria:'Таймлайн: {n}, оригинал ({a}) над extended-версией ({b})',exPickBlk:'Выберите блок extended-версии, чтобы увидеть, откуда он взят.',
   exFromS:'из: {sec}',exFrom:'Из: {sec} · {t} · такты {b}',exBarsN:'Тактов: {n}',exFull:'Полный микс',exPlus:' + ',
   exWhyOrig:'Оригинал без изменений',exWhyIntro:'DJ-интро: луп самой ровной фразы',exWhyOutro:'DJ-аутро: заканчивается точно на границе такта',exWhyRep:'Фраза повторена, чтобы удлинить: {sec}',exWhyCycle:'Дополнительный билд и дроп',
@@ -182,8 +216,9 @@ ru:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Монтаж само�
   exGen:'Создать extended',exGenAgain:'Создать заново',exGenBusy:'Создаём…',exCancel:'Отмена',
   exPlanH:'План аранжировки',exPlanSum:'{len} · длиннее на {add} · блоков: {n}',exOver:'Одни интро и аутро добавляют {x} — больше, чем запрошенные {t}.',exTarget:'цель: {t}',
   exR_intro:'DJ-интро',exR_orig:'Оригинал',exR_rep:'Повтор',exR_cycle:'Доп. цикл',exR_outro:'DJ-аутро',
-  exExpH:'Экспорт',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Частота дискретизации',exCues:'Cue-точки Serato в MP3 (интро, дроп, аутро)',exExpBtn:'Экспортировать',
-  exRendering:'Сведение… {p}%',exDone:'Сохранено: {f} ({s} МБ).',exExpFail:'Экспорт не удался. Попробуйте WAV.',exNeedGen:'Сначала создайте extended-версию.'},
+  exExpH:'Скачать',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Частота дискретизации',exCues:'Cue-точки Serato в MP3 (интро, дроп, аутро)',exExpBtn:'Скачать',
+  exRendering:'Сведение… {p}%',exDone:'Сохранено: {f} ({s} МБ).',exExpFail:'Экспорт не удался. Попробуйте WAV.',exNeedGen:'Сначала создайте extended-версию.',
+  exJoins:'Стыки',exJoinN:'Стык {i} из {n}',exJoinPrev:'Предыдущий стык',exJoinNext:'Следующий стык',exJoinPlay:'Послушать стык',exJoinPlayT:'Играет 4 такта до стыка и 4 такта после (J)',exVol:'Громкость',exQ:'Качество',exQT:'Насколько чистый монтаж — измерено по готовому звуку',exQClean:'Чистые стыки',exQSeam:'Швы лупов',exQLu:'Скачки громкости',exQCuts:'Обрывы вокала',exQNone:'нет',exQBleed:'Вокал просачивается в барабаны быстрого разделения в интро или аутро. AI-стемы дают чистое интро.',exQAi:'Перейти на AI-стемы для более чистого интро',exHead:'Сводим остальное… уже можно слушать',exDlNote:'Слушать бесплатно. Баллы списываются только при скачивании.',exJoinOk:'чисто',exJoinWarn:'стоит послушать',exFxKH:'бочка и хэты',exFxLp:'с фильтром',exGrown:'Вокал не оставляет чистого места для ещё одного повтора, поэтому DJ-интро и аутро стали длиннее на {x}.',exShortBy:'Больше не добавить, не обрезав вокал: короче запрошенного на {x}.'},
 es:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Una edición del propio tema · sobre su rejilla de compases',exTitle:'Generador Extended',
   exSub:'Crea una versión extended para DJ de cualquier tema. Es una edición de la propia canción: la voz, la melodía y el tempo quedan exactamente igual.',
   exDrop:'Suelta aquí un tema',exDropH:'MP3, WAV, M4A, FLAC, OGG · hasta 250 MB',exFile:'Archivo',exLib:'Mis canciones',exTool:'Desde la herramienta',exReplace:'Cambiar:',
@@ -201,7 +236,7 @@ es:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Una edición del propi
   exSepFail:'La separación no funcionó: {m}',exSepBusy:'Hay otra separación en curso. Espera a que termine.',
   exOrig:'Original',exExt:'Extended',exPlayO:'Reproducir el original',exPlayE:'Reproducir la versión extended',exPause:'Pausa',exStop:'Detener',exAB:'A/B',exABT:'Cambiar entre el original y la extended en el mismo punto (T)',
   exLoopBlk:'Bucle del bloque',exLoopT:'Repetir el bloque seleccionado (L)',exZoomIn:'Acercar',exZoomOut:'Alejar',exPlanned:'planificado',exStale:'Cambiaron los ajustes. Genera de nuevo para escucharlos.',
-  exTlHelp:'Haz clic en una sección para cambiar su tipo · arrastra su borde para moverla (se ajusta a compases) · haz clic en un bloque para ver de dónde salió',exKeys:'Espacio reproducir · ← → un compás · T original/extended · L bucle',
+  exTlHelp:'Haz clic en una sección para cambiar su tipo · arrastra su borde para moverla (se ajusta a compases) · haz clic en un bloque para ver de dónde salió',exKeys:'Espacio reproducir · ← → un compás · T original/extended · L bucle · J siguiente unión',
   exTlAria:'Línea de tiempo: {n}, el original ({a}) sobre la versión extended ({b})',exPickBlk:'Elige un bloque de la versión extended para ver de dónde salió.',
   exFromS:'de {sec}',exFrom:'De {sec} · {t} · compases {b}',exBarsN:'{n} compases',exFull:'Mezcla completa',exPlus:' + ',
   exWhyOrig:'El original, sin cambios',exWhyIntro:'Intro DJ: un bucle de la frase más estable',exWhyOutro:'Outro DJ: termina justo en una línea de compás',exWhyRep:'Frase repetida para alargar {sec}',exWhyCycle:'Un build y un drop extra',
@@ -214,8 +249,9 @@ es:{navExtended:'Extended',navExtendedS:'Ext.',exEyebrow:'Una edición del propi
   exGen:'Generar extended',exGenAgain:'Generar de nuevo',exGenBusy:'Generando…',exCancel:'Cancelar',
   exPlanH:'Arreglo planificado',exPlanSum:'{len} · {add} más larga · {n} bloques',exOver:'La intro y el outro por sí solos añaden {x}, más de los {t} que pediste.',exTarget:'objetivo: {t}',
   exR_intro:'Intro DJ',exR_orig:'Original',exR_rep:'Repetición',exR_cycle:'Ciclo extra',exR_outro:'Outro DJ',
-  exExpH:'Exportar',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Frecuencia de muestreo',exCues:'Cue points de Serato en el MP3 (intro, drop, outro)',exExpBtn:'Exportar',
-  exRendering:'Renderizando… {p}%',exDone:'Guardado: {f} ({s} MB).',exExpFail:'La exportación falló. Prueba WAV.',exNeedGen:'Primero genera la versión extended.'}
+  exExpH:'Descargar',exExpP:'{len} · {bpm} BPM · {k}',exRate:'Frecuencia de muestreo',exCues:'Cue points de Serato en el MP3 (intro, drop, outro)',exExpBtn:'Descargar',
+  exRendering:'Renderizando… {p}%',exDone:'Guardado: {f} ({s} MB).',exExpFail:'La exportación falló. Prueba WAV.',exNeedGen:'Primero genera la versión extended.',
+  exJoins:'Uniones',exJoinN:'Unión {i} de {n}',exJoinPrev:'Unión anterior',exJoinNext:'Unión siguiente',exJoinPlay:'Escuchar la unión',exJoinPlayT:'Reproduce 4 compases antes de la unión y 4 después (J)',exVol:'Volumen',exQ:'Calidad',exQT:'Qué tan limpia es la edición, medido sobre el audio generado',exQClean:'Uniones limpias',exQSeam:'Empalmes de bucle',exQLu:'Saltos de volumen',exQCuts:'Cortes de voz',exQNone:'ninguno',exQBleed:'La voz se filtra en la batería de la separación rápida en la intro o el outro. Las pistas con IA dan una intro limpia.',exQAi:'Mejorar a pistas con IA para una intro más limpia',exHead:'Renderizando el resto… ya puedes escuchar',exDlNote:'Escuchar es gratis. Los puntos se cobran solo al descargar.',exJoinOk:'limpia',exJoinWarn:'conviene escucharla',exFxKH:'bombo y charles',exFxLp:'con filtro',exGrown:'La voz no deja un lugar limpio para otra repetición, así que la intro y el outro DJ son {x} más largos.',exShortBy:'No se puede añadir más sin cortar la voz: {x} más corto de lo que pediste.'}
 });
 
 /* ---------- constants ---------- */
@@ -239,7 +275,7 @@ const QW=(()=>{const s=document.currentScript&&document.currentScript.src;try{re
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const reduced=()=>document.documentElement.classList.contains('a11y-noanim')||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
-const defSet=()=>({preset:'dj',add:120,custom:45,intro:32,outro:32,is:'drums',os:'drums',fmt:'mp3',sr:44100,cues:true});
+const defSet=()=>({preset:'dj',add:120,custom:45,intro:32,outro:32,is:'drums',os:'drums',fmt:'mp3',sr:44100,cues:true,vol:0.9});
 
 const X={built:false,visible:false,owner:undefined,song:null,tok:0,stage:'empty',steps:{},stepP:0,stepMsg:'',set:defSet(),
   plan:null,render:null,rwave:null,rsig:'',genTok:0,sel:-1,hover:-1,msg:'',msgErr:false,zoom:1,view0:0,reveal:Infinity,
@@ -280,12 +316,121 @@ async function features(s){
   const p90a=pctl(fu,0.9)||1e-9;let s0=0;while(s0<nb-1&&fu[s0]/p90a<0.08)s0++;let e0=nb-1;while(e0>s0&&fu[e0]/p90a<0.08)e0--;
   const n90=a=>{const p=pctl(a.slice(s0,e0+1),0.9)||1e-9;return a.map(v=>Math.min(1.6,v/p))};
   const f={nb,s0,e0,fu:n90(fu),lo:n90(lo),hi:n90(hi),ch,mix};
-  if(s.stems){f.dr=n90(st.drums);f.vo=n90(st.vocals);f.md=n90(st.other);f.bs=n90(st.bass);f.pv=st.vocals.map((v,k)=>v/(mix[k]+1e-9))}
+  if(s.stems){f.dr=n90(st.drums);f.vo=n90(st.vocals);f.md=n90(st.other);f.bs=n90(st.bass);f.pv=st.vocals.map((v,k)=>v/(mix[k]+1e-9));f.st=st}
   else{f.dr=f.hi;f.vo=n90(vm);f.md=f.vo;f.bs=f.lo;f.pv=vs?vm.map((v,k)=>Math.min(1,(v/(vs[k]+1e-9)-1)/3)):vm.map(()=>0.3)}
+  const E=s.E||(s.E=stemEnv(s));
+  // vocal presence per bar = share of the bar's frames where the singer is heard (see vocalFrames), and a rhythm pattern per bar
+  f.va=new Float32Array(nb);f.rp=[];f.de=new Float32Array(nb);
+  for(let k=0;k<nb;k++){const a=Math.max(0,Math.floor(srcT(s,k)*E.fps)),b=Math.min(E.nf,Math.floor(srcT(s,k+1)*E.fps));let c=0;for(let i=a;i<b;i++)c+=E.va[i];f.va[k]=b>a?c/(b-a):0;
+    f.rp.push(rhythmOf(E,srcT(s,k),srcT(s,k+1)))}
+  f.E=E;
   return f;
 }
-// a bar "has vocals": the vocals stem is clearly present, in absolute terms and against the mix
-const vocalBar=(f,k)=>f.vo[k]>0.35&&f.pv[k]>0.2;
+/* ---------- analysis: stem envelopes (band-limited, 1024-sample frames) ----------
+   vm = vocals stem 550 Hz–4 kHz (above a bass guitar's strong harmonics, which the quick split hands to its vocals stem), mm = mix in the same band, dl / dh = drums stem < 150 Hz / > 5 kHz (or the mix without stems).
+   A frame "has the singer" when the vocals stem (7-frame median) carries ≥ 45 % of the mix's voice band (30 % with AI stems)
+   AND ≥ 15 % of its own 95th percentile (the quick split also hands centred instruments to its vocals stem, hence the share
+   test); runs < 120 ms are dropped, gaps < 250 ms bridged. Measured against the true vocal of the synthetic songs
+   (tools/tests/fixtures/gen_styles.py): balanced accuracy .73–.81 with the quick split (.52–.60 with 300 Hz–3.4 kHz). */
+function bq(type,f,sr,q){q=q||0.7071;const w=2*Math.PI*Math.min(f,sr*0.45)/sr,c=Math.cos(w),al=Math.sin(w)/(2*q),a0=1+al;
+  const b=type==='lp'?[(1-c)/2,1-c,(1-c)/2]:[(1+c)/2,-(1+c),(1+c)/2];return [b[0]/a0,b[1]/a0,b[2]/a0,-2*c/a0,(1-al)/a0]}
+function bandEnv(buf,chains,hop){
+  const L=buf.getChannelData(0),R=buf.numberOfChannels>1?buf.getChannelData(1):L,n=L.length,sr=buf.sampleRate,nf=Math.floor(n/hop);
+  return chains.map(ch=>{const cs=ch.map(([t,f])=>bq(t,f,sr)),z=ch.map(()=>new Float64Array(4)),o=new Float32Array(nf);let acc=0;
+    for(let i=0,fi=0,cnt=0;i<nf*hop;i++){let x=(L[i]+R[i])*0.5;
+      for(let j=0;j<cs.length;j++){const c=cs[j],s=z[j],y=c[0]*x+c[1]*s[0]+c[2]*s[1]-c[3]*s[2]-c[4]*s[3];s[1]=s[0];s[0]=x;s[3]=s[2];s[2]=y;x=y}
+      acc+=x*x;if(++cnt===hop){o[fi++]=Math.sqrt(acc/hop);acc=0;cnt=0}}
+    return o});
+}
+function stemEnv(s){
+  const sr=s.buffer.sampleRate,hop=Math.max(256,Math.round(1024*sr/44100)),fps=sr/hop,MID=[['hp',550],['hp',550],['lp',4000],['lp',4000]];
+  const [mm]=bandEnv(s.buffer,[MID],hop);
+  const dsrc=s.stems?s.stems.drums:s.buffer,h2=Math.max(256,Math.round(1024*dsrc.sampleRate/44100));
+  const [dl,dh]=bandEnv(dsrc,[[['lp',150],['lp',150]],[['hp',5000],['hp',5000]]],h2);
+  const nf=mm.length,E={hop,fps,nf,mm,dl,dh,va:new Uint8Array(nf),vp:new Uint8Array(nf),vm:null,kind:s.kind};
+  if(s.stems){
+    const [vm]=bandEnv(s.stems.vocals,[MID],Math.max(256,Math.round(1024*s.stems.vocals.sampleRate/44100)));E.vm=vm;
+    const p95=pctl(vm,0.95)||1e-9,ai=s.kind==='ai'||s.kind==='tool';
+    // share + level, each smoothed by a 7-frame median (syllables and note gaps are not phrase ends)
+    const med7=a=>{const o=new Float32Array(nf),w=[];for(let i=0;i<nf;i++){w.length=0;for(let k=Math.max(0,i-3);k<=Math.min(nf-1,i+3);k++)w.push(a[k]);w.sort((x,y)=>x-y);o[i]=w[w.length>>1]}return o};
+    const shr=new Float32Array(nf);for(let i=0;i<nf;i++)shr[i]=(vm[i]||0)/(mm[i]+1e-9);const sh7=med7(shr),lv7=med7(vm);
+    // runs: drop < 120 ms, bridge gaps < 250 ms. va = "the singer" (few false alarms, misses ~40 % of sung frames in dense
+    // mixes with the quick split); vp = "maybe the singer" (finds ~85–90 %, more false alarms): used where a miss costs more
+    // than a false alarm — the tail / pickup / duck at a cut and the risk of a cut
+    const runs=(raw,dst)=>{const mn=Math.round(0.12*fps),gap=Math.round(0.25*fps);
+      for(let i=0;i<nf;){if(!raw[i]){i++;continue}let j=i;while(j<nf&&raw[j])j++;if(j-i>=mn)for(let q=i;q<j;q++)dst[q]=1;i=j}
+      for(let i=0;i<nf;){if(dst[i]){i++;continue}let j=i;while(j<nf&&!dst[j])j++;if(i>0&&j<nf&&j-i<gap)for(let q=i;q<j;q++)dst[q]=1;i=j}};
+    const raw=new Uint8Array(nf),rp=new Uint8Array(nf);
+    for(let i=0;i<nf;i++){raw[i]=lv7[i]>0.15*p95&&sh7[i]>(ai?0.3:0.45)?1:0;rp[i]=lv7[i]>0.1*p95&&sh7[i]>(ai?0.22:0.35)?1:0}
+    runs(raw,E.va);runs(rp,E.vp);
+  }
+  return E;
+}
+// drum-hit pattern of a bar: 16 steps × (lows, highs) of the rises of the drums envelopes, unit length (compares grooves)
+function rhythmOf(E,t0,t1){
+  const v=new Float32Array(32),a=Math.max(1,Math.floor(t0*E.fps)),b=Math.min(E.nf,Math.ceil(t1*E.fps)),d=(t1-t0)||1;
+  for(let i=a;i<b;i++){const st=clamp(Math.floor(((i/E.fps)-t0)/d*16+0.5),0,15);
+    const ol=Math.max(0,Math.log((E.dl[i]+1e-5)/(E.dl[i-1]+1e-5))),oh=Math.max(0,Math.log((E.dh[i]+1e-5)/(E.dh[i-1]+1e-5)));
+    v[st]=Math.max(v[st],ol*Math.sqrt(E.dl[i]));v[16+st]=Math.max(v[16+st],oh*Math.sqrt(E.dh[i]))}
+  let n=0;for(let i=0;i<32;i++)n+=v[i]*v[i];n=Math.sqrt(n)||1;for(let i=0;i<32;i++)v[i]/=n;return v;
+}
+// how alike two bars sound (0…1): harmony (chroma), groove (drum pattern) and the layers present (level per stem)
+function barSim(f,i,j,layers){
+  if(i<0||j<0||i>=f.nb||j>=f.nb)return 0;if(i===j)return 1;
+  const ch=dot(f.ch[i],f.ch[j]),rp=dot(f.rp[i],f.rp[j]);
+  const lv=['lo','dr','vo','md','hi','bs'].reduce((a,k)=>a+Math.abs((f[k][i]||0)-(f[k][j]||0)),0)/6,lev=1-Math.min(1,lv*1.6);
+  if(layers==='d')return 0.7*rp+0.3*(1-Math.min(1,Math.abs(f.dr[i]-f.dr[j])*1.6));
+  return 0.4*ch+0.35*rp+0.25*lev;
+}
+// how seamless a jump from bar kOut−1 to bar kIn is: the incoming bar sounds like what would have come next, or the bar before
+// it like the one just played (classic loop points), or simply the same groove/harmony carries on (a drop restarting)
+function seamOf(f,kOut,kIn,lay){return Math.max(0,barSim(f,kOut,kIn,lay),barSim(f,kOut-1,kIn-1,lay),0.92*barSim(f,kOut-1,kIn,lay))}
+// the singer is heard at source time x (seconds)
+const vocAt=(s,x)=>{const E=s.E;if(!E||!E.vm)return false;const i=Math.floor(x*E.fps);return i>=0&&i<E.nf&&!!E.va[i]};
+// seconds of continuous (maybe-)singing from x forward (dir 1) / backward (dir −1), capped at `cap`
+function vocRun(s,x,dir,cap,maybe){const E=s.E;if(!E||!E.vm)return 0;const A=maybe?E.vp:E.va;let i=Math.floor(x*E.fps),n=0;const m=Math.ceil(cap*E.fps);
+  while(n<m&&i>=0&&i<E.nf&&A[i]){n++;i+=dir}return n/E.fps}
+// sub-beat alignment of a join: how far (s, within ±12 ms) the drum hits right after the incoming downbeat sit from the hits the
+// outgoing source would have played next. 1 ms onset envelopes (rises of the drums stem's level) of one beat before + one bar
+// after both places are cross-correlated; constant detector bias cancels, an exact grid gives 0. Moved only when the match is
+// clear (a live band: the average of its hits).
+function onsetEnv(s,t0,t1){
+  const buf=s.stems?s.stems.drums:s.buffer,sr=buf.sampleRate,L=buf.getChannelData(0),R=buf.numberOfChannels>1?buf.getChannelData(1):L,H=Math.round(sr/1000);
+  const i0=Math.floor(t0*sr),nf=Math.floor((t1-t0)*1000),e=new Float32Array(nf+4),on=new Float32Array(nf);
+  for(let f=0;f<nf+4;f++){let q=0;const o=i0+(f-4)*H;for(let j=0;j<H;j++){const k=o+j;if(k>=0&&k<L.length){const x=L[k]+R[k];q+=x*x}}e[f]=Math.log(q/H+1e-9)}
+  for(let f=0;f<nf;f++){const v=e[f+4]-Math.max(e[f],e[f+1]);on[f]=v>0?v:0}
+  return on;
+}
+// lag (ms, ±M) that best lines up the hits of the bar starting at `si` with those of the bar starting at `sr`: smoothed
+// 1 ms onset envelopes over one beat before + the bar; {lag, c (best normalised correlation), c0 (at lag 0)}
+function lagOf(s,sr,si,M){
+  const T=s.g.T,a=-T,z=4*T,W=s.drift||s.groove<0.5?6:1,sm=e=>{const o=new Float32Array(e.length);for(let i=0;i<e.length;i++){let v=0;for(let k=-W;k<=W;k++)v+=(e[i+k]||0)*(W+1-Math.abs(k));o[i]=v}return o};   // triangular smoothing: ±1 ms, ±6 ms for live playing (the average of jittered hits)
+  const eo=sm(onsetEnv(s,sr+a-M/1000,sr+z+M/1000)),ei=sm(onsetEnv(s,si+a,si+z)),n=ei.length;
+  let ni=0;for(let i=0;i<n;i++)ni+=ei[i]*ei[i];if(ni<1e-6)return {lag:0,c:0,c0:0};
+  const cc=l=>{let v=0,no=0;for(let i=0;i<n;i++){const x=eo[i+M+l]||0;v+=ei[i]*x;no+=x*x}return no>1e-9?v/Math.sqrt(ni*no):0};
+  let lag=0,c=-1;const c0=cc(0);for(let l=-M;l<=M;l++){const v=cc(l);if(v>c+1e-9){c=v;lag=l}}
+  return {lag,c,c0};
+}
+// the join's shift: against the bar the outgoing source would have played next (kOut) and against its last bar (kOut−1, the
+// only reference at the end of the song); the clearer match wins, moved only on a clear improvement (≥ 2 ms)
+function relDbg(s,kOut,kIn){
+  const nb=s.g.nb,M=12;if(kIn<0||kIn>=nb)return {shift:0};
+  const si=srcT(s,kIn),r=[];
+  // only against a bar with the same drum pattern (a different pattern lines up wrongly: measured on a live track, where the
+  // drift-corrected grid is already within the players' own ±7 ms)
+  const same=k=>barSim(s.f,k,kIn,'d')>=0.85;
+  if(kOut>=1&&kOut<nb&&same(kOut))r.push({ref:'next',...lagOf(s,srcT(s,kOut),si,M)});
+  if(kOut-1>=0&&kOut-1<nb&&same(kOut-1))r.push({ref:'last',...lagOf(s,srcT(s,kOut-1),si,M)});
+  const ok=r.filter(x=>x.c>0.5&&x.c>x.c0+0.04&&Math.abs(x.lag)>=2).sort((x,y)=>y.c-x.c);
+  const best=r.slice().sort((x,y)=>y.c-x.c)[0];
+  // a clear match at lag ~0 (the grid is right) wins over a weaker shifted one. lag > 0 = the outgoing hits sit later on their
+  // grid than the incoming ones → the incoming source starts that much earlier (its hits then land later)
+  const shift=ok.length&&!(best&&best.c>ok[0].c+0.02&&Math.abs(best.lag)<2)?-ok[0].lag/1000:0;
+  return {shift,r};
+}
+const relShift=(s,kOut,kIn)=>relDbg(s,kOut,kIn).shift;
+// a bar "has vocals": the singer is heard in a good part of it (band-limited vocals stem against the mix, see stemEnv)
+const vocalBar=(f,k)=>f.va?f.va[k]>0.3:f.vo[k]>0.35&&f.pv[k]>0.2;
 function secStats(f,x){
   const a=x.a,b=Math.max(x.a+1,x.b),h=Math.floor((a+b)/2);let voc=0;for(let k=a;k<b;k++)if(vocalBar(f,k))voc++;
   const r={lo:meanOf(f.lo,a,b),dr:meanOf(f.dr,a,b),vo:meanOf(f.vo,a,b),md:meanOf(f.md,a,b),hi:meanOf(f.hi,a,b),fu:meanOf(f.fu,a,b),bs:meanOf(f.bs,a,b),
@@ -424,66 +569,159 @@ function phraseLock(secs,s0){
 
 /* ---------- arrangement ---------- */
 const fullMask=null,M_D={vocals:0,drums:1,bass:0,other:0},M_DB={vocals:0,drums:1,bass:1,other:0},M_I={vocals:0,drums:1,bass:1,other:1};
-function bestLoop(s,secs,W,want){
-  const f=s.f,stem=!!s.stems;let best=null;
-  for(const w of [W,8,4]){
-    if(w>W)continue;
-    secs.forEach((x,i)=>{
-      for(let a=x.a;a+w<=x.b;a+=4){
-        const b=a+w,d=meanOf(f.dr,a,b),v=meanOf(f.vo,a,b),o=meanOf(f.md,a,b),bs=meanOf(f.bs,a,b);
-        let vv=0;for(let k=a;k<b;k++)vv+=(f.dr[k]-d)**2;const cv=Math.sqrt(vv/w)/(d+1e-6);
-        let sc=d-0.9*v*(stem?1:0.6)-0.6*cv;
-        if(want==='db')sc+=0.4*bs;if(want==='inst')sc+=0.3*bs+0.3*o-0.5*v;if(want==='d')sc-=0.2*o;
-        if(x.lab==='build')sc-=0.3;if(x.lab==='break'&&want!=='inst')sc-=0.2;
-        if((want==='db'||want==='inst')&&(x.lab==='drop'||x.lab==='chorus'))sc+=0.1;if(want==='d'&&(x.lab==='intro'||x.lab==='outro'))sc+=0.1;
-        if(!best||sc>best.sc+1e-9)best={sa:a,sb:b,sec:i,sc};
-      }
-    });
-    if(best)break;
+const maskKey=m=>m?IDS.filter(id=>m[id]).join('+'):'full';
+const sameLayers=(a,b)=>maskKey(a.mask)===maskKey(b.mask)&&(a.eq||'')===(b.eq||'')&&(a.ft||'')===(b.ft||'');
+const isAI=s=>s.kind==='ai'||s.kind==='tool';
+const dB=x=>20*Math.log10(Math.max(1e-7,x));
+// level of a set of stems over bars [a,b): √Σ rms² (stems ≈ uncorrelated); the mix when mask = null
+function layerLvl(s,mask,a,b){const f=s.f;a=clamp(a,0,f.nb-1);b=clamp(b,a+1,f.nb);
+  if(!mask||!f.st)return meanOf(f.mix,a,b);let q=0;for(const id of IDS)if(mask[id]){const m=meanOf(f.st[id],a,b);q+=m*m}return Math.sqrt(q)}
+/* loop candidates of L bars for a DJ intro/outro: on the phrase lattice, drums steady, no singer (heavily weighted with the
+   quick split: its drums stem still carries consonants and short syllables), a SEAMLESS end (the bar after the loop sounds
+   like its first bar, so jumping back is what the ear expects) and a steady groove inside. `clean` = the mix itself has only
+   what the stage needs there (no singer, no other music → the mix is used: no separation artefacts, the kick keeps its body). */
+function loopCands(s,secs,L,want,role){
+  const f=s.f,out=[],wv=isAI(s)?1:2.6,anc=s.anc||0,secAt=k=>secs.findIndex(x=>k>=x.a&&k<x.b),n=f.nb;
+  for(let a=Math.max(f.s0,0);a+L<=f.e0+1;a++){
+    if(mod(a-anc,4))continue;
+    const i0=secAt(a),i1=secAt(a+L-1);if(i0<0||i1<0)continue;
+    let bad=false;for(let i=i0;i<=i1;i++){const l=secs[i].lab;if(l==='build'||(l==='break'&&want!=='inst'))bad=true}if(bad)continue;
+    const d=meanOf(f.dr,a,a+L);if(want!=='inst'&&d<0.25)continue;
+    let vv=0;for(let k=a;k<a+L;k++)vv+=(f.dr[k]-d)**2;const cv=Math.sqrt(vv/L)/(d+1e-6);
+    const va=meanOf(f.va,a,a+L),md=meanOf(f.md,a,a+L),bs=meanOf(f.bs,a,a+L),lay=want==='d'?'d':'f',T=s.g.T;
+    const edge=Math.max(vocShare(s,srcT(s,a+L)-T,srcT(s,a+L),true),vocShare(s,srcT(s,a),srcT(s,a)+T*0.5,true));
+    const seam=a+L<n?0.6*barSim(f,a+L,a,lay)+0.4*barSim(f,a+L-1,a-1>=0?a-1:a+L-1,lay):barSim(f,a+L-1,a+3<a+L?a+3:a,lay)*0.8;
+    let stab=0;for(let k=a+1;k<a+L;k++)stab+=dot(f.rp[k],f.rp[a]);stab/=Math.max(1,L-1);
+    const clean=va<0.04&&edge<0.1&&(want==='d'?md<0.15&&bs<0.2:want==='db'?md<0.15:true);
+    let sc=d-wv*va-wv*0.6*edge-0.5*cv+0.9*seam+0.3*stab+(clean?0.3:0)+(L>=8?0.25:0);
+    if(want==='db')sc+=0.4*bs;if(want==='inst')sc+=0.3*bs+0.3*md;if(want==='d')sc-=0.15*md;
+    sc+=role==='outro'?0.15*(a/n):0.15*(1-a/n);
+    if(mod(a-secs[i0].a,8)===0)sc+=0.05;
+    out.push({a,b:a+L,sec:i0,sc,seam,va,clean,d,edge});
   }
-  return best||{sa:secs[0].a,sb:Math.min(secs[0].b,secs[0].a+4),sec:0,sc:0};
+  return out.sort((x,y)=>y.sc-x.sc);
 }
-// DJ intro / outro of `len` bars from one loop, in stages (mask + optional filter sweep), cut into blocks at every loop seam
-function loopRun(s,secs,len,style,role,friendlyNext){
+function pickLoop(s,secs,L,want,role){
+  const lens=[L,8,4].filter((x,i,arr)=>x<=L&&arr.indexOf(x)===i),c=[].concat(...lens.map(l=>loopCands(s,secs,l,want,role).map(x=>({...x,L:l})))).sort((x,y)=>y.sc-x.sc);
+  const sub=x=>{const T=s.g.T,e=srcT(s,x.b);x.subLast=x.L>=4&&vocShare(s,e-T,e,true)>0.25&&vocShare(s,srcT(s,x.b-1)-T,srcT(s,x.b-1),true)<0.15;
+    if(x.subLast)x.clean=false;return x};
+  if(c.length){const A=sub(c[0]),l=A.L;let B=null;   // a second, similar phrase of the same length to alternate with (variation, same groove)
+    for(const x of c.slice(1,60)){if(x.L===l&&Math.abs(x.a-A.a)>=l&&x.sc>=A.sc-0.35&&barSim(s.f,x.a,A.a,want==='d'?'d':'f')>=0.82&&x.va<=A.va+0.05&&x.edge<=A.edge+0.05){B=sub(x);break}}
+    return {A,B,L:l}}
+  const x=secs[0];return {A:{a:x.a,b:Math.min(x.b,x.a+4),sec:0,sc:0,seam:0,va:0,clean:false,edge:0},B:null,L:Math.min(4,x.b-x.a)};
+}
+/* stages of a DJ intro / outro (bars from its start; every change on a phrase line): eq 'kh' = kick + hats (a wide cut around
+   1.4 kHz takes out claps, snare body and most of the bleed), then the full kit, then bass, then the music; 'lp'/'hp' sweeps */
+function stagesOf(style,role,n,cleanMusic){
+  const P=n>=16?8:4,ph=Math.max(1,Math.round(n/P)),at=i=>Math.min(n,i*P),half=at(Math.ceil(ph/2));
+  const I=cleanMusic?M_I:M_DB;let st;
+  if(role==='intro'){
+    if(style==='drums')st=n>=16?[[0,P,M_D,'kh'],[P,n,M_D]]:[[0,n,M_D]];
+    else if(style==='db')st=n>=16?[[0,P,M_D,'kh'],[P,half,M_D],[half,n,M_DB]]:[[0,half,M_D],[half,n,M_DB]];
+    else if(style==='full')st=n>=32?[[0,P,M_D,'kh'],[P,2*P,M_D],[2*P,n-P,M_DB],[n-P,n,I]]:n>=16?[[0,P,M_D],[P,n-P/2,M_DB],[n-P/2,n,I]]:[[0,half,M_D],[half,n,M_DB]];
+    else if(style==='filt')st=n>=16?[[0,n-P,I,null,'lp',380,380],[n-P,n,I,null,'lp',380,18000]]:[[0,n,I,null,'lp',380,18000]];
+    else st=[[0,half,M_D,null,'hp',300,300],[half,n,M_D]];   // percussion: no kick, then the full kit
+  }else{
+    if(style==='drums')st=n>=32?[[0,P,M_DB],[P,n-P,M_D],[n-P,n,M_D,'kh']]:n>=16?[[0,P,M_D],[P,n,M_D,'kh']]:[[0,n,M_D]];
+    else if(style==='db')st=n>=32?[[0,2*P,M_DB],[2*P,n-P,M_D],[n-P,n,M_D,'kh']]:n>=16?[[0,P,M_DB],[P,n,M_D]]:[[0,half,M_DB],[half,n,M_D]];
+    else if(style==='full')st=n>=32?[[0,P,I],[P,2*P,M_DB],[2*P,n-P,M_D],[n-P,n,M_D,'kh']]:n>=16?[[0,P/2,I],[P/2,P,M_DB],[P,n,M_D]]:[[0,half,M_DB],[half,n,M_D]];
+    else if(style==='filt')st=n>=16?[[0,P,I],[P,n,I,null,'lp',18000,380]]:[[0,n,I,null,'lp',18000,380]];
+    else st=[[0,half,M_D],[half,n,M_D,null,'hp',300,300]];
+  }
+  return st.filter(x=>x[1]>x[0]).map(([a,b,mask,eq,ft,f0,f1])=>({a,b,mask,eq:eq||null,ft:ft||null,f0,f1}));
+}
+// DJ intro / outro of n bars: the loop (alternating with a similar phrase B) through the stages; level of each stage matched to
+// the same stems in the original next to it (`ref` bars), cut into blocks at every loop seam / stage change
+function loopRun(s,secs,n,style,role,ref){
   const want=style==='db'?'db':style==='full'||style==='filt'?'inst':'d';
-  const W=len>=16?16:len>=8?8:4,lp=bestLoop(s,secs,W,want),w=lp.sb-lp.sa;
-  const h=Math.max(4,Math.floor(len/8)*4),q=Math.max(4,Math.floor(len/16)*4);
-  let st;
-  if(role==='intro')st=style==='drums'?[[0,len,M_D]]:style==='db'?[[0,h,M_D],[h,len,M_DB]]:style==='full'?[[0,len,M_I]]:style==='filt'?[[0,len,M_I,'lp',250,16000]]:[[0,h,M_D,'hp',400,400],[h,len,M_D]];
-  else st=style==='drums'?(friendlyNext||len<16?[[0,len,M_D]]:[[0,q,M_I],[q,2*q,M_DB],[2*q,len,M_D]]):style==='db'?[[0,h,M_DB],[h,len,M_D]]:style==='full'?[[0,len,M_I]]:style==='filt'?[[0,len,M_I,'lp',16000,250]]:[[0,h,M_D],[h,len,M_D,'hp',400,400]];
-  st=st.filter(x=>x[1]>x[0]&&x[0]<len).map(x=>[x[0],Math.min(len,x[1]),x[2],x[3],x[4],x[5]]);
-  const out=[];
-  for(const [s0,s1,mask,ft,f0,f1] of st){
-    for(let j=s0;j<s1;){
-      const pos=mod(j,w),step=Math.min(s1-j,w-pos);
-      const fx=ft?{t:ft,f0:f0*Math.pow(f1/f0,(j-s0)/(s1-s0)),f1:f0*Math.pow(f1/f0,(j+step-s0)/(s1-s0))}:null;
-      out.push({role,sec:lp.sec,sa:lp.sa+pos,sb:lp.sa+pos+step,mask,fx,ft:ft||null});j+=step;
+  const lp=pickLoop(s,secs,n>=16?8:4,want,role),L=lp.L;
+  const cleanMusic=isAI(s)||(lp.A.va<0.05&&(!lp.B||lp.B.va<0.05));   // the quick split leaves the singer in 'other': no music stage then
+  const st=stagesOf(style,role,n,cleanMusic),out=[];
+  for(const g of st){
+    // the mix itself when it has nothing the stage would remove (cleanest); else the stems
+    const useMix=lp.A.clean&&(!lp.B||lp.B.clean)&&(g.mask===M_D?true:g.mask===M_DB);
+    const mask=useMix?fullMask:g.mask,lv=lp2=>layerLvl(s,g.mask,lp2.a,lp2.b);   // levels always compare the stage's own stems
+    const tgt=ref?layerLvl(s,g.mask,ref[0],ref[1]):0;
+    for(let j=g.a;j<g.b;){
+      const ph=Math.floor(j/L),src=lp.B&&ph%2===1?lp.B:lp.A,pos0=mod(j,L),sl=src.subLast&&L>=4;
+      const last=sl&&pos0===L-1,pos=last?L-2:pos0,step=last?1:Math.min(g.b-j,(sl?L-1:L)-pos0);
+      const bleedy=!useMix&&s.kind==='quick'&&mask&&mask.drums&&!mask.vocals&&meanOf(s.f.va,src.a,src.b)>0.12;
+      const own=lv(src),gain=tgt>0.35*own&&own>1e-6?clamp(tgt/own,0.5,1.6):1;   // those stems absent next to it: keep the loop's own level
+      const fx=g.ft?{t:g.ft,f0:g.f0*Math.pow(g.f1/g.f0,(j-g.a)/(g.b-g.a)),f1:g.f0*Math.pow(g.f1/g.f0,(j+step-g.a)/(g.b-g.a))}:null;
+      out.push({role,sec:src.sec,sa:src.a+pos,sb:src.a+pos+step,mask,lay:g.mask,eq:g.eq||(bleedy?'kb':null),fx,ft:g.ft,gain,stage:g.a,useMix});j+=step;
     }
   }
-  return out;
+  return {blocks:out,loop:lp};
+}
+/* body: whole phrases repeated where the track itself would allow it. Candidate = the last w bars of a section, played again
+   right after it (the original then continues where it was: one new join, from bar b−1 to bar b−w). Scored by how seamless the
+   jump is (bar b−w vs the bar the ear expects, b; and what precedes each), by the singer (no line may run over the cut by more
+   than the 1-beat tail, no pickup longer than a beat may be lost) and by musical sense (drops/choruses first, breaks next,
+   at most two repeats per section). */
+// share of frames with the singer in source [t0,t1)
+function vocShare(s,t0,t1,maybe){const E=s.E;if(!E||!E.vm)return 0;const A=maybe?E.vp:E.va,a=Math.max(0,Math.floor(t0*E.fps)),z=Math.min(E.nf,Math.ceil(t1*E.fps));let c=0;for(let i=a;i<z;i++)c+=A[i];return z>a?c/(z-a):0}
+// the singer at a cut (source times so = where the outgoing would go on, si = where the incoming starts):
+//  outgoing line that began more than a beat before `so` and goes on > a beat after it → cut mid-line (risk 1); ≤ a beat after
+//  it → its last word rings on (tail, vocals stem, ≤ 1 beat). A line that began within the last beat before `so` is the
+//  PICKUP of the next phrase → the outgoing side drops its vocals from there (duck: mix minus vocals for ≤ 1 beat) instead of
+//  playing "and-" then cutting. Incoming line that began ≤ a beat before `si` → its pickup is laid in (pre) and the
+//  outgoing vocals step aside for it (duck); began earlier → entered mid-line (risk 1).
+function joinVocal(s,so,si,outVox,inVox){
+  const T=s.g.T,M=true;let rOut=0,rIn=0,tail=0,pre=0,duck=0;
+  if(outVox&&vocShare(s,so-0.12,so+0.12,M)>0.4){
+    const back=vocRun(s,so-0.02,-1,2*T,M),fwd=vocRun(s,so,1,2*T,M);
+    if(back<=T&&back>0.02)duck=Math.min(T,back+0.04);                 // a pickup into what follows: leave it out
+    else if(fwd>T&&back>T)rOut=vocShare(s,so-T,so+T)>0.5?1:0.5;        // the middle of a line (certain / likely)
+    else if(fwd>0.02){tail=Math.min(T,Math.max(fwd+0.12,0.35*T));rOut=0.1}}
+  if(inVox&&vocShare(s,si-0.15,si+0.1,M)>0.4){
+    const back=vocRun(s,si-0.02,-1,2*T,M),fwd=vocRun(s,si,1,T,M),outBusy=outVox&&!duck&&vocShare(s,so-Math.min(T,back+0.05),so,M)>0.5;
+    if(back>T&&fwd>0.05)rIn=vocShare(s,si-T,si+T)>0.5?1:0.5;
+    else if(back>0.02){pre=Math.min(T,back+0.06);rIn=outBusy?0.15:0.1}}
+  // the incoming pickup always gets the stage: the outgoing vocals step aside for it (no two lines at once, and an outgoing
+  // pickup the detector missed goes too)
+  if(pre>0&&outVox){duck=Math.max(duck,pre);if(tail>0)tail=0}
+  return {rOut,rIn,risk:Math.max(rOut,rIn),tail,pre,duck};
+}
+function bodyCands(s,secs,club,used){
+  const f=s.f,out=[],secAt=k=>secs.findIndex(x=>k>=x.a&&k<x.b);
+  const pref={drop:0.35,chorus:0.35,break:0.15,verse:0.02,pre:-0.25,bridge:-0.2,build:-0.6,intro:-0.8,outro:-0.8};
+  secs.forEach((x,i)=>{const u=used[i]||0;if(u>=2||pref[x.lab]==null||pref[x.lab]<=-0.6)return;
+    for(const w of [16,8,4]){const b=x.b,a=b-w;if(a<Math.max(f.s0,0))continue;
+      const ia=secAt(a);if(ia<0||secs[ia].lab==='intro'||secs[ia].lab==='outro')continue;
+      if(ia!==i&&w<8)continue;
+      const seam=seamOf(f,b,a,'f'),v=joinVocal(s,srcT(s,b),srcT(s,a),true,true),head=a===secs[ia].a?0.1:0;
+      const L=k=>dB(f.mix[clamp(k,0,f.nb-1)]||1e-7),jump=Math.abs(L(a)-L(b-1)),nat=a>0?Math.abs(L(a)-L(a-1)):0;   // the incoming bar's own step
+      const jolt=Math.max(0,jump-Math.max(1.5,nat));if(jolt>6)continue;   // a quiet breakdown straight after a full chorus: never
+      const sc=1.2*seam-2*v.risk-0.15*jolt-(seam<0.7?0.6:0)+(pref[x.lab]||0)+(club&&x.lab==='break'?0.05:0)-0.8*u+(w===16?0.1:w===8?0.04:0)+head;
+      out.push({i,w,a,b,sc,seam,risk:v.risk})}});
+  return out.sort((p,q)=>q.sc-p.sc);
 }
 function makePlan(s,set,secs){
   const g=s.g,B=g.B,n=secs.length,f=s.f,st=secs.map(x=>secStats(f,x));
   const friendly=i=>st[i].dr>=0.3&&st[i].voc<0.25;
   const orig=secs.map((x,i)=>[{role:'orig',sec:i,sa:x.a,sb:x.b,mask:fullMask,fx:null}]);   // per section: its blocks (repeats go after)
-  const rep=(i,w,role)=>{const x=secs[i];w=Math.min(w,x.b-x.a);if(w<4)return 0;orig[i].push({role:role||'rep',sec:i,sa:x.b-w,sb:x.b,mask:fullMask,fx:null});return w};
+  const rep=(i,w,role,span)=>{const x=secs[i];if(!span)w=Math.min(w,x.b-x.a);if(w<4||x.b-w<0)return 0;orig[i].push({role:role||'rep',sec:i,sa:x.b-w,sb:x.b,mask:fullMask,fx:null});return w};
   const target=set.add==='custom'?clamp(+set.custom||0,0,600):+set.add;
   const N=set.intro,Z=set.outro;
   const first=secs[0],last=secs[n-1];
-  let intro=[],outro=[],addBars=0,cycle=[];
+  let intro=[],outro=[],addBars=0,cycle=[],loops={};
   // intro
   const L0=first.lab==='intro'?first.b-Math.max(first.a,f.s0):0;
+  const s0=Math.max(first.a,f.s0);
   if(set.is==='orig'){if(L0&&L0<N){let need=N-L0;const ph=L0>=8?8:4;while(need>=4){const w=Math.min(ph,need-need%4);if(rep(0,w)<4)break;addBars+=w;need-=w}}}
-  else{let need=first.lab==='intro'&&friendly(0)?Math.max(0,N-L0):N;need=Math.ceil(need/4)*4;if(need>0){intro=loopRun(s,secs,need,set.is,'intro');addBars+=need}}
+  let needI=0,needZ=0;const zEnd=Math.min(f.e0+1,last.b);
+  const mkIntro=n=>{const r=loopRun(s,secs,n,set.is,'intro',[s0,s0+4]);intro=r.blocks;loops.intro=r.loop};
+  const mkOutro=n=>{const r=loopRun(s,secs,n,set.os,'outro',[zEnd-4,zEnd]);outro=r.blocks;loops.outro=r.loop};
+  if(set.is!=='orig'){needI=Math.ceil((first.lab==='intro'&&friendly(0)?Math.max(0,N-L0):N)/4)*4;if(needI>0){mkIntro(needI);addBars+=needI}}
   // outro
   const Lz=last.lab==='outro'?last.b-last.a:0;
   if(set.os==='orig'){if(Lz&&Lz<Z){let need=Z-Lz;const ph=Lz>=8?8:4;while(need>=4){const w=Math.min(ph,need-need%4);if(rep(n-1,w)<4)break;addBars+=w;need-=w}}}
-  else{const fr=last.lab==='outro'&&friendly(n-1);let need=fr?Math.max(0,Z-Lz):Z;need=Math.ceil(need/4)*4;if(need>0){outro=loopRun(s,secs,need,set.os,'outro',fr);addBars+=need}}
+  else{const fr=last.lab==='outro'&&friendly(n-1);needZ=Math.ceil((fr?Math.max(0,Z-Lz):Z)/4)*4;if(needZ>0){mkOutro(needZ);addBars+=needZ}}
   // body: whole phrases until the requested length
   let rem=Math.round(target/B)-addBars;
   const idx=l=>secs.map((x,i)=>l.includes(x.lab)?i:-1).filter(i=>i>=0);
-  const drops=idx(['drop','chorus']),breaks=idx(['break']);
-  const pick=r=>r>=14?16:r>=6?8:r>=3?4:0;
+  const drops=idx(['drop','chorus']);
+  const club=secs.some(x=>x.lab==='drop');
   if(set.preset==='perf'&&drops.length&&rem>=8){
     const ld=drops[drops.length-1],bi=ld-1>=0&&secs[ld-1].lab==='build'?ld-1:-1;
     const dl=Math.min(16,secs[ld].b-secs[ld].a,Math.max(4,Math.floor((rem-(bi>=0?Math.min(8,secs[bi].b-secs[bi].a):0))/4)*4));
@@ -491,25 +729,65 @@ function makePlan(s,set,secs){
     if(dl>=4){cycle.push({role:'cycle',sec:ld,sa:secs[ld].a,sb:secs[ld].a+dl,mask:fullMask,fx:null});rem-=dl}
     if(cycle.length){orig[ld].push(...cycle)}
   }
-  const ops=set.preset==='club'?[...drops.map(i=>[i,16]),...breaks.map(i=>[i,8]),...drops.map(i=>[i,8])]
-    :set.preset==='radio'?[...drops.slice(-1).map(i=>[i,8]),...drops.map(i=>[i,8])]
-    :[...drops.map(i=>[i,16]),...breaks.map(i=>[i,8]),...drops.map(i=>[i,8])];
-  if(!ops.length)secs.forEach((x,i)=>{if(x.lab!=='intro'&&x.lab!=='outro')ops.push([i,8])});
-  for(let r=0;r<3&&rem>=3;r++)for(const [i,w0] of ops){if(rem<3)break;const w=Math.min(w0,pick(rem));if(!w)break;const got=rep(i,w);if(got){rem-=got}}
+  /* 1) repeats that cut no sung line; 2) what is still missing goes to the DJ intro / outro (8-bar phrases, up to 64 bars: a
+     longer mixable intro beats a repeat that chops the singer); 3) only then repeats with a possible cut (never a certain one) */
+  const used={};
+  const fill=maxRisk=>{for(let guard=0;guard<24&&rem>=3;guard++){
+    const lim=rem>=14?16:rem>=6?8:4,c=bodyCands(s,secs,club,used).filter(x=>x.w<=lim&&x.risk<maxRisk&&(set.preset!=='radio'||x.w<=8));
+    if(!c.length)break;const x=c[0];if(rep(x.i,x.w,'rep',true)){rem-=x.w;used[x.i]=(used[x.i]||0)+1}else break}};
+  fill(0.35);
+  let grown=0;
+  if(rem>=8&&set.preset!=='radio'){
+    let nI=needI,nZ=needZ;const canI=set.is!=='orig'&&needI>0,canZ=set.os!=='orig'&&needZ>0;
+    while(rem>=8){if(canI&&nI<64&&(nI<=nZ||!canZ||nZ>=64))nI+=8;else if(canZ&&nZ<64)nZ+=8;else break;rem-=8;grown+=8}
+    if(nI!==needI)mkIntro(needI=nI);if(nZ!==needZ)mkOutro(needZ=nZ);
+  }
+  fill(0.95);
   // a DJ intro goes straight into the music: the original's silent lead-in bars (before its first music bar) are skipped
   if(intro.length&&f.s0>0&&f.s0<first.b)orig[0][0].sa=f.s0;
   const blocks=[...intro,...orig.flat(),...outro];
   // out positions (bars) + times
-  let o=0;for(const b of blocks){b.o0=o;o+=b.sb-b.sa;b.o1=o}
+  let o=0;for(const b of blocks){b.o0=o;o+=b.sb-b.sa;b.o1=o;if(b.gain==null)b.gain=1}
   const P=blocks[0].role==='orig'&&blocks[0].sa===0?Math.min(g.fd,srcT(s,0)):0;
-  const lb=blocks[blocks.length-1],tail=lb.role==='orig'&&lb.sb===last.b?Math.max(0,Math.min(12,s.buffer.duration-srcT(s,last.b))):0;
+  const lb=blocks[blocks.length-1];
+  // ending: the original's own tail after its last bar, or (made outro) one more downbeat hit of the outro's loop that rings
+  // out over a beat: the track ends ON a downbeat with a natural decay, never with a hard cut at a bar line
+  let tail=0,endHit=null;
+  if(lb.role==='orig'&&lb.sb===last.b)tail=Math.max(0,Math.min(12,s.buffer.duration-srcT(s,last.b)));
+  else if(lb.role==='outro'||lb.role==='intro'){const lpx=loops.outro||loops.intro,hb=lpx?lpx.A.a:lb.sa;endHit={sa:hb,mask:lb.mask,eq:lb.eq,gain:lb.gain};tail=g.T}
   const len=P+o*B+tail;
-  return {blocks,bars:o,P,tail,len,B,added:len-s.buffer.duration,target,over:addBars*B>target+B};
+  const p={blocks,bars:o,P,tail,endHit,len,B,added:len-s.buffer.duration,target,over:addBars*B>target+B,loops,grown,short:rem>=4?rem*B:0};
+  p.joins=joinsOf(s,p);
+  return p;
+}
+// every join: where the outgoing source would have gone on (so) and where the incoming one starts (si); sub-beat alignment
+// (snap of the drum hits at both places), crossfade length (short when the downbeat is a hard hit), the singer's tail / pickup
+function joinsOf(s,p){
+  const out=[],bl=p.blocks,T=s.g.T;
+  for(let i=1;i<bl.length;i++){
+    const a=bl[i-1],b=bl[i],cont=a.sb===b.sa;
+    if(cont&&sameLayers(a,b)&&Math.abs((a.gain||1)-(b.gain||1))<1e-3)continue;
+    const so=srcT(s,a.sb),si=srcT(s,b.sa),vox=x=>!x.mask||!!x.mask.vocals;
+    const j={i,t:outT(p,b.o0),kOut:a.sb,kIn:b.sa,so,si,src:!cont,shift:0,xf:0.012,tail:0,pre:0,duck:0,seam:1,risk:0};
+    if(!cont){
+      j.shift=relShift(s,a.sb,b.sa);
+      const E=s.E,hit=E?(()=>{const q=Math.floor(si*E.fps);let m=0,base=1e-9;for(let k=q-4;k<q;k++)if(k>=0)base=Math.max(base,E.dl[k]+E.dh[k]);for(let k=q;k<q+3;k++)if(k<E.nf)m=Math.max(m,E.dl[k]+E.dh[k]);return m/base})():1;
+      j.xf=hit>2.5?0.006:hit>1.4?0.012:0.03;
+      const v=joinVocal(s,so,si,vox(a),vox(b));Object.assign(j,{tail:v.tail,pre:v.pre,risk:v.risk,duck:v.duck});
+      if(b.role==='orig'&&b.sa===0&&b===p.blocks.find(x=>x.role==='orig')){j.pre=Math.min(si,p.B);j.risk=v.rOut}   // the render lays the source's own pickup over the DJ intro
+      j.seam=seamOf(s.f,a.sb,b.sa,(!a.mask&&!b.mask)?'f':'d');
+    }
+    out.push(j);
+  }
+  return out;
 }
 const outT=(p,bar)=>p.P+bar*p.B;
+// per block: the source shift (s) the render applies (cumulative join snaps, ±12 ms)
+function blockShifts(p){const J=new Map((p.joins||[]).map(j=>[j.i,j])),out=[];let sh=0;p.blocks.forEach((b,i)=>{const j=J.get(i);if(j&&j.src)sh=clamp(sh+j.shift,-0.012,0.012);out.push(sh)});return out}
 function planSig(){const s=X.song;return s?JSON.stringify([X.set.add,X.set.custom,X.set.intro,X.set.outro,X.set.is,X.set.os,X.set.preset,s.secs,s.kind]):''}
 function replan(){const s=X.song;if(!s||!s.secs){X.plan=null;return}X.plan=makePlan(s,X.set,s.secs);X.sel=X.sel<X.plan.blocks.length?X.sel:-1}
-const fresh=()=>!!(X.render&&X.rsig===planSig());
+const playable=()=>!!(X.render&&X.rsig===planSig());   // the first minute may still be the only part rendered
+const fresh=()=>playable()&&!X.rpart;
 
 /* ---------- render (OfflineAudioContext, sample-accurate on the bar grid) ---------- */
 function segmentsOf(p){
@@ -517,55 +795,141 @@ function segmentsOf(p){
   return out;
 }
 const EP=(n,up)=>{const c=new Float32Array(n);for(let i=0;i<n;i++){const x=i/(n-1);c[i]=up?Math.sin(x*Math.PI/2):Math.cos(x*Math.PI/2)}return c};
-async function renderAudio(s,p,sr,prog){
-  const n=Math.max(1,Math.ceil(p.len*sr)),segs=segmentsOf(p);
+// drum-low hits (kick) in source [a,z): rises of the drums stem's lows (for the kick restore of the quick split)
+function kickHits(s,a,z){const E=s.E;if(!E)return [];const out=[],p=pctl(E.dl,0.9)||1e-9,i0=Math.max(2,Math.floor(a*E.fps)),i1=Math.min(E.nf-1,Math.ceil(z*E.fps));
+  for(let i=i0;i<i1;i++){const v=E.dl[i];if(v>0.3*p&&v>2*Math.max(E.dl[i-1],E.dl[i-2])&&v>=E.dl[i+1]*0.9){const t=(i-0.5)/E.fps;if(!out.length||t-out[out.length-1]>0.09)out.push(t)}}return out}
+/* opt.until = render only the first `until` seconds (the preview starts while the rest renders). Joins: the crossfade ENDS on the
+   downbeat (length per join, 6–30 ms: short on a hard hit so the kick stays sharp), the incoming segment is moved by the
+   join's sub-beat shift (its hits continue the outgoing ones), the singer's last word rings on over the cut (tail, vocals stem)
+   and a short pickup before the incoming downbeat is laid in (pre). Every segment's gain is 0 until its own fade-in starts. */
+async function renderAudio(s,p,sr,prog,opt){
+  opt=opt||{};
+  const full=Math.max(1,Math.ceil(p.len*sr)),n=opt.until?Math.min(full,Math.ceil(opt.until*sr)):full,uT=n/sr,segs=segmentsOf(p);
   const rates=segs.map(sg=>(srcT(s,sg.sb)-srcT(s,sg.sa))/((sg.o1-sg.o0)*p.B));
   let st=null,lat=0;
   if(rates.some(r=>Math.abs(r-1)>0.002)){try{await CR.loadScript(CR.SS_SRC)}catch(e){}}
   const oc=new OfflineAudioContext(2,n+Math.ceil(sr*0.5),sr),master=oc.createGain();
   if(window.SignalsmithStretch&&rates.some(r=>Math.abs(r-1)>0.002)){try{st=await window.SignalsmithStretch(oc);lat=+(await st.latency())||0;master.connect(st);st.connect(oc.destination)}catch(e){st=null;lat=0}}
   if(!st)master.connect(oc.destination);
-  const nsegs=segs.length;
+  const jAt=new Map((p.joins||[]).map(j=>[j.i,j])),T=s.g.T,quick=s.kind==='quick',voc=s.stems&&s.stems.vocals;
+  const play=(buf,at,off,dur,r)=>{const src=oc.createBufferSource();src.buffer=buf;src.playbackRate.value=r||1;
+    const a=Math.round(Math.max(0,at)*sr)/sr,bsr=buf.sampleRate,o=Math.round(Math.max(0,off+(a-at)*(r||1))*bsr)/bsr;src.start(a,o,Math.max(0.01,dur));src._f=[Math.round(a*sr),Math.round(o*bsr)];return src};
+  // a source that must line up sample for sample with another (cancellation): same output↔source frame mapping as `ref`
+  const playAt=(buf,ref,at,dur)=>{const fo=Math.round(at*sr),fs=ref[1]+(fo-ref[0]);if(fs<0)return null;const src=oc.createBufferSource();src.buffer=buf;src.start(fo/sr,fs/buf.sampleRate,Math.max(0.01,dur));return src};
+  const BS=blockShifts(p);let shift=0,prevShift=0;const nsegs=segs.length;let lastEnd=0;
   for(let si=0;si<nsegs;si++){
-    const sg=segs[si],r=Math.abs(rates[si]-1)>0.002?rates[si]:1,t0=outT(p,sg.o0),t1=outT(p,sg.o1),fb=sg.blocks[0];
-    const s0=srcT(s,sg.sa),isLast=si===nsegs-1,tail=isLast?p.tail:0;
+    const sg=segs[si],fb=sg.blocks[0],bi=p.blocks.indexOf(fb),J=jAt.get(bi),nJ=jAt.get(bi+sg.blocks.length);
+    prevShift=shift;shift=BS[bi];
+    const r=Math.abs(rates[si]-1)>0.002?rates[si]:1,t0=outT(p,sg.o0),t1=outT(p,sg.o1);
+    if(t0-0.05>uT)break;
+    const s0=srcT(s,sg.sa)+shift,isLast=si===nsegs-1,tail=isLast&&!p.endHit?p.tail:0,xfIn=J?J.xf:XF,xfOut=nJ?nJ.xf:XF;
     // pre-roll: the source's own pickup before bar 1 is laid over the end of the previous block; other joins: the crossfade
-    const pre=si===0?Math.min(t0,s0/r):fb.role==='orig'&&sg.sa===0?Math.min(s0/r,p.B,t0):Math.min(XF,s0/r,t0);
-    const a0=t0-pre,end=t1+tail;
-    const sgG=oc.createGain();sgG.connect(master);const gp=sgG.gain;
+    const pre=si===0?Math.min(t0,s0/r):fb.role==='orig'&&sg.sa===0?Math.min(s0/r,p.B,t0):Math.min(xfIn,s0/r,t0);
+    const a0=t0-pre,end=t1+tail+(isLast&&p.endHit?0.01:0);lastEnd=end;
+    const sgG=oc.createGain(),bg=oc.createGain();sgG.connect(bg).connect(master);const gp=sgG.gain;
     if(si===0&&a0<0.003)gp.setValueAtTime(1,0);
-    else if(pre>XF*1.5){gp.setValueAtTime(0,a0);gp.linearRampToValueAtTime(1,a0+0.008)}
-    else if(pre>0.001)gp.setValueCurveAtTime(EP(32,true),a0,pre);
-    else gp.setValueAtTime(1,a0);
-    if(!isLast)gp.setValueCurveAtTime(EP(32,false),t1-XF,XF);
+    else{gp.setValueAtTime(0,0);
+      if(pre>xfIn*1.5){gp.setValueAtTime(0,a0);gp.linearRampToValueAtTime(1,a0+0.008)}
+      else if(pre>0.001)gp.setValueCurveAtTime(EP(32,true),a0,pre);
+      else{gp.setValueAtTime(0,Math.max(0,a0-0.003));gp.linearRampToValueAtTime(1,a0)}}
+    if(!isLast||p.endHit){const xo=isLast?0.006:xfOut;gp.setValueCurveAtTime(EP(32,false),t1-xo,xo)}
     else if(tail<0.01){gp.setValueAtTime(1,Math.max(a0+0.01,t1-0.025));gp.linearRampToValueAtTime(0,t1)}
     else{gp.setValueAtTime(1,end-0.03);gp.linearRampToValueAtTime(0,end)}
+    // per-block level (DJ intro / outro stages matched to the original next to them)
+    {let pv=null;for(const b of sg.blocks){const v=b.gain||1,b0=outT(p,b.o0);if(pv==null)bg.gain.setValueAtTime(v,0);else if(Math.abs(v-pv)>1e-4){bg.gain.setValueAtTime(pv,Math.max(0,b0-0.01));bg.gain.linearRampToValueAtTime(v,b0)}pv=v}}
     // filters (only when a block of this segment uses one)
     let head=sgG;const fts=[...new Set(sg.blocks.map(b=>b.ft).filter(Boolean))];
-    for(const ft of fts){const bq=oc.createBiquadFilter();bq.type=ft==='lp'?'lowpass':'highpass';bq.Q.value=0.707;const idle=ft==='lp'?Math.min(20000,sr*0.45):10;bq.frequency.setValueAtTime(idle,0);
+    for(const ft of fts){const bq=oc.createBiquadFilter();bq.type=ft==='lp'?'lowpass':'highpass';bq.Q.value=ft==='lp'?0.9:0.707;const idle=ft==='lp'?Math.min(20000,sr*0.45):10;bq.frequency.setValueAtTime(idle,0);
       for(const b of sg.blocks){const b0=outT(p,b.o0),b1=outT(p,b.o1);if(b.ft===ft){bq.frequency.setValueAtTime(b.fx.f0,b0);bq.frequency.exponentialRampToValueAtTime(Math.max(10,b.fx.f1),b1)}else bq.frequency.setValueAtTime(idle,b0)}
       bq.connect(head);head=bq}
-    // layers: the original mix (unmasked blocks) and the stems used by masked blocks
+    // layers: the original mix (unmasked blocks), the stems used by masked blocks, the kick restore (quick split: the kick's
+    // body went to the bass stem → its lows, gated on the drum hits, come back under drums-only stages)
     const layers=[];
     if(sg.blocks.some(b=>!b.mask))layers.push({id:'full',buf:s.buffer,on:b=>b.mask?0:1});
     if(s.stems)for(const id of IDS)if(sg.blocks.some(b=>b.mask&&b.mask[id]))layers.push({id,buf:s.stems[id],on:b=>b.mask&&b.mask[id]?1:0});
+    const kickOn=b=>b.mask&&b.mask.drums&&!b.mask.bass&&!b.ft&&meanOf(s.f.bs,b.sa,b.sb)>0.25?1:0;
+    if(quick&&s.stems&&sg.blocks.some(kickOn))layers.push({id:'kick',buf:s.stems.bass,on:kickOn});
     for(const L of layers){
-      const src=oc.createBufferSource();src.buffer=L.buf;src.playbackRate.value=r;const g=oc.createGain();
-      let prev=null;for(const b of sg.blocks){const v=L.on(b),b0=outT(p,b.o0);if(prev==null)g.gain.setValueAtTime(v,0);else if(v!==prev){g.gain.setValueAtTime(prev,Math.max(0,b0-0.012));g.gain.linearRampToValueAtTime(v,b0)}prev=v}
-      src.connect(g).connect(head);
-      // whole sample frames on both sides: a fractional start would interpolate (= a gentle low-pass on unmodified blocks)
-      const at=Math.round(Math.max(0,a0)*sr)/sr,bsr=L.buf.sampleRate,off=Math.round(Math.max(0,s0-(t0-at)*r)*bsr)/bsr;
-      src.start(at,off,Math.max(0.01,(end-at)*r+0.01));
+      const g=oc.createGain();
+      let prv=null;for(const b of sg.blocks){const v=L.on(b),b0=outT(p,b.o0);if(prv==null)g.gain.setValueAtTime(v,0);else if(v!==prv){g.gain.setValueAtTime(prv,Math.max(0,b0-0.012));g.gain.linearRampToValueAtTime(v,b0)}prv=v}
+      let tailN=g;
+      if((L.id==='drums'||L.id==='full')&&sg.blocks.some(b=>b.eq)){   // kick + hats: a wide cut around 1.4 kHz; 'kb' = a gentler one (bleed)
+        const pk=oc.createBiquadFilter();pk.type='peaking';pk.frequency.value=1400;pk.Q.value=0.45;
+        let pe=null;for(const b of sg.blocks){const v=b.eq==='kh'?-15:b.eq==='kb'?-7:0,b0=outT(p,b.o0);if(pe==null)pk.gain.setValueAtTime(v,0);else if(v!==pe){pk.gain.setValueAtTime(pe,Math.max(0,b0-0.012));pk.gain.linearRampToValueAtTime(v,b0)}pe=v}
+        g.connect(pk);tailN=pk}
+      if(L.id==='kick'){
+        const lp=oc.createBiquadFilter();lp.type='lowpass';lp.frequency.value=115;lp.Q.value=0.6;const kg=oc.createGain();kg.gain.setValueAtTime(0,0);
+        g.connect(lp).connect(kg);tailN=kg;
+        for(const b of sg.blocks){if(!kickOn(b))continue;const bs0=srcT(s,b.sa),bs1=srcT(s,b.sb),b0=outT(p,b.o0);
+          for(const h of kickHits(s,bs0,bs1)){const x=b0+(h-bs0)/r;if(x<b0+0.004||x>outT(p,b.o1)-0.03)continue;
+            kg.gain.setValueAtTime(0,x-0.003);kg.gain.linearRampToValueAtTime(0.9,x+0.002);kg.gain.setTargetAtTime(0,x+0.03,0.055)}}
+      }
+      tailN.connect(head);
+      const sn=play(L.buf,a0,s0-pre*r,(end-Math.max(0,a0))*r+0.01,r);sn.connect(g);if(L.id==='full')sg.ref=sn._f;
     }
     if(st)st.schedule({active:true,semitones:-12*Math.log2(r),output:Math.max(0,a0)+lat});
+    // the outgoing pickup of the next phrase is left out: its vocals (stem, polarity-inverted) cancel them from the mix for the
+    // last `duck` seconds before the cut (the quick split sums exactly to the mix; AI stems: within their own leakage)
+    if(voc&&nJ&&nJ.src&&nJ.duck>0.02&&sg.ref&&r===1&&voc.sampleRate===s.buffer.sampleRate&&!sg.blocks[sg.blocks.length-1].mask){
+      const xo=nJ.xf,d0=t1-nJ.duck,gg=oc.createGain(),inv=oc.createGain();inv.gain.value=-1;
+      gg.gain.setValueAtTime(0,0);gg.gain.setValueAtTime(0,d0-0.03);gg.gain.linearRampToValueAtTime(1,d0);
+      const dn=playAt(voc,sg.ref,d0-0.03,nJ.duck+0.04+xo);if(dn){inv.connect(gg).connect(head);dn.connect(inv)}
+    }
+    // the singer across the join: tail of the outgoing line / pickup of the incoming one (vocals stem only)
+    if(voc&&J&&J.src&&J.tail>0.02&&si>0){
+      const pb=p.blocks[bi-1],x0=t0-xfIn,src0=srcT(s,pb.sb)+prevShift-xfIn,gg=oc.createGain();
+      gg.gain.setValueAtTime(0,0);gg.gain.setValueAtTime(0,x0);gg.gain.linearRampToValueAtTime(1,t0);gg.gain.setValueAtTime(1,t0+J.tail*0.4);gg.gain.linearRampToValueAtTime(0,t0+J.tail);
+      gg.connect(bg);play(voc,x0,src0,xfIn+J.tail+0.02,1).connect(gg);
+    }
+    if(voc&&J&&J.src&&J.pre>0.02){
+      const x0=t0-J.pre,gg=oc.createGain();
+      gg.gain.setValueAtTime(0,0);gg.gain.setValueAtTime(0,x0);gg.gain.linearRampToValueAtTime(1,x0+Math.min(0.04,J.pre/2));gg.gain.setValueAtTime(1,t0-xfIn);gg.gain.linearRampToValueAtTime(0,t0);
+      gg.connect(bg);play(voc,x0,s0-J.pre,J.pre+0.02,1).connect(gg);
+    }
+  }
+  // the last downbeat: one more hit of the outro's loop, ringing out over a beat (no hard cut at a bar line)
+  if(p.endHit&&outT(p,p.bars)<uT+0.05){
+    const eh=p.endHit,t1=outT(p,p.bars),dur=p.tail,xo=0.006,src0=srcT(s,eh.sa),g=oc.createGain(),bg=oc.createGain();g.connect(bg).connect(master);
+    bg.gain.value=eh.gain||1;g.gain.setValueAtTime(0,0);g.gain.setValueCurveAtTime(EP(16,true),t1-xo,xo);g.gain.setTargetAtTime(0,t1+0.08,T*0.3);g.gain.setValueAtTime(0.0001,t1+dur-0.03);g.gain.linearRampToValueAtTime(0,t1+dur-0.005);
+    const ls=eh.mask?IDS.filter(id=>eh.mask[id]&&s.stems).map(id=>s.stems[id]):[s.buffer];
+    for(const b of ls){let tn=g;if(eh.eq){const pk=oc.createBiquadFilter();pk.type='peaking';pk.frequency.value=1400;pk.Q.value=0.45;pk.gain.value=eh.eq==='kh'?-15:-7;pk.connect(g);tn=pk}
+      play(b,t1-xo,src0-xo,dur+xo-0.006,1).connect(tn)}
   }
   const tot=(n/sr)+lat;for(let x=2;x<tot;x+=2)oc.suspend(x).then(()=>{if(prog)prog(x/tot);oc.resume()}).catch(()=>{});
   const out=await oc.startRendering(),o0=Math.round(lat*sr);
   const L=out.getChannelData(0).subarray(o0,o0+n),R=out.getChannelData(1).subarray(o0,o0+n);   // views, not copies (a 12-min render is ~300 MB per copy)
   let pk=0;for(let j=0;j<n;j++){const a=Math.abs(L[j]),b=Math.abs(R[j]);if(a>pk)pk=a;if(b>pk)pk=b}
-  if(pk>0.98){const k=0.98/pk;for(let j=0;j<n;j++){L[j]*=k;R[j]*=k}}
+  const k=opt.gain||(pk>0.98?0.98/pk:1);if(k!==1){for(let j=0;j<n;j++){L[j]*=k;R[j]*=k}}
   const ab=new AudioBuffer({numberOfChannels:2,length:n,sampleRate:sr});ab.copyToChannel(L,0);ab.copyToChannel(R,1);
+  ab._k=k;void lastEnd;
   return ab;
+}
+/* ---------- quality (after every render): what the render does at each join, measured on the render itself ----------
+   step = level change across the join (bar before vs bar after, render) against what was meant: for full-mix joins the
+   change the music makes there by itself (or none), for stem joins the planned stage levels. seam = bar similarity of the
+   incoming bar and the bar the outgoing source would have played. risk = a sung line cut (see joinVocal). aligned = the
+   incoming hits continue the outgoing grid (sub-beat snap applied, |shift| ≤ 12 ms). */
+function barLvl(buf,t0,t1){const L=buf.getChannelData(0),R=buf.getChannelData(1),sr=buf.sampleRate,a=Math.max(0,Math.floor(t0*sr)),z=Math.min(L.length,Math.floor(t1*sr));let q=0,c=0;for(let j=a;j<z;j+=4){q+=L[j]*L[j]+R[j]*R[j];c++}return c?Math.sqrt(q/(2*c)):0}
+function qualityOf(s,p,buf){
+  const B=p.B,f=s.f,J=[];const k=buf._k||1;
+  for(const j of p.joins||[]){
+    if(j.t<B||j.t+B>buf.duration)continue;
+    const a=p.blocks[j.i-1],b=p.blocks[j.i];
+    const step=dB(barLvl(buf,j.t,j.t+B))-dB(barLvl(buf,j.t-B,j.t));
+    let want;
+    if(!a.mask&&!b.mask){const nIn=dB(f.mix[j.kIn]||1e-7)-dB(f.mix[j.kIn-1]||1e-7),nOut=dB(f.mix[j.kOut]||1e-7)-dB(f.mix[j.kOut-1]||1e-7);
+      want=[0,nIn,nOut].reduce((m,x)=>Math.abs(step-x)<Math.abs(step-m)?x:m,0)}
+    else want=dB(layerLvl(s,b.mask,b.sa,b.sb)*(b.gain||1))-dB(layerLvl(s,a.mask,a.sa,a.sb)*(a.gain||1));
+    const ex=Math.abs(step-want),inner=a.role===b.role&&(a.role==='intro'||a.role==='outro');
+    const clean=ex<=1.5&&j.risk<0.5&&(j.seam>=0.62||!j.src||inner&&j.seam>=0.5);
+    J.push({t:j.t,step:Math.round(ex*10)/10,seam:Math.round(j.seam*100)/100,risk:j.risk,src:j.src,shift:Math.round(j.shift*1e4)/10,clean,inner,from:a.role,to:b.role});
+  }
+  const loops=J.filter(x=>x.inner&&x.src),seam=loops.length?loops.reduce((m,x)=>m+x.seam,0)/loops.length:1;
+  const lu=J.length?Math.max(...J.map(x=>x.step)):0,cuts=J.filter(x=>x.risk>=0.5).length,clean=J.length?J.filter(x=>x.clean).length/J.length:1;
+  const lb=p.loops&&(p.loops.intro||p.loops.outro),bleed=s.kind==='quick'&&p.blocks.some(b=>b.mask&&!b.mask.vocals&&!b.useMix&&meanOf(f.va,b.sa,b.sb)>0.12);
+  const score=Math.round(100*(0.4*clean+0.25*clamp(seam,0,1)+0.2*clamp(1-lu/3,0,1)+0.15*(cuts?Math.max(0,1-cuts/3):1))*(bleed?0.92:1));
+  void lb;void k;
+  return {score,clean:Math.round(clean*100),seam:Math.round(seam*100)/100,lu:Math.round(lu*10)/10,cuts,bleed,joins:J};
 }
 
 /* ---------- stems ---------- */
@@ -671,7 +1035,7 @@ async function upgradeAI(){
   try{
     const stems=await CR.separateBuffer(s.buffer,{onProgress:(p,m)=>{if(X.sep){X.sep.p=p;X.sep.msg=m;renderSepP()}},signal:ctl.signal,ref:'extended: '+s.name});
     if(X.song!==s)return;
-    s.stems=stems;s.kind='ai';const keep=s.edited?s.secs:null;
+    s.stems=stems;s.kind='ai';s.E=null;s.snap=null;const keep=s.edited?s.secs:null;
     const tok=X.tok;await analyse(s,tok);if(tok!==X.tok)return;if(keep){s.secs=keep;s.edited=true;s.lock=phraseLock(s.secs,s.f.s0)}
     replan();save();
   }catch(e){
@@ -685,50 +1049,79 @@ async function upgradeAI(){
 function abortGen(){X.genTok++;if(X.stage==='generating'){if(X.qctl)X.qctl.abort();X.stage=X.song?'ready':'empty'}}
 async function generate(){
   const s=X.song;if(!s||X.stage==='generating')return;
-  const tok=++X.genTok;stopPB();X.stage='generating';X.steps={};STEPS.forEach(k=>X.steps[k]='todo');X.stepP=0;X.reveal=0;X.sel=-1;X.fin=0;
+  const tok=++X.genTok;stopPB();X.stage='generating';X.steps={};STEPS.forEach(k=>X.steps[k]='todo');X.stepP=0;X.reveal=0;X.sel=-1;X.fin=0;X.join=-1;
+  X.render=null;X.rpart=false;X.rwave=null;X.quality=null;
   renderAll();
   const alive=()=>tok===X.genTok&&X.song===s;
   try{
     // what the analysis already found: a quick cascade
-    for(const k of ['an','bpm','key']){step(k,'done');await sleep(70);if(!alive())return}
+    for(const k of ['an','bpm','key']){step(k,'done');await sleep(reduced()?0:30);if(!alive())return}
     if(!s.stems){step('sep','run',0);const ctl=new AbortController();X.qctl=ctl;s.stems=await quickSep(s.buffer,p=>{X.stepP=p;renderProcP()},ctl.signal);s.kind='quick';X.qctl=null;if(!alive())return}
-    step('sep','done');await sleep(70);
-    for(const k of ['struct','phr','drop']){step(k,'done');await sleep(70);if(!alive())return}
-    replan();const p=X.plan,nI=p.blocks.filter(b=>b.role==='intro').length,nO=p.blocks.filter(b=>b.role==='outro').length;
+    step('sep','done');
+    for(const k of ['struct','phr','drop'])step(k,'done');
+    replan();const p=X.plan,nI=p.blocks.filter(b=>b.role==='intro').length,nO=p.blocks.filter(b=>b.role==='outro').length,sig=planSig(),sr=X.set.sr;
+    // the first minute renders while the checklist animates: the preview can start before the whole track is rendered
+    const headT=p.len>90?60:0;
+    const headP=headT?renderAudio(s,p,sr,null,{until:headT}).then(hb=>{if(alive()&&!X.render){X.render=hb;X.rsig=sig;X.rpart=true;renderTransport();renderPreview();drawSoon()}return hb}).catch(e=>{console.warn(e);return null}):Promise.resolve(null);
     const grow=async(to,ms)=>{const n0=X.reveal;for(let i=n0+1;i<=to;i++){X.reveal=i;drawSoon();await sleep(reduced()?0:ms)}};
-    step('intro','run');await grow(nI,90);step('intro','done');if(!alive())return;
-    step('outro','run');X.reveal=nI;drawSoon();await sleep(reduced()?0:120);step('outro','done');if(!alive())return;
-    step('arr','run');await grow(p.blocks.length-nO,45);await grow(p.blocks.length,90);step('arr','done');if(!alive())return;
+    step('intro','run');await grow(nI,30);step('intro','done');if(!alive())return;
+    step('outro','run');X.reveal=nI;drawSoon();await sleep(reduced()?0:40);step('outro','done');if(!alive())return;
+    step('arr','run');await grow(p.blocks.length-nO,15);await grow(p.blocks.length,30);step('arr','done');if(!alive())return;
     step('render','run',0);
-    const sig=planSig(),buf=await renderAudio(s,p,X.set.sr,q=>{if(alive()){X.stepP=q;renderProcP()}});
+    const hb=await headP;if(!alive())return;
+    const buf=await renderAudio(s,p,sr,q=>{if(alive()){X.stepP=q;renderProcP()}},hb?{gain:hb._k}:null);
     if(!alive())return;
     step('render','done',1);
-    X.render=buf;X.rsig=sig;X.rwave=null;X.reveal=Infinity;
+    swapRender(buf,sig);X.reveal=Infinity;
+    X.quality=qualityOf(s,p,buf);
     try{const w=await CR.waveOf(buf);if(alive())X.rwave=w}catch(e){console.warn(e)}
-    X.stage='done';X.fin=performance.now();X.pb.pos.B=0;renderAll();finAnim();
+    if(!alive())return;
+    X.stage='done';X.fin=performance.now();if(!X.pb.playing)X.pb.pos.B=X.pb.which==='B'?X.pb.pos.B:0;renderAll();finAnim();
   }catch(e){
-    if(!alive())return;console.error(e);X.stage='ready';setMsg(t('exExpFail'),true);renderAll();
+    if(!alive())return;console.error(e);X.stage='ready';X.render=null;X.rpart=false;setMsg(t('exExpFail'),true);renderAll();
   }
+}
+// the full render replaces the first-minute one: playback continues at the same spot (or resumes where the head ran out)
+function swapRender(buf,sig){
+  const P=X.pb,was=P.playing&&P.which==='B',pos=was?heardPB():null,waited=P.waitFull;
+  X.render=buf;X.rsig=sig;X.rpart=false;X.rwave=null;P.waitFull=false;
+  if(was)playPB('B',pos,{swap:true});else if(waited)playPB('B',P.pos.B);
 }
 
 /* ---------- preview A/B ---------- */
-X.pb={which:'B',playing:false,src:null,g:null,t0:0,p0:0,pos:{A:0,B:0},loop:false};
-const pbBuf=w=>w==='A'?X.song&&X.song.buffer:fresh()?X.render:null;
-function heardPB(){const P=X.pb;if(!P.playing)return P.pos[P.which];const c=CR.ac();let x=P.p0+(c.currentTime-P.t0);const lp=loopRange(P.which);if(P.loop&&lp&&x>=lp[1])x=lp[0]+mod(x-lp[0],lp[1]-lp[0]);return x}
+X.pb={which:'B',playing:false,src:null,g:null,t0:0,p0:0,pos:{A:0,B:0},loop:false,until:null,waitFull:false};
+const pbBuf=w=>w==='A'?X.song&&X.song.buffer:playable()?X.render:null;
+const vol=()=>clamp(X.set.vol==null?0.9:+X.set.vol,0,1);
+function heardPB(){const P=X.pb;if(!P.playing)return P.pos[P.which];const c=CR.ac();let x=P.p0+Math.max(0,c.currentTime-P.t0);const lp=loopRange(P.which);if(P.loop&&lp&&x>=lp[1])x=lp[0]+mod(x-lp[0],lp[1]-lp[0]);return x}
 function loopRange(w){const p=X.plan,s=X.song,b=p&&X.sel>=0?p.blocks[X.sel]:null;if(!b)return null;return w==='A'?[srcT(s,b.sa),srcT(s,b.sb)]:[outT(p,b.o0),outT(p,b.o1)]}
-function playPB(which,pos){
-  const buf=pbBuf(which);if(!buf)return;const P=X.pb,c=CR.ac();c.resume();
-  if(P.playing)killPB();
-  P.which=which;if(pos==null)pos=P.pos[which];if(pos>=buf.duration-0.05)pos=0;
+// opt.until: stop there (hear a join: 4 bars before → 4 bars after); opt.swap: the same spot of a new buffer, crossfaded in 15 ms
+function playPB(which,pos,opt){
+  opt=opt||{};const buf=pbBuf(which);if(!buf)return;const P=X.pb,c=CR.ac();c.resume();
+  const fade=opt.swap?0.015:0.04,at=c.currentTime+(opt.swap?0.02:0.03);
+  if(P.playing){if(opt.swap){const og=P.g,os=P.src;try{og.gain.cancelScheduledValues(at);og.gain.setValueAtTime(og.gain.value,at);og.gain.linearRampToValueAtTime(0,at+fade);os.stop(at+fade+0.01)}catch(e){}os.onended=null;P.src=null;pos=pos+(at-c.currentTime)}else killPB()}
+  P.which=which;if(pos==null)pos=P.pos[which];if(pos>=buf.duration-0.05)pos=opt.swap?buf.duration-0.05:0;
   const lp=P.loop&&loopRange(which);if(lp&&(pos<lp[0]||pos>=lp[1]))pos=lp[0];
-  const src=c.createBufferSource();src.buffer=buf;const g=c.createGain();g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.9,c.currentTime+0.04);
+  const src=c.createBufferSource();src.buffer=buf;const g=c.createGain();g.gain.setValueAtTime(0,c.currentTime);g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(vol(),at+fade);
   if(lp){src.loop=true;src.loopStart=lp[0];src.loopEnd=lp[1]}
-  src.connect(g).connect(c.destination);const at=c.currentTime+0.03;src.start(at,pos);
-  src.onended=()=>{if(P.src===src){P.playing=false;P.src=null;P.pos[which]=0;renderTransport();kick()}};
+  src.connect(g).connect(c.destination);src.start(at,pos);
+  P.until=opt.until!=null&&!lp?opt.until:null;
+  if(P.until!=null){const d=Math.max(0.05,P.until-pos);g.gain.setValueAtTime(vol(),at+d-0.06);g.gain.linearRampToValueAtTime(0,at+d);src.stop(at+d+0.01)}
+  src.onended=()=>{if(P.src!==src)return;P.playing=false;P.src=null;
+    if(P.until!=null){P.pos[which]=P.until;P.until=null}
+    else if(which==='B'&&X.rpart&&pos+(c.currentTime-at)>=buf.duration-0.2){P.pos.B=buf.duration;P.waitFull=true}   // the head ran out: resume when the rest is rendered
+    else P.pos[which]=0;
+    renderTransport();kick()};
   Object.assign(P,{src,g,t0:at,p0:pos,playing:true});P.pos[which]=pos;renderTransport();kick();
 }
-function killPB(){const P=X.pb,c=CR.ac();if(!P.src)return;try{P.g.gain.cancelScheduledValues(c.currentTime);P.g.gain.setValueAtTime(P.g.gain.value,c.currentTime);P.g.gain.linearRampToValueAtTime(0,c.currentTime+0.03);P.src.stop(c.currentTime+0.04)}catch(e){}P.src.onended=null;P.src=null}
-function stopPB(keep){const P=X.pb;if(P.playing){P.pos[P.which]=keep?heardPB():0;killPB();P.playing=false}else if(!keep)P.pos[P.which]=0;renderTransport();kick()}
+function killPB(){const P=X.pb,c=CR.ac();if(!P.src)return;try{P.g.gain.cancelScheduledValues(c.currentTime);P.g.gain.setValueAtTime(P.g.gain.value,c.currentTime);P.g.gain.linearRampToValueAtTime(0,c.currentTime+0.03);P.src.stop(c.currentTime+0.04)}catch(e){}P.src.onended=null;P.src=null;P.until=null}
+function setVol(v){X.set.vol=clamp(Math.round(v*100)/100,0,1);save();const P=X.pb,c=CR.ac();if(P.playing&&P.g&&P.until==null){try{P.g.gain.cancelScheduledValues(c.currentTime);P.g.gain.setTargetAtTime(vol(),c.currentTime,0.02)}catch(e){}}}
+// joins of the extended version (block boundaries where the source jumps or the stems change)
+function joinList(){const p=X.plan;return p&&p.joins?p.joins:[]}
+function playJoin(i){const p=X.plan,J=joinList();if(!J.length||!pbBuf('B'))return;i=clamp(i,0,J.length-1);X.join=i;const j=J[i],B=p.B;
+  const a=Math.max(0,j.t-4*B),z=Math.min(pbBuf('B').duration,j.t+4*B);X.pb.loop=false;
+  {const v=viewOf();if(j.t<v.v0||j.t>v.v0+v.span)X.view0=j.t-v.span/2}
+  playPB('B',a,{until:z});renderPreview();drawSoon()}
+function stopPB(keep){const P=X.pb;P.waitFull=false;if(P.playing){P.pos[P.which]=keep?heardPB():0;killPB();P.playing=false}else if(!keep)P.pos[P.which]=0;renderTransport();kick()}
 function togglePB(which){const P=X.pb;if(P.playing&&(which==null||which===P.which))stopPB(true);else playPB(which||P.which)}
 // position mapping through the blocks: extended time ↔ source time
 function extToSrc(x){const p=X.plan,s=X.song;if(!p)return x;if(x<p.P)return x;for(const b of p.blocks){const a=outT(p,b.o0),z=outT(p,b.o1);if(x>=a&&x<z)return srcT(s,b.sa)+(x-a)}const lb=p.blocks[p.blocks.length-1];return srcT(s,lb.sb)+(x-outT(p,lb.o1))}
@@ -756,6 +1149,7 @@ function load(){
   if(BARN.includes(o.intro))d.intro=o.intro;if(BARN.includes(o.outro))d.outro=o.outro;
   if(STYLES.includes(o.is))d.is=o.is;if(STYLES.includes(o.os))d.os=o.os;
   if(['mp3','wav16','wav24'].includes(o.fmt))d.fmt=o.fmt;if(o.sr===44100||o.sr===48000)d.sr=o.sr;d.cues=o.cues!==false;
+  if(typeof o.vol==='number'&&isFinite(o.vol))d.vol=clamp(o.vol,0,1);
 }
 function setOwner(uid){
   uid=uid||null;if(X.owner===uid)return;const had=X.owner!==undefined;X.owner=uid;
@@ -763,7 +1157,7 @@ function setOwner(uid){
   load();if(X.built)renderAll();
 }
 function applyPreset(k){const p=PRESETS[k];if(!p)return;Object.assign(X.set,{preset:k,add:p.add,intro:p.intro,outro:p.outro,is:p.is,os:p.os});changed()}
-function changed(){replan();save();renderSettings();renderPlan();renderExport();renderTransport();drawSoon()}
+function changed(){replan();X.join=-1;save();renderSettings();renderPlan();renderExport();renderTransport();renderPreview();drawSoon()}
 
 /* ---------- UI ---------- */
 const IC={
@@ -782,7 +1176,11 @@ const IC={
   ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>',
   drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>',
-  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+  prev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
+  join:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h6M15 12h6M9 7v10M15 7v10"/></svg>'
 };
 function build(){
   const v=$('#extendedView');
@@ -798,6 +1196,7 @@ function build(){
   </section>
   <section class="exdeck" id="exDeck" aria-label="">
     <div class="extr">
+      <button type="button" class="exbig" id="exPlay" disabled>${IC.play}</button>
       <div class="exab" role="group" id="exAB">
         <button type="button" class="exabb" data-pb="A"><span class="ic">${IC.play}</span><span class="exabl"><b data-i="exOrig"></b><small class="mono" id="exTA" dir="ltr"></small></span></button>
         <button type="button" class="exsw" id="exSw">${IC.ab}<span data-i="exAB"></span></button>
@@ -805,10 +1204,12 @@ function build(){
       </div>
       <span class="extime mono" id="exTime" dir="ltr"></span>
       <span class="exsp"></span>
+      <label class="exvol"><span class="vh" data-i="exVol"></span>${IC.vol}<input type="range" id="exVol" min="0" max="100" step="1" dir="ltr"></label>
       <button type="button" class="mxib exloop" id="exLoop" aria-pressed="false">${IC.loop}<span data-i="exLoopBlk"></span></button>
       <button type="button" class="mxib" id="exStopB" data-it="exStop">${IC.stop}</button>
       <button type="button" class="mxib" id="exZo" data-it="exZoomOut">${IC.zout}</button><button type="button" class="mxib" id="exZi" data-it="exZoomIn">${IC.zin}</button>
     </div>
+    <div class="expv" id="exPv" hidden></div>
     <div class="extl" id="exTl" dir="ltr"><canvas id="exCv" role="img"></canvas><canvas id="exOv" aria-hidden="true"></canvas><div class="extip" id="exTip" hidden></div></div>
     <div class="exinsp" id="exInsp" aria-live="polite"></div>
     <div class="exsecs"><span class="exsecl" data-i="exSecH"></span><div class="exsecb" id="exSecs"></div></div>
@@ -853,6 +1254,13 @@ function wire(){
     else if(el.id==='exCustom'){renderSettings()}});
   v.addEventListener('input',e=>{const el=e.target;if(el.id==='exCustom'){const x=parseFloat(String(el.value).replace(',','.'));if(x>=0&&x<=600){X.set.custom=Math.round(x);X.set.add='custom';replan();save();renderPlan();renderExport();drawSoon()}}});
   $('#exSw').onclick=abSwitch;$('#exStopB').onclick=()=>stopPB();$('#exLoop').onclick=loopToggle;
+  $('#exPlay').onclick=()=>togglePB(X.pb.which==='A'&&!X.pb.playing?'B':null);
+  $('#exVol').addEventListener('input',e=>setVol(+e.target.value/100));
+  $('#exPv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const d=b.dataset,J=joinList();
+    if(d.jn==='prev')playJoin((X.join<0?J.length:X.join)-1);else if(d.jn==='next')playJoin(X.join+1);else if(d.jn==='play')playJoin(X.join<0?0:X.join);
+    else if(d.a==='q'){const pn=$('#exQp');pn.hidden=!pn.hidden;b.setAttribute('aria-expanded',String(!pn.hidden))}
+    else if(d.a==='ai')upgradeAI();
+    const f=d.jn&&$('#exPv').querySelector(`[data-jn="${d.jn}"]`);if(f&&!f.disabled)f.focus()});
   $('#exZi').onclick=()=>zoom(2);$('#exZo').onclick=()=>zoom(0.5);
   $('#exIn').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)loadFile(f)};
   v.addEventListener('dragover',e=>{if(!hasFiles(e))return;e.preventDefault();const z=$('#exSrc');if(z)z.classList.add('over')});
@@ -984,8 +1392,8 @@ function renderSettings(){
 }
 function blkText(b){
   const s=X.song,p=X.plan,nm=secNames(s.secs)[b.sec],n=b.sb-b.sa;
-  const stems=b.mask?IDS.filter(id=>b.mask[id]).map(id=>t(id)).join(t('exPlus')):t('exFull');
-  const fx=b.ft==='lp'?t(b.fx.f1>b.fx.f0?'exFxOpen':'exFxClose'):b.ft==='hp'?t('exFxHp'):'';
+  const lm=b.mask||b.lay,stems=lm?IDS.filter(id=>lm[id]).map(id=>t(id)).join(t('exPlus')):t('exFull');   // lay = the stage's stems when the mix of a drums-only part is used
+  const fx=b.ft==='lp'?t(b.fx.f1>b.fx.f0+1?'exFxOpen':b.fx.f1<b.fx.f0-1?'exFxClose':'exFxLp'):b.ft==='hp'?t('exFxHp'):b.eq==='kh'?t('exFxKH'):'';
   const why=b.role==='orig'?t('exWhyOrig'):b.role==='intro'?t('exWhyIntro'):b.role==='outro'?t('exWhyOutro'):b.role==='cycle'?t('exWhyCycle'):t('exWhyRep',{sec:nm});
   const ttl=b.role==='orig'?nm:t('exR_'+b.role);   // a made block is titled by its role ("DJ outro"); where it came from goes in the source line
   return {nm,n,stems,fx,why,ttl,head:`${ttl} · ${t('exBarsN',{n})} · ${stems}`,from:t('exFrom',{sec:nm,t:iso(fmtT(srcT(s,b.sa))+'–'+fmtT(srcT(s,b.sb))),b:iso((b.sa+1)+'–'+b.sb)}),at:`${fmtT(outT(p,b.o0))}–${fmtT(outT(p,b.o1))}`};
@@ -1001,8 +1409,9 @@ function renderPlan(){
   el.innerHTML=`${done?`<div class="exready" id="exReady"><span class="exok" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21"/><path d="M14 24.5l7 7 13-14"/></svg></span><div><h2 id="exPlanH">${esc(t('exReady'))}</h2><p dir="auto">${esc(t('exReadyP',{len:iso(fmtD(p.len)),add:fmtAdd(p.added),n:p.blocks.length}))}</p></div></div>`:
     `<div class="explh"><h2 id="exPlanH">${esc(t('exPlanH'))}</h2><p class="snote" dir="auto">${esc(sum)} · ${esc(t('exTarget',{t:fmtAdd(p.target)}))}</p></div>`}
     ${p.over?`<p class="snote exover">${esc(t('exOver',{x:fmtAdd(p.added),t:fmtAdd(p.target)}))}</p>`:''}
+    ${p.grown?`<p class="snote exover">${esc(t('exGrown',{x:fmtAdd(p.grown*p.B)}))}</p>`:''}${p.short?`<p class="snote exover">${esc(t('exShortBy',{x:fmtAdd(p.short)}))}</p>`:''}
     ${X.render&&!fresh()?`<p class="snote exstale">${esc(t('exStale'))}</p>`:''}
-    <ol class="exlist" id="exList">${p.blocks.map((b,i)=>{const x=blkText(b),s0=X.song.secs[b.sec];return `<li><button type="button" class="exbk${i===X.sel?' on':''}${b.mask?' st':''}" data-blk="${i}" aria-pressed="${i===X.sel}" style="--c:${rgb(LCOL[s0.lab])}">
+    <ol class="exlist" id="exList">${p.blocks.map((b,i)=>{const x=blkText(b),s0=X.song.secs[b.sec];return `<li><button type="button" class="exbk${i===X.sel?' on':''}${b.mask||b.lay?' st':''}" data-blk="${i}" aria-pressed="${i===X.sel}" style="--c:${rgb(LCOL[s0.lab])}">
       <span class="exbkc" aria-hidden="true"></span><span class="exbkm"><span class="exbkh"><b>${esc(x.ttl)}</b>${b.role==='orig'?`<span class="exrole">${esc(t('exR_orig'))}</span>`:''}</span><span class="exbks">${b.role==='orig'?'':esc(t('exFromS',{sec:x.nm}))+' · '}${esc(t('exBarsN',{n:x.n}))} · ${esc(x.stems)}${x.fx?' · '+esc(x.fx):''}</span></span><span class="exbkt mono" dir="ltr">${esc(x.at)}</span></button></li>`}).join('')}</ol>`;
 }
 function renderInsp(){
@@ -1023,9 +1432,12 @@ function renderTransport(){
   for(const w of ['A','B']){const b=document.querySelector(`#exAB [data-pb="${w}"]`);if(!b)continue;const on=P.playing&&P.which===w,ok=!!pbBuf(w);
     b.querySelector('.ic').innerHTML=on?IC.pause:IC.play;const l=t(on?'exPause':w==='A'?'exPlayO':'exPlayE');b.title=l;b.setAttribute('aria-label',l);
     b.classList.toggle('on',P.which===w);b.classList.toggle('live',on);b.disabled=!ok;b.setAttribute('aria-pressed',String(P.which===w))}
-  $('#exTA').textContent=s?fmtD(s.buffer.duration):'';$('#exTB').textContent=p?fmtD(p.len)+(fresh()?'':' · '+t('exPlanned')):'';
+  $('#exTA').textContent=s?fmtD(s.buffer.duration):'';$('#exTB').textContent=p?fmtD(p.len)+(playable()?'':' · '+t('exPlanned')):'';
+  {const b=$('#exPlay'),on=P.playing,ok=!!pbBuf(P.which==='A'&&!on?'B':P.which);b.innerHTML=on?IC.pause:IC.play;const l=t(on?'exPause':P.which==='A'?'exPlayO':'exPlayE');
+    b.title=l;b.setAttribute('aria-label',l);b.disabled=!ok&&!on;b.classList.toggle('live',on)}
+  {const v=$('#exVol');if(v&&document.activeElement!==v){v.value=String(Math.round(vol()*100))}if(v){v.setAttribute('aria-label',t('exVol'));v.setAttribute('aria-valuetext',Math.round(vol()*100)+'%')}}
   $('#exAB').setAttribute('aria-label',t('exOrig')+' / '+t('exExt'));
-  const sw=$('#exSw');sw.disabled=!(s&&fresh());sw.title=t('exABT');sw.setAttribute('aria-label',t('exABT'));
+  const sw=$('#exSw');sw.disabled=!(s&&playable());sw.title=t('exABT');sw.setAttribute('aria-label',t('exABT'));
   const lb=$('#exLoop');lb.disabled=X.sel<0;lb.classList.toggle('on',P.loop&&X.sel>=0);lb.setAttribute('aria-pressed',String(P.loop&&X.sel>=0));lb.title=t('exLoopT');
   $('#exStopB').disabled=!P.playing&&!P.pos[P.which];$('#exZi').disabled=X.zoom>=32;$('#exZo').disabled=X.zoom<=1;
   const cv=$('#exCv');if(cv&&s)cv.setAttribute('aria-label',t('exTlAria',{n:s.name,a:fmtD(s.buffer.duration),b:p?fmtD(p.len):'—'}));
@@ -1034,7 +1446,7 @@ function renderTransport(){
 }
 function timeText(){const el=$('#exTime');if(!el)return;const P=X.pb,buf=pbBuf(P.which);el.textContent=buf?`${fmtT(heardPB())} / ${fmtT(buf.duration)}`:''}
 function renderExport(){
-  const el=$('#exExp');if(!el)return;const p=X.plan,s=X.song,ok=X.stage==='done'&&fresh();el.hidden=!(s&&X.render);if(el.hidden)return;
+  const el=$('#exExp');if(!el)return;const p=X.plan,s=X.song,ok=X.stage==='done'&&fresh();el.hidden=!(s&&X.render&&!X.rpart);if(el.hidden)return;
   const S=X.set,mp3=window.MP3&&MP3.supported;
   el.innerHTML=`<div class="mxexph"><h2 id="exExpH">${esc(t('exExpH'))}</h2><p class="snote" dir="auto">${p?esc(t('exExpP',{len:iso(fmtD(p.len)),bpm:iso(CR.fmtBpm(Math.round(s.an.bpm*10)/10)),k:iso(CR.keyText(s.an.key))})):''}</p></div>
   <div class="mxexpr exexpr">
@@ -1044,15 +1456,42 @@ function renderExport(){
     <button type="button" class="btn solid" data-a="exp"${ok&&!X.exporting?'':' disabled'}>${IC.dl}<span>${esc(t('exExpBtn'))}</span><i class="ptchip" id="exExpPts" hidden></i></button>
   </div>
   <div class="mxprog" id="exExpProg"${X.exporting?'':' hidden'}><div class="bar"><i></i></div></div>
+  <p class="snote exdlnote">${esc(t('exDlNote'))}</p>
   <p class="snote mxexpmsg" id="exExpMsg" role="status" aria-live="polite">${ok?'':esc(t('exNeedGen'))}</p>`;
   el.querySelectorAll('[data-fm],[data-sr],#exCuesC').forEach(x=>{if(X.exporting)x.disabled=true});
   renderExpPts();
+}
+const roleName=b=>b.role==='orig'?secNames(X.song.secs)[b.sec]:t('exR_'+b.role);
+// joins navigator + quality: hear every transition (4 bars before → 4 after) before downloading
+function renderPreview(){
+  const el=$('#exPv');if(!el)return;const p=X.plan,s=X.song,J=joinList(),ok=!!pbBuf('B'),q=X.quality&&fresh()?X.quality:null;
+  el.hidden=!s||!p||(!J.length&&!q);if(el.hidden)return;
+  const open=!!($('#exQp')&&!$('#exQp').hidden);
+  const i=X.join>=0&&X.join<J.length?X.join:-1,j=i>=0?J[i]:null;
+  const qj=q&&j?q.joins.find(x=>Math.abs(x.t-j.t)<1e-3):null;
+  const lab=j?`${t('exJoinN',{i:i+1,n:J.length})} · ${iso(fmtT(j.t))} · ${roleName(p.blocks[j.i-1])} → ${roleName(p.blocks[j.i])}`:`${t('exJoins')} · ${J.length}`;
+  const row=(k,v,good)=>`<div class="exqr${good?'':' warn'}"><dt>${esc(t(k))}</dt><dd class="mono" dir="ltr">${esc(v)}</dd></div>`;
+  const info=CR.sepInfo(),ai=q&&s.kind==='quick'&&(q.bleed||q.cuts)&&info.on;
+  el.innerHTML=`<div class="exjn" role="group" aria-label="${esc(t('exJoins'))}">
+      <span class="exjic" aria-hidden="true">${IC.join}</span>
+      <button type="button" class="mxib" data-jn="prev" aria-label="${esc(t('exJoinPrev'))}" title="${esc(t('exJoinPrev'))}"${J.length&&ok?'':' disabled'}>${IC.prev}</button>
+      <span class="exjl" aria-live="polite" dir="auto">${esc(lab)}${qj?` <i class="exjq ${qj.clean?'ok':'warn'}">${esc(t(qj.clean?'exJoinOk':'exJoinWarn'))}</i>`:''}</span>
+      <button type="button" class="mxib" data-jn="next" aria-label="${esc(t('exJoinNext'))}" title="${esc(t('exJoinNext'))}"${J.length&&ok?'':' disabled'}>${IC.next}</button>
+      <button type="button" class="exjp" data-jn="play" title="${esc(t('exJoinPlayT'))}"${J.length&&ok?'':' disabled'}>${IC.play}<span>${esc(t('exJoinPlay'))}</span></button>
+    </div>
+    ${X.rpart?`<span class="exheadn" role="status"><i aria-hidden="true"></i>${esc(t('exHead'))}</span>`:''}
+    ${q?`<button type="button" class="exq ${q.score>=85?'ok':q.score>=65?'mid':'lo'}" data-a="q" aria-expanded="${open}" aria-controls="exQp" title="${esc(t('exQT'))}"><span>${esc(t('exQ'))}</span><b class="mono" dir="ltr">${q.score}</b></button>
+    <div class="exqp" id="exQp"${open?'':' hidden'}><p class="exqh">${esc(t('exQT'))}</p><dl>
+      ${row('exQClean',q.clean+'%',q.clean>=85)}${row('exQSeam',Math.round(q.seam*100)+'%',q.seam>=0.7)}${row('exQLu','±'+q.lu+' dB',q.lu<=1.5)}${row('exQCuts',q.cuts?String(q.cuts):t('exQNone'),!q.cuts)}</dl>
+      ${q.bleed?`<p class="exqb">${esc(t('exQBleed'))}</p>`:''}
+      ${ai?`<button type="button" class="btn ghost exai" data-a="ai"${X.sep||info.busy?' disabled':''}>${IC.ai}<span>${esc(t('exQAi'))}</span>${info.cost?`<span class="mxcost mono">${esc(t('exCost',{n:info.cost}))}</span>`:''}</button>`:''}
+    </div>`:''}`;
 }
 function renderAll(){
   if(!X.built)return;const s=X.song,an=X.stage==='analyzing';
   renderSrc();setMsg(X.msg,X.msgErr);renderProc();
   $('#exMain').hidden=!s||an;
-  if(s&&!an){renderStats();renderSecs();renderSettings();renderPlan();renderInsp();renderTransport();renderExport();sizeCanvas();drawSoon()}
+  if(s&&!an){renderStats();renderSecs();renderSettings();renderPlan();renderInsp();renderTransport();renderPreview();renderExport();sizeCanvas();drawSoon()}
   if(X.secEd>=0)renderSecEd();
 }
 
@@ -1111,7 +1550,7 @@ function drawStatic(){
   g.font='600 11px '+c.sans;g.fillStyle=c.hi;g.textBaseline='middle';
   const ttl=(y,txt,sub)=>{g.fillStyle=c.hi;g.fillText(txt,2,y+8);const w=g.measureText(txt).width;g.fillStyle=c.text;g.font='10.5px '+c.mono;g.fillText(sub,w+10,y+8);g.font='600 11px '+c.sans};
   ttl(L.la[0],t('exOrig'),`${fmtD(s.buffer.duration)} · ${t('exBarsN',{n:s.g.nb})}`);
-  if(p)ttl(L.lb[0],t('exExt'),`${fmtD(p.len)} · ${t('exBarsN',{n:p.bars})}${fresh()?'':' · '+t('exPlanned')}`);
+  if(p)ttl(L.lb[0],t('exExt'),`${fmtD(p.len)} · ${t('exBarsN',{n:p.bars})}${playable()?'':' · '+t('exPlanned')}`);
   // original sections
   const nm=secNames(s.secs);
   s.secs.forEach((x,i)=>{const x0=xOf(v,srcT(s,x.a)),x1=xOf(v,srcT(s,x.b));if(x1<0||x0>TL.W)return;const col=LCOL[x.lab];
@@ -1132,14 +1571,19 @@ function drawStatic(){
   // extended blocks
   const rw=fresh()?X.rwave:null;
   p.blocks.forEach((b,i)=>{if(i>=show)return;const x0=xOf(v,outT(p,b.o0)),x1=xOf(v,outT(p,b.o1));if(x1<0||x0>TL.W)return;const col=LCOL[s.secs[b.sec].lab];
-    g.fillStyle=rgb(col);g.globalAlpha=b.mask?0.62:0.92;rr(g,x0+1,L.bb[0]+1,Math.max(1,x1-x0-2),L.bb[1]-2,3);g.fill();g.globalAlpha=1;
-    if(b.mask){g.save();rr(g,x0+1,L.bb[0]+1,Math.max(1,x1-x0-2),L.bb[1]-2,3);g.clip();g.strokeStyle='rgba(10,10,12,.35)';g.lineWidth=2;for(let q=x0-L.bb[1];q<x1;q+=7){g.beginPath();g.moveTo(q,L.bb[0]+L.bb[1]);g.lineTo(q+L.bb[1],L.bb[0]);g.stroke()}g.restore()}
+    g.fillStyle=rgb(col);g.globalAlpha=b.mask||b.lay?0.62:0.92;rr(g,x0+1,L.bb[0]+1,Math.max(1,x1-x0-2),L.bb[1]-2,3);g.fill();g.globalAlpha=1;
+    if(b.mask||b.lay){g.save();rr(g,x0+1,L.bb[0]+1,Math.max(1,x1-x0-2),L.bb[1]-2,3);g.clip();g.strokeStyle='rgba(10,10,12,.35)';g.lineWidth=2;for(let q=x0-L.bb[1];q<x1;q+=7){g.beginPath();g.moveTo(q,L.bb[0]+L.bb[1]);g.lineTo(q+L.bb[1],L.bb[0]);g.stroke()}g.restore()}
     if(i===X.sel){g.strokeStyle='#fff';g.lineWidth=2;rr(g,x0+1,L.bb[0]+1,Math.max(1,x1-x0-2),L.bb[1]-2,3);g.stroke()}
     const bl=b.role==='intro'||b.role==='outro'?t('exR_'+b.role):nm[b.sec];g.font='600 '+(small?9.5:10.5)+'px '+c.sans;if(g.measureText(bl).width<x1-x0-10){g.fillStyle='#0A0A0C';g.fillText(bl,x0+6,L.bb[0]+L.bb[1]/2+0.5)}
-    if(!rw&&s.an.wave){const sc=maskScale(b.mask),a=outT(p,b.o0),z=outT(p,b.o1),sa=srcT(s,b.sa);
+    if(!rw&&s.an.wave){const sc=maskScale(b.mask||b.lay),a=outT(p,b.o0),z=outT(p,b.o1),sa=srcT(s,b.sa);
       g.save();g.beginPath();g.rect(x0,L.wb[0],x1-x0,L.wb[1]);g.clip();waveCols(g,s.an.wave,L.wb[0],L.wb[1],v,(ta,tb)=>tb<a||ta>z?null:[sa+(ta-a),sa+(tb-a),sc],fresh()?1:0.5);g.restore()}
   });
   if(rw){waveCols(g,rw,L.wb[0],L.wb[1],v,(a,b)=>a>p.len?null:[a,Math.min(b,p.len)],1)}
+  // joins: a tick under the extended lane title (green = clean, amber = worth a listen, white = the one being heard)
+  if(show>=p.blocks.length){const q=fresh()?X.quality:null;joinList().forEach((j,i)=>{const x=xOf(v,j.t);if(x<-4||x>TL.W+4)return;const qj=q&&q.joins.find(z=>Math.abs(z.t-j.t)<1e-3);
+    g.fillStyle=i===X.join?'#fff':qj?(qj.clean?(tok('--ok')||'#22C55E'):(tok('--warn')||'#FFB020')):'rgba(255,255,255,.55)';
+    g.beginPath();g.moveTo(x-4,L.lb[0]+L.lb[1]-1);g.lineTo(x+4,L.lb[0]+L.lb[1]-1);g.lineTo(x,L.lb[0]+L.lb[1]+5);g.closePath();g.fill();
+    if(i===X.join){g.fillRect(Math.round(x)-0.5,L.bb[0],1,L.wb[0]+L.wb[1]-L.bb[0])}})}
   // loop range
   const lp=X.pb.loop&&loopRange(X.pb.which);if(lp){const isA=X.pb.which==='A',y0=isA?L.ba[0]:L.bb[0],y1=isA?L.wa[0]+L.wa[1]:L.wb[0]+L.wb[1];const x0=xOf(v,lp[0]),x1=xOf(v,lp[1]);g.fillStyle='rgba(255,176,32,.14)';g.fillRect(x0,y0,x1-x0,y1-y0);g.fillStyle=tok('--warn')||'#FFB020';g.fillRect(x0,y0-3,x1-x0,2)}
 }
@@ -1264,6 +1708,7 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(e.target.closest('.exset,.explan'))return;const buf=pbBuf(P.which);if(!buf)return;e.preventDefault();seekPB(P.which,heardPB()+(e.key==='ArrowRight'?1:-1)*X.song.g.B)}
   else if(e.key==='t'||e.key==='T')abSwitch();
   else if(e.key==='l'||e.key==='L')loopToggle();
+  else if(e.key==='j'||e.key==='J'){const J=joinList();if(!J.length||!pbBuf('B'))return;e.preventDefault();playJoin(e.shiftKey?(X.join<0?J.length:X.join)-1:X.join+1)}
 });
 
 /* ---------- public ---------- */
@@ -1279,6 +1724,12 @@ window.EXTENDED={
   lang(){if(X.built){renderAll();if(X.secEd>=0)renderSecEd()}},
   // for tests
   _X:X,makePlan,renderAudio,segment,label,groove,phraseLock,srcT,outT,extToSrc,srcToExt,newCues,generate,exportExt,loadSong,
+  qualityOf,joinList,playJoin,blockShifts,_quality:()=>X.quality,_relDbg:relDbg,
+  // the plan as the render plays it (output + source times per block incl. the sub-beat shift, joins, quality): for tests
+  _planInfo:()=>{const p=X.plan,s=X.song;if(!p||!s)return null;const BS=blockShifts(p);return {P:p.P,B:p.B,len:p.len,tail:p.tail,bars:p.bars,endHit:p.endHit,kind:s.kind,bpm:s.an.bpm,secs:s.secs,
+    blocks:p.blocks.map((b,i)=>({role:b.role,sec:b.sec,lab:s.secs[b.sec].lab,sa:b.sa,sb:b.sb,o0:b.o0,o1:b.o1,mask:b.mask,eq:b.eq||null,ft:b.ft||null,gain:b.gain,stage:b.stage,useMix:!!b.useMix,
+      t0:outT(p,b.o0),t1:outT(p,b.o1),s0:srcT(s,b.sa)+BS[i],s1:srcT(s,b.sb)+BS[i],ds:BS[i]})),
+    joins:p.joins.map(j=>({i:j.i,t:j.t,src:j.src,shift:j.shift,xf:j.xf,tail:j.tail,pre:j.pre,duck:j.duck,seam:j.seam,risk:j.risk,kIn:j.kIn,kOut:j.kOut})),loops:p.loops,quality:X.quality}},
   _plan:()=>X.plan,_secs:()=>X.song&&X.song.secs,_heard:heardPB,_tl:()=>({lay:TL.lay,W:TL.W,view:viewOf()}),_srcBar:x=>srcT(X.song,x),_outBar:x=>outT(X.plan,x)
 };
 CR.applyLang();

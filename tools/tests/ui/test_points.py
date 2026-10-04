@@ -12,7 +12,8 @@
 4. Tool upload: a new song asks "1 point" (once) and charges after the analysis; uploading it again is free. DJ deck
    load of a song already paid is free.
 5. Converter: 3 files (one broken) → chip "3 pts", one confirmation, the failed file is refunded → balance −2.
-6. Mashup + Extended exports: charged once each (same render / same mix again in another format = free).
+6. Mashup + Extended exports: charged once each (same render / same mix again in another format = free); the Extended preview
+   (play, hear a join) before the download costs nothing.
 7. Admin → no dialog, no charge. Billing off → no dialog, no charge.
 8. Pricing page: the price list is generated from billing.costs (one row per kind, a column per discounted plan),
    plan cards show their discount; admin settings: edit a cost per kind + a plan discount → saved → chips follow.
@@ -291,6 +292,11 @@ def test(t, srv, b):
     lib.poll(pg, "EXTENDED._X.stage==='ready'||!!EXTENDED._X.msg", 200)
     t.check('extended: analysed (no song charge)', pg.evaluate("EXTENDED._X.stage==='ready'") and bal(pg) == 17, pg.evaluate("EXTENDED._X.msg"))
     pg.click('#exSet [data-a="gen"]'); lib.poll(pg, "EXTENDED._X.stage==='done'", 120)
+    # listening before downloading is free: play the extended version and hear a join → no dialog, no charge
+    pg.click('#exPlay'); lib.poll(pg, "EXTENDED._X.pb.playing", 5)
+    pg.click('#exPv [data-jn="play"]'); time.sleep(0.6)
+    t.check('extended preview (play + hear a join): no dialog, no charge', pg.evaluate("EXTENDED._X.pb.playing&&!document.querySelector('#ptsDlg')") and bal(pg) == 17, bal(pg))
+    pg.click('#exStopB')
     lib.poll(pg, "!!document.querySelector('#exExpPts')", 10)
     t.eq('extended export chip: 3 pts', pg.evaluate("document.querySelector('#exExpPts').hidden?null:document.querySelector('#exExpPts').textContent"), '3 pts')
     pg.click('#exExp [data-fm="wav16"]'); time.sleep(0.2)

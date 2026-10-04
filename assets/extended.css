@@ -107,6 +107,50 @@ html[dir="rtl"] .exleg{direction:rtl;padding-inline-start:0}
 .exsw:hover:not([disabled]){background:var(--deck3)}
 .exsw[disabled]{opacity:.35;cursor:not-allowed}
 .extime{font-size:14px;font-weight:600;padding-inline:6px;color:var(--decktext)}
+/* preview: big play, volume, joins navigator, quality */
+.exbig{width:52px;height:52px;border-radius:50%;border:0;display:grid;place-items:center;flex:none;background:var(--acc-grad);color:#fff;box-shadow:0 8px 22px -10px color-mix(in srgb,var(--acc-a) 70%,transparent);transition:transform .12s,box-shadow .15s}
+.exbig svg{width:22px;height:22px}
+.exbig:hover:not([disabled]){transform:scale(1.04)}
+.exbig:active:not([disabled]){transform:scale(.95)}
+.exbig.live{box-shadow:0 0 0 4px color-mix(in srgb,var(--acc-a) 30%,transparent)}
+.exbig[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none}
+.exvol{display:inline-flex;align-items:center;gap:6px;color:var(--deckmuted);padding-inline:4px}
+.exvol svg{width:18px;height:18px;flex:none}
+.exvol input{width:96px;accent-color:var(--acc-a)}
+.expv{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;position:relative}
+.expv[hidden]{display:none}
+.exjn{display:flex;align-items:center;gap:6px;min-width:0;flex:1 1 360px;padding:4px 6px;border-radius:var(--r-md);background:var(--deck2);border:1px solid var(--deckline)}
+.exjic{color:var(--deckmuted);display:grid;place-items:center;padding-inline:4px}
+.exjic svg{width:18px;height:18px}
+.exjn .mxib{width:34px;height:34px;flex:none}
+.exjn .mxib svg{width:16px;height:16px}
+html[dir="rtl"] .exjn .mxib svg{transform:scaleX(-1)}
+.exjl{flex:1;min-width:0;font-size:13px;color:var(--decktext);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start}
+.exjq{font-style:normal;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:999px;margin-inline-start:4px;white-space:nowrap}
+.exjq.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,transparent)}
+.exjq.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.exjp{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--deckline);background:var(--deck3);color:var(--decktext);font-size:13px;font-weight:600;flex:none}
+.exjp svg{width:12px;height:12px}
+.exjp:hover:not([disabled]){border-color:var(--deckmuted)}
+.exjp[disabled],.exjn .mxib[disabled]{opacity:.4;cursor:not-allowed}
+.exheadn{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--deckmuted)}
+.exheadn i{width:8px;height:8px;border-radius:50%;background:var(--acc-a);animation:expulse 1s ease-in-out infinite alternate}
+@keyframes expulse{from{opacity:.35}to{opacity:1}}
+.exq{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--deckline);background:var(--deck2);color:var(--decktext);font-size:13px;font-weight:600}
+.exq b{font-size:15px;padding:1px 8px;border-radius:999px;color:#0A0A0C}
+.exq.ok b{background:var(--ok)}.exq.mid b{background:var(--warn)}.exq.lo b{background:var(--signal);color:#fff}
+.exq[aria-expanded="true"]{border-color:var(--deckmuted)}
+.exqp{flex:1 1 100%;padding:10px 12px;border-radius:var(--r-md);background:var(--deck2);border:1px solid var(--deckline);display:flex;flex-direction:column;gap:8px}
+.exqp[hidden]{display:none}
+.exqh{margin:0;font-size:12px;color:var(--deckmuted)}
+.exqp dl{margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.exqr{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:var(--r-sm);background:var(--deck3)}
+.exqr dt{font-size:11.5px;color:var(--deckmuted)}
+.exqr dd{margin:0;font-size:16px;font-weight:600;color:var(--ok);text-align:start}
+.exqr.warn dd{color:var(--warn)}
+.exqb{margin:0;font-size:12.5px;color:var(--decktext);line-height:1.45}
+.exqp .exai{align-self:flex-start;background:transparent;color:var(--decktext);border-color:var(--deckline)}
+.exdlnote{margin:2px 0 0;font-size:12.5px}
 .exsp{flex:1}
 .exloop{width:auto!important;padding:0 10px!important;display:inline-flex!important;gap:6px;font-size:13px}
 .exloop.on{border-color:var(--warn)!important;color:var(--warn)!important;background:color-mix(in srgb,var(--warn) 14%,transparent)!important}
@@ -216,7 +260,12 @@ html[dir="rtl"] .exleg{direction:rtl;padding-inline-start:0}
   .exst:nth-child(odd){border-inline-start:0}.exst:nth-child(-n+2){border-top:0}
   .exst dd{font-size:22px}
   .exrow2,.expre{grid-template-columns:minmax(0,1fr)}
-  .exab{width:100%}.exabb{flex:1;padding-inline-end:8px}
+  .exab{flex:1 1 calc(100% - 64px);min-width:0}.exabb{flex:1;padding-inline-end:6px;gap:6px;min-width:0}
+  .exabl{min-width:0}.exabl b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.exabl small{display:none}
+  .exsw{padding:0 6px}.exsw span{display:none}
+  .exvol input{width:72px}
+  .exjn{flex-basis:100%;flex-wrap:wrap}.exjl{flex:1 1 calc(100% - 90px);order:0}.exjp{flex:1 1 100%;justify-content:center;order:2}
+  .exqp dl{grid-template-columns:repeat(2,minmax(0,1fr))}
   .exsp{display:none}
   .exsecs{flex-direction:column;gap:6px}.exsecl{padding:0}
   .exrepl .btn span{display:none}.exrepl .btn{width:36px;padding:0}
@@ -231,7 +280,9 @@ html[dir="rtl"] .exleg{direction:rtl;padding-inline-start:0}
   .extended .bar i,.exsrc,.expre button{transition:none}
   .exsteps li.run .exsd,.exsteps li.done .exsd{animation:none}
   .exok circle,.exok path{animation:none;stroke-dashoffset:0}
+  .exheadn i{animation:none}.exbig{transition:none}
 }
+html.a11y-noanim .exheadn i{animation:none}
 html.a11y-noanim .exsteps li.run .exsd,html.a11y-noanim .exsteps li.done .exsd{animation:none}
 html.a11y-noanim .exok circle,html.a11y-noanim .exok path{animation:none;stroke-dashoffset:0}
 html.a11y-noanim .extended .bar i{transition:none}
