@@ -54,7 +54,8 @@ check('only /ai/worker.js detaches the CSP', detaches.length === 1 && detaches[0
 const root = rules.find(r => r.pat === '/*');
 const hdr = n => (root.lines.find(l => l.toLowerCase().startsWith(n + ':')) || '').slice(n.length + 1).trim();
 const scriptSrc = (hdr('content-security-policy').match(/script-src ([^;]*)/) || [, ''])[1];
-check("page CSP script-src: no 'unsafe-eval' / 'unsafe-inline' / remote hosts", scriptSrc === "'self' 'wasm-unsafe-eval' blob:", scriptSrc);
+// one deliberate remote host: Deezer's API for the Discover JSONP fallback (allow-listed read endpoints, validated data)
+check("page CSP script-src: no 'unsafe-eval' / 'unsafe-inline' / remote hosts except api.deezer.com", scriptSrc === "'self' 'wasm-unsafe-eval' blob: https://api.deezer.com", scriptSrc);
 check("page CSP: frame-ancestors 'none', object-src 'none', base-uri 'none'", ["frame-ancestors 'none'", "object-src 'none'", "base-uri 'none'"].every(x => hdr('content-security-policy').includes(x)));
 check('HSTS ≥ 1 year', /max-age=(\d+)/.test(hdr('strict-transport-security')) && +hdr('strict-transport-security').match(/max-age=(\d+)/)[1] >= 31536000);
 check('Permissions-Policy: mic only for self, camera/geolocation/payment off', /microphone=\(self\)/.test(hdr('permissions-policy')) && /camera=\(\)/.test(hdr('permissions-policy')) && /geolocation=\(\)/.test(hdr('permissions-policy')) && /payment=\(\)/.test(hdr('permissions-policy')));

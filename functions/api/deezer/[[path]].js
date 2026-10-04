@@ -26,11 +26,14 @@ export async function onRequest({ params, request }) {
   let upstream;
   try {
     upstream = await fetch(`https://api.deezer.com/${path}${q.toString() ? '?' + q : ''}`, {
-      headers: { accept: 'application/json' }, redirect: 'error', cf: { cacheTtl: 900, cacheEverything: true }
+      headers: { accept: 'application/json', 'accept-language': 'en', 'user-agent': 'Mozilla/5.0 (compatible; ChordRoom/1.0; +https://chord-room.pages.dev)' },
+      redirect: 'follow', cf: { cacheTtl: 900, cacheEverything: true }
     });
   } catch (e) {
-    return json('{"error":"upstream"}', 502, { 'cache-control': 'no-store' });
+    return json('{"error":"upstream"}', 502, { 'cache-control': 'no-store', 'x-upstream': 'fetch-failed' });
   }
-  if (!upstream.ok) return json('{"error":"upstream"}', upstream.status === 404 ? 404 : 502, { 'cache-control': 'no-store' });
+  // only Deezer's own API host may answer (a redirect elsewhere is refused); the status is exposed for diagnosis only
+  if (new URL(upstream.url || 'https://api.deezer.com/').hostname !== 'api.deezer.com') return json('{"error":"upstream"}', 502, { 'cache-control': 'no-store', 'x-upstream': 'redirected' });
+  if (!upstream.ok) return json('{"error":"upstream"}', upstream.status === 404 ? 404 : 502, { 'cache-control': 'no-store', 'x-upstream': String(upstream.status) });
   return json(request.method === 'HEAD' ? null : upstream.body, 200, { 'cache-control': 'public, max-age=900' });
 }

@@ -17,6 +17,9 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Function proxy, allow-listed read endpoints; falls back to JSONP when run locally). Each track's 30 s preview is
   analysed in the browser (`quickAnalyze`, swaps the global `S` only inside a synchronous block) and saved to the
   shared `catalog` table by signed-in users. DJ matches = Camelot same/relative/±1 and tempo within 6 %.
+  When the proxy can't reach Deezer (502 — Deezer sometimes refuses Cloudflare's servers) the browser falls back to JSONP from
+  api.deezer.com (`dzJsonp`: same allow-list `DZ_ALLOW`, strict callback, 12 s timeout; the CSP's script-src allows exactly
+  https://api.deezer.com; proxy retried every 5 min). The proxy sends a browser-like User-Agent and an `x-upstream` diagnostic header.
   Keep the Deezer attribution (cover links to the Deezer track, note under the list). The "Israeli" filter
   (genre -1) uses Deezer's official "Top Israel" chart playlist (id 1362507345); its new tab sorts by album release date.
 - Stems live in the deck (`#rack`). After separation the waveform switches to the `stems` view: per-stem

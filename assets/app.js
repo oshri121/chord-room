@@ -3080,18 +3080,26 @@ function camColor(n,l){const h=mod((n-1)*30+170,360);return l==='A'?`oklch(56% 0
 function keyText(a){const fl=FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[a.pc]+(a.mode?'m':'')}
 function chordText(c,a){if(c<0)return '';const fl=a&&FLAT_MAJ.has(a.mode?mod(a.pc+3,12):a.pc);return (fl?FLAT:SHARP)[c%12]+(c>=12?'m':'')}
 
-/* Deezer through our proxy (production) or JSONP (local dev, no proxy) */
-let dzMode=null;
+/* Deezer through our proxy; when the proxy can't reach Deezer (Deezer sometimes refuses Cloudflare's servers) the browser
+   asks Deezer directly with JSONP — same allow-list of read endpoints as the proxy, a strict callback name, a timeout, and the
+   data is validated like any third-party input (rowFromTrack). The proxy is retried every 5 minutes. */
+let dzMode=null,dzFail=0;
+const DZ_ALLOW=/^(chart\/\d{1,15}\/tracks|editorial\/\d{1,15}\/releases|album\/\d{1,15}(\/tracks)?|playlist\/\d{1,15}\/tracks|track\/\d{1,15}|search(?:\/artist)?)$/;
+function dzJsonp(path,q){
+  if(!DZ_ALLOW.test(path))return Promise.reject(new Error('deezer'));
+  return new Promise((ok,no)=>{const cb='__dz'+Math.random().toString(36).slice(2,12);const s=document.createElement('script');
+    let tm=0;const done=()=>{clearTimeout(tm);delete window[cb];s.remove()};
+    window[cb]=d=>{done();d&&d.error?no(new Error('deezer')):ok(d)};s.onerror=()=>{done();no(new Error('deezer'))};
+    tm=setTimeout(()=>{window[cb]=()=>{};s.remove();no(new Error('deezer'))},12000);
+    s.referrerPolicy='no-referrer';s.src=`https://api.deezer.com/${path}?${q}${q?'&':''}output=jsonp&callback=${cb}`;document.head.appendChild(s)});
+}
 async function dz(path,params){
   const q=new URLSearchParams(params||{}).toString();
-  if(dzMode!=='jsonp'){
+  if(dzMode!=='jsonp'||Date.now()-dzFail>300000){
     try{const r=await fetch(`api/deezer/${path}${q?'?'+q:''}`);if(r.ok&&/json/.test(r.headers.get('content-type')||'')){dzMode='proxy';return await r.json()}}catch(e){}
-    if(dzMode==='proxy'||!/^(localhost|127\.0\.0\.1)$/.test(location.hostname))throw new Error('deezer');   // production: proxy only
-    dzMode='jsonp';
+    dzMode='jsonp';dzFail=Date.now();
   }
-  return new Promise((ok,no)=>{const cb='__dz'+Math.random().toString(36).slice(2);const s=document.createElement('script');
-    const done=()=>{delete window[cb];s.remove()};window[cb]=d=>{done();ok(d)};s.onerror=()=>{done();no(new Error('deezer'))};
-    s.src=`https://api.deezer.com/${path}?${q}${q?'&':''}output=jsonp&callback=${cb}`;document.head.appendChild(s)});
+  return dzJsonp(path,q);
 }
 function rowFromTrack(t,album){
   /* sec: Deezer data is third-party input too — numeric ids only, strings capped, covers/previews only from Deezer's CDN, links only to deezer.com */
