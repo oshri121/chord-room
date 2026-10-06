@@ -197,6 +197,22 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
+- Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; SQL `[accounts-v4:begin…end]` = LAST block of schema.sql
+  = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
+  password re-auth or e-mail code + TOTP; browser removes `uploads|avatars/<uid>/*` via the Storage API, then `delete_my_account(p_confirm)`
+  refuses owner / live subscription / no fresh amr (15 min) / aal1 with 2FA / files left; a BEFORE DELETE trigger on `auth.users` anonymises
+  payment rows (`subject_hash`) + pay_events payloads, rewrites the uid in other rows, logs `account_deletions`; then `clearLocal(uid)`);
+  `admin_delete_user` (owner/full admin, never the owner, staff only by the owner). **2FA** (Supabase MFA TOTP): Backend `mfa*` wrappers,
+  `Backend.init` holds a 2FA session at aal1 back from the app (`B.mfaPending`, event `cr-mfa` → code dialog), `has_perm/is_admin/is_owner`
+  need aal2 once enrolled + RESTRICTIVE `aal_ok()` policies on the user's own rows; `billing.require_mfa_admin` (owner only; the owner is never
+  locked out). **Turnstile**: `Backend.captcha(action)` hook → token in `captchaToken` for sign-up/in/reset/resend/re-auth, only with
+  `billing.turnstile_site_key` (CSP: challenges.cloudflare.com in script-src + frame/child-src). **Idle sign-out** (`chordroom.idle.v1`,
+  `billing.idle_minutes` 10080 / `idle_minutes_admin` 60, 60 s warning, all tabs) + "sign out of all devices" (`Backend.signOut()` is local now).
+  **Offensive words**: `private.is_offensive` / `CR.offensive` = `window.TEXTGUARD` (same normalisation + BASE list; token matching, no
+  Scunthorpe), trigger `profiles_text_guard` (error 'offensive'), `username_available` false for offensive names, admin list (Settings →
+  Security). **Age**: "I am N or older" from `billing.min_age` → `profiles.age_confirmed_at/age_min`. API limits per IP in `_middleware.js`
+  (Cache API, best effort; webhook exempt). Tests: `sql/test_accounts_v4.py`, `ui/test_accounts.py`, `node/accounts_v4.test.mjs`
+  (shared cases `fixtures/textguard_cases.py`).
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching (the word does not appear in UI copy).
   Non-diatonic chord roots are spelled on the flat side (`chordFlat`). Onset frame times carry `ENV_LAG` (+15 ms); the LUFS highpass Q is in dB (−6.02).
 - Chords (`/* chords */`): `computeChroma` (tuning-corrected) → `detectKey` → `chordPass()` (beat-synchronous `spanChroma`, 24 triads + N.C.,

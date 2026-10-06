@@ -28,26 +28,63 @@
     }
     if (/invalid format|validate email|email address.*invalid|invalid email/i.test(m) || c === 'email_address_invalid' || c === 'validation_failed') return fail('email', m);
     if (/profiles_username_key|username.*(taken|exists)|duplicate key/i.test(m)) return fail('taken', m);
+    if (/captcha/i.test(m) || /^captcha/.test(c)) return fail('captcha', m);                       /* acct: Turnstile */
+    if (/mfa|aal2|factor/i.test(m) || /^mfa_/.test(c)) return fail(/code|challenge|verif/i.test(m) ? 'otp' : 'mfa', m);   /* acct */
     if (/failed to fetch|network|load failed/i.test(m)) return fail('network', m);
     return fail('generic', m);
   }
   const redirect = () => location.origin + location.pathname;
+
+  /* acct (accounts v4): Turnstile token for Supabase Auth (assets/acct.js sets B.captcha when a site key is configured;
+     undefined = no CAPTCHA), the session's 2FA level from the JWT, retries with backoff for 429/503 */
+  const cap = async action => { try { return B.captcha ? (await B.captcha(action)) || undefined : undefined; } catch (e) { return undefined; } };
+  function claims(tok) {
+    try { const p = String(tok || '').split('.')[1].replace(/-/g, '+').replace(/_/g, '/'); return JSON.parse(decodeURIComponent(escape(atob(p + '==='.slice((p.length + 3) % 4))))) || {}; }
+    catch (e) { return {}; }
+  }
+  // a session whose user has a verified TOTP factor but did not pass it yet (aal1) → not signed in for the app
+  function mfaState(session) {
+    if (!session || !session.user) return null;
+    const f = (session.user.factors || []).filter(x => x && x.status === 'verified');
+    return { aal: claims(session.access_token).aal || 'aal1', factors: f, need: f.length > 0 && claims(session.access_token).aal !== 'aal2' };
+  }
+  async function backoff(fn, tries) {
+    for (let i = 0; ; i++) {
+      const r = await fn();
+      const st = r && r.error && (r.error.status || r.error.statusCode);
+      if (!(st == 429 || st == 503) || i >= (tries || 3)) return r;
+      await new Promise(ok => setTimeout(ok, Math.min(8000, 500 * 2 ** i) + Math.random() * 250));
+    }
+  }
+  const mfaEvent = () => { try { document.dispatchEvent(new CustomEvent('cr-mfa', { detail: { pending: !!B.mfaPending } })); } catch (e) {} };
 
   const B = {
     enabled,
     client: sb,
     user: null,
     USERNAME_RE,
+    captcha: null,        /* acct: async (action) → Turnstile token | undefined (set by assets/acct.js) */
+    mfaPending: null,     /* acct: {user, factors} while a 2FA sign-in waits for its code */
+    _reauth: false,
 
     async init(onChange) {
       if (!enabled) return;
-      sb.auth.onAuthStateChange((event, session) => {
-        B.user = session ? session.user : null;
+      // acct: a 2FA account whose session has not passed the TOTP step yet stays "signed out" for the app until
+      // mfaSignInVerify (the event 'cr-mfa' opens the code dialog). A re-authentication in the delete-account dialog
+      // (B._reauth) keeps the user while it asks for the code. Decided from the session alone (no auth calls here).
+      const gate = (event, session) => {
+        const st = mfaState(session);
+        if (st && st.need && !(B._reauth && B.user && B.user.id === session.user.id)) {
+          const was = B.mfaPending; B.mfaPending = { user: session.user, factors: st.factors }; B.user = null;
+          onChange('MFA_REQUIRED', null); if (!was) setTimeout(mfaEvent, 0); return;
+        }
+        B.mfaPending = null; B.user = session ? session.user : null;
         onChange(event, B.user);
-      });
+      };
+      B._gate = gate;
+      sb.auth.onAuthStateChange(gate);
       const { data } = await sb.auth.getSession();
-      B.user = data.session ? data.session.user : null;
-      onChange('INITIAL', B.user);
+      gate('INITIAL', data.session || null);
     },
 
     async usernameFree(username) {
@@ -56,13 +93,16 @@
       return !!data;
     },
     // terms = { version, at } — copied into profiles.terms_version / terms_at by handle_new_user (supabase/auth_consent.sql)
-    async signUp({ username, email, password, terms }) {
+    async signUp({ username, email, password, terms, age }) {
       if (!USERNAME_RE.test(username)) fail('user');
       if (password.length < 8) fail('short');
       if (!(await B.usernameFree(username))) fail('taken');
       const meta = { username };
       if (terms && terms.version) { meta.terms_version = String(terms.version).slice(0, 20); meta.terms_at = terms.at || new Date().toISOString(); }
-      const { data, error } = await sb.auth.signUp({ email, password, options: { data: meta, emailRedirectTo: redirect() } });
+      // acct: the age checkbox → profiles.age_confirmed_at / age_min (handle_new_user, schema.sql [A-5])
+      if (age && age.ok) { meta.age_ok = true; meta.age_at = age.at || new Date().toISOString(); meta.age_min = Math.max(13, Math.min(21, parseInt(age.min, 10) || 16)); }
+      const captchaToken = await cap('signup');
+      const { data, error } = await sb.auth.signUp({ email, password, options: { data: meta, emailRedirectTo: redirect(), captchaToken } });
       if (error) mapAuthError(error);
       // with "Confirm email" on, an address that already has a confirmed account comes back as a user without identities
       if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) fail('exists');
@@ -74,7 +114,8 @@
       if (error) mapAuthError(error);
     },
     async resendSignup(email) {
-      const { error } = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirect() } });
+      const captchaToken = await cap('resend');
+      const { error } = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirect(), captchaToken } });
       if (error) mapAuthError(error);
     },
     // password reset by code: the same email carries a code ({{ .Token }}) and the old link ({{ .ConfirmationURL }})
@@ -84,12 +125,19 @@
       if (error) mapAuthError(error);
     },
     async signIn({ email, password }) {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
+      const captchaToken = await cap('signin');
+      const { data, error } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken } });
       if (error) mapAuthError(error);
+      // acct: the account has 2FA → the TOTP step follows (the 'cr-mfa' event opens it; the auth dialog closes)
+      const st = mfaState(data && data.session);
+      if (st && st.need) { B.mfaPending = { user: data.session.user, factors: st.factors }; B.user = null; setTimeout(mfaEvent, 0); fail('mfa'); }   // the dialog ignores a second event
     },
-    async signOut() { await sb.auth.signOut(); },
+    // acct: this browser only (the account menu); signOutAll ends every session of the account (all devices)
+    async signOut() { B.mfaPending = null; await sb.auth.signOut({ scope: 'local' }); },
+    async signOutAll() { B.mfaPending = null; const { error } = await sb.auth.signOut({ scope: 'global' }); if (error) { await sb.auth.signOut({ scope: 'local' }); throw error; } },
     async sendReset(email) {
-      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirect() });
+      const captchaToken = await cap('reset');
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirect(), captchaToken });
       if (error) mapAuthError(error);
     },
     async setPassword(password) {
@@ -99,9 +147,39 @@
     },
     async changePassword(current, next) {
       if (next.length < 8) fail('short');
-      const { error: e1 } = await sb.auth.signInWithPassword({ email: B.user.email, password: current });
-      if (e1) fail('curpass');
+      await B.checkPassword(current);
       await B.setPassword(next);
+    },
+    // acct: is this the account's password? Checked on a throwaway client, so this session (and its 2FA level) stays as it is
+    async checkPassword(pw) {
+      const tmp = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'cr-pwcheck' } });
+      const captchaToken = await cap('reauth');
+      const { error } = await tmp.auth.signInWithPassword({ email: B.user.email, password: pw, options: { captchaToken } });
+      if (error) { if (/invalid login credentials/i.test(error.message || '') || error.code === 'invalid_credentials') fail('curpass'); mapAuthError(error); }
+      try { await tmp.auth.signOut({ scope: 'local' }); } catch (e) {}
+    },
+    // acct: sign in again as the same account (fresh JWT amr, needed by delete_my_account). A 2FA account is aal1 after
+    // this until mfaVerify; B._reauth keeps the app signed in meanwhile, reauthDone() ends that grace.
+    async reauthPassword(pw) {
+      B._reauth = true;
+      const captchaToken = await cap('reauth');
+      const { error } = await sb.auth.signInWithPassword({ email: B.user.email, password: pw, options: { captchaToken } });
+      if (error) { B._reauth = false; if (/invalid login credentials/i.test(error.message || '') || error.code === 'invalid_credentials') fail('curpass'); mapAuthError(error); }
+    },
+    // the same with a 6-digit code by e-mail (password forgotten). The Supabase "Magic Link" template must show {{ .Token }}.
+    async sendReauthCode() {
+      const captchaToken = await cap('otp');
+      const { error } = await sb.auth.signInWithOtp({ email: B.user.email, options: { shouldCreateUser: false, captchaToken } });
+      if (error) mapAuthError(error);
+    },
+    async verifyReauthCode(code) {
+      B._reauth = true;
+      const { error } = await sb.auth.verifyOtp({ email: B.user.email, token: String(code).trim(), type: 'email' });
+      if (error) { B._reauth = false; mapAuthError(error); }
+    },
+    reauthDone() {
+      if (!B._reauth) return; B._reauth = false;
+      if (B._gate) sb.auth.getSession().then(r => B._gate('REAUTH', (r.data && r.data.session) || null)).catch(() => {});
     },
     async changeEmail(email) {
       const { error } = await sb.auth.updateUser({ email }, { emailRedirectTo: location.origin + location.pathname });
@@ -118,7 +196,11 @@
         if (!USERNAME_RE.test(patch.username)) fail('user');
       }
       const { data, error } = await sb.from('profiles').update(patch).eq('id', B.user.id).select().maybeSingle();
-      if (error) { if (/duplicate key|profiles_username_key/.test(error.message)) fail('taken'); throw error; }
+      if (error) {
+        if (/duplicate key|profiles_username_key/.test(error.message)) fail('taken');
+        if (/^offensive/.test(error.message || '')) { const e = new Error('offensive'); e.code = 'offensive'; e.field = String(error.details || ''); throw e; }   /* acct */
+        throw error;
+      }
       return data;
     },
     async touch() {
@@ -376,6 +458,89 @@
       const { data, error } = await sb.rpc('assistant_status');
       if (error) throw error;
       return data;
+    },
+
+    /* ---------- acct: two-factor authentication (Supabase Auth MFA, TOTP) ---------- */
+    // [{id, name, status: 'verified'|'unverified', created_at}]
+    async mfaFactors() {
+      const { data, error } = await sb.auth.mfa.listFactors();
+      if (error) throw error;
+      return ((data && data.all) || []).filter(f => f.factor_type === 'totp').map(f => ({ id: f.id, name: f.friendly_name || '', status: f.status, created_at: f.created_at }));
+    },
+    // a new authenticator → {id, qr (data:image/svg+xml…), secret, uri}; left-over unverified factors are removed first
+    async mfaEnroll(name) {
+      try { for (const f of await B.mfaFactors()) if (f.status !== 'verified') await sb.auth.mfa.unenroll({ factorId: f.id }); } catch (e) {}
+      const { data, error } = await sb.auth.mfa.enroll({ factorType: 'totp', friendlyName: String(name || 'Chord Room').slice(0, 40) + ' ' + Date.now().toString(36) });
+      if (error) mapAuthError(error);
+      return { id: data.id, qr: data.totp && data.totp.qr_code, secret: data.totp && data.totp.secret, uri: data.totp && data.totp.uri };
+    },
+    // the 6-digit code from the app → the session becomes aal2 (also used to finish enrolment and after a re-authentication)
+    async mfaVerify(factorId, code) {
+      const { error } = await sb.auth.mfa.challengeAndVerify({ factorId, code: String(code).trim() });
+      if (error) { const e = new Error(error.message); e.code = /invalid|expired|code/i.test(error.message || '') ? 'otp' : 'generic'; throw e; }
+      B.reauthDone();
+    },
+    async mfaUnenroll(factorId) {
+      const { error } = await sb.auth.mfa.unenroll({ factorId });
+      if (error) mapAuthError(error);
+      try { await sb.auth.refreshSession(); } catch (e) {}
+    },
+    mfaPendingInfo() { return B.mfaPending ? { email: B.mfaPending.user.email || '', factors: B.mfaPending.factors.length } : null; },
+    // the sign-in's second step (B.mfaPending): verify → SIGNED_IN for the app
+    async mfaSignInVerify(code) {
+      const p = B.mfaPending; if (!p || !p.factors.length) fail('mfa');
+      const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: p.factors[0].id, code: String(code).trim() });
+      if (error) { const e = new Error(error.message); e.code = /invalid|expired|code/i.test(error.message || '') ? 'otp' : 'generic'; throw e; }
+      const { data } = await sb.auth.getSession(); if (B._gate) B._gate('SIGNED_IN', data.session || null);
+    },
+    async mfaAbort() { B.mfaPending = null; try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {} },
+
+    /* ---------- acct: delete an account (schema.sql [A-6]) ---------- */
+    // remove every file of <bucket>/<uid>/ through the Storage API (SQL deletes on storage.objects are refused by Supabase)
+    async removeFolder(bucket, uid, onFile) {
+      for (let round = 0; round < 60; round++) {
+        const { data, error } = await backoff(() => sb.storage.from(bucket).list(uid, { limit: 1000 }));
+        if (error) throw error;
+        const names = (data || []).filter(x => x && x.name && x.id !== null && !/[\\/]/.test(x.name)).map(x => `${uid}/${x.name}`);
+        if (!names.length) return;
+        for (let i = 0; i < names.length; i += 100) {
+          const { error: e2 } = await backoff(() => sb.storage.from(bucket).remove(names.slice(i, i + 100)));
+          if (e2) throw e2;
+          if (onFile) onFile(Math.min(names.length, i + 100));
+        }
+      }
+    },
+    // → {ok:true} | {ok:false, why: owner|subscription|confirm|reauth|mfa|files_left|not_found}
+    async deleteMyAccount(confirm, onStep) {
+      const uid = B.user.id;
+      if (onStep) onStep('files');
+      await B.removeFolder('uploads', uid); await B.removeFolder('avatars', uid);
+      if (onStep) onStep('account');
+      const { data, error } = await sb.rpc('delete_my_account', { p_confirm: String(confirm || '').slice(0, 80) });
+      if (error) throw error;
+      if (data && data.ok) { B._reauth = false; B.mfaPending = null; try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {} }
+      return data || { ok: false, why: 'generic' };
+    },
+    // owner / full admin: another account → {ok} | {ok:false, why: self|owner|staff|subscription|confirm|files_left|not_found}
+    async adminDeleteUser(target, confirm) {
+      await B.removeFolder('uploads', target); await B.removeFolder('avatars', target);
+      const { data, error } = await sb.rpc('admin_delete_user', { target, p_confirm: String(confirm || '').slice(0, 80) });
+      if (error) throw error;
+      return data || { ok: false, why: 'generic' };
+    },
+
+    /* ---------- acct: offensive words (schema.sql [A-4]) ---------- */
+    // may this text be shown to others? (null = the check is not installed yet)
+    async textOk(text) {
+      const { data, error } = await backoff(() => sb.rpc('text_ok', { p_text: String(text || '').slice(0, 2000) }));
+      if (error) { if (/does not exist|could not find|schema cache|PGRST20/i.test(error.message || '')) return null; throw error; }
+      return data !== false;
+    },
+    async blockedWords() { const { data, error } = await sb.rpc('admin_blocked_words'); if (error) throw error; return data || []; },
+    async blockedWordSet(word, mode, on) {
+      const { data, error } = await sb.rpc('admin_blocked_word_set', { p_word: String(word || '').slice(0, 80), p_mode: mode || 'word', p_on: on !== false });
+      if (error) throw error;
+      return data || { ok: false };
     }
   };
 

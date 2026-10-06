@@ -29,6 +29,11 @@ create table auth.users (id uuid primary key default gen_random_uuid(), email te
   created_at timestamptz not null default now(), email_confirmed_at timestamptz default now());
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true),'')::uuid $$;
 grant execute on function auth.uid() to anon, authenticated;
+-- acct: Supabase's auth.jwt() (claims of the request: aal, amr…) and the MFA factors table (accounts v4)
+create function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claim', true), ''), nullif(current_setting('request.jwt.claims', true), ''))::jsonb $$;
+grant execute on function auth.jwt() to anon, authenticated;
+create table auth.mfa_factors (id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,
+  friendly_name text, factor_type text not null default 'totp', status text not null default 'unverified', created_at timestamptz default now(), updated_at timestamptz default now());
 create schema storage; grant usage on schema storage to anon, authenticated;
 create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
 create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text, metadata jsonb, owner uuid);
