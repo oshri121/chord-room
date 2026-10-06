@@ -14,6 +14,8 @@
     plans: [{ id: 'pro', price: 29, points: 300, link: '' }, { id: Q('plan.id'), price: Q('plan.price'), points: Q('plan.points'), link: "javascript:__xss('plan.link')" }]
   };
   let cfg = { id: 1, title: P('cfg.title'), announce: P('cfg.announce'), lang: 'he', ai: true, dl: true, require_login: false, allow_signup: true, billing: evilBilling };
+  cfg.analytics = { ga4: "G-1234'><img src=x onerror=\"__xss('ga4')\">", clarity: "javascript:__xss('clarity')", gsc: Q('gsc') };   // growth
+  cfg.experiments = [{ id: 'home_cta', on: true, variants: ['a', Q('exp.variant')], conversion: P('exp.conv'), note: P('exp.note') }, { id: Q('exp.id'), on: true, variants: ['a', 'b'] }];
   let cb = null, cur = null;
   const cat = [];
   for (let i = 0; i < 3; i++) cat.push({ id: 'dz:' + (1000 + i), ext_id: 1000 + i, title: P('cat.title' + i), artist: P('cat.artist' + i), album: P('cat.album'),
@@ -71,7 +73,14 @@
     async textOk() { return true; },
     async deleteMyAccount() { return { ok: false, why: P('delete.why') }; },
     async adminDeleteUser() { return { ok: false, why: Q('admdel.why') }; },
-    async reauthPassword() {}, async checkPassword() {}, reauthDone() {}
+    async reauthPassword() {}, async checkPassword() {}, reauthDone() {},
+    // growth: hostile analytics ids / experiments / reviews (never reach a URL, the DOM as markup, or a script)
+    async saveGrowth() {}, async abResults() { return { experiment: 'home_cta', conversion: P('ab.conv'), variants: [{ variant: P('ab.variant'), assigned: Q('ab.n'), converted: 1, rate: Q('ab.rate') }] }; },
+    async reviewsPublic() { return { count: 6, avg: Q('rev.avg'), items: [{ name: P('rev.name'), rating: 5, body: P('rev.body'), featured: true, lang: Q('rev.lang') }, { name: Q('rev.name2'), rating: Q('rev.rating'), body: Q('rev.body2'), featured: false }] }; },
+    async myReview() { return { rating: Q('rev.my'), body: P('rev.mybody'), show_name: true, status: P('rev.status') }; },
+    async reviewSubmit() { return { ok: false, error: P('rev.err') }; }, async reviewDelete() {},
+    async adminReviews() { return [{ id: Q('rev.id'), rating: 4, body: P('rev.abody'), show_name: false, lang: P('rev.alang'), status: P('rev.astatus'), featured: false, username: P('rev.user'), display_name: P('rev.dname') }]; },
+    async adminReviewSet() { return 'ok'; }
   };
   evilBilling.turnstile_site_key = Q('turnstile.key'); evilBilling.idle_minutes = Q('idle'); evilBilling.min_age = Q('min_age');
   window.__MOCK_BACKEND = B;

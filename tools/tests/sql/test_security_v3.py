@@ -185,7 +185,7 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,username_available')
+      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,reviews_public,username_available')   # growth: reviews_public = approved reviews only
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('API roles have no USAGE on schema private', sql("select has_schema_privilege('anon','private','usage') or has_schema_privilege('authenticated','private','usage')"), 'f')
@@ -198,8 +198,8 @@ v3 = open(os.path.join(pg.REPO, 'supabase', 'security_v3.sql'), encoding='utf-8'
 asql = open(pg.ASSISTANT, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v3 .*?-- \[security-v3:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v3] block', 'found' if m else 'missing', 'found')
-# acct: only later blocks ([accounts-v4]) may follow it
-later = re.sub(r'(?s)-- =+\n-- Accounts v4 .*?-- \[accounts-v4:end\]\n-- =+\n', '', src[m.end():]) if m else src
+# acct / growth: only later blocks ([accounts-v4], [growth-v4]) may follow it
+later = re.sub(r'(?s)-- =+\n-- (?:Accounts|Growth) v4 .*?-- \[(?:accounts|growth)-v4:end\]\n-- =+\n', '', src[m.end():]) if m else src
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('security_v3.sql contains the block verbatim', 'yes' if m and m.group(1) in v3 else 'no', 'yes')
 check('security_v3.sql ends with assistant.sql verbatim', 'yes' if v3.endswith(asql) else 'no', 'yes')

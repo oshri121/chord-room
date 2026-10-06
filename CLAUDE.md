@@ -197,8 +197,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
-- Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; SQL `[accounts-v4:begin…end]` = LAST block of schema.sql
-  = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
+- Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; SQL `[accounts-v4:begin…end]` = after [security-v3],
+  before `[growth-v4]` (the last block) of schema.sql = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
   password re-auth or e-mail code + TOTP; browser removes `uploads|avatars/<uid>/*` via the Storage API, then `delete_my_account(p_confirm)`
   refuses owner / live subscription / no fresh amr (15 min) / aal1 with 2FA / files left; a BEFORE DELETE trigger on `auth.users` anonymises
   payment rows (`subject_hash`) + pay_events payloads, rewrites the uid in other rows, logs `account_deletions`; then `clearLocal(uid)`);
@@ -289,6 +289,38 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (bridge block after `window.CR`: `voiceSong`, `getTranspose`, `setTranspose` → `setT`). Needs `microphone=(self)` in `_headers`.
 - Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
   defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
+
+- Growth (launch checklist; `LICENSES-AUDIT.md` = the owner's license/risk report in Hebrew — Demucs weights and the Deezer API
+  are NOT cleared for commercial use, read it before charging for separation). App hooks are marked `/* growth */`; app.js only
+  dispatches events: `cr-view` {v} (end of `showView`), `cr-act` {action} (top of `logAct`, the name only), `cr-config` (end of
+  `applyConfig`), `cr-signup` (sign-up done step), `cr-admin` {view} (admin tabs with `.asec[data-ext]`).
+  · Paths: `/pricing /terms /privacy /accessibility /licenses /tool /about` → `_redirects` 200 rewrites to `/`; router: no hash →
+  `pathView()` (last path segment), hashes win; `viewUrl` keeps the clean path until the user navigates (then `/#view`); unknown
+  path → home + notice. `functions/_middleware.js` (paths in `_routes.json`) writes the page's own title/description/canonical/OG
+  into index.html for crawlers (`PAGE_META`, Hebrew) and keeps the page headers (`PAGE_HEADERS` = copy of the `_headers` `/*`
+  block — `node/growth.test.mjs` fails when they differ: **change both together**). `sitemap.xml` lists the paths.
+  · `assets/info.js` (`INFO`): `#licenses` (every third-party component; keep in sync with vendor/, ai/) and `#accessibility`
+  (`A11Y.statementHTML(lang,{full,admin,contact})`, extra sections `STX` in a11y.js, `REVIEWED_DEFAULT`; `#about-a11y` redirects;
+  admins see a warning until `CONTACT` is filled) in `#infoView`; per-view meta description/canonical/og:*/twitter:* (`SEO`).
+  · `assets/consent.js` (`CONSENT`): banner `#ckBar` only when `site_config.analytics` has a valid GA4/Clarity id and no choice is
+  saved (`chordroom.consent.v1`); `[data-ck="open"]` anywhere = cookie settings `#ckDlg`; GA4 (signals/ad personalisation off,
+  manual `page_view` with a virtual path, key events mapped from logAct names, never details) + Clarity (`data-clarity-mask` on
+  inputs, song name, account/admin/tool views) load ONLY after "allow"; withdraw = consent denied + `ga-disable-<id>` + cookies
+  deleted. `analytics.gsc` → `<meta name="google-site-verification">` (HTML-file method: the owner sends the file, add it to the
+  repo root). CSP: GA4 = www.googletagmanager.com (+ *.google-analytics.com, *.analytics.google.com for collect), Clarity =
+  *.clarity.ms + c.bing.com. FABs lift above the banner (`#ckBar` in both `updLift`s).
+  · `assets/ab.js` (`AB.variant(exp, variants)`): control unless `site_config.experiments` has it `on`; sticky
+  (`chordroom.ab.v1`), activity `ab_assign` '<exp>:<v>' once per member, GA user property `ab_<exp>`; admin tab "Growth"
+  (`#admGrowth`, 'settings' perm; ids = owner/full admin only; results = `ab_results()`, 'activity' perm). Shipped experiment
+  `home_cta` (pages.js hero, `ctaToolB`), off by default.
+  · `assets/reviews.js` (`REVIEWS`): prompt after 3 exports (once per 30 days, `chordroom.rev.v1:<uid>`), dialog `#rvDlg`, home
+  section via `PAGES.afterAbout` (approved, featured first, initials unless opted in, average), JSON-LD AggregateRating from 5
+  reviews, admin tab "Reviews" (`#admReviews`, 'catalog' perm). Never seed or invent reviews.
+  · SQL `[growth-v4]` (last block of schema.sql = `supabase/growth_v4.sql`): `site_config.analytics/experiments` + guard,
+  `ab_results`, `reviews` table + `review_submit/review_delete/reviews_public/admin_reviews/admin_review_set`; offensive check =
+  `private.is_offensive(text)` when it exists, else `private.growth_offensive`. `reviews_public` is the only new anon RPC (the
+  allow-lists in the SQL sweeps include it). Referral disclosure: `refDisc` in the invite box + `refMsg` + terms `t-referral`.
+  Styles `assets/growth.css`. Tests: `sql/test_growth_v4.py`, `ui/test_growth.py`, `node/growth.test.mjs`.
 
 ## Rules of thumb
 - Keep it build-free: plain scripts, no bundler for the app itself.

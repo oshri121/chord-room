@@ -19,6 +19,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Chord Room — tempo, key, chords and AI stems from any song">
+<meta property="og:image:type" content="image/png"><!-- growth: WhatsApp/Facebook preview (absolute https, 1200×630 PNG < 300 KB) -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Chord Room — קצב, סולם, אקורדים וערוצי AI מכל שיר">
 <meta name="twitter:description" content="זיהוי BPM, סולם ואקורדים, גל RGB לתקליטנים, הפרדת ערוצים ב־AI וייצוא ל־FL Studio — הכול בדפדפן.">
@@ -46,6 +47,7 @@
 <link rel="stylesheet" href="assets/assistant.css?v=2">
 <link rel="stylesheet" href="assets/voice.css?v=1">
 <link rel="stylesheet" href="assets/acct.css?v=1"><!-- acct -->
+<link rel="stylesheet" href="assets/growth.css?v=1"><!-- growth: consent banner, reviews, licenses + accessibility pages -->
 </head>
 <body>
 <button type="button" class="skip" id="skipLink" data-i="skipLink"></button><!-- qw: skip link -->
@@ -192,7 +194,7 @@
   </section>
 
   <footer>
-    <div><h3 data-i="about"></h3><p data-i="aboutT" style="margin:0 0 8px"></p><p data-i="credits" style="margin:0 0 8px"></p><p class="flegal"><a href="#terms" data-i="auLegal"></a><span aria-hidden="true">·</span><a href="#privacy" data-i="auPrivacy"></a></p></div>
+    <div><h3 data-i="about"></h3><p data-i="aboutT" style="margin:0 0 8px"></p><p data-i="credits" style="margin:0 0 8px"></p><p class="flegal"><a href="#terms" data-i="auLegal"></a><span aria-hidden="true">·</span><a href="#privacy" data-i="auPrivacy"></a><!-- growth --><span aria-hidden="true">·</span><a href="#accessibility" data-i="auA11y"></a><span aria-hidden="true">·</span><a href="#licenses" data-i="auLicenses"></a><span aria-hidden="true">·</span><button type="button" class="lnk" data-ck="open" data-i="auCookies"></button></p></div>
     <div><h3 data-i="keys"></h3><div class="keys" id="keys"></div></div>
   </footer>
 </main>
@@ -220,6 +222,7 @@
 <section class="wrap page" id="pricingView" hidden></section>
 <section class="wrap page" id="aboutView" hidden></section>
 <section class="wrap page legal" id="legalView" hidden></section>
+<section class="wrap page info" id="infoView" hidden></section><!-- growth: #licenses, #accessibility (assets/info.js) -->
 <section class="wrap page signgate" id="gateView" hidden></section>
 <div class="toast" id="toast" role="status" hidden></div>
 
@@ -351,7 +354,7 @@
   <div class="in">
     <div class="ah"><h2 data-i="admin"></h2><button class="btn ghost" id="adminClose" type="button" data-i="close"></button></div>
     <div class="kpis" id="kpis"></div>
-    <div class="admtabs" id="admTabs"><button type="button" data-v="users" data-i="users"></button><button type="button" data-v="songs" data-i="allSongs"></button><button type="button" data-v="activity" data-i="admActivity"></button><button type="button" data-v="settings" data-i="settings"></button><button type="button" data-v="roles" data-i="admRoles"></button></div>
+    <div class="admtabs" id="admTabs"><button type="button" data-v="users" data-i="users"></button><button type="button" data-v="songs" data-i="allSongs"></button><button type="button" data-v="activity" data-i="admActivity"></button><button type="button" data-v="settings" data-i="settings"></button><button type="button" data-v="roles" data-i="admRoles"></button><button type="button" data-v="reviews" data-i="admReviews"></button><button type="button" data-v="growth" data-i="admGrowth"></button></div>
     <div class="asec" id="admUsers"><div class="bhead"><h3 data-i="users"></h3><input type="search" id="uSearch" class="srch" data-ip="search"></div>
       <div class="tblw"><table class="ut"><thead><tr><th data-i="colUser"></th><th data-i="role"></th><th data-i="joined"></th><th data-i="lastSeen"></th><th data-i="uploads"></th><th data-i="downloadsL"></th><th data-i="seps"></th><th data-i="creditsCol"></th><th data-i="colStatus"></th><th></th></tr></thead><tbody id="uBody"></tbody></table></div></div>
     <div class="asec" id="admSongs" hidden><div class="bhead"><h3 data-i="allSongs"></h3><div class="row2"><input type="search" id="sSearch" class="srch" data-ip="searchSongs"><span class="snote mono" id="sInfo"></span><button class="btn solid" type="button" id="sAll" data-i="dlAll"></button><span class="snote" id="sMsg"></span></div></div>
@@ -409,6 +412,9 @@
         <div class="row2" style="grid-column:1/-1"><button class="btn solid" type="button" id="bSave" data-i="saveSettings"></button><span class="snote" id="bMsg"></span></div>
       </div>
     </div>
+    <!-- growth: module tabs, filled by assets/reviews.js and assets/ab.js -->
+    <div class="asec" id="admReviews" data-ext="reviews" hidden></div>
+    <div class="asec" id="admGrowth" data-ext="growth" hidden></div>
   </div>
 </div>
 <div class="gate" id="gate" hidden><div><p data-i="gateMsg"></p><button class="btn solid" type="button" id="gateIn" data-i="signIn"></button></div></div>
@@ -430,12 +436,17 @@
 <script src="assets/mashup.js?v=4"></script>
 <script src="assets/convert.js?v=3"></script>
 <script src="assets/extended.js?v=4"></script>
-<script src="assets/pages.js?v=11"></script>
+<script src="assets/pages.js?v=12"></script>
 <script src="assets/shell.js?v=7"></script>
 <script src="assets/bg.js?v=2"></script>
-<script src="assets/a11y.js?v=3"></script>
+<script src="assets/a11y.js?v=4"></script>
 <script src="assets/welcome.js?v=2"></script>
-<script src="assets/assistant.js?v=3"></script>
+<script src="assets/assistant.js?v=4"></script>
 <script src="assets/voice.js?v=1"></script>
+<!-- growth: cookie consent + analytics (GA4 / Clarity only after consent), A/B tests, reviews, licenses / accessibility pages -->
+<script src="assets/consent.js?v=1"></script>
+<script src="assets/ab.js?v=1"></script>
+<script src="assets/reviews.js?v=1"></script>
+<script src="assets/info.js?v=1"></script>
 </body>
 </html>

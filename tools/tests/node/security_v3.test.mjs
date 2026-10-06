@@ -54,9 +54,10 @@ check('only /ai/worker.js detaches the CSP', detaches.length === 1 && detaches[0
 const root = rules.find(r => r.pat === '/*');
 const hdr = n => (root.lines.find(l => l.toLowerCase().startsWith(n + ':')) || '').slice(n.length + 1).trim();
 const scriptSrc = (hdr('content-security-policy').match(/script-src ([^;]*)/) || [, ''])[1];
-// deliberate remote hosts: Deezer's API for the Discover JSONP fallback (allow-listed read endpoints, validated data) and
-// Cloudflare Turnstile (accounts v4: bot check on the auth forms, loaded only when a site key is configured)
-check("page CSP script-src: no 'unsafe-eval' / 'unsafe-inline' / remote hosts except api.deezer.com + challenges.cloudflare.com", scriptSrc === "'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://challenges.cloudflare.com", scriptSrc);
+// deliberate remote hosts: Deezer's API for the Discover JSONP fallback (allow-listed read endpoints, validated data),
+// Cloudflare Turnstile (accounts v4: bot check on the auth forms, loaded only when a site key is configured) and,
+// growth, the two analytics tags (loaded by assets/consent.js only after cookie consent and only with admin-set ids)
+check("page CSP script-src: no 'unsafe-eval' / 'unsafe-inline' / remote hosts except api.deezer.com + challenges.cloudflare.com + GA4 + Clarity", scriptSrc === "'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://challenges.cloudflare.com https://www.googletagmanager.com https://*.clarity.ms", scriptSrc);
 check("page CSP: frame-ancestors 'none', object-src 'none', base-uri 'none'", ["frame-ancestors 'none'", "object-src 'none'", "base-uri 'none'"].every(x => hdr('content-security-policy').includes(x)));
 check('HSTS ≥ 1 year', /max-age=(\d+)/.test(hdr('strict-transport-security')) && +hdr('strict-transport-security').match(/max-age=(\d+)/)[1] >= 31536000);
 check('Permissions-Policy: mic only for self, camera/geolocation/payment off', /microphone=\(self\)/.test(hdr('permissions-policy')) && /camera=\(\)/.test(hdr('permissions-policy')) && /geolocation=\(\)/.test(hdr('permissions-policy')) && /payment=\(\)/.test(hdr('permissions-policy')));

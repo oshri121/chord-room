@@ -10,7 +10,7 @@
 (function () {
 'use strict';
 
-const VERSION = '2026-10-06';
+const VERSION = '2026-10-06';   // acct: account deletion, 2FA, Turnstile, retention · growth: cookies + consent-based analytics, A/B tests, reviews, invite disclosure
 /* the business that runs the site — shown in both documents */
 const OPERATOR = { name: '', reg: '', address: '' };
 
@@ -26,7 +26,7 @@ he: {
     'נקודות משמשות להפרדת ערוצים ולהורדת ערוצים ואין להן ערך כספי. מנויים נגבים דרך Lemon Squeezy ואפשר לבטל אותם בכל עת בפורטל המנוי.',
     'אסור לתקוף את האתר, לעקוף מגבלות או נקודות, או לגרד (scraping) את האתר והקטלוג.',
     'אנחנו מנהלים יומן פעילות (כניסות, צפיות, העלאות, הפרדות, ייצוא ועוד) לצורכי אבטחה, תמיכה ומניעת ניצול לרעה. הוא נשמר עד 180 יום, ורק מנהלים מורשים רואים אותו.',
-    'המידע מעובד אצל Supabase,‏ Cloudflare,‏ Deezer ו־Lemon Squeezy. אנחנו לא מוכרים מידע ולא משתמשים בפרסומות או במעקב של צד שלישי.',
+    'המידע מעובד אצל Supabase,‏ Cloudflare,‏ Deezer ו־Lemon Squeezy. כלי סטטיסטיקה (Google Analytics ו־Microsoft Clarity) פועלים רק אם הסכמתם בחלון העוגיות. אנחנו לא מוכרים מידע ולא משתמשים בפרסומות.',
     'גיל מינימלי: 16. אפשר לבקש עיון במידע, תיקון ומחיקה. על התנאים חל הדין הישראלי.'
   ],
   terms: { title: 'תנאי שימוש', intro: 'ברוכים הבאים ל־Chord Room. התנאים האלה מסדירים את השימוש באתר ובשירותים שלו. כדאי לקרוא אותם יחד עם <a href="#privacy">מדיניות הפרטיות</a>. הנוסח כתוב בלשון רבים ומתייחס לכל המגדרים.',
@@ -90,7 +90,7 @@ he: {
          '<b>יומן פעילות:</b> ראו הסעיף הבא.',
          '<b>מידע טכני:</b> כתובת IP ופרטי דפדפן מגיעים לספקי האחסון והתשתית (Cloudflare,‏ Supabase) כחלק רגיל מהפעלת האתר.',
          '<b>פניות:</b> מה שאתם כותבים לנו.'],
-        'אנחנו לא משתמשים בפרסומות, בכלי מעקב או באנליטיקה של צד שלישי, ולא מוכרים מידע.'],
+        'אנחנו לא משתמשים בפרסומות ולא מוכרים מידע. כלי סטטיסטיקה של צד שלישי פועלים רק בהסכמתכם — ראו ״עוגיות וסטטיסטיקה״.'],
       ['p-log', 'יומן הפעילות',
         ['<b>מה נרשם:</b> ביקורים, צפייה בעמודים, העלאה ופתיחה של שירים (שם השיר ומשכו), פתיחת שירים בגלה שירים, הפרדות ערוצים, ייצוא והורדות, טעינת שירים במיקס, ניתוח וייצוא בניתוח הספרייה, כניסות לחשבון (כולל שפת הדפדפן), לחיצה על הצטרפות למסלול, העתקת קישור הזמנה, ושינויי תפקידים והרשאות שמבצעים מנהלים.',
          '<b>מה כל רשומה כוללת:</b> החשבון, סוג הפעולה, פרט קצר (למשל שם השיר) והמועד.',
@@ -104,14 +104,15 @@ he: {
          '<b>ספק שליחת דואר אלקטרוני</b> — שליחת קודי אימות ומיילים של איפוס סיסמה.',
          '<b>Lemon Squeezy</b> — תשלומים ומנויים (Merchant of Record); על פרטי התשלום חלה מדיניות הפרטיות שלה.',
          '<b>Deezer</b> — מצעדים, קטעי האזנה והנגן הרשמי. כשאתם מאזינים לקטע או פותחים את הנגן, הדפדפן מתחבר ישירות ל־Deezer.',
-         '<b>Google Fonts</b> — הגופנים של האתר נטענים מהשרתים של Google.'],
+         '<b>Google Fonts</b> — הגופנים של האתר נטענים מהשרתים של Google.',
+         '<b>Google Analytics ו־Microsoft Clarity</b> — סטטיסטיקה ומפות חום, רק בהסכמתכם (ראו ״עוגיות וסטטיסטיקה״).'],
         'חלק מהספקים שומרים ומעבדים מידע מחוץ לישראל, בהתאם להתחייבויות להגנה על מידע. נמסור מידע לגורם אחר רק אם הדין מחייב, כדי להגן על זכויות ובטיחות, או במסגרת העברת הפעילות לגורם שיתחייב למדיניות הזאת.'],
       ['p-browser', 'עיבוד בדפדפן ואחסון מקומי',
         ['ניתוח השמע, הפרדת הערוצים (מודל ה־AI נטען לדפדפן) והייצוא נעשים על המכשיר שלכם. השמע לא נשלח אלינו — אלא אם אתם מחוברים והקובץ נשמר בחשבון שלכם.',
          '<b>localStorage:</b> הגדרות (שפה, מצב כהה, נגישות, עוצמת השמע), תוצאות ניתוח הספרייה ונקודות הקיו לפי חשבון, תיקוני תעתיק שלמדנו, מטמון שמות אמנים מ־Deezer, מיקום ההשמעה וקוד הזמנה שממתין להרשמה.',
          '<b>IndexedDB ומטמון הדפדפן:</b> השיר האחרון שפתחתם והמצב שלו (כדי שייפתח שוב), וקובצי מודל ה־AI.',
          '<b>sessionStorage:</b> סימון ביקור יומי. בנוסף נשמר אסימון ההתחברות לחשבון.'],
-        'אין עוגיות פרסום. ניקוי נתוני האתר בדפדפן מוחק את כל אלה.'],
+        'אין עוגיות פרסום. עוגיות של כלי סטטיסטיקה נוצרות רק בהסכמה (הסעיף הבא). ניקוי נתוני האתר בדפדפן מוחק את כל אלה.'],
       ['p-keep', 'כמה זמן אנחנו שומרים מידע', 'מידע החשבון נשמר כל עוד החשבון פעיל. יומן הפעילות נשמר עד 180 יום. רשומות תשלום (סכום, תאריך, מסלול ומזהי ההזמנה והמנוי אצל Lemon Squeezy) נשמרות 7 שנים, כפי שמחייב דין המס. פרטי כרטיס האשראי מוקלדים רק בדף התשלום של Lemon Squeezy ולעולם לא מגיעים לשרתים של Chord Room. עותקי גיבוי של מסד הנתונים נמחקים בתוך 30 יום.'],
       ['p-delete', 'מחיקת החשבון', ['אפשר למחוק את החשבון בעצמכם בכל עת: ״החשבון שלי״ ← ״מחיקת החשבון״. לאישור מקלידים את שם המשתמש ומזינים שוב את הסיסמה (או קוד שנשלח במייל), ובחשבון עם אימות דו־שלבי גם את הקוד מהאפליקציה. מנוי פעיל צריך לבטל קודם בפורטל המנוי.', 'המחיקה מיידית ומוחקת: הפרופיל, שם המשתמש והתמונה, השירים והקבצים שהעליתם, הניתוחים, יומן הייצוא ויומן הפעילות, הנקודות והמסלול (הם אובדים ולא מוחזרים), האימות הדו־שלבי וכל החיבורים, וגם את הנתונים של החשבון בדפדפן שממנו מחקתם.', 'מה נשאר, בלי לזהות אתכם: רשומות התשלום (למשך 7 השנים שלמעלה) מקושרות אחרי המחיקה רק למזהה מוצפן חד־כיווני במקום לחשבון, ושם, אימייל ופרטי כרטיס נמחקים מהן; ניתוחי שירים שהוספתם לקטלוג המשותף של ״גלה שירים״ (סולם, קצב ואקורדים של קטעי Deezer) נשארים בלי שום קשר אליכם; ונרשמת שורה אחת שמתעדת שחשבון נמחק ומתי, בלי פרטים מזהים.', 'מנהל האתר יכול למחוק חשבון שמפר את התנאים, באותו אופן.']],
       ['p-sec', 'אבטחה', 'אנחנו משתמשים בחיבור מוצפן (HTTPS), בהרשאות גישה ברמת השורה במסד הנתונים, באחסון פרטי לקבצים עם קישורים חתומים לזמן מוגבל, ובהרשאות נפרדות למנהלים. אפשר להפעיל אימות דו־שלבי (קוד מאפליקציית אימות) לחשבון; מנהלים נדרשים לו כשהבעלים מפעיל זאת, וחשבון שלא היה בו שימוש זמן מה מתנתק אוטומטית. אף מערכת אינה חסינה לחלוטין; אם גיליתם בעיית אבטחה, ספרו לנו.'],
@@ -135,7 +136,7 @@ en: {
     'Points pay for stem separation and stem downloads and have no cash value. Subscriptions are billed by Lemon Squeezy and can be cancelled any time in the subscription portal.',
     'No attacks, no bypassing limits or points, no scraping of the site or the catalog.',
     'We keep an activity log (sign-ins, page views, uploads, separations, exports and more) for security, support and abuse prevention. It is kept for up to 180 days and only authorized admins can see it.',
-    'Data is processed by Supabase, Cloudflare, Deezer and Lemon Squeezy. We don’t sell data and use no ads or third-party tracking.',
+    'Data is processed by Supabase, Cloudflare, Deezer and Lemon Squeezy. Analytics tools (Google Analytics and Microsoft Clarity) run only if you allow them in the cookie banner. We don’t sell data and use no ads.',
     'Minimum age: 16. You can ask to access, correct or delete your data. Israeli law applies.'
   ],
   terms: { title: 'Terms of Use', intro: 'Welcome to Chord Room. These terms govern your use of the site and its services. Please read them together with the <a href="#privacy">Privacy Policy</a>.',
@@ -199,7 +200,7 @@ en: {
          '<b>Activity log:</b> see the next section.',
          '<b>Technical data:</b> IP address and browser details reach our hosting and infrastructure providers (Cloudflare, Supabase) as a normal part of running the Site.',
          '<b>Messages:</b> whatever you write to us.'],
-        'We use no ads, trackers or third-party analytics, and we don’t sell information.'],
+        'We use no ads and we don’t sell information. Third-party analytics run only with your consent — see “Cookies and analytics”.'],
       ['p-log', 'The activity log',
         ['<b>What is logged:</b> visits, page views, song uploads and opens (song name and length), opening Discover songs, stem separations, exports and downloads, loading songs into the DJ mix, library analysis and exports, sign-ins (including the browser language), clicks on joining a plan, copying an invite link, and role and permission changes made by admins.',
          '<b>What each entry holds:</b> the account, the kind of action, a short detail (e.g. the song name) and the time.',
@@ -213,14 +214,15 @@ en: {
          '<b>An email delivery provider</b> — sending verification codes and password-reset emails.',
          '<b>Lemon Squeezy</b> — payments and subscriptions (Merchant of Record); its privacy policy covers payment details.',
          '<b>Deezer</b> — charts, previews and the official player. When you play a preview or open the player, your browser connects to Deezer directly.',
-         '<b>Google Fonts</b> — the Site’s fonts load from Google’s servers.'],
+         '<b>Google Fonts</b> — the Site’s fonts load from Google’s servers.',
+         '<b>Google Analytics and Microsoft Clarity</b> — statistics and heatmaps, only with your consent (see “Cookies and analytics”).'],
         'Some providers store and process data outside Israel, under data-protection commitments. We only share information with anyone else if the law requires it, to protect rights and safety, or as part of transferring the business to someone who commits to this policy.'],
       ['p-browser', 'Processing in your browser and local storage',
         ['Audio analysis, stem separation (the AI model is loaded into your browser) and exports happen on your device. The audio is not sent to us — unless you are signed in and the file is saved to your account.',
          '<b>localStorage:</b> settings (language, dark mode, accessibility, volume), library analysis results and cue points per account, transliteration fixes we learnt, a cache of artist names from Deezer, the playback position and an invite code waiting for sign-up.',
          '<b>IndexedDB and the browser cache:</b> the last song you opened and its state (so it reopens), and the AI model files.',
          '<b>sessionStorage:</b> a daily visit marker. Your sign-in token is also stored.'],
-        'There are no advertising cookies. Clearing the site data in your browser removes all of this.'],
+        'There are no advertising cookies. Analytics cookies are set only with consent (next section). Clearing the site data in your browser removes all of this.'],
       ['p-keep', 'How long we keep information', 'Account information is kept while the account is active. The activity log is kept for up to 180 days. Payment records (amount, date, plan and the Lemon Squeezy order and subscription ids) are kept for 7 years, as tax law requires. Card details are typed only on Lemon Squeezy’s checkout page and never reach Chord Room’s servers. Database backups are erased within 30 days.'],
       ['p-delete', 'Deleting your account', ['You can delete your account yourself at any time: “My account” → “Delete account”. To confirm you type your username and enter your password again (or a code we email you), and with two-step verification also the code from your app. An active subscription has to be cancelled in the subscription portal first.', 'Deletion is immediate and removes: your profile, username and photo, your songs and uploaded files, analyses, export history and activity log, your points and plan (they are lost and not refunded), two-step verification and every session, and the account’s data in the browser you deleted it from.', 'What stays, without identifying you: payment records (for the 7 years above) are linked after deletion only to a one-way encrypted id instead of the account, with name, email and card details removed; song analyses you added to the shared Discover catalog (key, tempo and chords of Deezer previews) stay without any link to you; and one line records that an account was deleted and when, without identifying details.', 'The site’s admins can delete an account that breaks the Terms in the same way.']],
       ['p-sec', 'Security', 'We use encrypted connections (HTTPS), row-level access rules in the database, private file storage with time-limited signed links, and separate permissions for admins. You can turn on two-step verification (a code from an authenticator app) for your account; admins must use it when the owner requires it, and an account that has been idle for a while is signed out automatically. No system is completely secure; if you find a security problem, please tell us.'],
@@ -244,7 +246,7 @@ ar: {
     'تُستخدم النقاط لفصل المسارات وتنزيلها وليست لها قيمة نقدية. تُحصَّل الاشتراكات عبر Lemon Squeezy ويمكن إلغاؤها في أي وقت من بوابة الاشتراك.',
     'يُمنع مهاجمة الموقع أو تجاوز الحدود أو النقاط أو استخراج بيانات الموقع والكتالوج آليًا.',
     'نحتفظ بسجل نشاط (تسجيلات الدخول، مشاهدة الصفحات، الرفع، الفصل، التصدير وغيرها) لأغراض الأمان والدعم ومنع إساءة الاستخدام. يُحفظ حتى 180 يومًا ولا يراه إلا المشرفون المخوّلون.',
-    'تُعالَج البيانات لدى Supabase وCloudflare وDeezer وLemon Squeezy. لا نبيع البيانات ولا نستخدم إعلانات أو تتبعًا من طرف ثالث.',
+    'تُعالَج البيانات لدى Supabase وCloudflare وDeezer وLemon Squeezy. أدوات الإحصاء (Google Analytics وMicrosoft Clarity) تعمل فقط إذا وافقت عليها في نافذة ملفات تعريف الارتباط. لا نبيع البيانات ولا نستخدم إعلانات.',
     'الحد الأدنى للعمر: 16 عامًا. يمكنك طلب الاطلاع على بياناتك وتصحيحها وحذفها. يسري القانون الإسرائيلي.'
   ],
   terms: { title: 'شروط الاستخدام', intro: 'مرحبًا بك في Chord Room. تنظّم هذه الشروط استخدامك للموقع وخدماته. يُرجى قراءتها مع <a href="#privacy">سياسة الخصوصية</a>.',
@@ -308,7 +310,7 @@ ar: {
          '<b>سجل النشاط:</b> انظر القسم التالي.',
          '<b>البيانات التقنية:</b> يصل عنوان IP وتفاصيل المتصفح إلى مزوّدي الاستضافة والبنية التحتية (Cloudflare وSupabase) كجزء طبيعي من تشغيل الموقع.',
          '<b>الرسائل:</b> ما تكتبه لنا.'],
-        'لا نستخدم الإعلانات أو أدوات التتبع أو التحليلات من طرف ثالث، ولا نبيع المعلومات.'],
+        'لا نستخدم الإعلانات ولا نبيع المعلومات. أدوات الإحصاء من طرف ثالث تعمل فقط بموافقتك — راجع «ملفات تعريف الارتباط والإحصاءات».'],
       ['p-log', 'سجل النشاط',
         ['<b>ما يُسجَّل:</b> الزيارات، ومشاهدة الصفحات، ورفع الأغاني وفتحها (اسم الأغنية ومدتها)، وفتح أغاني «اكتشف»، وفصل المسارات، والتصدير والتنزيل، وتحميل الأغاني في مزج DJ، وتحليل المكتبة وتصديرها، وتسجيلات الدخول (بما في ذلك لغة المتصفح)، والنقر على الانضمام إلى باقة، ونسخ رابط الدعوة، وتغييرات الأدوار والصلاحيات التي يجريها المشرفون.',
          '<b>محتوى كل سجل:</b> الحساب، ونوع الإجراء، وتفصيل قصير (مثل اسم الأغنية)، والوقت.',
@@ -322,14 +324,15 @@ ar: {
          '<b>مزوّد إرسال البريد الإلكتروني</b> — إرسال رموز التحقق ورسائل إعادة تعيين كلمة المرور.',
          '<b>Lemon Squeezy</b> — المدفوعات والاشتراكات (Merchant of Record)؛ وتسري سياسة الخصوصية الخاصة بها على بيانات الدفع.',
          '<b>Deezer</b> — القوائم والمقاطع التجريبية والمشغّل الرسمي. عند الاستماع إلى مقطع أو فتح المشغّل، يتصل متصفحك بـ Deezer مباشرة.',
-         '<b>Google Fonts</b> — تُحمَّل خطوط الموقع من خوادم Google.'],
+         '<b>Google Fonts</b> — تُحمَّل خطوط الموقع من خوادم Google.',
+         '<b>Google Analytics وMicrosoft Clarity</b> — إحصاءات وخرائط حرارية، بموافقتك فقط (راجع «ملفات تعريف الارتباط والإحصاءات»).'],
         'يحفظ بعض المزوّدين البيانات ويعالجونها خارج إسرائيل، وفق التزامات بحماية البيانات. لا نشارك المعلومات مع أي جهة أخرى إلا إذا اقتضى القانون ذلك، أو لحماية الحقوق والسلامة، أو ضمن نقل النشاط إلى جهة تلتزم بهذه السياسة.'],
       ['p-browser', 'المعالجة في المتصفح والتخزين المحلي',
         ['يتم تحليل الصوت وفصل المسارات (يُحمَّل نموذج الذكاء الاصطناعي إلى متصفحك) والتصدير على جهازك. لا يُرسل الصوت إلينا — إلا إذا كنت مسجّل الدخول وحُفظ الملف في حسابك.',
          '<b>localStorage:</b> الإعدادات (اللغة والوضع الداكن وإمكانية الوصول ومستوى الصوت)، ونتائج تحليل المكتبة ونقاط الإشارة لكل حساب، وتصحيحات النقل الحرفي التي تعلّمناها، وذاكرة مؤقتة لأسماء الفنانين من Deezer، وموضع التشغيل، ورمز دعوة بانتظار التسجيل.',
          '<b>IndexedDB وذاكرة المتصفح المؤقتة:</b> آخر أغنية فتحتها وحالتها (لتُفتح مجددًا)، وملفات نموذج الذكاء الاصطناعي.',
          '<b>sessionStorage:</b> علامة زيارة يومية. ويُحفظ أيضًا رمز تسجيل الدخول.'],
-        'لا توجد ملفات تعريف ارتباط إعلانية. مسح بيانات الموقع في المتصفح يحذف كل ذلك.'],
+        'لا توجد ملفات تعريف ارتباط إعلانية. ملفات أدوات الإحصاء تُنشأ بالموافقة فقط (القسم التالي). مسح بيانات الموقع في المتصفح يحذف كل ذلك.'],
       ['p-keep', 'مدة الاحتفاظ بالمعلومات', 'تُحفظ معلومات الحساب ما دام الحساب فعّالًا. يُحفظ سجل النشاط حتى 180 يومًا. تُحفظ سجلات الدفع (المبلغ والتاريخ والخطة ومعرّفات الطلب والاشتراك لدى Lemon Squeezy) لمدة 7 سنوات كما يقتضي قانون الضرائب. تُكتب بيانات البطاقة في صفحة الدفع الخاصة بـ Lemon Squeezy فقط ولا تصل أبدًا إلى خوادم Chord Room. تُمحى النسخ الاحتياطية لقاعدة البيانات خلال 30 يومًا.'],
       ['p-delete', 'حذف الحساب', ['يمكنك حذف حسابك بنفسك في أي وقت: «حسابي» ← «حذف الحساب». للتأكيد تكتب اسم المستخدم وتُدخل كلمة المرور مرة أخرى (أو رمزًا نرسله إلى بريدك)، وفي حساب مع التحقق بخطوتين أيضًا الرمز من التطبيق. يجب إلغاء الاشتراك الفعّال أولًا من بوابة الاشتراك.', 'الحذف فوري ويزيل: ملفك الشخصي واسم المستخدم والصورة، وأغانيك والملفات التي رفعتها، والتحليلات وسجل التصدير وسجل النشاط، ونقاطك وخطتك (تضيع ولا تُستردّ)، والتحقق بخطوتين وكل الجلسات، وبيانات الحساب في المتصفح الذي حذفته منه.', 'ما يبقى دون التعرّف عليك: سجلات الدفع (للسنوات السبع المذكورة) ترتبط بعد الحذف بمعرّف مشفّر أحادي الاتجاه فقط بدل الحساب، مع حذف الاسم والبريد وبيانات البطاقة منها؛ وتبقى تحليلات الأغاني التي أضفتها إلى كتالوج «اكتشف» المشترك (السلم والإيقاع والأوتار لمقاطع Deezer) دون أي صلة بك؛ ويُسجَّل سطر واحد بأن حسابًا حُذف ومتى، دون تفاصيل تعريفية.', 'يمكن لمديري الموقع حذف حساب يخالف الشروط بالطريقة نفسها.']],
       ['p-sec', 'الأمان', 'نستخدم اتصالًا مشفّرًا (HTTPS)، وقواعد وصول على مستوى الصف في قاعدة البيانات، وتخزينًا خاصًا للملفات بروابط موقّعة لمدة محدودة، وصلاحيات منفصلة للمشرفين. يمكنك تفعيل التحقق بخطوتين (رمز من تطبيق مصادقة) لحسابك؛ ويُلزَم به المشرفون عندما يطلبه المالك، ويُسجَّل خروج الحساب تلقائيًا بعد فترة دون استخدام. لا يوجد نظام آمن تمامًا؛ إن اكتشفت مشكلة أمنية فأخبرنا.'],
@@ -353,7 +356,7 @@ ru: {
     'Баллы тратятся на разделение и скачивание стемов и не имеют денежной стоимости. Подписки оплачиваются через Lemon Squeezy и отменяются в любой момент в портале подписки.',
     'Запрещено атаковать сайт, обходить ограничения или баллы и собирать данные сайта и каталога автоматически.',
     'Мы ведём журнал действий (входы, просмотры страниц, загрузки, разделения, экспорт и др.) для безопасности, поддержки и предотвращения злоупотреблений. Он хранится до 180 дней, и видят его только уполномоченные администраторы.',
-    'Данные обрабатываются в Supabase, Cloudflare, Deezer и Lemon Squeezy. Мы не продаём данные и не используем рекламу или сторонние трекеры.',
+    'Данные обрабатываются в Supabase, Cloudflare, Deezer и Lemon Squeezy. Инструменты аналитики (Google Analytics и Microsoft Clarity) работают, только если вы разрешили их в окне cookie. Мы не продаём данные и не используем рекламу.',
     'Минимальный возраст — 16 лет. Вы можете запросить доступ к данным, их исправление и удаление. Действует право Израиля.'
   ],
   terms: { title: 'Условия использования', intro: 'Добро пожаловать в Chord Room. Эти условия регулируют использование сайта и его сервисов. Читайте их вместе с <a href="#privacy">Политикой конфиденциальности</a>.',
@@ -417,7 +420,7 @@ ru: {
          '<b>Журнал действий:</b> см. следующий раздел.',
          '<b>Технические данные:</b> IP-адрес и сведения о браузере попадают к провайдерам хостинга и инфраструктуры (Cloudflare, Supabase) при обычной работе Сайта.',
          '<b>Обращения:</b> всё, что вы нам пишете.'],
-        'Мы не используем рекламу, трекеры или стороннюю аналитику и не продаём данные.'],
+        'Мы не используем рекламу и не продаём данные. Сторонняя аналитика работает только с вашего согласия — см. «Cookie и аналитика».'],
       ['p-log', 'Журнал действий',
         ['<b>Что записывается:</b> визиты, просмотры страниц, загрузка и открытие песен (название и длительность), открытие песен в обзоре, разделение на стемы, экспорт и скачивания, загрузка песен в DJ-микс, анализ и экспорт библиотеки, входы в аккаунт (включая язык браузера), нажатия на подключение тарифа, копирование ссылки-приглашения, а также изменения ролей и прав, которые делают администраторы.',
          '<b>Что содержит запись:</b> аккаунт, тип действия, краткую деталь (например, название песни) и время.',
@@ -431,14 +434,15 @@ ru: {
          '<b>Сервис отправки email</b> — отправка кодов подтверждения и писем для сброса пароля.',
          '<b>Lemon Squeezy</b> — платежи и подписки (Merchant of Record); к платёжным данным применяется его политика конфиденциальности.',
          '<b>Deezer</b> — чарты, превью и официальный плеер. Когда вы слушаете превью или открываете плеер, браузер подключается к Deezer напрямую.',
-         '<b>Google Fonts</b> — шрифты Сайта загружаются с серверов Google.'],
+         '<b>Google Fonts</b> — шрифты Сайта загружаются с серверов Google.',
+         '<b>Google Analytics и Microsoft Clarity</b> — статистика и тепловые карты, только с вашего согласия (см. «Cookie и аналитика»).'],
         'Некоторые провайдеры хранят и обрабатывают данные за пределами Израиля, с обязательствами по их защите. Мы передаём данные другим лицам только по требованию закона, для защиты прав и безопасности или при передаче бизнеса тому, кто обязуется соблюдать эту политику.'],
       ['p-browser', 'Обработка в браузере и локальное хранилище',
         ['Анализ аудио, разделение на стемы (AI-модель загружается в браузер) и экспорт выполняются на вашем устройстве. Аудио нам не отправляется — кроме случая, когда вы вошли в аккаунт и файл сохраняется в нём.',
          '<b>localStorage:</b> настройки (язык, тёмная тема, доступность, громкость), результаты анализа библиотеки и кью-точки для каждого аккаунта, выученные исправления транслитерации, кэш имён артистов из Deezer, позиция воспроизведения и код приглашения, ожидающий регистрации.',
          '<b>IndexedDB и кэш браузера:</b> последняя открытая песня и её состояние (чтобы она открылась снова) и файлы AI-модели.',
          '<b>sessionStorage:</b> отметка о ежедневном визите. Также хранится токен входа в аккаунт.'],
-        'Рекламных cookie нет. Очистка данных сайта в браузере удаляет всё это.'],
+        'Рекламных cookie нет. Cookie аналитики создаются только с согласия (следующий раздел). Очистка данных сайта в браузере удаляет всё это.'],
       ['p-keep', 'Сколько мы храним данные', 'Данные аккаунта хранятся, пока аккаунт активен. Журнал действий хранится до 180 дней. Записи о платежах (сумма, дата, тариф и идентификаторы заказа и подписки в Lemon Squeezy) хранятся 7 лет, как требует налоговое право. Данные карты вводятся только на странице оплаты Lemon Squeezy и никогда не попадают на серверы Chord Room. Резервные копии базы данных стираются в течение 30 дней.'],
       ['p-delete', 'Удаление аккаунта', ['Вы можете удалить аккаунт сами в любой момент: «Мой аккаунт» → «Удалить аккаунт». Для подтверждения вы вводите имя пользователя и ещё раз пароль (или код из письма), а при двухэтапной проверке — и код из приложения. Активную подписку сначала нужно отменить на портале подписки.', 'Удаление происходит сразу и стирает: профиль, имя пользователя и фото, ваши песни и загруженные файлы, анализы, историю экспорта и журнал действий, баллы и тариф (они пропадают и не возвращаются), двухэтапную проверку и все сеансы, а также данные аккаунта в браузере, из которого вы его удалили.', 'Что остаётся без возможности вас узнать: записи о платежах (на те же 7 лет) после удаления связаны только с односторонним зашифрованным идентификатором вместо аккаунта, имя, почта и данные карты из них удаляются; анализы песен, добавленные вами в общий каталог «Поиск» (тональность, темп и аккорды превью Deezer), остаются без связи с вами; и записывается одна строка о том, что аккаунт удалён и когда, без идентифицирующих данных.', 'Администраторы сайта могут так же удалить аккаунт, нарушающий Условия.']],
       ['p-sec', 'Безопасность', 'Мы используем шифрованное соединение (HTTPS), правила доступа на уровне строк в базе данных, приватное хранилище файлов со ссылками, подписанными на ограниченное время, и отдельные права для администраторов. Для аккаунта можно включить двухэтапную проверку (код из приложения-аутентификатора); администраторы обязаны её использовать, если этого требует владелец, а аккаунт, которым какое-то время не пользуются, автоматически выходит из системы. Абсолютно защищённых систем не бывает; если вы нашли проблему безопасности, сообщите нам.'],
@@ -462,7 +466,7 @@ es: {
     'Los puntos pagan la separación y descarga de pistas y no tienen valor monetario. Las suscripciones se cobran a través de Lemon Squeezy y se pueden cancelar en cualquier momento en el portal de suscripción.',
     'Prohibido atacar el sitio, eludir límites o puntos, o extraer datos del sitio y del catálogo de forma automatizada.',
     'Llevamos un registro de actividad (inicios de sesión, vistas de páginas, subidas, separaciones, exportaciones y más) para seguridad, soporte y prevención de abusos. Se guarda hasta 180 días y solo lo ven administradores autorizados.',
-    'Los datos se procesan en Supabase, Cloudflare, Deezer y Lemon Squeezy. No vendemos datos ni usamos anuncios ni rastreo de terceros.',
+    'Los datos se procesan en Supabase, Cloudflare, Deezer y Lemon Squeezy. Las herramientas de analítica (Google Analytics y Microsoft Clarity) solo funcionan si las permites en el aviso de cookies. No vendemos datos ni usamos anuncios.',
     'Edad mínima: 16 años. Puedes pedir acceso, corrección y eliminación de tus datos. Se aplica la ley israelí.'
   ],
   terms: { title: 'Términos de uso', intro: 'Te damos la bienvenida a Chord Room. Estos términos regulan el uso del sitio y de sus servicios. Léelos junto con la <a href="#privacy">Política de privacidad</a>.',
@@ -526,7 +530,7 @@ es: {
          '<b>Registro de actividad:</b> ver la siguiente sección.',
          '<b>Datos técnicos:</b> la dirección IP y los datos del navegador llegan a nuestros proveedores de alojamiento e infraestructura (Cloudflare, Supabase) como parte normal del funcionamiento del Sitio.',
          '<b>Mensajes:</b> lo que nos escribas.'],
-        'No usamos anuncios, rastreadores ni analítica de terceros, y no vendemos información.'],
+        'No usamos anuncios ni vendemos información. La analítica de terceros solo funciona con tu consentimiento; consulta «Cookies y analítica».'],
       ['p-log', 'El registro de actividad',
         ['<b>Qué se registra:</b> visitas, vistas de páginas, subidas y aperturas de canciones (nombre y duración), aperturas de canciones en Descubrir, separaciones de pistas, exportaciones y descargas, carga de canciones en la mezcla DJ, análisis y exportaciones de bibliotecas, inicios de sesión (incluido el idioma del navegador), clics para unirse a un plan, copias del enlace de invitación y cambios de roles y permisos hechos por administradores.',
          '<b>Qué contiene cada entrada:</b> la cuenta, el tipo de acción, un detalle breve (por ejemplo, el nombre de la canción) y la hora.',
@@ -540,14 +544,15 @@ es: {
          '<b>Un proveedor de envío de email</b>: envío de códigos de verificación y emails de restablecimiento de contraseña.',
          '<b>Lemon Squeezy</b>: pagos y suscripciones (Merchant of Record); su política de privacidad cubre los datos de pago.',
          '<b>Deezer</b>: listas, vistas previas y el reproductor oficial. Cuando escuchas una vista previa o abres el reproductor, tu navegador se conecta directamente con Deezer.',
-         '<b>Google Fonts</b>: las fuentes del Sitio se cargan desde servidores de Google.'],
+         '<b>Google Fonts</b>: las fuentes del Sitio se cargan desde servidores de Google.',
+         '<b>Google Analytics y Microsoft Clarity</b>: estadísticas y mapas de calor, solo con tu consentimiento (consulta «Cookies y analítica»).'],
         'Algunos proveedores guardan y procesan datos fuera de Israel, con compromisos de protección de datos. Solo compartimos información con terceros si la ley lo exige, para proteger derechos y seguridad, o al transferir la actividad a alguien que se comprometa con esta política.'],
       ['p-browser', 'Procesamiento en el navegador y almacenamiento local',
         ['El análisis de audio, la separación de pistas (el modelo de IA se carga en tu navegador) y las exportaciones ocurren en tu dispositivo. El audio no se nos envía, salvo que hayas iniciado sesión y el archivo se guarde en tu cuenta.',
          '<b>localStorage:</b> ajustes (idioma, modo oscuro, accesibilidad, volumen), resultados del análisis de bibliotecas y puntos cue por cuenta, correcciones de transliteración aprendidas, una caché de nombres de artistas de Deezer, la posición de reproducción y un código de invitación pendiente de registro.',
          '<b>IndexedDB y la caché del navegador:</b> la última canción que abriste y su estado (para que se vuelva a abrir) y los archivos del modelo de IA.',
          '<b>sessionStorage:</b> una marca de visita diaria. También se guarda tu token de sesión.'],
-        'No hay cookies publicitarias. Borrar los datos del sitio en tu navegador elimina todo esto.'],
+        'No hay cookies publicitarias. Las cookies de analítica solo se crean con consentimiento (siguiente sección). Borrar los datos del sitio en tu navegador elimina todo esto.'],
       ['p-keep', 'Cuánto tiempo guardamos la información', 'La información de la cuenta se guarda mientras la cuenta esté activa. El registro de actividad se guarda hasta 180 días. Los registros de pago (importe, fecha, plan y los identificadores de pedido y suscripción en Lemon Squeezy) se guardan 7 años, como exige la ley fiscal. Los datos de la tarjeta se escriben solo en la página de pago de Lemon Squeezy y nunca llegan a los servidores de Chord Room. Las copias de seguridad de la base de datos se borran en 30 días.'],
       ['p-delete', 'Eliminar tu cuenta', ['Puedes eliminar tu cuenta tú mismo en cualquier momento: «Mi cuenta» → «Eliminar cuenta». Para confirmar escribes tu nombre de usuario y vuelves a introducir la contraseña (o un código que te enviamos por correo) y, con verificación en dos pasos, también el código de la app. Una suscripción activa debe cancelarse antes en el portal de suscripción.', 'La eliminación es inmediata y borra: tu perfil, nombre de usuario y foto, tus canciones y archivos subidos, los análisis, el historial de exportaciones y el registro de actividad, tus puntos y tu plan (se pierden y no se reembolsan), la verificación en dos pasos y todas las sesiones, y los datos de la cuenta en el navegador desde el que la eliminaste.', 'Lo que queda, sin identificarte: los registros de pago (durante los 7 años indicados) quedan vinculados tras la eliminación solo a un identificador cifrado de un solo sentido en lugar de la cuenta, sin nombre, correo ni datos de tarjeta; los análisis de canciones que añadiste al catálogo compartido de Descubrir (tonalidad, tempo y acordes de los avances de Deezer) se quedan sin ningún vínculo contigo; y una línea registra que se eliminó una cuenta y cuándo, sin datos identificativos.', 'Los administradores del sitio pueden eliminar del mismo modo una cuenta que incumpla los Términos.']],
       ['p-sec', 'Seguridad', 'Usamos conexiones cifradas (HTTPS), reglas de acceso por fila en la base de datos, almacenamiento privado de archivos con enlaces firmados por tiempo limitado y permisos separados para administradores. Puedes activar la verificación en dos pasos (un código de una app de autenticación) en tu cuenta; los administradores deben usarla cuando el propietario lo exige, y una cuenta inactiva durante un tiempo cierra la sesión automáticamente. Ningún sistema es totalmente seguro; si encuentras un problema de seguridad, avísanos.'],
@@ -562,6 +567,111 @@ es: {
 }
 };
 
+
+/* growth: cookies + consent-based analytics, A/B tests, reviews (privacy) · reviews rules, the invite program (terms).
+   Spliced into each language's sections by doc(): privacy after 'p-browser', terms after 't-use'. */
+const GROW = {
+he: {
+  privacy: [
+    ['p-cookies', 'עוגיות וסטטיסטיקה (בהסכמה בלבד)', 'כברירת מחדל פועלים רק העוגיות והאחסון המקומי שהאתר צריך כדי לעבוד (הסעיף הקודם). כלי סטטיסטיקה נטענים רק אחרי שאישרתם ״סטטיסטיקה״ בחלון העוגיות, ורק אם הם מופעלים באתר.',
+      ['<b>Google Analytics 4</b> (Google LLC) — צפיות בעמודים ופעולות כמו הרשמה, הפרדה וייצוא: שם הפעולה בלבד, בלי שמות שירים, בלי שם או אימייל ובלי מזהה משתמש. Google Signals ופרסום מותאם אישית כבויים. עוגיות: ‎_ga ו־‎_ga_*. הנתונים ברמת המשתמש נשמרים חודשיים.',
+       '<b>Microsoft Clarity</b> (Microsoft Corporation) — מפות חום (איפה לוחצים וגוללים) והקלטות גלישה, שבהן שדות טקסט, שמות שירים ואזורי החשבון והניהול מוסתרים. עוגיות: ‎_clck,‏ ‎_clsk ועוגיות של Microsoft. הקלטות נשמרות עד 30 יום ומפות חום עד 13 חודשים.',
+       '<b>ניסויי A/B</b> — לפעמים חלק מהמבקרים רואים גרסה אחרת של כפתור או טקסט, כדי ללמוד מה עובד טוב יותר. הגרסה נשמרת בדפדפן; אצל משתמשים מחוברים נרשם ביומן הפעילות לאיזו גרסה שובצו, ובהסכמה לסטטיסטיקה היא נשלחת גם ל־Google Analytics.'],
+      'המידע עשוי לעבור לשרתים מחוץ לישראל (בין היתר בארה״ב), בכפוף להתחייבויות של Google ושל Microsoft להגנה על מידע. אפשר לבטל את ההסכמה בכל עת בקישור ״הגדרות עוגיות״ בתחתית העמוד: הביטול עוצר את האיסוף ומוחק את העוגיות של הכלים האלה מהדפדפן.'],
+    ['p-reviews', 'ביקורות', 'אם תכתבו ביקורת נשמור את הדירוג, הטקסט, השפה והבחירה אם להציג את שם התצוגה שלכם. ביקורת מתפרסמת באתר רק אחרי בדיקה, עם שם התצוגה או ראשי התיבות בלבד — אף פעם לא האימייל. אפשר למחוק אותה בכל עת מחלון הביקורת.']
+  ],
+  terms: [
+    ['t-reviews', 'ביקורות', ['ביקורת צריכה לשקף חוויה אמיתית שלכם מהשירות. אסור לכתוב ביקורת בשם אחר, ביקורת שקרית, פוגענית, פרסומית או עם קישורים.',
+      'אנחנו לא נותנים תמורה (כסף, נקודות או הטבה) על כתיבת ביקורת, ולא ממציאים ביקורות.',
+      'כל ביקורת נבדקת לפני פרסום. אנחנו לא משנים את הטקסט, אבל רשאים לא לפרסם ביקורת שמפרה את הכללים או להסיר אותה.',
+      'בשליחת ביקורת אתם מרשים לנו להציג אותה באתר עם שם התצוגה שלכם (אם בחרתם בכך) או עם ראשי התיבות. אפשר למחוק אותה בכל עת.']],
+    ['t-referral', 'הזמנת חברים', ['על כל חבר שנרשם דרך קישור ההזמנה שלכם, שניכם מקבלים את מספר הנקודות שמוצג בתיבת ההזמנה. מדובר בנקודות בלבד, לא בכסף, והן כפופות לכללי הנקודות שבתנאים האלה.',
+      'אסור להזמין את עצמכם, לפתוח חשבונות מזויפים או להשתמש בספאם. יש מגבלה על מספר התגמולים למזמין בתקופה, והתגמול ניתן רק להרשמה חדשה בתוך הזמן שנקבע.',
+      'גילוי נאות: כשאתם משתפים את הקישור בפומבי (ברשתות, בקבוצות או באתר), ציינו שאתם מקבלים נקודות על הצטרפות דרכו.',
+      'אנחנו רשאים לשנות את התוכנית או להפסיק אותה; נקודות שכבר התקבלו נשארות בחשבון.']]
+  ]
+},
+en: {
+  privacy: [
+    ['p-cookies', 'Cookies and analytics (consent only)', 'By default only the cookies and local storage the Site needs to work are used (previous section). Analytics tools load only after you allow “Analytics” in the cookie banner, and only if they are switched on for the Site.',
+      ['<b>Google Analytics 4</b> (Google LLC) — page views and actions such as signing up, separating and exporting: the action name only, no song names, no name or email and no user ID. Google Signals and ad personalisation are off. Cookies: _ga and _ga_*. User-level data is kept for two months.',
+       '<b>Microsoft Clarity</b> (Microsoft Corporation) — heatmaps (where people click and scroll) and session recordings in which text fields, song names and the account and admin areas are masked. Cookies: _clck, _clsk and Microsoft cookies. Recordings are kept up to 30 days and heatmaps up to 13 months.',
+       '<b>A/B tests</b> — sometimes some visitors see a different version of a button or text so we can learn what works better. The version is stored in your browser; for signed-in members the assigned version is written to the activity log, and with analytics consent it is also sent to Google Analytics.'],
+      'Information may be transferred to servers outside Israel (including the USA), under Google’s and Microsoft’s data-protection commitments. You can withdraw consent at any time from the “Cookie settings” link at the bottom of the page: this stops the collection and deletes these tools’ cookies from your browser.'],
+    ['p-reviews', 'Reviews', 'If you write a review, we keep the rating, the text, the language and whether you chose to show your display name. A review is published only after a check, with your display name or initials only — never your email. You can delete it at any time from the review window.']
+  ],
+  terms: [
+    ['t-reviews', 'Reviews', ['A review must reflect your own real experience of the Service. Don’t write a review on someone else’s behalf, or one that is false, offensive, promotional or contains links.',
+      'We never give anything (money, points or perks) in return for a review, and we never invent reviews.',
+      'Every review is checked before it is published. We don’t edit the text, but we may decline to publish or remove a review that breaks these rules.',
+      'By sending a review you allow us to show it on the Site with your display name (if you chose that) or your initials. You can delete it at any time.']],
+    ['t-referral', 'Inviting friends', ['For every friend who signs up through your invite link, you both get the number of points shown in the invite box. These are points only, not money, and the points rules in these terms apply.',
+      'Don’t invite yourself, open fake accounts or spam. The number of rewards per inviter in a period is capped, and a reward is given only for a new sign-up within the set time.',
+      'Disclosure: when you share your link publicly (social networks, groups or a website), mention that you get points when people join through it.',
+      'We may change or end the program; points already received stay in your account.']]
+  ]
+},
+ar: {
+  privacy: [
+    ['p-cookies', 'ملفات تعريف الارتباط والإحصاءات (بالموافقة فقط)', 'افتراضيًا تُستخدم فقط ملفات تعريف الارتباط والتخزين المحلي التي يحتاجها الموقع ليعمل (القسم السابق). لا تُحمَّل أدوات الإحصاء إلا بعد أن تسمح بـ«الإحصاءات» في نافذة ملفات تعريف الارتباط، وفقط إذا كانت مفعّلة في الموقع.',
+      ['<b>Google Analytics 4</b> (Google LLC) — مشاهدات الصفحات وإجراءات مثل التسجيل والفصل والتصدير: اسم الإجراء فقط، دون أسماء أغانٍ ودون اسم أو بريد إلكتروني ودون معرّف مستخدم. Google Signals والإعلانات المخصّصة متوقفة. ملفات تعريف الارتباط: _ga و_ga_*. تُحفظ البيانات على مستوى المستخدم لمدة شهرين.',
+       '<b>Microsoft Clarity</b> (Microsoft Corporation) — خرائط حرارية (أين ينقر الناس ويمرّرون) وتسجيلات تصفّح تُخفى فيها حقول النص وأسماء الأغاني ومنطقتا الحساب والإدارة. ملفات تعريف الارتباط: _clck و_clsk وملفات Microsoft. تُحفظ التسجيلات حتى 30 يومًا والخرائط الحرارية حتى 13 شهرًا.',
+       '<b>اختبارات A/B</b> — أحيانًا يرى بعض الزوار نسخة مختلفة من زر أو نص لنعرف ما الذي يعمل أفضل. تُحفظ النسخة في متصفحك؛ وللأعضاء المسجّلين تُكتب النسخة المعيّنة في سجل النشاط، ومع الموافقة على الإحصاءات تُرسَل أيضًا إلى Google Analytics.'],
+      'قد تُنقل المعلومات إلى خوادم خارج إسرائيل (منها الولايات المتحدة)، وفق التزامات Google وMicrosoft بحماية البيانات. يمكنك سحب الموافقة في أي وقت من رابط «إعدادات ملفات تعريف الارتباط» أسفل الصفحة: يوقف ذلك الجمع ويحذف ملفات هذه الأدوات من متصفحك.'],
+    ['p-reviews', 'التقييمات', 'إذا كتبت تقييمًا نحفظ الدرجة والنص واللغة واختيارك لإظهار اسم العرض. يُنشر التقييم في الموقع بعد مراجعة فقط، باسم العرض أو بالأحرف الأولى فقط — وليس ببريدك الإلكتروني أبدًا. يمكنك حذفه في أي وقت من نافذة التقييم.']
+  ],
+  terms: [
+    ['t-reviews', 'التقييمات', ['يجب أن يعكس التقييم تجربتك الحقيقية مع الخدمة. لا تكتب تقييمًا باسم شخص آخر، أو تقييمًا كاذبًا أو مسيئًا أو ترويجيًا أو فيه روابط.',
+      'لا نقدّم أي مقابل (مال أو نقاط أو امتيازات) لكتابة تقييم، ولا نختلق تقييمات.',
+      'يُراجَع كل تقييم قبل نشره. لا نعدّل النص، لكن يحق لنا عدم نشر تقييم يخالف هذه القواعد أو إزالته.',
+      'بإرسال التقييم تسمح لنا بعرضه في الموقع باسم العرض (إذا اخترت ذلك) أو بالأحرف الأولى. يمكنك حذفه في أي وقت.']],
+    ['t-referral', 'دعوة الأصدقاء', ['عن كل صديق يسجّل عبر رابط دعوتك تحصلان كلاكما على عدد النقاط المعروض في صندوق الدعوة. هي نقاط فقط وليست مالًا، وتسري عليها قواعد النقاط في هذه الشروط.',
+      'لا تدعُ نفسك ولا تفتح حسابات وهمية ولا ترسل رسائل مزعجة. عدد المكافآت لكل داعٍ في الفترة محدود، وتُمنح المكافأة لتسجيل جديد ضمن المدة المحددة فقط.',
+      'إفصاح: عند مشاركة رابطك علنًا (في الشبكات أو المجموعات أو موقع)، اذكر أنك تحصل على نقاط عند الانضمام عبره.',
+      'يحق لنا تغيير البرنامج أو إنهاؤه؛ وتبقى النقاط التي حصلت عليها في حسابك.']]
+  ]
+},
+ru: {
+  privacy: [
+    ['p-cookies', 'Cookie и аналитика (только с согласия)', 'По умолчанию используются только cookie и локальное хранилище, без которых Сайт не работает (предыдущий раздел). Инструменты аналитики загружаются только после того, как вы разрешите «Аналитику» в окне cookie, и только если они включены на Сайте.',
+      ['<b>Google Analytics 4</b> (Google LLC) — просмотры страниц и действия вроде регистрации, разделения и экспорта: только название действия, без названий песен, имени, e-mail и идентификатора пользователя. Google Signals и персонализированная реклама выключены. Cookie: _ga и _ga_*. Данные на уровне пользователя хранятся два месяца.',
+       '<b>Microsoft Clarity</b> (Microsoft Corporation) — тепловые карты (где нажимают и прокручивают) и записи сеансов, в которых скрыты текстовые поля, названия песен и разделы аккаунта и администрирования. Cookie: _clck, _clsk и cookie Microsoft. Записи хранятся до 30 дней, тепловые карты — до 13 месяцев.',
+       '<b>A/B-тесты</b> — иногда часть посетителей видит другой вариант кнопки или текста, чтобы мы поняли, что работает лучше. Вариант хранится в браузере; для вошедших пользователей назначенный вариант записывается в журнал действий, а при согласии на аналитику передаётся и в Google Analytics.'],
+      'Данные могут передаваться на серверы за пределами Израиля (в том числе в США) в рамках обязательств Google и Microsoft по защите данных. Отозвать согласие можно в любой момент по ссылке «Настройки cookie» внизу страницы: сбор прекращается, а cookie этих инструментов удаляются из браузера.'],
+    ['p-reviews', 'Отзывы', 'Если вы напишете отзыв, мы сохраним оценку, текст, язык и ваш выбор, показывать ли отображаемое имя. Отзыв публикуется только после проверки, с отображаемым именем или только инициалами — никогда с e-mail. Удалить его можно в любой момент в окне отзыва.']
+  ],
+  terms: [
+    ['t-reviews', 'Отзывы', ['Отзыв должен отражать ваш собственный реальный опыт использования Сервиса. Нельзя писать отзыв от чужого имени, ложный, оскорбительный, рекламный или со ссылками.',
+      'Мы ничего не даём (деньги, баллы или бонусы) за отзывы и никогда не придумываем отзывы.',
+      'Каждый отзыв проверяется перед публикацией. Мы не редактируем текст, но можем не опубликовать или удалить отзыв, нарушающий эти правила.',
+      'Отправляя отзыв, вы разрешаете нам показывать его на Сайте с вашим отображаемым именем (если вы это выбрали) или инициалами. Удалить его можно в любой момент.']],
+    ['t-referral', 'Приглашение друзей', ['За каждого друга, который зарегистрируется по вашей ссылке, вы оба получаете количество баллов, указанное в блоке приглашения. Это только баллы, не деньги, и на них действуют правила о баллах из этих условий.',
+      'Нельзя приглашать самого себя, создавать фиктивные аккаунты или рассылать спам. Число наград на одного пригласившего за период ограничено, награда начисляется только за новую регистрацию в установленный срок.',
+      'Раскрытие информации: публично делясь ссылкой (в соцсетях, группах или на сайте), упоминайте, что получаете баллы за регистрации по ней.',
+      'Мы можем изменить или прекратить программу; уже полученные баллы остаются на счёте.']]
+  ]
+},
+es: {
+  privacy: [
+    ['p-cookies', 'Cookies y analítica (solo con consentimiento)', 'Por defecto solo se usan las cookies y el almacenamiento local que el Sitio necesita para funcionar (sección anterior). Las herramientas de analítica se cargan solo después de que permitas «Analítica» en el aviso de cookies, y solo si están activadas en el Sitio.',
+      ['<b>Google Analytics 4</b> (Google LLC): páginas vistas y acciones como registrarse, separar y exportar; solo el nombre de la acción, sin nombres de canciones, sin nombre ni correo y sin ID de usuario. Google Signals y la publicidad personalizada están desactivados. Cookies: _ga y _ga_*. Los datos a nivel de usuario se guardan dos meses.',
+       '<b>Microsoft Clarity</b> (Microsoft Corporation): mapas de calor (dónde se hace clic y se desplaza) y grabaciones de sesión en las que se ocultan los campos de texto, los nombres de canciones y las zonas de cuenta y administración. Cookies: _clck, _clsk y cookies de Microsoft. Las grabaciones se guardan hasta 30 días y los mapas de calor hasta 13 meses.',
+       '<b>Pruebas A/B</b>: a veces algunos visitantes ven otra versión de un botón o texto para que sepamos qué funciona mejor. La versión se guarda en tu navegador; para los miembros con sesión iniciada se registra en el registro de actividad, y con consentimiento de analítica también se envía a Google Analytics.'],
+      'La información puede transferirse a servidores fuera de Israel (incluido EE. UU.), según los compromisos de protección de datos de Google y Microsoft. Puedes retirar el consentimiento en cualquier momento desde el enlace «Configuración de cookies» al pie de la página: se detiene la recogida y se borran las cookies de estas herramientas de tu navegador.'],
+    ['p-reviews', 'Reseñas', 'Si escribes una reseña, guardamos la valoración, el texto, el idioma y si elegiste mostrar tu nombre visible. La reseña se publica solo tras una revisión, con tu nombre visible o tus iniciales, nunca con tu correo. Puedes borrarla cuando quieras desde la ventana de reseñas.']
+  ],
+  terms: [
+    ['t-reviews', 'Reseñas', ['Una reseña debe reflejar tu propia experiencia real con el Servicio. No escribas reseñas en nombre de otra persona, ni falsas, ofensivas, promocionales o con enlaces.',
+      'Nunca damos nada (dinero, puntos o ventajas) a cambio de una reseña, y nunca inventamos reseñas.',
+      'Cada reseña se revisa antes de publicarse. No editamos el texto, pero podemos no publicar o retirar una reseña que incumpla estas reglas.',
+      'Al enviar una reseña nos permites mostrarla en el Sitio con tu nombre visible (si lo elegiste) o tus iniciales. Puedes borrarla cuando quieras.']],
+    ['t-referral', 'Invitar a amigos', ['Por cada amigo que se registre con tu enlace de invitación, ambos reciben los puntos que se indican en el cuadro de invitación. Son solo puntos, no dinero, y se rigen por las reglas de puntos de estos términos.',
+      'No te invites a ti mismo, no abras cuentas falsas ni hagas spam. Las recompensas por persona que invita en un periodo tienen un límite, y solo se dan por un registro nuevo dentro del plazo fijado.',
+      'Aviso: cuando compartas tu enlace públicamente (redes, grupos o un sitio web), menciona que recibes puntos cuando alguien se une con él.',
+      'Podemos cambiar o terminar el programa; los puntos ya recibidos se quedan en tu cuenta.']]
+  ]
+}
+};
 /* ---------- helpers ---------- */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const pick = lang => D[lang] ? lang : 'en';
@@ -589,7 +699,13 @@ function block(b, l, opts) {
   if (Array.isArray(b)) return '<ul>' + b.map(x => '<li>' + fillText(x, l, opts) + '</li>').join('') + '</ul>';
   return '<p>' + fillText(b, l, opts) + '</p>';
 }
-function doc(kind, lang) { const l = pick(lang); return { l, d: D[l][kind === 'privacy' ? 'privacy' : 'terms'] }; }
+function doc(kind, lang) {
+  const l = pick(lang), k = kind === 'privacy' ? 'privacy' : 'terms', d = D[l][k], g = GROW[l] && GROW[l][k];
+  if (!g || d.__grow) return { l, d };
+  const at = d.s.findIndex(x => x[0] === (k === 'privacy' ? 'p-browser' : 't-use'));   /* growth: splice the new sections in once */
+  d.s.splice(at < 0 ? d.s.length - 1 : at + 1, 0, ...g); d.__grow = true;
+  return { l, d };
+}
 
 const LEGAL = window.LEGAL = {
   version: VERSION,

@@ -58,7 +58,7 @@ def test(t, srv, b):
     t.check('sitemap.xml 200 and well-formed', st == 200 and data.startswith(b'<?xml') and b'<urlset' in data and b'<loc>https://' in data, data[:80])
     import xml.etree.ElementTree as ET
     locs = [u.text for u in ET.fromstring(data).iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
-    t.check('sitemap lists home, pricing, terms, privacy', len(locs) >= 4 and any(l.endswith('/') for l in locs) and any('#pricing' in l for l in locs), locs)
+    t.check('sitemap lists home, pricing, terms, privacy', len(locs) >= 4 and any(l.endswith('/') for l in locs) and all(any(l.endswith(x) for l in locs) for x in ('/pricing', '/terms', '/privacy', '/accessibility', '/licenses')) and not any('#' in l for l in locs), locs)   # growth: real paths, no hash URLs
     # the middleware must not hide these (its HIDDEN regex lives in functions/_middleware.js)
     mw = open(os.path.join(lib.REPO, 'functions', '_middleware.js'), encoding='utf-8').read()
     rx = re.search(r'const HIDDEN = /(.*)/i;', mw).group(1)

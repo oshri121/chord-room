@@ -1,0 +1,12 @@
+# Cloudflare Pages redirects/rewrites.
+# growth: real paths for the public pages. 200 = a rewrite (the address bar keeps /pricing, no redirect chain):
+# index.html is served and the router in assets/app.js maps the last path segment back to the view (hashes keep
+# working). functions/_middleware.js (these paths are in _routes.json) puts the page's own <title>, description,
+# canonical and Open Graph tags into the HTML for crawlers and link previews. Listed in sitemap.xml.
+/pricing        /   200
+/terms          /   200
+/privacy        /   200
+/accessibility  /   200
+/licenses       /   200
+/tool           /   200
+/about          /   200

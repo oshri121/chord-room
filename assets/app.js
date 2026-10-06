@@ -362,26 +362,34 @@ es:{payWait:'Pago recibido, activando tu plan…',payDone:'¡Tu plan {p} está a
 for(const k in IPAY)Object.assign(I[k],IPAY[k]);
 const IREF={
 he:{refTitle:'הזמינו חברים, קבלו נקודות',refText:'כל חבר שנרשם דרך הקישור שלך מקבל {n} נקודות מתנה, ו־{n} נקודות נכנסות גם לך.',refCopy:'העתקה',refCopied:'הועתק ✓',refShare:'שיתוף',
-  refStats:'הצטרפו דרכך {k} · הרווחת {p} נקודות',refMsg:'נסו את Chord Room: BPM, סולם, אקורדים וערוצי AI מכל שיר. נרשמים דרך הקישור ומקבלים {n} נקודות מתנה:',
+  refStats:'הצטרפו דרכך {k} · הרווחת {p} נקודות',refMsg:'נסו את Chord Room: BPM, סולם, אקורדים וערוצי AI מכל שיר. נרשמים דרך הקישור ומקבלים {n} נקודות מתנה (גם אני מקבל/ת נקודות על ההזמנה):',refDisc:'גילוי נאות: זו תוכנית הזמנת חברים של Chord Room. על כל חבר שנרשם דרך הקישור שלך שניכם מקבלים נקודות (לא כסף). כשמשתפים את הקישור בפומבי, כדאי לציין שמקבלים עליו נקודות.',
   refGot:'הצטרפת דרך הזמנה של חבר: קיבלת {n} נקודות מתנה.',lr_referral:'הזמנת חבר',refJoinedL:'הצטרפות בהזמנה',refInviterL:'חבר הצטרף',
   billRef:'נקודות על כל הזמנה (לכל צד)',billRefMax:'תגמולים למזמין ב־30 יום (מקסימום)'},
 en:{refTitle:'Invite friends, get points',refText:'Every friend who signs up through your link gets {n} free points, and you get {n} too.',refCopy:'Copy',refCopied:'Copied ✓',refShare:'Share',
-  refStats:'{k} joined through you · you earned {p} points',refMsg:'Try Chord Room: BPM, key, chords and AI stems from any song. Sign up through this link and get {n} free points:',
+  refStats:'{k} joined through you · you earned {p} points',refMsg:'Try Chord Room: BPM, key, chords and AI stems from any song. Sign up through this link and get {n} free points (I get points for the invite too):',refDisc:'Disclosure: this is Chord Room’s invite program. For every friend who signs up through your link, you both get points (not money). When you share the link publicly, please mention that you get points for it.',
   refGot:'You joined through a friend\'s invite: {n} free points added.',lr_referral:'Friend invite',refJoinedL:'joined by invite',refInviterL:'a friend joined',
   billRef:'Points per invite (each side)',billRefMax:'Max rewards per inviter in 30 days'},
 ar:{refTitle:'ادعُ أصدقاءك واحصل على نقاط',refText:'كل صديق يسجّل عبر رابطك يحصل على {n} نقاط مجانية، وتحصل أنت أيضًا على {n}.',refCopy:'نسخ',refCopied:'تم النسخ ✓',refShare:'مشاركة',
-  refStats:'انضم عبرك {k} · ربحت {p} نقطة',refMsg:'جرّب Chord Room: الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية. سجّل عبر هذا الرابط واحصل على {n} نقاط مجانية:',
+  refStats:'انضم عبرك {k} · ربحت {p} نقطة',refMsg:'جرّب Chord Room: الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية. سجّل عبر هذا الرابط واحصل على {n} نقاط مجانية (وأنا أيضًا أحصل على نقاط مقابل الدعوة):',refDisc:'إفصاح: هذا برنامج دعوة الأصدقاء في Chord Room. عن كل صديق يسجّل عبر رابطك تحصلان كلاكما على نقاط (وليس مالًا). عند مشاركة الرابط علنًا، يُرجى ذكر أنك تحصل على نقاط مقابله.',
   refGot:'انضممت عبر دعوة صديق: أُضيفت {n} نقاط مجانية.',lr_referral:'دعوة صديق',refJoinedL:'انضمام بدعوة',refInviterL:'انضم صديق',
   billRef:'نقاط لكل دعوة (لكل طرف)',billRefMax:'الحد الأقصى للمكافآت لكل داعٍ خلال 30 يومًا'},
 ru:{refTitle:'Пригласите друзей и получите баллы',refText:'Каждый друг, который зарегистрируется по вашей ссылке, получит {n} бесплатных баллов, и вы тоже получите {n}.',refCopy:'Копировать',refCopied:'Скопировано ✓',refShare:'Поделиться',
-  refStats:'По вашей ссылке пришли: {k} · вы заработали {p} баллов',refMsg:'Попробуйте Chord Room: темп, тональность, аккорды и AI-разделение любой песни. Регистрируйтесь по ссылке и получите {n} бесплатных баллов:',
+  refStats:'По вашей ссылке пришли: {k} · вы заработали {p} баллов',refMsg:'Попробуйте Chord Room: темп, тональность, аккорды и AI-разделение любой песни. Регистрируйтесь по ссылке и получите {n} бесплатных баллов (я тоже получаю баллы за приглашение):',refDisc:'Раскрытие информации: это программа приглашений Chord Room. За каждого друга, который зарегистрируется по вашей ссылке, вы оба получаете баллы (не деньги). Делясь ссылкой публично, пожалуйста, упоминайте, что получаете за неё баллы.',
   refGot:'Вы пришли по приглашению друга: начислено {n} бесплатных баллов.',lr_referral:'Приглашение друга',refJoinedL:'регистрация по приглашению',refInviterL:'друг зарегистрировался',
   billRef:'Баллы за приглашение (каждой стороне)',billRefMax:'Макс. наград одному пригласившему за 30 дней'},
 es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se registre con tu enlace recibe {n} puntos gratis, y tú también recibes {n}.',refCopy:'Copiar',refCopied:'Copiado ✓',refShare:'Compartir',
-  refStats:'{k} se unieron gracias a ti · ganaste {p} puntos',refMsg:'Prueba Chord Room: BPM, tonalidad, acordes y pistas separadas con IA de cualquier canción. Regístrate con este enlace y recibe {n} puntos gratis:',
+  refStats:'{k} se unieron gracias a ti · ganaste {p} puntos',refMsg:'Prueba Chord Room: BPM, tonalidad, acordes y pistas separadas con IA de cualquier canción. Regístrate con este enlace y recibe {n} puntos gratis (yo también recibo puntos por la invitación):',refDisc:'Aviso: este es el programa de invitaciones de Chord Room. Por cada amigo que se registre con tu enlace, ambos reciben puntos (no dinero). Si compartes el enlace públicamente, menciona que recibes puntos por él.',
   refGot:'Te uniste con la invitación de un amigo: se añadieron {n} puntos gratis.',lr_referral:'Invitación de amigo',refJoinedL:'registro por invitación',refInviterL:'se unió un amigo',
   billRef:'Puntos por invitación (cada lado)',billRefMax:'Máx. recompensas por invitador en 30 días'}};
 for(const k in IREF)Object.assign(I[k],IREF[k]);
+/* growth: admin tabs (assets/reviews.js, assets/ab.js) + footer links (accessibility statement, licenses, cookie settings) */
+const IGROW={
+he:{admReviews:'ביקורות',admGrowth:'צמיחה',auA11y:'הצהרת נגישות',auLicenses:'רישיונות וקרדיטים',auCookies:'הגדרות עוגיות',act_ab_assign:'שיבוץ לניסוי'},
+en:{admReviews:'Reviews',admGrowth:'Growth',auA11y:'Accessibility statement',auLicenses:'Licenses & credits',auCookies:'Cookie settings',act_ab_assign:'Experiment assignment'},
+ar:{admReviews:'المراجعات',admGrowth:'النمو',auA11y:'بيان إمكانية الوصول',auLicenses:'التراخيص والشكر',auCookies:'إعدادات ملفات تعريف الارتباط',act_ab_assign:'تعيين في تجربة'},
+ru:{admReviews:'Отзывы',admGrowth:'Рост',auA11y:'Заявление о доступности',auLicenses:'Лицензии и благодарности',auCookies:'Настройки cookie',act_ab_assign:'Назначение в эксперимент'},
+es:{admReviews:'Reseñas',admGrowth:'Crecimiento',auA11y:'Declaración de accesibilidad',auLicenses:'Licencias y créditos',auCookies:'Configuración de cookies',act_ab_assign:'Asignación a experimento'}};
+for(const k in IGROW)Object.assign(I[k],IGROW[k]);
 const IACT={
 he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
   act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה',act_mashup_export:'ייצוא מאשאפ',act_voice_test:'בדיקת טווח קול',act_convert:'המרת קבצים',act_extended_export:'ייצוא אקסטנדד'},
@@ -2028,6 +2036,7 @@ function authChanged(uid,event){
 /* ---------- activity log (admin panel → Activity; log_activity in schema.sql) ---------- */
 const ACT={off:false,last:{}};
 function logAct(action,detail){
+  try{document.dispatchEvent(new CustomEvent('cr-act',{detail:{action}}))}catch(e){}   /* growth: analytics key events + review prompt (the action name only, never the detail) */
   if(!ACC.on||!ACC.user||ACT.off||!Backend.logActivity)return;
   const d=detail==null?'':String(detail).replace(/\s+/g,' ').trim().slice(0,300),k=action+'|'+d,now=Date.now();
   if(ACT.last[k]&&now-ACT.last[k]<30000)return;ACT.last[k]=now;          // the same thing twice within 30 s → once
@@ -2126,6 +2135,7 @@ function auHead(mode){
   $('#authTitle').textContent=t(H[0],{u:AU.user||myName()});$('#authSub').textContent=t(H[1],{e:mode==='recover'?r:e});
 }
 function auShow(mode,keep){
+  if(mode==='done'&&AU.done==='new'&&AU.mode!=='done'){try{document.dispatchEvent(new CustomEvent('cr-signup'))}catch(e){}}   /* growth: analytics sign_up */
   AU.mode=mode;const d=$('#authDlg'),up=AU_UP.includes(mode);
   for(const [m,sel] of Object.entries(AU_FORMS))$(sel).hidden=m!==mode;
   $('#auPanIn').hidden=mode!=='in';$('#auPanUp').hidden=!up;
@@ -2412,6 +2422,7 @@ function applyConfig(){
   renderAuthBtns();if(!$('#authDlg').hidden&&(AU.mode==='in'||AU_UP.includes(AU.mode)))auShow(AU.mode,true);
   if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);
   renderStemsUI();renderCredits();if(window.ACCT)ACCT.config();/* acct */
+  try{document.dispatchEvent(new CustomEvent('cr-config'))}catch(e){}   /* growth: analytics ids, experiments, Search Console token */
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
 $('#adminBtn').onclick=()=>{fillSettings();fillBilling();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadRoles();loadUsers();if(!tabOk(ACC.admView))ACC.admView=ADM_TABS.find(tabOk)||'users';if(ACC.admView==='activity')loadAdminAct()};
@@ -2437,6 +2448,9 @@ function renderAdmin(){
   document.querySelectorAll('#admTabs button').forEach(b=>{const on=b.dataset.v===ACC.admView&&!ACC.admUser;b.hidden=!tabOk(b.dataset.v);b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
   $('#admUsers').hidden=ACC.admView!=='users'||!!ACC.admUser;$('#admAct').hidden=ACC.admView!=='activity'||!!ACC.admUser;
   $('#admSettings').hidden=!!ACC.admUser||ACC.admView!=='settings';$('#admRolesSec').hidden=!!ACC.admUser||ACC.admView!=='roles';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
+  /* growth: module tabs (#admin .asec[data-ext] — assets/reviews.js, assets/ab.js render on 'cr-admin') */
+  document.querySelectorAll('#admin .asec[data-ext]').forEach(s=>{s.hidden=!!ACC.admUser||ACC.admView!==s.dataset.ext});
+  if(!ACC.admUser&&ACC.admView&&$('#admin .asec[data-ext="'+ACC.admView+'"]')){try{document.dispatchEvent(new CustomEvent('cr-admin',{detail:{view:ACC.admView}}))}catch(e){}return}
   renderPayEvents();
   if(ACC.admUser){renderAdminUser();return}
   if(ACC.admView==='songs'){renderAdminSongs();return}
@@ -2483,8 +2497,8 @@ function wireSongRows(tbody,list){
 async function loadAdminSongs(){try{ACC.songsAll=await Backend.adminSongs()}catch(e){ACC.songsAll=[]}renderAdmin()}
 /* ---------- owner, roles & permissions (schema.sql "Owner & roles") ---------- */
 const ALL_PERMS=['users','block','credits','songs','activity','settings','payments','catalog'];
-const ADM_TABS=['users','songs','activity','settings','roles'];
-const TAB_PERM={users:'users',songs:'songs',activity:'activity',settings:'settings'};
+const ADM_TABS=['users','songs','activity','settings','roles',/* growth */'reviews','growth'];
+const TAB_PERM={users:'users',songs:'songs',activity:'activity',settings:'settings',/* growth: reviews = content moderation, growth = settings */reviews:'catalog',growth:'settings'};
 function tabOk(v){if(v==='roles')return !!ACC.owner;const p=TAB_PERM[v];return !!p&&!!ACC.perms&&ACC.perms.has(p)}
 ACC.roles=[];
 function roleName(id){if(!id||id==='user')return t('roleUser');if(id==='admin')return t('roleAdmin');const r=(ACC.roles||[]).find(x=>x.id===id);return r?r.name:id}
@@ -2694,6 +2708,7 @@ function fillRef(el){
   el.querySelector('.refwa').href='https://wa.me/?text='+encodeURIComponent(msg+' '+url);
   const sh=el.querySelector('.refsh');sh.hidden=!navigator.share;sh.textContent=t('refShare');sh.onclick=()=>navigator.share({title:'Chord Room',text:msg,url}).catch(()=>{});
   el.querySelector('.refst').textContent=me.invited?t('refStats',{k:me.invited,p:me.earned||0}):'';
+  /* growth: referral disclosure */let dc=el.querySelector('.refdisc');if(!dc){dc=document.createElement('p');dc.className='snote refdisc';el.append(dc)}dc.textContent=t('refDisc');
 }
 function renderRef(){
   const on=!!(ACC.user&&REF.me&&REF.me.code&&REF.for===ACC.user.id&&billingOn()&&refPts()>0);
@@ -3387,7 +3402,21 @@ function renderMix(){
 $('#mixClose').onclick=()=>{$('#mix').hidden=true;DC.mixFor=null};
 
 /* views */
-const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],mashup:['#mashupView','#navMashup'],convert:['#convertView','#navConvert'],/* converter */extended:['#extendedView','#navExtended'],/* extended */pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null]};
+const VIEWS={tool:['#toolView','#navTool'],discover:['#discover','#navDisc'],dj:['#djView','#navDj'],crate:['#crateView','#navCrate'],mashup:['#mashupView','#navMashup'],convert:['#convertView','#navConvert'],/* converter */extended:['#extendedView','#navExtended'],/* extended */pricing:['#pricingView','#navPricing'],about:['#aboutView','#navAbout'],terms:['#legalView',null],privacy:['#legalView',null],
+  /* growth */licenses:['#infoView',null],accessibility:['#infoView',null]};
+/* growth: real paths for the public pages (/pricing, /terms, /accessibility …). _redirects rewrites them to index.html (200),
+   the router maps the last path segment back to the view; hashes keep working and win over the path. */
+const PAGE_PATHS={pricing:'pricing',terms:'terms',privacy:'privacy',accessibility:'accessibility',licenses:'licenses',tool:'tool'};
+const PATH_VIEWS={about:'about'};for(const k in PAGE_PATHS)PATH_VIEWS[PAGE_PATHS[k]]=k;
+const pathSeg=()=>{try{return decodeURIComponent((location.pathname.match(/\/([^/]*)$/)||['',''])[1]).toLowerCase()}catch(e){return ''}};
+const BASE_PATH=location.pathname.replace(/[^/]*$/,'')||'/';
+const pathView=()=>Object.prototype.hasOwnProperty.call(PATH_VIEWS,pathSeg())?PATH_VIEWS[pathSeg()]:null;
+function viewUrl(v,anchor){
+  if(anchor)return BASE_PATH+location.search+'#'+anchor;
+  if(v==='about')return BASE_PATH+location.search;
+  if(PAGE_PATHS[v]&&pathView()===v&&!location.hash.replace('#',''))return location.pathname+location.search;   // opened at /pricing → keep the clean path
+  return BASE_PATH+location.search+'#'+v;
+}
 function showView(v,anchor){
   if(!VIEWS[v])v='tool';
   const lock=gated(v);GATE.v=v;GATE.locked=lock;
@@ -3409,15 +3438,17 @@ function showView(v,anchor){
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
   if(v==='terms'||v==='privacy')renderLegal(v);else LEGAL_V.kind=null;
+  if((v==='licenses'||v==='accessibility')&&window.INFO)INFO.render(v,$('#infoView'));   /* growth: assets/info.js */
   document.documentElement.classList.remove('home');
-  try{history.replaceState(null,'',v==='about'&&!anchor?location.pathname+location.search:'#'+(anchor||v))}catch(e){}
+  try{history.replaceState(null,'',viewUrl(v,anchor))}catch(e){}
   const tgt=anchor&&document.getElementById(anchor);
   if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
   viewTitle(v,lock,!!anchor);
+  try{document.dispatchEvent(new CustomEvent('cr-view',{detail:{v,lock}}))}catch(e){}   /* growth: page_view, per-page meta */
 }
 /* qw: document.title per view + focus to the view's h1 (screen readers, history, tabs) */
 function viewTitle(v,lock,anchored){
-  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),nm=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():(v==='terms'||v==='privacy')&&window.LEGAL?LEGAL.title(v,LANG):'';
+  const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),nm=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():(v==='terms'||v==='privacy')&&window.LEGAL?LEGAL.title(v,LANG):(v==='licenses'||v==='accessibility')&&window.INFO?INFO.title(v):'';
   document.title=v==='about'?`Chord Room · ${t('tagline')}`:`${lock?t('gateLock'):nm||v} · Chord Room`;
   if(!VT.user)return;                                                    // only after a user navigation, not on boot
   const sec=lock?'#gateView':VIEWS[v][0],h=!anchored&&$(sec)&&$(sec).querySelector('h1');
@@ -3499,9 +3530,12 @@ $('#legalView').addEventListener('click',e=>{
   if(b.dataset.nav)showView(b.dataset.nav);else{window.scrollTo(0,0);$('#lgH').tabIndex=-1;$('#lgH').focus({preventScroll:true})}
 });
 // the About page is the home page (no hash); the tool lives at #tool
-const viewOfHash=()=>{const h=location.hash.slice(1).split('#')[0];return h==='about-a11y'?'about':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
-const routeHash=()=>{const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();showView(v,h==='about-a11y'?h:null);
-  if(h&&v==='about'&&h!=='about-a11y'&&h!=='about')setTimeout(()=>toast(t('notFound')),300)}; /* qw: unknown hash → home + a notice */
+/* growth: no hash → the path (/pricing …); #about-a11y (old links) → the accessibility statement page */
+const viewOfHash=()=>{const h=location.hash.slice(1).split('#')[0];if(!h)return pathView()||'about';return h==='about-a11y'?'accessibility':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
+const routeHash=()=>{const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();
+  const badPath=!h&&!pathView()&&pathSeg()&&!/^index\.html?$/.test(pathSeg());   /* before showView: it rewrites the URL */
+  showView(v,null);
+  if((h&&v==='about'&&h!=='about')||badPath)setTimeout(()=>toast(t('notFound')),300)}; /* qw: unknown hash → home + a notice */
 window.addEventListener('hashchange',routeHash);
 
 /* ---------- last song: the tool reopens it after a reload / browser restart (IndexedDB) ---------- */

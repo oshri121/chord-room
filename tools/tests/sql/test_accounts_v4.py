@@ -266,12 +266,12 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list (unchanged)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,username_available')
+      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,reviews_public,username_available')   # growth: reviews_public = approved reviews only
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('no table in public without RLS', sql("select coalesce(string_agg(c.relname, ','), 'none') from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity"), 'none')
 check('account_deletions: no write for API roles', as_(A, "insert into public.account_deletions(how,subject_hash) values ('self',repeat('a',64))"), 'permission denied')
-blk = open(pg.SCHEMA, encoding='utf-8').read().split('[accounts-v4:begin]')[1]
+blk = open(pg.SCHEMA, encoding='utf-8').read().split('[accounts-v4:begin]')[1].split('[accounts-v4:end]')[0]   # merge: [growth-v4] follows
 check('no dynamic SQL built from input in the block (execute only with format %I over constants)',
       'ok' if all("format('" in l for l in blk.splitlines() if re.search(r'\bexecute\s+(?!function\b|on\b)', l) and not l.strip().startswith('--')) else 'bad', 'ok')
 
@@ -280,7 +280,9 @@ src = open(pg.SCHEMA, encoding='utf-8').read()
 v4 = open(os.path.join(pg.REPO, 'supabase', 'accounts_v4.sql'), encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Accounts v4 .*?-- \[accounts-v4:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [accounts-v4] block', 'found' if m else 'missing', 'found')
-check('the block is the LAST thing in schema.sql', 'last' if m and src[m.end():].strip() == '' else 'not last', lambda o: o == 'last')
+# only later blocks ([growth-v4]) may follow it
+later = re.sub(r'(?s)-- =+\n-- Growth v4 .*?-- \[growth-v4:end\]\n-- =+\n', '', src[m.end():]) if m else src
+check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('…after [security-v3]', 'yes' if m and src.index('[security-v3:end]') < m.start() else 'no', 'yes')
 check('accounts_v4.sql contains the block verbatim', 'yes' if m and m.group(1) in v4 else 'no', 'yes')
 check('accounts_v4.sql = header comment + the block', 'yes' if m and v4.endswith(m.group(1)) and all(l.startswith('--') or not l.strip() for l in v4[:v4.index(m.group(1))].splitlines()) else 'no', 'yes')
