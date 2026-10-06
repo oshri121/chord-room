@@ -61,8 +61,19 @@
     async roles() { return [{ id: 'mod', name: P('role.name'), perms: ['users'] }]; },
     async ownerSaveRole() {}, async ownerDeleteRole() {}, async ownerRolePasswordSet() { return true; }, async ownerSetRolePassword() { return 'ok'; },
     async adminGrantCredits() { return 1; }, async adminSetPlan() {},
-    async adminPayEvents() { return [{ id: 1, key: 'k', event: P('pay.event'), user_id: 'u0', test: true, result: P('pay.result'), created_at: now() }]; }
+    async adminPayEvents() { return [{ id: 1, key: 'k', event: P('pay.event'), user_id: 'u0', test: true, result: P('pay.result'), created_at: now() }]; },
+    // acct (accounts v4): hostile 2FA factors / enrolment data / blocked words / delete answers
+    async mfaFactors() { return [{ id: Q('mfa.id'), name: P('mfa.name'), status: 'verified', created_at: Q('mfa.created') }]; },
+    async mfaEnroll() { return { id: Q('mfa.enroll.id'), qr: "javascript:__xss('mfa.qr')", secret: P('mfa.secret'), uri: "javascript:__xss('mfa.uri')" }; },
+    async mfaVerify() { fail('otp'); }, async mfaUnenroll() {},
+    async blockedWords() { return [{ word: P('word'), mode: Q('word.mode'), lang: 'en', seeded: false }]; },
+    async blockedWordSet() { return { ok: false, why: P('word.why') }; },
+    async textOk() { return true; },
+    async deleteMyAccount() { return { ok: false, why: P('delete.why') }; },
+    async adminDeleteUser() { return { ok: false, why: Q('admdel.why') }; },
+    async reauthPassword() {}, async checkPassword() {}, reauthDone() {}
   };
+  evilBilling.turnstile_site_key = Q('turnstile.key'); evilBilling.idle_minutes = Q('idle'); evilBilling.min_age = Q('min_age');
   window.__MOCK_BACKEND = B;
   users.push({ id: 'uo', email: 'owner@example.com', password: 'password1', created_at: now() });
   profiles.push({ id: 'uo', username: 'oshri', email: 'owner@example.com', display_name: 'Oshri', bio: '', avatar_url: '', lang: 'he', role: 'admin', owner: true, blocked: false, songs: 0, seps: 0, credits: 10, created_at: now(), last_seen: now() });

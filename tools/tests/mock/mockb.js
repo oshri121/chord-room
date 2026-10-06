@@ -101,7 +101,88 @@
     async accessToken() { return B.user ? 'tok-' + B.user.id : null; },
     async assistantStatus() { return window.__rmStatus || { ok: true, left: 30, limit: 30 }; }
   };
-  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, ledger, charged, get cfg() { return cfg; },
+  /* ---- accounts v4 (assets/acct.js): Turnstile token, 2FA, delete account, word filter, sign out everywhere.
+     Same rules as schema.sql [accounts-v4]. Knobs: window.__captchaRequired (a sign-in/up/reset without a token fails
+     'captcha'); every token seen → window.__captcha [{a, tok}]; TOTP code 123456; e-mail re-auth code 777777. */
+  const factors = {}; let aal = 'aal1', pending = null, reauthAt = 0;
+  const off = s => !!(window.TEXTGUARD && window.TEXTGUARD.offensive(s)) || (window.__badWords || []).some(w => String(s || '').toLowerCase().includes(w));
+  const capTok = async a => { const tok = B.captcha ? await B.captcha(a) : undefined; (window.__captcha = window.__captcha || []).push({ a, tok: tok || null }); if (window.__captchaRequired && !tok) fail('captcha'); return tok; };
+  const verified = id => (factors[id] || []).some(f => f.status === 'verified');
+  const LIVE = ['active', 'on_trial', 'past_due', 'paused'];
+  const confirmOk = (c, un) => { const v = String(c || '').trim().toLowerCase(); return ['delete', 'מחק', 'حذف', 'удалить', 'eliminar'].includes(v) || (!!un && v === un.toLowerCase()); };
+  function drop(id) {
+    for (const arr of [users, profiles]) { const i = arr.findIndex(x => x.id === id); if (i >= 0) arr.splice(i, 1); }
+    for (let i = songs.length - 1; i >= 0; i--) if (songs[i].user_id === id) songs.splice(i, 1);
+    for (let i = ledger.length - 1; i >= 0; i--) if (ledger[i].user_id === id) { if (ledger[i].reason === 'payment') ledger[i].user_id = null; else ledger.splice(i, 1); }
+    for (const k of Object.keys(window.__files || {})) if (k.startsWith(id + '/')) delete window.__files[k];
+    window.__log = (window.__log || []).filter(x => x.user_id !== id); delete factors[id];
+    (window.__deleted = window.__deleted || []).push(id);
+  }
+  const _signUp = B.signUp, _signIn = B.signIn, _signOut = B.signOut, _usernameFree = B.usernameFree, _updateProfile = B.updateProfile, _myAccess = B.myAccess, _credits = B.credits, _sendReset = B.sendReset;
+  Object.assign(B, {
+    captcha: null, mfaPending: null,
+    async signUp(a) { await capTok('signup'); window.__signupMeta = { age: a.age || null, terms: a.terms || null }; if (off(a.username)) fail('taken'); return _signUp(a); },
+    async signIn(a) {
+      await capTok('signin');
+      const u = users.find(x => x.email === a.email && x.password === a.password); if (!u) fail('login');
+      if (verified(u.id)) { pending = { user: u }; B.mfaPending = pending; cur = null; B.user = null; aal = 'aal1';
+        setTimeout(() => document.dispatchEvent(new CustomEvent('cr-mfa', { detail: { pending: true } })), 0); fail('mfa'); }
+      reauthAt = Date.now(); aal = 'aal1'; return _signIn(a);
+    },
+    async signOut() { pending = null; B.mfaPending = null; aal = 'aal1'; return _signOut(); },
+    async signOutAll() { window.__signOutAll = (window.__signOutAll || 0) + 1; return B.signOut(); },
+    async sendReset(e) { await capTok('reset'); return _sendReset(e); },
+    async usernameFree(u) { if (off(u)) return false; return _usernameFree(u); },
+    async updateProfile(patch) { for (const k of ['username', 'display_name', 'bio']) if (patch[k] && off(patch[k])) { const e = new Error('offensive'); e.code = 'offensive'; e.field = k; throw e; } return _updateProfile(patch); },
+    async myAccess() { const r = await _myAccess(); const b = cfg.billing || {}; return { ...r, mfa: { enrolled: !!(cur && verified(cur.id)), aal, required: b.require_mfa_admin === true, ok: true, held: false } }; },
+    async credits() { const r = await _credits(); const p = me(); return { ...r, pay_status: p.pay_status || null, pay_portal: p.pay_portal || null, pay_renews: p.pay_renews || null }; },
+    async changePassword(c, n) { if (cur.password !== c) fail('curpass'); if (n.length < 8) fail('short'); cur.password = n; },
+    async checkPassword(pw) { await capTok('reauth'); if (cur.password !== pw) fail('curpass'); },
+    async reauthPassword(pw) { await capTok('reauth'); if (cur.password !== pw) fail('curpass'); reauthAt = Date.now(); aal = verified(cur.id) ? 'aal1' : aal; },
+    async sendReauthCode() { await capTok('otp'); window.__reauthMail = cur.email; },
+    async verifyReauthCode(code) { if (String(code) !== '777777') fail('otp'); reauthAt = Date.now(); aal = verified(cur.id) ? 'aal1' : aal; },
+    reauthDone() {},
+    async mfaFactors() { return (factors[cur.id] || []).map(f => ({ ...f })); },
+    async mfaEnroll() { const id = 'f' + Math.random().toString(36).slice(2, 8); (factors[cur.id] = (factors[cur.id] || []).filter(f => f.status === 'verified')).push({ id, name: 'Chord Room', status: 'unverified', created_at: now() });
+      return { id, qr: 'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="black"/></svg>', secret: 'JBSWY3DPEHPK3PXP', uri: 'otpauth://totp/x' }; },
+    async mfaVerify(id, code) { const f = (factors[cur.id] || []).find(x => x.id === id); if (!f) fail('mfa'); if (String(code) !== '123456') { const e = new Error('Invalid TOTP code entered'); e.code = 'otp'; throw e; } f.status = 'verified'; aal = 'aal2'; },
+    async mfaUnenroll(id) { factors[cur.id] = (factors[cur.id] || []).filter(f => f.id !== id); },
+    mfaPendingInfo() { return pending ? { email: pending.user.email, factors: 1 } : null; },
+    async mfaSignInVerify(code) { if (!pending) fail('mfa'); if (String(code) !== '123456') { const e = new Error('Invalid TOTP code entered'); e.code = 'otp'; throw e; }
+      const u = pending.user; pending = null; B.mfaPending = null; aal = 'aal2'; reauthAt = Date.now(); cur = u; B.user = u; cb('SIGNED_IN', u); },
+    async mfaAbort() { pending = null; B.mfaPending = null; },
+    async deleteMyAccount(confirm, onStep) {
+      const p = me(), id = cur.id;
+      if (p.owner) return { ok: false, why: 'owner' };
+      if (p.pay_status && LIVE.includes(p.pay_status)) return { ok: false, why: 'subscription' };
+      if (!confirmOk(confirm, p.username)) return { ok: false, why: 'confirm' };
+      if (Date.now() - reauthAt > 15 * 60000) return { ok: false, why: 'reauth' };
+      if (verified(id) && aal !== 'aal2') return { ok: false, why: 'mfa' };
+      if (onStep) onStep('files'); await new Promise(r => setTimeout(r, 50)); if (onStep) onStep('account');
+      drop(id); window.__deleteConfirm = confirm; cur = null; B.user = null; cb('SIGNED_OUT', null);
+      return { ok: true };
+    },
+    async adminDeleteUser(target, confirm) {
+      const a = me(); if (!a || !(a.role === 'admin' || a.owner)) fail('not allowed');
+      if (target === cur.id) return { ok: false, why: 'self' };
+      const t = profiles.find(x => x.id === target); if (!t) return { ok: false, why: 'not_found' };
+      if (t.owner) return { ok: false, why: 'owner' };
+      if (t.role !== 'user' && !a.owner) return { ok: false, why: 'staff' };
+      if (t.pay_status && LIVE.includes(t.pay_status)) return { ok: false, why: 'subscription' };
+      if (!confirmOk(confirm, t.username)) return { ok: false, why: 'confirm' };
+      drop(target); (window.__log = window.__log || []).push({ user_id: cur.id, action: 'adm_delete_user', detail: 'by ' + cur.id, created_at: now() });
+      return { ok: true };
+    },
+    async textOk(s) { return !off(s); },
+    async blockedWords() { return (window.__words = window.__words || [{ word: 'shit', mode: 'word', lang: 'en', seeded: true }, { word: 'זונה', mode: 'hword', lang: 'he', seeded: true }]).slice(); },
+    async blockedWordSet(w, mode, on) { const list = window.__words = window.__words || []; const k = String(w || '').trim().toLowerCase(); if (k.length < 2) return { ok: false, why: 'bad' };
+      const i = list.findIndex(x => x.word === k); if (on) { if (i < 0) list.push({ word: k, mode: mode || 'word', lang: '', seeded: false }); (window.__badWords = window.__badWords || []).push(k); }
+      else { if (i >= 0) list.splice(i, 1); window.__badWords = (window.__badWords || []).filter(x => x !== k); }
+      return { ok: true, word: k }; }
+  });
+  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, ledger, charged, factors, get cfg() { return cfg; }, get aal() { return aal; },
+    addFactor(uid) { (factors[uid] = factors[uid] || []).push({ id: 'f' + uid, name: 'Chord Room', status: 'verified', created_at: now() }); },
+    setProfile(patch, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) Object.assign(p, patch); },
     setCredits(n, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) p.credits = n; },
     setPlan(plan, days, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) { p.plan = plan; p.plan_until = plan === 'free' ? null : new Date(Date.now() + days * 864e5).toISOString(); } } };
   users.push({ id: 'u0', email: 'dana@example.com', password: 'password1', created_at: now() });

@@ -17,9 +17,13 @@
 #   covers + 30 s previews). frame-src: Deezer's official widget. Checkout (Lemon Squeezy), WhatsApp and
 #   Deezer links open as normal navigations, which CSP does not restrict. frame-src also allows www.deezer.com in case
 #   the widget navigates inside its frame (sign-in).
+# - Cloudflare Turnstile (accounts v4, assets/acct.js): https://challenges.cloudflare.com in script-src (its api.js, loaded only
+#   when the admin settings hold a Turnstile site key) and in frame-src/child-src (the check runs in Cloudflare's iframe).
+#   Nothing else of Cloudflare's is needed in the page (connect/img stay as they were). Bot protection for Supabase Auth:
+#   the token goes with sign-up / sign-in / password reset and Supabase verifies it with the secret key.
 # - Permissions-Policy: microphone=(self) = the "My key" vocal range test (assets/voice.js; the audio stays in the browser).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com; frame-src https://widget.deezer.com https://www.deezer.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; frame-src https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

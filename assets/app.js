@@ -2103,7 +2103,7 @@ const signupOpen=()=>(ACC.config||{}).allow_signup!==false;
 function authErr(e){const c=e&&e.code;
   if(c==='rate')return e.wait?t('auErrRate',{s:e.wait}):t('auErrRate0');
   return c==='login'?t('errLogin'):c==='confirm'?t('errConfirm'):c==='short'?t('errShort'):c==='user'?t('errUser'):c==='taken'?t('errUserTaken'):c==='closed'?t('signupClosed'):c==='curpass'?t('errCurPass')
-    :c==='otp'?t('auCodeBad'):c==='exists'?t('auErrExists'):c==='weak'?t('auErrWeak'):c==='same'?t('auErrSame'):c==='email'?t('auEmailBad'):c==='network'?t('auErrNet'):t('errGeneric',{m:String(e&&e.message||e).slice(0,120)})}
+    :c==='otp'?t('auCodeBad'):c==='offensive'?t('acOffensive'):c==='captcha'?t('acCapErr'):/* acct */c==='exists'?t('auErrExists'):c==='weak'?t('auErrWeak'):c==='same'?t('auErrSame'):c==='email'?t('auEmailBad'):c==='network'?t('auErrNet'):t('errGeneric',{m:String(e&&e.message||e).slice(0,120)})}
 function setMsg(el,text,err){el.textContent=text||'';el.classList.toggle('err',!!err)}
 function auMsg(text,kind){const el=$('#auMsg');el.textContent=text||'';el.className='au-msg'+(kind?' '+kind:'');el.hidden=!text}
 // inline field error (text under the field + aria-invalid); '' clears it
@@ -2198,6 +2198,7 @@ function userCheck(now){
   const u=$('#upUser').value.trim(),seq=++AU.uSeq;clearTimeout(AU.uTimer);AU.uFree=null;
   if(!u){userState('',t('usernameH'));return Promise.resolve(null)}
   if(!USER_RE.test(u)){userState(u.length>=3||now?'err':'',t('usernameH'));AU.uFree=false;return Promise.resolve(false)}
+  AU.uOff=!!(window.TEXTGUARD&&TEXTGUARD.offensive(u));if(AU.uOff){userState('err',t('acOffName'));AU.uFree=false;return Promise.resolve(false)}   /* acct */
   if(!Backend.usernameFree){userState('',t('usernameH'));return Promise.resolve(true)}
   userState('wait',t('auUserChecking'));
   return new Promise(ok=>{AU.uTimer=setTimeout(async()=>{let f=true;try{f=await Backend.usernameFree(u)}catch(e){f=true}
@@ -2255,6 +2256,7 @@ $('#fIn').addEventListener('submit',e=>{e.preventDefault();auMsg('');
       if(err&&err.code==='confirm'&&Backend.verifySignup){AU.email=email;AU.pendingAt=Date.now();auShow('code');otpSet($('#auCode'),'');
         let m=t('auConfirmFirst');if(Backend.resendSignup){try{await Backend.resendSignup(email);auCool('code')}catch(x){if(x&&x.code==='rate'){auCool('code',x.wait||60);m=authErr(x)}}}
         auMsg(m,'info');return}
+      if(err&&err.code==='mfa'){pw.value='';closeDlg();return}   /* acct: the 2FA code dialog (assets/acct.js) takes over */
       auMsg(authErr(err),'err');if(err&&err.code==='login'){pw.select&&pw.select();pw.focus()}}
   })});
 /* ---- sign up, step 1: details ---- */
@@ -2269,7 +2271,7 @@ $('#fUp').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   if(!signupOpen())return auMsg(t('signupClosed'),'err');
   const u=$('#upUser'),em=$('#upEmail'),p1=$('#upPass'),p2=$('#upPass2'),name=u.value.trim(),email=em.value.trim();
   if(!USER_RE.test(name)){userState('err',t('usernameH'));u.focus();return}
-  if(AU.uFree===false){userState('err',t('auUserTaken'));u.focus();return}
+  if(AU.uFree===false){userState('err',AU.uOff?t('acOffName'):t('auUserTaken'));u.focus();return}   /* acct */
   if(!EMAIL_RE.test(email))return auBad(em,t('auEmailBad'));
   if(!pwCheck('upPass',upCtx()))return;
   if(p1.value!==p2.value)return auBad(p2,t('errMismatch'));
@@ -2289,7 +2291,7 @@ $('#fTerms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const username=$('#upUser').value.trim(),email=$('#upEmail').value.trim(),password=$('#upPass').value;
   auRun($('#auCreate'),async()=>{
     try{
-      const r=await Backend.signUp({username,email,password,terms:{version:window.LEGAL?LEGAL.version:'',at:new Date().toISOString()}});
+      const r=await Backend.signUp({username,email,password,terms:{version:window.LEGAL?LEGAL.version:'',at:new Date().toISOString()},age:{ok:$('#auAge').checked,at:new Date().toISOString(),min:window.ACCT?ACCT.minAge():16}/* acct */});
       $('#upPass').value=$('#upPass2').value='';pwPaint('upPass');auFe($('#upPass2'),'');
       AU.user=username;AU.email=email;
       if(r&&r.needsConfirm){
@@ -2409,7 +2411,7 @@ function applyConfig(){
   $('#gate').hidden=true;   // the old "require sign-in" overlay: the tools always need an account now (#gateView), home/pricing/terms stay open
   renderAuthBtns();if(!$('#authDlg').hidden&&(AU.mode==='in'||AU_UP.includes(AU.mode)))auShow(AU.mode,true);
   if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);
-  renderStemsUI();renderCredits();
+  renderStemsUI();renderCredits();if(window.ACCT)ACCT.config();/* acct */
 }
 const cfgOn=k=>ACC.admin||(ACC.config||{})[k]!==false;
 $('#adminBtn').onclick=()=>{fillSettings();fillBilling();ACC.admUser=null;ACC.songsAll=null;$('#admin').hidden=false;loadRoles();loadUsers();if(!tabOk(ACC.admView))ACC.admView=ADM_TABS.find(tabOk)||'users';if(ACC.admView==='activity')loadAdminAct()};
@@ -3606,7 +3608,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(needAccount())askAccount();else $('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.MASHUP)MASHUP.lang();if(window.CONVERT)CONVERT.lang();/* converter */if(window.EXTENDED)EXTENDED.lang();if(window.PAGES)PAGES.lang();auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.MASHUP)MASHUP.lang();if(window.CONVERT)CONVERT.lang();/* converter */if(window.EXTENDED)EXTENDED.lang();if(window.PAGES)PAGES.lang();if(window.ACCT)ACCT.lang();/* acct */auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);

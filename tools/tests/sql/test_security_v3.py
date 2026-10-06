@@ -198,7 +198,9 @@ v3 = open(os.path.join(pg.REPO, 'supabase', 'security_v3.sql'), encoding='utf-8'
 asql = open(pg.ASSISTANT, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v3 .*?-- \[security-v3:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v3] block', 'found' if m else 'missing', 'found')
-check('the block is the LAST thing in schema.sql', 'last' if m and src[m.end():].strip() == '' else 'not last', 'last')
+# acct: only later blocks ([accounts-v4]) may follow it
+later = re.sub(r'(?s)-- =+\n-- Accounts v4 .*?-- \[accounts-v4:end\]\n-- =+\n', '', src[m.end():]) if m else src
+check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('security_v3.sql contains the block verbatim', 'yes' if m and m.group(1) in v3 else 'no', 'yes')
 check('security_v3.sql ends with assistant.sql verbatim', 'yes' if v3.endswith(asql) else 'no', 'yes')
 
