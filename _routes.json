@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "include": ["/api/*", "/supabase/*", "/tools/*", "/functions/*", "/.git/*", "/*.md", "/.gitignore", "/.claude/*",
-              "/Supabase/*", "/SUPABASE/*", "/Tools/*", "/TOOLS/*", "/Functions/*", "/FUNCTIONS/*", "/.GIT/*", "/.Git/*",
-              "/*.MD", "/*.Md", "/*.mD", "/.GITIGNORE"],
+  "include": ["/api/*", "/supabase/*", "/tools/*", "/functions/*", "/.git/*", "/*.md", "/.gitignore", "/.claude/*", "/Supabase/*", "/SUPABASE/*",
+              "/Tools/*", "/TOOLS/*", "/Functions/*", "/FUNCTIONS/*", "/.GIT/*", "/.Git/*", "/*.MD", "/*.Md", "/*.mD", "/.GITIGNORE",
+              "/pricing", "/terms", "/privacy", "/accessibility", "/licenses", "/tool", "/about"],
   "exclude": []
 }

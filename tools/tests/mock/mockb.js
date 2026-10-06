@@ -11,7 +11,7 @@
   const fail = c => { const e = new Error(c); e.code = c; throw e; };
   const now = () => new Date().toISOString();
   const me = () => { const p = profiles.find(p => p.id === cur.id); if (p && p.credits == null) { p.credits = 50; p.plan = p.plan || 'free'; } return p; };
-  const ledger = [], charged = new Set();
+  const ledger = [], charged = new Set(), reviews = [];
   const DEF_COSTS = { song: 1, sep: 5, stems: 2, usb: 1, mashup: 3, extended: 3, convert: 1 }, DEF_DISC = { basic: 0, pro: 10, studio: 25 };
   function price(p, kind, qty) {
     const b = cfg.billing || {}, costs = { ...DEF_COSTS, ...(b.costs || {}) };
@@ -97,11 +97,46 @@
     async adminPayEvents() { return []; },
     async myAccess() { const p = cur && me(); const admin = p && p.role === 'admin';
       return { owner: !!(p && p.owner), role: p ? p.role : 'user', panel: !!admin, perms: admin ? ['users', 'block', 'credits', 'songs', 'activity', 'settings', 'payments', 'catalog'] : [] }; },
+    // growth ([growth-v4]): analytics ids / experiments, A/B results from the activity log, reviews (same rules, simplified)
+    async saveGrowth(p) { const m = cur && me(); if (!m || m.role !== 'admin') fail('denied'); if (p.analytics) cfg = { ...cfg, analytics: p.analytics }; if (p.experiments) cfg = { ...cfg, experiments: p.experiments }; },
+    async abResults(exp, conv) {
+      const log = window.__log || [], e = (cfg.experiments || []).find(x => x.id === exp), c = conv || (e && e.conversion) || null, first = {};
+      log.forEach((r, i) => { if (r.action === 'ab_assign' && String(r.detail).split(':')[0] === exp && !(r.user_id in first)) first[r.user_id] = { v: String(r.detail).split(':')[1], i }; });
+      const by = {};
+      for (const [u, a] of Object.entries(first)) { const o = by[a.v] = by[a.v] || { variant: a.v, assigned: 0, converted: 0 }; o.assigned++; if (c && log.some((r, j) => j > a.i && r.user_id === u && r.action === c)) o.converted++; }
+      return { experiment: exp, conversion: c, days: 90, variants: Object.values(by).sort((a, b) => a.variant < b.variant ? -1 : 1).map(o => ({ ...o, rate: o.assigned ? Math.round(o.converted * 1000 / o.assigned) / 10 : 0 })) };
+    },
+    async reviewsPublic(limit) {
+      const ok = reviews.filter(r => r.status === 'approved'), avg = ok.length ? Math.round(ok.reduce((a, r) => a + r.rating, 0) / ok.length * 100) / 100 : 0;
+      const items = ok.slice().sort((a, b) => (b.featured - a.featured) || (b.created_at > a.created_at ? 1 : -1)).slice(0, limit || 12).map(r => {
+        const p = profiles.find(x => x.id === r.user_id) || {}, n = (p.display_name || '').trim() || p.username || '?';
+        return { name: r.show_name ? n.slice(0, 40) : n[0].toUpperCase() + '.', rating: r.rating, body: r.body, featured: r.featured, lang: r.lang, created_at: r.created_at }; });
+      return { count: ok.length, avg, items };
+    },
+    async myReview() { const r = cur && reviews.find(x => x.user_id === cur.id); return r ? { rating: r.rating, body: r.body, show_name: r.show_name, status: r.status, featured: r.featured, updated_at: r.updated_at } : null; },
+    async reviewSubmit({ rating, body, showName, lang }) {
+      if (!cur) return { ok: false, error: 'auth' };
+      const used = (window.__log || []).some(r => r.user_id === cur.id && /^(export|separate|mashup_export|extended_export|crate_export|convert)$/.test(r.action)) || (window.__dls || []).some(d => d.user_id === cur.id);
+      if (!used) return { ok: false, error: 'not_eligible' };
+      if (!(rating >= 1 && rating <= 5)) return { ok: false, error: 'bad_rating' };
+      body = String(body || '').replace(/[\u0000-\u001f]+/g, ' ').trim();
+      if (body.length > 400) return { ok: false, error: 'too_long' };
+      if (/https?:\/\/|www\.|[a-z0-9-]+\.(com|net|org|io|co|il|ru|me|ly)(\/|\s|$)/i.test(body)) return { ok: false, error: 'links' };
+      if (/(^|[\s.,!?])(shit|fuck|מניאק|זונה)($|[\s.,!?])/i.test(body)) return { ok: false, error: 'offensive' };
+      let r = reviews.find(x => x.user_id === cur.id);
+      if (!r) { r = { id: reviews.length + 1, user_id: cur.id, created_at: now(), edits: 0 }; reviews.push(r); }
+      if (r.edits >= 5) return { ok: false, error: 'rate' };
+      Object.assign(r, { rating, body, show_name: !!showName, lang: lang || null, status: 'pending', featured: false, updated_at: now() }); r.edits++;
+      return { ok: true, status: 'pending' };
+    },
+    async reviewDelete() { const i = reviews.findIndex(x => cur && x.user_id === cur.id); if (i >= 0) reviews.splice(i, 1); },
+    async adminReviews(status) { return reviews.filter(r => !status || r.status === status).map(r => { const p = profiles.find(x => x.id === r.user_id) || {}; return { ...r, username: p.username, display_name: p.display_name }; }); },
+    async adminReviewSet(id, status, featured) { const r = reviews.find(x => x.id === id); if (!r) return 'missing'; r.status = status; r.featured = status === 'approved' && !!featured; return 'ok'; },
     // assistant
     async accessToken() { return B.user ? 'tok-' + B.user.id : null; },
     async assistantStatus() { return window.__rmStatus || { ok: true, left: 30, limit: 30 }; }
   };
-  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, ledger, charged, get cfg() { return cfg; },
+  window.__MOCK_BACKEND = B; window.__mock = { users, profiles, songs, ledger, charged, reviews, get cfg() { return cfg; }, setCfg(c) { cfg = { ...cfg, ...c }; },
     setCredits(n, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) p.credits = n; },
     setPlan(plan, days, uid) { const p = profiles.find(x => x.id === (uid || (cur && cur.id))); if (p) { p.plan = plan; p.plan_until = plan === 'free' ? null : new Date(Date.now() + days * 864e5).toISOString(); } } };
   users.push({ id: 'u0', email: 'dana@example.com', password: 'password1', created_at: now() });

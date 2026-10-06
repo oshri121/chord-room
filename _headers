@@ -17,9 +17,17 @@
 #   covers + 30 s previews). frame-src: Deezer's official widget. Checkout (Lemon Squeezy), WhatsApp and
 #   Deezer links open as normal navigations, which CSP does not restrict. frame-src also allows www.deezer.com in case
 #   the widget navigates inside its frame (sign-in).
+# - growth: analytics, ONLY after cookie consent and only when the admin set the ids (assets/consent.js):
+#   Google Analytics 4 (gtag.js, Google signals + ad personalisation off): script-src https://www.googletagmanager.com;
+#   connect-src/img-src https://*.google-analytics.com https://*.analytics.google.com (regional collection endpoints
+#   region1.google-analytics.com …) + https://www.googletagmanager.com. Microsoft Clarity: script-src https://*.clarity.ms
+#   (www.clarity.ms/tag/<id> loads scripts.clarity.ms/…/clarity.js); connect-src/img-src https://*.clarity.ms (a…z.clarity.ms
+#   collect endpoints, load-balanced) + https://c.bing.com (Clarity's documented CSP list). No 'unsafe-inline': the gtag /
+#   clarity stubs live in assets/consent.js. functions/_middleware.js keeps a copy of this policy (PAGE_HEADERS) as a fallback
+#   for the page paths it rewrites — node/growth.test.mjs fails when the two differ.
 # - Permissions-Policy: microphone=(self) = the "My key" vocal range test (assets/voice.js; the audio stays in the browser).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com; frame-src https://widget.deezer.com https://www.deezer.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://www.googletagmanager.com https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com; frame-src https://widget.deezer.com https://www.deezer.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

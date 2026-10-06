@@ -431,7 +431,8 @@ he: {
   faqX: [['איך מעבירים את הניתוח ל־rekordbox,‏ Serato או Traktor?', 'בניתוח הספרייה מייצאים קובץ XML ל־rekordbox (עם BPM, סולם, גריד ונקודות קיו) או קובץ NML ל־Traktor. ל־Serato ול־VirtualDJ מורידים עותקי MP3 שהקיו כבר שמורים בתוכם.']],
   incFree: ['BPM, סולם ועוצמה', 'אקורדים, דף אקורדים ודיאגרמות', 'גלה שירים, מיקס חי וניתוח ספרייה', 'ייצוא MIDI לפסנתר'],
   rowDisc: 'גלה שירים, מיקס חי וניתוח ספרייה',
-  lgNav: 'מסמכים', lgTerms: 'תנאי שימוש', lgPrivacy: 'מדיניות פרטיות', lgA11y: 'הצהרת נגישות'
+  lgNav: 'מסמכים', lgTerms: 'תנאי שימוש', lgPrivacy: 'מדיניות פרטיות', lgA11y: 'הצהרת נגישות',
+  /* growth */ lgLic: 'רישיונות וקרדיטים', lgCookies: 'הגדרות עוגיות', a11yMore: 'להצהרת הנגישות המלאה', ctaToolB: 'נסו בחינם, בלי התקנה'
 },
 en: {
   heroP: 'Tempo, key and chords in seconds, AI stem separation, a live two-deck mix, whole-library analysis for DJs and export to FL Studio. It all runs in your browser — nothing to install.',
@@ -471,7 +472,8 @@ en: {
   faqX: [['How do I get the analysis into rekordbox, Serato or Traktor?', 'In Library analysis, export an XML file for rekordbox (with BPM, key, grid and cue points) or an NML file for Traktor. For Serato and VirtualDJ, download MP3 copies that already carry the cues.']],
   incFree: ['BPM, key and loudness', 'Chords, chord sheet and diagrams', 'Discover, DJ Mix and library analysis', 'Piano MIDI export'],
   rowDisc: 'Discover, DJ Mix and library analysis',
-  lgNav: 'Legal', lgTerms: 'Terms of Use', lgPrivacy: 'Privacy Policy', lgA11y: 'Accessibility statement'
+  lgNav: 'Legal', lgTerms: 'Terms of Use', lgPrivacy: 'Privacy Policy', lgA11y: 'Accessibility statement',
+  /* growth */ lgLic: 'Licenses & credits', lgCookies: 'Cookie settings', a11yMore: 'Read the full accessibility statement', ctaToolB: 'Try it free, no install'
 },
 ar: {
   heroP: 'الإيقاع والمقام والكوردات في ثوانٍ، وفصل المسارات بالذكاء الاصطناعي، ومزج حيّ على منصّتين، وتحليل مكتبة كاملة لمنسّقي الأغاني، وتصدير إلى FL Studio. كل ذلك داخل متصفحك دون تثبيت أي شيء.',
@@ -511,7 +513,8 @@ ar: {
   faqX: [['كيف أنقل التحليل إلى rekordbox أو Serato أو Traktor؟', 'في تحليل المكتبة صدّر ملف XML لـ rekordbox (مع BPM والمقام والشبكة ونقاط الإشارة) أو ملف NML لـ Traktor. أما Serato وVirtualDJ فنزّل لهما نسخ MP3 تحمل نقاط الإشارة بداخلها.']],
   incFree: ['BPM والمقام والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ وتحليل المكتبة', 'تصدير MIDI للبيانو'],
   rowDisc: 'اكتشف ومزج DJ وتحليل المكتبة',
-  lgNav: 'مستندات', lgTerms: 'شروط الاستخدام', lgPrivacy: 'سياسة الخصوصية', lgA11y: 'بيان إمكانية الوصول'
+  lgNav: 'مستندات', lgTerms: 'شروط الاستخدام', lgPrivacy: 'سياسة الخصوصية', lgA11y: 'بيان إمكانية الوصول',
+  /* growth */ lgLic: 'التراخيص والشكر', lgCookies: 'إعدادات ملفات تعريف الارتباط', a11yMore: 'بيان إمكانية الوصول الكامل', ctaToolB: 'جرّبه مجانًا، بلا تثبيت'
 },
 ru: {
   heroP: 'Темп, тональность и аккорды за секунды, разделение на стемы с AI, живой микс на двух деках, анализ целой библиотеки для диджеев и экспорт в FL Studio. Всё работает в браузере — ничего не нужно устанавливать.',
@@ -551,7 +554,8 @@ ru: {
   faqX: [['Как перенести анализ в rekordbox, Serato или Traktor?', 'В анализе библиотеки экспортируйте XML для rekordbox (с BPM, тональностью, сеткой и кью-точками) или NML для Traktor. Для Serato и VirtualDJ скачайте копии MP3, в которых кью уже записаны.']],
   incFree: ['BPM, тональность и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор, DJ-микс и анализ библиотеки', 'Экспорт фортепианного MIDI'],
   rowDisc: 'Обзор, DJ-микс и анализ библиотеки',
-  lgNav: 'Документы', lgTerms: 'Условия использования', lgPrivacy: 'Политика конфиденциальности', lgA11y: 'Заявление о доступности'
+  lgNav: 'Документы', lgTerms: 'Условия использования', lgPrivacy: 'Политика конфиденциальности', lgA11y: 'Заявление о доступности',
+  /* growth */ lgLic: 'Лицензии и благодарности', lgCookies: 'Настройки cookie', a11yMore: 'Полное заявление о доступности', ctaToolB: 'Попробовать бесплатно, без установки'
 },
 es: {
   heroP: 'Tempo, tonalidad y acordes en segundos, separación de pistas con IA, una mezcla en vivo con dos platos, análisis de bibliotecas completas para DJs y exportación a FL Studio. Todo funciona en tu navegador, sin instalar nada.',
@@ -591,7 +595,8 @@ es: {
   faqX: [['¿Cómo llevo el análisis a rekordbox, Serato o Traktor?', 'En Análisis de biblioteca, exporta un archivo XML para rekordbox (con BPM, tonalidad, rejilla y puntos cue) o un NML para Traktor. Para Serato y VirtualDJ, descarga copias MP3 que ya llevan los cues dentro.']],
   incFree: ['BPM, tonalidad y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir, Mezcla DJ y análisis de biblioteca', 'Exportación MIDI de piano'],
   rowDisc: 'Descubrir, Mezcla DJ y análisis de biblioteca',
-  lgNav: 'Documentos', lgTerms: 'Términos de uso', lgPrivacy: 'Política de privacidad', lgA11y: 'Declaración de accesibilidad'
+  lgNav: 'Documentos', lgTerms: 'Términos de uso', lgPrivacy: 'Política de privacidad', lgA11y: 'Declaración de accesibilidad',
+  /* growth */ lgLic: 'Licencias y créditos', lgCookies: 'Configuración de cookies', a11yMore: 'Leer la declaración de accesibilidad completa', ctaToolB: 'Pruébalo gratis, sin instalar'
 }
 };
 for (const l in SX) Object.assign(S[l], SX[l]);
@@ -1003,7 +1008,8 @@ function contactLine(prefix, billing) {
 /* Terms / Privacy (#terms, #privacy — routed by app.js) and the accessibility statement */
 function legalLinks(a11y) {
   return '<nav class="pg-legal" aria-label="' + esc(t('lgNav')) + '"><a href="#terms">' + esc(t('lgTerms')) + '</a><a href="#privacy">' + esc(t('lgPrivacy')) + '</a>' +
-    (a11y ? '<a href="#about-a11y">' + esc(t('lgA11y')) + '</a>' : '') + '</nav>';
+    '<a href="#accessibility">' + esc(t('lgA11y')) + '</a>' + /* growth */ '<a href="#licenses">' + esc(t('lgLic')) + '</a>' +
+    '<button type="button" class="pg-cklnk" data-ck="open">' + esc(t('lgCookies')) + '</button></nav>';
 }
 
 /* ---------- About ---------- */
@@ -1022,6 +1028,7 @@ function renderAbout(el, billing) {
       '<div><span>' + t('rdLufs') + '</span><b dir="ltr">−8.6</b></div></div>' +
     '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '">' + c + '</span>').join('') + '</div>' +
     '<div class="pg-stm">' + st.map((s, i) => '<div style="--c:' + stc[i] + ';--i:' + i + '"><span>' + s + '</span><i><u></u></i></div>').join('') + '</div></div>';
+  let ctaV = 'a'; try { if (window.AB) ctaV = AB.variant('home_cta', ['a', 'b']) || 'a'; } catch (e) { ctaV = 'a'; }   /* growth: A/B */
   const hero = '<section class="pg-hero" aria-labelledby="pgHeroH">' +
     '<div class="pg-glow g1"></div><div class="pg-glow g2"></div><div class="pg-glow g3"></div>' +
     '<div class="pg-hgrid"><div class="pg-htxt">' +
@@ -1029,7 +1036,7 @@ function renderAbout(el, billing) {
       '<h1 id="pgHeroH" class="rv" style="--i:1">' + t('heroH') + '</h1>' +
       '<p class="pg-lead rv" style="--i:2">' + t('heroP') + '</p>' +
       '<div class="pg-ctas rv" style="--i:3">' +
-        '<button type="button" class="pg-btn pri" data-nav="tool">' + ic('play') + '<span>' + t('ctaTool') + '</span></button>' +
+        '<button type="button" class="pg-btn pri" data-nav="tool" data-ab="home_cta:' + ctaV + '">' + ic('play') + '<span>' + t(ctaV === 'b' ? 'ctaToolB' : 'ctaTool') + '</span></button>' +
         '<button type="button" class="pg-btn sec" data-nav="dj">' + ic('decks') + '<span>' + t('ctaDj') + '</span></button>' +
         '<button type="button" class="pg-lnk" data-nav="discover"><span>' + t('ctaDisc') + '</span>' + ic('arrow', 'pg-arr') + '</button>' +
       '</div>' +
@@ -1080,16 +1087,16 @@ function renderAbout(el, billing) {
 
   const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('faqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgFaqH">') + '</div>' + faqList(t('faq').slice(0, -1).concat([t('faqPts')], t('faqX'))) + '</section>';
 
-  let stmt = '';
-  try { if (window.A11Y && typeof A11Y.statementHTML === 'function') stmt = A11Y.statementHTML(L()) || ''; } catch (e) { stmt = ''; }
-  const a11y = '<section class="pg-sec pg-a11y" id="about-a11y" aria-label="' + esc(t('a11yH')) + '">' +
+  /* growth: the full statement moved to its own page (#accessibility, assets/info.js); #about-a11y redirects there */
+  const a11y = '<section class="pg-sec pg-a11y" id="about-a11y" aria-labelledby="pgA11yH">' +
     '<div class="pg-a11yin rv"><div class="pg-a11yh"><span class="pg-badge">' + ic('a11y') + '</span><span class="pg-eb">' + t('a11yEyebrow') + '</span></div>' +
-    (stmt ? '<div class="pg-stmt">' + stmt + '</div>' : '<h2 class="pg-h">' + t('a11yH') + '</h2><p class="pg-fp">' + t('a11yPh') + '</p>') + '</div></section>';
+    '<h2 class="pg-h" id="pgA11yH">' + t('a11yH') + '</h2><p class="pg-fp">' + t('a11yPh') + '</p><p class="pg-fp"><a href="#accessibility">' + esc(t('a11yMore')) + '</a></p></div></section>';
 
   const foot = '<footer class="pg-foot">' + contactLine(t('contactL'), billing) + '<p class="pg-cred">' + t('credits') + '</p>' + legalLinks(true) + '</footer>';
 
   el.innerHTML = '<div class="pg pg-about">' + hero + featHtml + how + pts + prv + faq + a11y + foot + '</div>';
   wire(el);
+  try { if (PAGES.afterAbout) PAGES.afterAbout(el); } catch (e) {}   /* growth: reviews section (assets/reviews.js) */
 }
 
 /* ---------- Pricing ---------- */

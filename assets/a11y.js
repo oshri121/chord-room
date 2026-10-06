@@ -314,17 +314,96 @@
       ph: { name: '[nombre de la persona coordinadora]', email: '[correo electrónico]', phone: '[número de teléfono]', reviewed: '[fecha]' }
     }
   };
+  /* growth: the standalone statement page (#accessibility, assets/info.js) — the sections IS 5568 / the 2013 regulations
+     ask for beyond the list above: compliance status, alternatives, how it was checked, how requests are handled */
+  var REVIEWED_DEFAULT = '2026-10-06';   // last review of this statement (automated sweep + content); CONTACT.reviewed overrides it
+  var STX = {
+    he: { statusH: 'רמת ההנגשה', status: 'לפי הבדיקה שלנו האתר עומד ברוב הדרישות של ת"י 5568 ברמה AA (המבוסס על WCAG 2.0; אנחנו בודקים גם מול WCAG 2.1 ברמה AA), למעט מה שמפורט ב״מגבלות ידועות״. ההנגשה חלקית, ואנחנו ממשיכים להשלים אותה.',
+      altH: 'חלופות נגישות', alt: ['כל מה שמצויר על צורת הגל — קצב, סולם, אקורדים, נקודות קיו וזמן — מוצג גם כטקסט: בשורת הנתונים, בדף האקורדים ובטבלת ניתוח הספרייה.',
+        'אפשר לשמור את הניתוח כקבצים (CSV,‏ MIDI,‏ rekordbox XML) ולפתוח אותם בתוכנה אחרת שנוחה לכם.',
+        'לפעולות גרירה יש חלופה בכפתורים או במקלדת (למשל הזזת הגריד בחיצים ובכפתורי ◀ ▶).',
+        'אם חלק באתר לא נגיש לכם, פנו לרכז/ת הנגישות: נעזור לבצע את הפעולה או נשלח את המידע בפורמט חלופי.'],
+      testH: 'איך בדקנו', test: 'בכל עדכון רצות בדיקות אוטומטיות על כל המסכים בחמש השפות, בכיוון ימין־לשמאל ושמאל־לימין, במצב כהה וברוחב טלפון: ניווט ומיקוד במקלדת, לכידת מיקוד בחלונות, תוויות לפקדים, ניגודיות וגלילה אופקית. בדיקה ידנית עם קוראי מסך היא חלק מהבדיקה התקופתית.',
+      respH: 'טיפול בפניות', resp: 'נשתדל לענות לכל פנייה בנושא נגישות בתוך 5 ימי עבודה ולתקן תקלות בהקדם האפשרי.',
+      general: 'אפשר גם לפנות דרך כתובת הקשר של האתר:', openMenu: 'פתיחת תפריט הנגישות',
+      adminWarn: 'למנהלים בלבד: פרטי רכז/ת הנגישות (שם, דוא"ל, טלפון) עדיין לא מולאו ב־assets/a11y.js (CONTACT). התקנות מחייבות לפרסם אותם בהצהרה.' },
+    en: { statusH: 'Conformance status', status: 'Based on our review, the site meets most requirements of Israeli Standard SI 5568 at level AA (based on WCAG 2.0; we also check against WCAG 2.1 level AA), except for the items listed under “Known limitations”. The site is partially conformant and we keep working on the rest.',
+      altH: 'Accessible alternatives', alt: ['Everything drawn on the waveform — tempo, key, chords, cue points and time — is also shown as text: in the stats bar, on the chord sheet and in the library analysis table.',
+        'You can save the analysis as files (CSV, MIDI, rekordbox XML) and open them in other software that suits you.',
+        'Drag actions have a button or keyboard alternative (for example, moving the grid with the arrow keys and the ◀ ▶ buttons).',
+        'If part of the site isn’t accessible to you, contact the accessibility coordinator: we will help you complete the action or send the information in another format.'],
+      testH: 'How we checked', test: 'Every update runs automated checks on every screen in all five languages, right-to-left and left-to-right, in dark mode and at phone width: keyboard navigation and focus, focus trapping in dialogs, labels on controls, contrast and horizontal scrolling. Manual checks with screen readers are part of the periodic review.',
+      respH: 'How we handle requests', resp: 'We aim to answer every accessibility request within 5 business days and to fix problems as soon as possible.',
+      general: 'You can also reach us through the site’s contact address:', openMenu: 'Open the accessibility menu',
+      adminWarn: 'Admins only: the accessibility coordinator’s details (name, email, phone) are not filled in yet in assets/a11y.js (CONTACT). The regulations require publishing them in the statement.' },
+    ar: { statusH: 'مستوى الملاءمة', status: 'وفق فحصنا، يستوفي الموقع معظم متطلبات المعيار الإسرائيلي 5568 بمستوى AA (المستند إلى WCAG 2.0؛ ونفحص أيضًا مقابل WCAG 2.1 بمستوى AA)، باستثناء ما ورد في «قيود معروفة». الملاءمة جزئية ونواصل استكمالها.',
+      altH: 'بدائل متاحة', alt: ['كل ما يُرسم على شكل الموجة — الإيقاع والمقام والأكوردات ونقاط الإشارة والوقت — يُعرض أيضًا كنص: في شريط البيانات وورقة الأكوردات وجدول تحليل المكتبة.',
+        'يمكن حفظ التحليل كملفات (CSV وMIDI وrekordbox XML) وفتحها في برنامج آخر يناسبك.',
+        'لعمليات السحب بديل بالأزرار أو بلوحة المفاتيح (مثل تحريك الشبكة بالأسهم وبأزرار ◀ ▶).',
+        'إذا كان جزء من الموقع غير متاح لك، تواصل مع منسّق/ة إمكانية الوصول: سنساعدك على إتمام الإجراء أو نرسل المعلومات بصيغة بديلة.'],
+      testH: 'كيف فحصنا', test: 'مع كل تحديث تعمل فحوص آلية على كل الشاشات باللغات الخمس، من اليمين إلى اليسار ومن اليسار إلى اليمين، في الوضع الداكن وبعرض الهاتف: التنقّل والتركيز بلوحة المفاتيح، وحصر التركيز في النوافذ، وتسميات عناصر التحكم، والتباين، والتمرير الأفقي. الفحص اليدوي بقارئات الشاشة جزء من المراجعة الدورية.',
+      respH: 'معالجة الطلبات', resp: 'نسعى للرد على كل طلب يتعلق بإمكانية الوصول خلال 5 أيام عمل وإصلاح الأعطال في أقرب وقت ممكن.',
+      general: 'يمكنك أيضًا التواصل عبر عنوان التواصل في الموقع:', openMenu: 'فتح قائمة إمكانية الوصول',
+      adminWarn: 'للمديرين فقط: لم تُملأ بعد بيانات منسّق/ة إمكانية الوصول (الاسم والبريد والهاتف) في assets/a11y.js ‏(CONTACT). تُلزم الأنظمة بنشرها في البيان.' },
+    ru: { statusH: 'Уровень соответствия', status: 'По нашей проверке сайт соответствует большинству требований израильского стандарта SI 5568 уровня AA (на основе WCAG 2.0; мы также проверяем по WCAG 2.1 уровня AA), кроме пунктов из раздела «Известные ограничения». Соответствие частичное, и мы продолжаем работу.',
+      altH: 'Доступные альтернативы', alt: ['Всё, что нарисовано на волновой форме, — темп, тональность, аккорды, cue-точки и время — также показано текстом: в строке данных, на листе аккордов и в таблице анализа библиотеки.',
+        'Анализ можно сохранить в файлы (CSV, MIDI, rekordbox XML) и открыть в другой удобной вам программе.',
+        'У действий перетаскивания есть альтернатива кнопками или с клавиатуры (например, сдвиг сетки стрелками и кнопками ◀ ▶).',
+        'Если какая-то часть сайта вам недоступна, напишите координатору по доступности: мы поможем выполнить действие или пришлём информацию в другом формате.'],
+      testH: 'Как мы проверяли', test: 'При каждом обновлении запускаются автоматические проверки всех экранов на пяти языках, справа налево и слева направо, в тёмной теме и при ширине телефона: навигация и фокус с клавиатуры, удержание фокуса в окнах, подписи элементов управления, контраст и горизонтальная прокрутка. Ручная проверка с программами экранного доступа входит в периодический аудит.',
+      respH: 'Как мы обрабатываем обращения', resp: 'Мы стараемся отвечать на каждое обращение о доступности в течение 5 рабочих дней и исправлять проблемы как можно быстрее.',
+      general: 'Также можно написать на контактный адрес сайта:', openMenu: 'Открыть меню доступности',
+      adminWarn: 'Только для администраторов: данные координатора по доступности (имя, e-mail, телефон) ещё не заполнены в assets/a11y.js (CONTACT). По правилам их нужно опубликовать в заявлении.' },
+    es: { statusH: 'Nivel de conformidad', status: 'Según nuestra revisión, el sitio cumple la mayoría de los requisitos de la norma israelí SI 5568 en el nivel AA (basada en WCAG 2.0; también revisamos frente a WCAG 2.1 nivel AA), salvo lo indicado en «Limitaciones conocidas». La conformidad es parcial y seguimos trabajando en el resto.',
+      altH: 'Alternativas accesibles', alt: ['Todo lo que se dibuja en la forma de onda —tempo, tonalidad, acordes, puntos cue y tiempo— también aparece como texto: en la barra de datos, en la hoja de acordes y en la tabla del análisis de biblioteca.',
+        'Puedes guardar el análisis en archivos (CSV, MIDI, rekordbox XML) y abrirlos en otro programa que te resulte cómodo.',
+        'Las acciones de arrastre tienen una alternativa con botones o teclado (por ejemplo, mover la cuadrícula con las flechas y los botones ◀ ▶).',
+        'Si alguna parte del sitio no te resulta accesible, escribe a la persona coordinadora de accesibilidad: te ayudaremos a completar la acción o te enviaremos la información en otro formato.'],
+      testH: 'Cómo lo revisamos', test: 'En cada actualización se ejecutan pruebas automáticas en todas las pantallas en los cinco idiomas, de derecha a izquierda y de izquierda a derecha, en modo oscuro y con ancho de móvil: navegación y foco con teclado, foco atrapado en los diálogos, etiquetas de los controles, contraste y desplazamiento horizontal. Las revisiones manuales con lectores de pantalla forman parte de la revisión periódica.',
+      respH: 'Cómo atendemos las solicitudes', resp: 'Intentamos responder cada solicitud de accesibilidad en un plazo de 5 días hábiles y corregir los problemas lo antes posible.',
+      general: 'También puedes escribirnos a la dirección de contacto del sitio:', openMenu: 'Abrir el menú de accesibilidad',
+      adminWarn: 'Solo administradores: los datos de la persona coordinadora de accesibilidad (nombre, correo, teléfono) aún no se completaron en assets/a11y.js (CONTACT). El reglamento exige publicarlos en la declaración.' }
+  };
+  for (var sk in STX) for (var sx in STX[sk]) ST[sk][sx] = STX[sk][sx];
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function statementHTML(l) {
+  function fmtDay(iso, l) { try { return new Intl.DateTimeFormat(l === 'he' ? 'he-IL' : l === 'ar' ? 'ar-u-nu-latn' : l, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso + 'T12:00:00Z')); } catch (e) { return iso; } }
+  /* opts (growth): { full: the standalone page's extra sections, admin: show the "not filled in" warning + placeholders,
+     contact: the site contact (email / https link) shown when the coordinator's details are empty } */
+  function statementHTML(l, opts) {
     l = (l || lang()).slice(0, 2).toLowerCase();
-    var S = ST[l] || ST.en, d = isRtl(l) ? 'rtl' : 'ltr';
+    opts = opts || {};
+    var S = ST[l] || ST.en, d = isRtl(l) ? 'rtl' : 'ltr', full = !!opts.full;
     function li(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
     function val(k) {
       var v = CONTACT[k];
+      if (!v && k === 'reviewed' && full) return '<span dir="auto">' + esc(fmtDay(REVIEWED_DEFAULT, l)) + '</span>';
       if (!v) return '<span class="a11y-ph">' + esc(S.ph[k]) + '</span>';
       if (k === 'email') return '<a href="mailto:' + esc(v) + '" dir="ltr">' + esc(v) + '</a>';
       if (k === 'phone') return '<a href="tel:' + esc(String(v).replace(/[^\d+]/g, '')) + '" dir="ltr">' + esc(v) + '</a>';
       return k === 'reviewed' ? '<span dir="ltr">' + esc(v) + '</span>' : esc(v);
+    }
+    if (full) {
+      var empty = !CONTACT.name && !CONTACT.email && !CONTACT.phone, c = String(opts.contact || '').trim(), cl = '';
+      if (/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(c)) cl = '<a href="mailto:' + esc(c) + '" dir="ltr">' + esc(c) + '</a>';
+      else if (/^https:\/\/[^\s<>"']+$/i.test(c)) cl = '<a href="' + esc(c) + '" target="_blank" rel="noopener" dir="ltr">' + esc(c.replace(/^https:\/\//i, '')) + '</a>';
+      var rows = ['name', 'email', 'phone'].filter(function (k) { return CONTACT[k] || opts.admin; })
+        .map(function (k) { return '<dt>' + esc(S[k]) + '</dt><dd>' + val(k) + '</dd>'; }).join('');
+      return '<section class="a11y-statement a11y-full" lang="' + l + '" dir="' + d + '">' +
+        (opts.admin && empty ? '<p class="a11y-warn" role="note">' + esc(S.adminWarn) + '</p>' : '') +
+        '<p>' + esc(S.intro) + '</p><p>' + esc(S.law) + '</p>' +
+        '<h2 id="a11y-status">' + esc(S.statusH) + '</h2><p>' + esc(S.level) + '</p><p>' + esc(S.status) + '</p>' +
+        '<h2 id="a11y-menu">' + esc(S.menuH) + '</h2><p>' + esc(S.menu) + '</p>' +
+        '<h2 id="a11y-adj">' + esc(S.adjH) + '</h2>' + li(S.adj) +
+        '<h2 id="a11y-alt">' + esc(S.altH) + '</h2>' + li(S.alt) +
+        '<h2 id="a11y-lim">' + esc(S.limH) + '</h2>' + li(S.lim) +
+        '<h2 id="a11y-test">' + esc(S.testH) + '</h2><p>' + esc(S.test) + '</p>' +
+        '<h2 id="a11y-phys">' + esc(S.physH) + '</h2><p>' + esc(S.phys) + '</p>' +
+        '<h2 id="a11y-contact">' + esc(S.contactH) + '</h2><p>' + esc(S.contact) + '</p>' +
+        (rows ? '<dl class="a11y-contact">' + rows + '</dl>' : '') +
+        (cl && (empty || !CONTACT.email) ? '<p>' + esc(S.general) + ' ' + cl + '</p>' : '') +
+        '<h3>' + esc(S.respH) + '</h3><p>' + esc(S.resp) + '</p>' +
+        '<p class="a11y-upd">' + esc(S.reviewed) + ': ' + val('reviewed') + '</p>' +
+        '</section>';
     }
     return '<section class="a11y-statement" lang="' + l + '" dir="' + d + '">' +
       '<h2>' + esc(S.title) + '</h2>' +
@@ -448,7 +527,7 @@
     body.appendChild(group('gHearing', [switchRow('mono', 'mono', 'monoH'), switchRow('flash', 'flash', 'flashH')]));
     var foot = el('div', { class: 'a11y-foot' });
     ui.reset = el('button', { type: 'button', class: 'a11y-btn' }, svg('reset') + '<span data-t="reset"></span>');
-    ui.stmt = el('a', { href: '#about-a11y', class: 'a11y-btn a11y-link' }, svg('doc') + '<span data-t="statement"></span>');
+    ui.stmt = el('a', { href: '#accessibility', class: 'a11y-btn a11y-link' }, svg('doc') + '<span data-t="statement"></span>');   /* growth: the standalone statement page */
     foot.appendChild(ui.reset); foot.appendChild(ui.stmt);
     var kb = el('p', { class: 'a11y-kbd' }, '<span data-t="shortcut"></span> <span dir="ltr" class="a11y-combo"><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd></span>');
     ui.live = el('p', { class: 'a11y-sr', 'aria-live': 'polite', role: 'status' });
@@ -535,6 +614,7 @@
     if (!ui.root) return;
     var fb = document.getElementById('fullbar'), lift = fb && !fb.hidden ? fb.offsetHeight : 0;
     var dp = document.getElementById('dPlayer'); if (dp && !dp.hidden) lift = Math.max(lift, dp.offsetHeight);   /* Discover player bar */
+    var ck = document.getElementById('ckBar'); if (ck && !ck.hidden) lift = Math.max(lift, ck.offsetHeight);     /* growth: cookie banner */
     if (toast && !toast.hidden && document.contains(toast)) {
       var r = toast.getBoundingClientRect(), f = ui.fab.getBoundingClientRect();
       var fl = f.left, fr = f.right, H = window.innerHeight;

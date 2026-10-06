@@ -593,6 +593,7 @@ function updLift() {
   let lift = 0;
   const fb = $('#fullbar'); if (fb && !fb.hidden) lift = Math.max(lift, fb.offsetHeight);
   const dp = $('#dPlayer'); if (dp && !dp.hidden) lift = Math.max(lift, dp.offsetHeight);
+  const ck = $('#ckBar'); if (ck && !ck.hidden) lift = Math.max(lift, ck.offsetHeight);   /* growth: cookie banner */
   const f = R.ui.fab.getBoundingClientRect(), H = window.innerHeight;
   document.querySelectorAll('.toast,.djnote').forEach(n => {
     if (n.hidden || !n.offsetParent) return;

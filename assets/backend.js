@@ -291,6 +291,50 @@
     onConfig(cb) {
       return sb.channel('site_config').on('postgres_changes', { event: '*', schema: 'public', table: 'site_config' }, p => cb(p.new || {})).subscribe();
     },
+    /* growth ([growth-v4] in schema.sql): analytics ids / Search Console token (owner + full admins) and A/B experiments
+       ('settings' permission) live in their own site_config columns; the server validates both */
+    async saveGrowth(patch) {
+      const row = {};
+      if (patch && patch.analytics) row.analytics = patch.analytics;
+      if (patch && patch.experiments) row.experiments = patch.experiments;
+      const { data, error } = await sb.from('site_config').update(row).eq('id', 1).select('id');
+      if (error) throw error;
+      if (!data || !data.length) fail('denied');
+    },
+    async abResults(exp, conversion, days) {
+      const { data, error } = await sb.rpc('ab_results', { p_exp: exp, p_conversion: conversion || null, p_days: days || 90 });
+      if (error) throw error;
+      return data;
+    },
+    // reviews: {count, avg, items:[{name, rating, body, featured, lang, created_at}]} — approved only (anyone)
+    async reviewsPublic(limit) {
+      const { data, error } = await sb.rpc('reviews_public', { p_limit: limit || 12 });
+      if (error) throw error;
+      return data;
+    },
+    async myReview() {
+      if (!B.user) return null;
+      const { data, error } = await sb.from('reviews').select('rating,body,show_name,status,featured,updated_at').eq('user_id', B.user.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    // → {ok:true,status:'pending'} | {ok:false,error:'not_eligible'|'offensive'|'links'|'rate'|'too_long'|'bad_rating'|'blocked'|'auth'}
+    async reviewSubmit({ rating, body, showName, lang }) {
+      const { data, error } = await sb.rpc('review_submit', { p_rating: rating, p_body: String(body || '').slice(0, 400), p_show_name: !!showName, p_lang: lang || null });
+      if (error) throw error;
+      return data;
+    },
+    async reviewDelete() { const { error } = await sb.rpc('review_delete'); if (error) throw error; },
+    async adminReviews(status) {
+      const { data, error } = await sb.rpc('admin_reviews', { p_status: status || null });
+      if (error) throw error;
+      return data || [];
+    },
+    async adminReviewSet(id, status, featured) {
+      const { data, error } = await sb.rpc('admin_review_set', { p_id: id, p_status: status, p_featured: !!featured });
+      if (error) throw error;
+      return data;
+    },
 
     // shared catalog of analysed songs (Discover page)
     async catalogGet(ids) {
