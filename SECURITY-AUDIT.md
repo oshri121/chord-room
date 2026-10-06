@@ -111,6 +111,13 @@ Supabase, Origin, 32KB, בלי מפתחות בלוגים. **סודות:** אין
 
 **CSP:** נוסף רק `https://challenges.cloudflare.com` ל־`script-src` (ה־api.js של Turnstile, נטען רק כשיש מפתח) ול־`frame-src`/`child-src` (ה־iframe של הבדיקה). שום דבר אחר לא הורחב.
 
+**אחרי המיזוג עם עבודת הצמיחה והביצועים (2026-10-06):** ה־CSP הסופי = Deezer (JSONP) + Turnstile (`challenges.cloudflare.com` ב־script/frame/child-src)
++ Google Analytics 4 / Microsoft Clarity (נטענים רק אחרי הסכמה לעוגיות ורק עם מזהים שהבעלים הגדיר: `www.googletagmanager.com`, `*.clarity.ms`
+ב־script-src; `*.google-analytics.com`, `*.analytics.google.com`, `c.bing.com` ב־connect/img), **בלי Google Fonts** (הגופנים מאוחסנים אצלנו;
+`style-src`/`font-src` = `'self'` בלבד). אותה מדיניות מועתקת ל־`PAGE_HEADERS` ב־`functions/_middleware.js` (בדיקה משווה). הגבלות הקצב של ה־API רצות
+ב־middleware לפני ניתוב הנתיבים הציבוריים (`/pricing`…). `acct.js` נטען לפי דרישה (session שמור, כניסה, דיאלוג ההתחברות, 2FA) — כל שליחת טופס
+התחברות מחכה לו, כך ש־Turnstile תמיד מוכן. סדר ה־SQL: `accounts_v4.sql` ואז `growth_v4.sql` (הביקורות משתמשות ב־`private.is_offensive`).
+
 **SQL חדש:** `private.jwt_claims/jwt_aal/mfa_enrolled/mfa_ok`, `public.aal_ok()`, `has_perm/is_admin/is_owner/my_access` (עם 2FA), מדיניות RESTRICTIVE "mfa: aal2 when enrolled" (profiles, songs, downloads, credit_ledger, activity, charged_songs, assistant_usage, storage uploads/avatars), טריגר `site_config_guard_v4`, `private.blocked_words` + `txt_*`/`is_offensive`/`bw_put`, `public.text_ok`, `admin_blocked_words`, `admin_blocked_word_set`, טריגר `profiles_text_guard`, `profiles.age_confirmed_at/age_min`, `handle_new_user` (גיל + שם פוגעני), `credit_ledger.subject_hash` (+ `user_id` nullable), `pay_events.subject_hash`, `public.account_deletions`, `private.subject_hash/forget_user/on_auth_user_delete/confirm_ok/recent_auth/files_left/sub_live`, טריגר `on_auth_user_deleted` על `auth.users`, `public.delete_my_account`, `public.admin_delete_user`, מדיניות storage `avatars: admin read/delete`.
 
 **בדיקות:** `sql/test_accounts_v4.py` (167), `ui/test_accounts.py` (118), `node/accounts_v4.test.mjs` (30); עודכנו `sql/pg.py` (stub של `auth.jwt()` ו־`auth.mfa_factors`), `sql/test_security_v3.py` (בלוקים מאוחרים מותרים אחרי v3), `node/security_v3.test.mjs` (Turnstile ב־script-src), `mock/mockb.js`, `mock/evil.js`.

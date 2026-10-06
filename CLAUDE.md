@@ -185,7 +185,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
   FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23] (server audit
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]` and `[growth-v4]` (the last block;
+  owner runs `accounts_v4.sql` before `growth_v4.sql`) (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
   adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
   plans[].link/variant only owner/full admin (+ INSERT policy so a 'settings' role can save via upsert), no sign-up gift

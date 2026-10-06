@@ -313,7 +313,7 @@ def test(t, srv, b):
 
     t.section('client brake after 5 wrong passwords')
     ctx, pg = lib.page(b, srv, t, mock=True, lang='en')
-    pg.goto(srv.url('#tool')); lib.wait_booted(pg)
+    pg.goto(srv.url('#tool')); lib.wait_booted(pg); lib.need(pg, 'acct')   # the brake wraps Backend.signIn when acct.js loads (the auth dialog loads it)
     codes = pg.evaluate("""async()=>{const out=[];for(let i=0;i<6;i++){try{await Backend.signIn({email:'dana@example.com',password:'bad'+i})}catch(e){out.push(e.code+(e.wait?':'+e.wait:''))}}return out}""")
     t.check('5 × login, then rate with a wait', codes[:5] == ['login'] * 5 and codes[5].startswith('rate:'), codes)
     ctx.close()
