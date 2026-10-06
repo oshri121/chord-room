@@ -56,6 +56,16 @@
     if (st.flash) on.push('a11y-flash');
     CLASSES.forEach(function (c) { root.classList.toggle(c, on.indexOf(c) >= 0); });
     root.style.setProperty('--a11y-z', String(st.text / 100));
+    zoomSheet(st.text !== 100);
+  }
+  /* perf: the text-size zoom rule (assets/a11y-zoom.css, same ?v= as a11y.css) is attached only while it is needed */
+  function zoomSheet(on) {
+    var l = document.getElementById('a11yZoomCss');
+    if (on && !l) {
+      var base = document.querySelector('link[href*="a11y.css"]'), href = base ? base.getAttribute('href').replace('a11y.css', 'a11y-zoom.css') : 'assets/a11y-zoom.css';
+      l = document.createElement('link'); l.id = 'a11yZoomCss'; l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l);
+    }
+    if (l) l.disabled = !on;
   }
   applyClasses(); // as early as possible
 

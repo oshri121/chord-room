@@ -1,0 +1,7 @@
+/* Chord Room — accessibility text size (attached by assets/a11y.js only while a larger text size is on).
+   The app sizes type in px, so a root font-size would do nothing. We zoom every element that does NOT contain a
+   <canvas> and whose parent does: text, buttons and panels grow, while the canvases themselves (waveforms, DJ decks,
+   meters) keep zoom 1, so their pixel mapping (getBoundingClientRect vs clientX) and backing-store sharpness are untouched.
+   perf: this rule lives in its own sheet because a :has(canvas) selector anywhere in the page's styles makes every DOM
+   insertion re-style the whole document (~15–30 ms each on a desktop, ×4 on a phone) — even while the rule matches nothing. */
+:root:is(.a11y-t115,.a11y-t130,.a11y-t150) :has(canvas) > :not(:has(canvas),canvas,#a11y-root,script,style,template){zoom:var(--a11y-z,1)}

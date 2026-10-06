@@ -76,3 +76,14 @@ es:{dEyebrow:'Listas · analizadas en tu navegador',navDj:'Mezcla DJ',navDjS:'DJ
   djRecs:'Siguiente canción',djRecsH:'Canciones que encajan con {d} en tempo y tonalidad, de tus canciones y del catálogo de Descubrir.',djRecsNone:'Aún no hay sugerencias. Carga una canción o analiza más en Descubrir.',djLoadTo:'Al plato {d}',djPrevT:'Escuchar fragmento',djWithKey:'moviendo {s}',djMine:'Mías',djCat:'Catálogo',djNoFileT:'No hay archivo guardado para esta canción',
   djKeysHint:'Teclas: Q / P reproducir · W / O cue · E / I sync · ← → crossfader · F efecto',djWaiting:'Esperando el compás…',djEngineOff:'El motor key lock no cargó, así que el tempo también cambia el tono.'}
 });
+/* perf: the header nav labels of the views whose modules load on first use (crate.js, mashup.js, convert.js, extended.js define
+   the same keys for their own UI) + the notice when a module could not be downloaded. Keep the values in sync with those files. */
+window.CR && CR.addStrings({
+he:{navCrate:'ניתוח ספרייה',navCrateS:'ספרייה',navMashup:'מאשאפ',navConvert:'המרה',navExtended:'אקסטנדד',navExtendedS:'אקסטנדד',lazyFail:'לא הצלחנו לטעון את המסך הזה. בדקו את החיבור ונסו שוב.'},
+en:{navCrate:'Crate',navCrateS:'Crate',navMashup:'Mashup',navConvert:'Convert',navExtended:'Extended',navExtendedS:'Ext.',lazyFail:'This screen could not be loaded. Check your connection and try again.'},
+ar:{navCrate:'تحليل المكتبة',navCrateS:'المكتبة',navMashup:'ماش أب',navConvert:'تحويل',navExtended:'إكستندد',navExtendedS:'إكستندد',lazyFail:'تعذّر تحميل هذه الشاشة. تحقّق من الاتصال وحاول مجددًا.'},
+ru:{navCrate:'Анализ библиотеки',navCrateS:'Библиотека',navMashup:'Мэшап',navConvert:'Конвертер',navExtended:'Extended',navExtendedS:'Ext.',lazyFail:'Не удалось загрузить этот экран. Проверьте подключение и попробуйте ещё раз.'},
+es:{navCrate:'Biblioteca DJ',navCrateS:'Biblioteca',navMashup:'Mashup',navConvert:'Convertir',navExtended:'Extended',navExtendedS:'Ext.',lazyFail:'No se pudo cargar esta pantalla. Revisa la conexión e inténtalo de nuevo.'}
+});
+/* perf: app.js already applied the language before this file ran (the view modules used to re-apply it when they loaded) */
+if (window.CR && CR.applyLang) CR.applyLang();

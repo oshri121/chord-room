@@ -197,7 +197,9 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
-- Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; SQL `[accounts-v4:begin…end]` = after [security-v3],
+- Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; a lazy module ('acct', see Performance):
+  app.js `acctNeed()` loads it for a saved session at boot, on sign-in, when the auth dialog opens (every `auRun` waits for it) and on
+  `cr-mfa`; it catches up at load (`CR.lastUser()`, `Backend.mfaPending`, open panels); SQL `[accounts-v4:begin…end]` = after [security-v3],
   before `[growth-v4]` (the last block) of schema.sql = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
   password re-auth or e-mail code + TOTP; browser removes `uploads|avatars/<uid>/*` via the Storage API, then `delete_my_account(p_confirm)`
   refuses owner / live subscription / no fresh amr (15 min) / aal1 with 2FA / files left; a BEFORE DELETE trigger on `auth.users` anonymises
@@ -301,7 +303,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   block — `node/growth.test.mjs` fails when they differ: **change both together**). `sitemap.xml` lists the paths.
   · `assets/info.js` (`INFO`): `#licenses` (every third-party component; keep in sync with vendor/, ai/) and `#accessibility`
   (`A11Y.statementHTML(lang,{full,admin,contact})`, extra sections `STX` in a11y.js, `REVIEWED_DEFAULT`; `#about-a11y` redirects;
-  admins see a warning until `CONTACT` is filled) in `#infoView`; per-view meta description/canonical/og:*/twitter:* (`SEO`).
+  admins see a warning until `CONTACT` is filled) in `#infoView`; a lazy module ('info', loads 'legal' too for the tabs). The per-view
+  meta description/canonical/og:*/twitter:* (`SEO`, `applyMeta`) lives in pages.js (`PAGES.seo`, core) so every view gets it.
   · `assets/consent.js` (`CONSENT`): banner `#ckBar` only when `site_config.analytics` has a valid GA4/Clarity id and no choice is
   saved (`chordroom.consent.v1`); `[data-ck="open"]` anywhere = cookie settings `#ckDlg`; GA4 (signals/ad personalisation off,
   manual `page_view` with a virtual path, key events mapped from logAct names, never details) + Clarity (`data-clarity-mask` on
@@ -321,6 +324,21 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `private.is_offensive(text)` when it exists, else `private.growth_offensive`. `reviews_public` is the only new anon RPC (the
   allow-lists in the SQL sweeps include it). Referral disclosure: `refDisc` in the invite box + `refMsg` + terms `t-referral`.
   Styles `assets/growth.css`. Tests: `sql/test_growth_v4.py`, `ui/test_growth.py`, `node/growth.test.mjs`.
+
+- Performance (`PERF.md`, test `ui/test_perf.py` = budgets): core scripts are `defer` (config, supabase, backend, app, dj-i18n,
+  pages, shell, bg, a11y, + growth: consent, ab, reviews — the cookie banner may show on any page, the home hero reads its A/B
+  variant while rendering, reviews = home section/export prompt/admin tab; growth.css is a core stylesheet); every view module loads on first use from `<template id="crLazy">` in index.html via `window.CRLOAD`
+  (`assets/early.js`): `need(name)` → CSS first, then scripts in document order (`data-mod` = modules sharing a file: tool =
+  voice + mp3, dj, crate = heblat + cues + crate + mp3, mashup, convert, extended (+ crate for tagMp3), legal, welcome (only
+  without a saved language), assistant (when idle), acct (+ acct.css; accounts v4), info (+ legal; licenses / accessibility pages)). The router (`showView` → `lazyView`) starts it; each module shows itself
+  when its view is already open. Code that needs a module outside its view awaits `needMod('x')` (app.js) / `CR.need('x')`
+  (modules); tests use `lib.need(pg,'crate')`. Nav labels of lazy views live in dj-i18n.js (keep in sync). Fonts are
+  self-hosted (`assets/fonts/`, OFL, `fonts.css` with unicode-range; 'CR Menu' alias keeps the language menus from pulling the
+  Arabic/Cyrillic files). `html.home` hides the tool until the router shows a view; `html.cr-guest` keeps the guest banner's
+  room on the tool. bg.js draws in a worker (OffscreenCanvas) and stops after 6 s without input; `<html data-idle>` then
+  pauses the CSS loops too. Loops: the tool's draw loop runs only while the tool is shown (4 Hz when idle), the metronome
+  interval only while playing, the DJ frame loop drops to 10 fps when nothing plays. `_headers`: /assets/* = 1 year immutable
+  → always bump `?v=` (a worker inherits its starter's `?v=`).
 
 ## Rules of thumb
 - Keep it build-free: plain scripts, no bundler for the app itself.

@@ -93,8 +93,8 @@ html[dir="rtl"] .page .pg-rd b,html[dir="rtl"] .page .pg-tile b,html[dir="rtl"] 
 /* hero waveform strip */
 .page .pg-hwave{position:relative;height:clamp(72px,9vw,120px);margin-top:clamp(36px,5vw,64px);margin-inline:calc(-1 * clamp(22px,5vw,64px));direction:ltr;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.page .pg-hw{display:block;width:100%;height:100%}
-.page .pg-hw rect{transform-box:fill-box;transform-origin:center;transform:scaleY(var(--s))}
+.page .pg-hw{display:block;position:relative;width:100%;height:100%}
+.page .pg-hw i{position:absolute;border-radius:1.5px;transform:scaleY(var(--s))}   /* perf: HTML bars (were SVG rects) → compositor animation */
 .page .pg-hph{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;box-shadow:0 0 18px 2px rgba(255,255,255,.55)}
 .page .pg-hph::before{content:"";position:absolute;top:0;left:-5px;border:6px solid transparent;border-top-color:#fff}
 
@@ -297,13 +297,15 @@ html[lang="ar"] .page .pg-h{line-height:1.2}
   html:not(.a11y-noanim) .page .pg-anim .pg-steps.in::before{transform:scaleX(1)}
   html:not(.a11y-noanim) .page .pg-steps li{transition:background .25s}
 
-  html:not(.a11y-noanim) .page .pg-hero h1 em{animation:pgShift 9s ease-in-out infinite alternate}
+  html:not(.a11y-noanim) .page .pg-hero h1 em{animation:pgShift 9s ease-in-out 2 alternate}   /* perf: there and back (18 s), then it rests: gradient text is repainted every frame */
   html:not(.a11y-noanim) .page .pg-glow{animation:pgDrift 16s ease-in-out infinite alternate}
   html:not(.a11y-noanim) .page .pg-glow.g2{animation-duration:20s;animation-delay:-6s}
   html:not(.a11y-noanim) .page .pg-glow.g3{animation-duration:18s;animation-delay:-11s}
-  html:not(.a11y-noanim) .page .pg-hw rect{animation:pgBar 1.1s ease-in-out var(--d) infinite alternate}
+  html:not(.a11y-noanim) .page .pg-hw i{animation:pgBar 1.1s ease-in-out var(--d) infinite alternate}
   html:not(.a11y-noanim) .page .pg-hph{animation:pgPulse 1.1s ease-in-out infinite alternate}
-  html:not(.a11y-noanim) .page .pg-cch span{animation:pgChord 4s steps(1) infinite;animation-delay:calc(var(--i) * 1s)}
+  /* perf: the lit chord is a light copy on top (::after, opacity steps → compositor) instead of animating background/colour */
+  html:not(.a11y-noanim) .page .pg-cch span{position:relative}
+  html:not(.a11y-noanim) .page .pg-cch span::after{content:attr(data-c);position:absolute;inset:-1px;border-radius:8px;background:#EDEDEF;color:#0B0B0C;display:flex;align-items:center;padding-inline:13px;opacity:0;animation:pgChordO 4s steps(1) infinite;animation-delay:calc(var(--i) * 1s)}
   html:not(.a11y-noanim) .page .pg-cch span:first-child{background:#141418;color:#9a9aa3;border-color:#2a2a31}
   html:not(.a11y-noanim) .page .pg-stm u{animation:pgMeter .9s ease-in-out infinite alternate;animation-delay:calc(var(--i) * -.37s)}
   html:not(.a11y-noanim) .page .pg-ph{animation:pgHead 8s linear infinite}
@@ -336,6 +338,7 @@ html[lang="ar"] .page .pg-h{line-height:1.2}
 @keyframes pgBar{from{transform:scaleY(var(--s))}to{transform:scaleY(1)}}
 @keyframes pgPulse{from{opacity:.75}to{opacity:1}}
 @keyframes pgChord{0%{background:#EDEDEF;color:#0B0B0C;border-color:#EDEDEF}25%,100%{background:#141418;color:#9a9aa3;border-color:#2a2a31}}
+@keyframes pgChordO{0%{opacity:1}25%,100%{opacity:0}}
 @keyframes pgMeter{from{transform:scaleX(.25)}to{transform:scaleX(.95)}}
 @keyframes pgHead{from{transform:translateX(0)}to{transform:translateX(424px)}}
 @keyframes pgChordSvg{0%{fill:#EDEDEF;stroke:#EDEDEF}25%,100%{fill:#141418;stroke:#2a2a31}}
@@ -479,3 +482,13 @@ html[lang="he"] .page .lg-toc summary,html[lang="ar"] .page .lg-toc summary{lett
   .page .pg-tbl-d td{white-space:nowrap}
   .page .pg-tbl-d tbody th{font-size:14px;min-width:96px}
 }
+/* perf: a section away from the screen pauses its decorative loops (pages.js wire → .pg-rest); the feature artwork (≈ 950
+   SVG shapes on the home page) is not laid out or painted until it comes near the screen (content-visibility: its size
+   comes from aspect-ratio and it already clips its content, so nothing looks different) */
+/* nobody around for 6 s (bg.js → <html data-idle>) pauses them too. The animated parts are listed (not `*`) so that toggling the
+   class / attribute re-styles just those elements, not every node of the page — add a new looping part to both lists. */
+.page .pg-rest :is(.pg-hw i,.pg-hph,.pg-glow,.pg-stm u,.pg-chd rect,.pg-chd text,.pg-note,.pg-ph,.pg-spin,.pg-fa,.pg-fb,.pg-xf,.pg-drow,.pg-file,.pg-srow,.pg-tg,.pg-plan.best),
+.page .pg-rest .pg-cch span::after,
+html[data-idle] .page :is(.pg-hero h1 em,.pg-hw i,.pg-hph,.pg-glow,.pg-stm u,.pg-chd rect,.pg-chd text,.pg-note,.pg-ph,.pg-spin,.pg-fa,.pg-fb,.pg-xf,.pg-drow,.pg-file,.pg-srow,.pg-tg,.pg-plan.best),
+html[data-idle] .page .pg-cch span::after{animation-play-state:paused!important}
+.page .pg-art{content-visibility:auto}

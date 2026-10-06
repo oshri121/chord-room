@@ -794,9 +794,12 @@ function heroWave() {
     const [lo, mid, hi] = bands(i, r), m = Math.max(lo, mid, hi);
     const amp = (.25 + .75 * (lo * .6 + mid * .3 + hi * .15)) * h * .48 * (0.7 + .3 * Math.sin(i / 13));
     const col = 'rgb(' + Math.round(255 * lo / m) + ',' + Math.round(235 * mid / m) + ',' + Math.round(255 * hi / m) + ')';
-    g += '<rect x="' + (i * bw + bw * .18).toFixed(1) + '" y="' + (h / 2 - amp).toFixed(1) + '" width="' + (bw * .64).toFixed(1) + '" height="' + (amp * 2).toFixed(1) + '" rx="1.5" fill="' + col + '" style="--d:' + (-r() * 1.6).toFixed(2) + 's;--s:' + (.45 + r() * .4).toFixed(2) + '"/>';
+    /* perf: HTML bars placed like the old SVG <rect>s (same numbers, as % of the 1200×120 box): their transform animation runs on
+       the compositor, while 132 animated SVG rects re-styled and re-painted the hero on the main thread every frame */
+    const pc = v => (v * 100).toFixed(2) + '%';
+    g += '<i style="left:' + pc((i * bw + bw * .18) / w) + ';top:' + pc((h / 2 - amp) / h) + ';width:' + pc(bw * .64 / w) + ';height:' + pc(amp * 2 / h) + ';background:' + col + ';--d:' + (-r() * 1.6).toFixed(2) + 's;--s:' + (.45 + r() * .4).toFixed(2) + '"></i>';
   }
-  return '<svg class="pg-hw" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' + g + '</svg>';
+  return '<div class="pg-hw" aria-hidden="true">' + g + '</div>';
 }
 function artTool() {
   const r = rng(3), n = 72, x0 = 28, x1 = 452, cy = 122, bw = (x1 - x0) / n;
@@ -1026,7 +1029,7 @@ function renderAbout(el, billing) {
       '<div><span>' + t('rdKey') + '</span><b dir="ltr">Am</b></div>' +
       '<div><span>' + t('rdCam') + '</span><b dir="ltr">3:24</b></div>' +
       '<div><span>' + t('rdLufs') + '</span><b dir="ltr">−8.6</b></div></div>' +
-    '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '">' + c + '</span>').join('') + '</div>' +
+    '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '" data-c="' + c + '">' + c + '</span>').join('') + '</div>' +
     '<div class="pg-stm">' + st.map((s, i) => '<div style="--c:' + stc[i] + ';--i:' + i + '"><span>' + s + '</span><i><u></u></i></div>').join('') + '</div></div>';
   let ctaV = 'a'; try { if (window.AB) ctaV = AB.variant('home_cta', ['a', 'b']) || 'a'; } catch (e) { ctaV = 'a'; }   /* growth: A/B */
   const hero = '<section class="pg-hero" aria-labelledby="pgHeroH">' +
@@ -1215,7 +1218,7 @@ function renderPricing(el, billing, state) {
 
 /* ---------- behaviour: clicks, reveal, count-up ---------- */
 const last = { about: null, pricing: null };
-let io = null;
+let io = null, liveIO = null;
 function countUp(n) {
   const to = +n.dataset.count; if (!(to > 0) || reduced()) return;
   const t0 = performance.now(), d = 900;
@@ -1243,6 +1246,13 @@ function wire(el) {
     });
   }
   root.classList.add('pg-anim');
+  /* perf: the decorative loops of a section run only while it is near the screen (.pg-rest pauses them, pages.css) */
+  if ('IntersectionObserver' in window) {
+    if (!liveIO) liveIO = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('pg-rest', !e.isIntersecting)), { rootMargin: '100px 0px' });
+    (el.__pgLive || []).forEach(x => liveIO.unobserve(x));
+    el.__pgLive = Array.from(root.querySelectorAll('.pg-hero,.pg-sec,.pg-phead'));
+    el.__pgLive.forEach(x => { x.classList.add('pg-rest'); liveIO.observe(x); });
+  }
   const items = root.querySelectorAll('.rv');
   if (!('IntersectionObserver' in window) || reduced()) { items.forEach(x => x.classList.add('in')); return; }
   if (!io) io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
@@ -1258,4 +1268,71 @@ const PAGES = window.PAGES = {
   onNav: function () {}, onSignup: function () {}, onSubscribe: function () {}, onManage: null,
   contact: '', billing: null
 };
+
+/* ---------- growth: per-page meta (moved here from assets/info.js by the perf split, so every page has it while info.js
+   loads on first use): <meta name=description>, canonical, og:* and twitter:* per view in the page's language. Crawlers that
+   don't run JS get the per-path tags from functions/_middleware.js (PAGE_META). ---------- */
+(function () {
+/* per-page <meta> (title for og/twitter; the document title itself comes from app.js viewTitle) */
+const SEO = {
+he: { about: ['Chord Room — קצב, סולם, אקורדים וערוצי AI מכל שיר', 'זיהוי BPM, סולם ואקורדים, גל RGB לתקליטנים, הפרדת ערוצים ב־AI וייצוא ל־FL Studio — הכול בדפדפן, בחינם להתחלה.'],
+  tool: ['הכלי · Chord Room', 'מעלים שיר ומקבלים BPM, סולם, אקורדים וצורת גל RGB, משנים קצב וסולם ומפרידים ערוצים ב־AI — בדפדפן.'],
+  pricing: ['מחירים ונקודות · Chord Room', 'מה חינם ומה עולה נקודות, המסלולים החודשיים וההנחות — הכול במקום אחד.'],
+  terms: ['תנאי שימוש · Chord Room', 'תנאי השימוש של Chord Room: חשבון, נקודות ומנויים, התוכן שלכם ושימוש מותר.'],
+  privacy: ['מדיניות פרטיות · Chord Room', 'איזה מידע Chord Room אוסף, למה, איפה הוא נשמר, עוגיות וסטטיסטיקה בהסכמה, והזכויות שלכם.'],
+  accessibility: ['הצהרת נגישות · Chord Room', 'הצהרת הנגישות של Chord Room לפי ת"י 5568: התאמות, חלופות, מגבלות ידועות ופנייה לרכז/ת הנגישות.'],
+  licenses: ['רישיונות וקרדיטים · Chord Room', 'הגופנים, הספריות, המודלים ומקורות הנתונים של צד שלישי ב־Chord Room, והרישיון של כל אחד.'] },
+en: { about: ['Chord Room — tempo, key, chords and AI stems from any song', 'BPM, key and chord detection, an RGB DJ waveform, AI stem separation and FL Studio export — all in your browser, free to start.'],
+  tool: ['The tool · Chord Room', 'Upload a song and get its BPM, key, chords and RGB waveform, change tempo and key, and split it into AI stems — in the browser.'],
+  pricing: ['Pricing & points · Chord Room', 'What is free, what costs points, the monthly plans and their discounts — all in one place.'],
+  terms: ['Terms of Use · Chord Room', 'Chord Room’s terms: your account, points and subscriptions, your content and acceptable use.'],
+  privacy: ['Privacy Policy · Chord Room', 'What Chord Room collects, why, where it is kept, consent-based cookies and analytics, and your rights.'],
+  accessibility: ['Accessibility statement · Chord Room', 'Chord Room’s accessibility statement under SI 5568: adjustments, alternatives, known limitations and how to reach the coordinator.'],
+  licenses: ['Licenses & credits · Chord Room', 'The third-party fonts, libraries, models and data sources in Chord Room, and the license of each.'] },
+ar: { about: ['Chord Room — الإيقاع والمقام والأكوردات والمسارات بالذكاء الاصطناعي', 'كشف BPM والمقام والأكوردات، موجة RGB للـDJ، فصل المسارات بالذكاء الاصطناعي وتصدير إلى FL Studio — كل ذلك في المتصفح.'],
+  tool: ['الأداة · Chord Room', 'ارفع أغنية واحصل على BPM والمقام والأكوردات وموجة RGB، وغيّر الإيقاع والمقام وافصل المسارات — في المتصفح.'],
+  pricing: ['الأسعار والنقاط · Chord Room', 'ما المجاني وما يكلّف نقاطًا، والخطط الشهرية وخصوماتها — في مكان واحد.'],
+  terms: ['شروط الاستخدام · Chord Room', 'شروط Chord Room: الحساب والنقاط والاشتراكات ومحتواك والاستخدام المسموح.'],
+  privacy: ['سياسة الخصوصية · Chord Room', 'ما يجمعه Chord Room ولماذا وأين يُحفظ، وملفات تعريف الارتباط والإحصاءات بالموافقة، وحقوقك.'],
+  accessibility: ['بيان إمكانية الوصول · Chord Room', 'بيان إمكانية الوصول وفق المعيار 5568: الملاءمات والبدائل والقيود المعروفة والتواصل مع المنسّق.'],
+  licenses: ['التراخيص والشكر · Chord Room', 'الخطوط والمكتبات والنماذج ومصادر البيانات من أطراف ثالثة في Chord Room وترخيص كلٍّ منها.'] },
+ru: { about: ['Chord Room — темп, тональность, аккорды и AI-стемы любой песни', 'Определение BPM, тональности и аккордов, RGB-волна для диджеев, AI-разделение на стемы и экспорт в FL Studio — в браузере.'],
+  tool: ['Инструмент · Chord Room', 'Загрузите песню: BPM, тональность, аккорды и RGB-волна, смена темпа и тональности, AI-стемы — в браузере.'],
+  pricing: ['Цены и баллы · Chord Room', 'Что бесплатно, что стоит баллов, ежемесячные тарифы и скидки — всё в одном месте.'],
+  terms: ['Условия использования · Chord Room', 'Условия Chord Room: аккаунт, баллы и подписки, ваш контент и допустимое использование.'],
+  privacy: ['Политика конфиденциальности · Chord Room', 'Что собирает Chord Room, зачем и где хранит, cookie и аналитика по согласию, ваши права.'],
+  accessibility: ['Заявление о доступности · Chord Room', 'Заявление о доступности по SI 5568: адаптации, альтернативы, известные ограничения и связь с координатором.'],
+  licenses: ['Лицензии и благодарности · Chord Room', 'Сторонние шрифты, библиотеки, модели и источники данных в Chord Room и лицензия каждого.'] },
+es: { about: ['Chord Room — tempo, tonalidad, acordes y pistas con IA de cualquier canción', 'Detección de BPM, tonalidad y acordes, onda RGB para DJ, separación de pistas con IA y exportación a FL Studio, en el navegador.'],
+  tool: ['La herramienta · Chord Room', 'Sube una canción y obtén BPM, tonalidad, acordes y onda RGB, cambia tempo y tonalidad y separa pistas con IA, en el navegador.'],
+  pricing: ['Precios y puntos · Chord Room', 'Qué es gratis, qué cuesta puntos, los planes mensuales y sus descuentos, en un solo lugar.'],
+  terms: ['Términos de uso · Chord Room', 'Los términos de Chord Room: tu cuenta, puntos y suscripciones, tu contenido y el uso permitido.'],
+  privacy: ['Política de privacidad · Chord Room', 'Qué recoge Chord Room, por qué, dónde se guarda, cookies y analítica con consentimiento, y tus derechos.'],
+  accessibility: ['Declaración de accesibilidad · Chord Room', 'La declaración de accesibilidad según SI 5568: ajustes, alternativas, limitaciones conocidas y contacto con la coordinación.'],
+  licenses: ['Licencias y créditos · Chord Room', 'Las tipografías, bibliotecas, modelos y fuentes de datos de terceros en Chord Room y la licencia de cada una.'] }
+};
+const seoL = () => { const l = (document.documentElement.lang || 'he').slice(0, 2).toLowerCase(); return SEO[l] ? l : 'en'; };
+const canonEl = document.querySelector('link[rel="canonical"]');
+let ORIGIN = 'https://chord-room.pages.dev';
+try { if (canonEl) ORIGIN = new URL(canonEl.getAttribute('href')).origin; } catch (e) {}
+const PATHS = { about: '/', tool: '/tool', pricing: '/pricing', terms: '/terms', privacy: '/privacy', accessibility: '/accessibility', licenses: '/licenses' };
+const LOCALES = { he: 'he_IL', en: 'en_US', ar: 'ar_AR', ru: 'ru_RU', es: 'es_ES' };
+function setMeta(sel, attr, val) { const m = document.querySelector(sel); if (m) m.setAttribute(attr, val); }
+let curView = null;
+function applyMeta(v) {
+  curView = v || curView || 'about';
+  const pub = PATHS[curView] ? curView : 'about', s = SEO[seoL()][pub] || SEO.en[pub], url = ORIGIN + PATHS[pub];
+  if (canonEl) canonEl.setAttribute('href', url);
+  setMeta('meta[name="description"]', 'content', s[1]);
+  setMeta('meta[property="og:url"]', 'content', url);
+  setMeta('meta[property="og:title"]', 'content', s[0]);
+  setMeta('meta[property="og:description"]', 'content', s[1]);
+  setMeta('meta[property="og:locale"]', 'content', LOCALES[seoL()] || 'he_IL');
+  setMeta('meta[name="twitter:title"]', 'content', s[0]);
+  setMeta('meta[name="twitter:description"]', 'content', s[1]);
+}
+document.addEventListener('cr-view', e => applyMeta(e.detail && e.detail.v));
+new MutationObserver(() => applyMeta()).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+PAGES.seo = { applyMeta, SEO, PATHS, origin: () => ORIGIN };
+})();
 })();

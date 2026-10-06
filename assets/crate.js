@@ -308,6 +308,9 @@ function load(){
     // the crate used to be shared by everyone on the browser: it goes to the first account that signs in here
     if(C.owner&&localStorage.getItem(LS_K)!=null&&localStorage.getItem(lsKey())==null){localStorage.setItem(lsKey(),localStorage.getItem(LS_K))}
     if(C.owner)localStorage.removeItem(LS_K);
+    // perf: this file loads when the Crate first opens (often after sign-in), so it may never see the signed-out state:
+    // a guest's rows still go to the account that has none here (setOwner does the same when it sees the sign-in)
+    if(C.owner&&localStorage.getItem(lsKey())==null&&localStorage.getItem(LS_K+':guest')!=null){localStorage.setItem(lsKey(),localStorage.getItem(LS_K+':guest'));localStorage.removeItem(LS_K+':guest')}
     const o=JSON.parse(localStorage.getItem(lsKey())||'null');if(!o||o.v!==1||!Array.isArray(o.rows))return;
     C.folder=typeof o.folder==='string'?o.folder:'';
     C.sort=o.sort&&SORTABLE.has(o.sort.k)?{k:o.sort.k,dir:o.sort.dir<0?-1:1}:null;

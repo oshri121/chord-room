@@ -1,5 +1,5 @@
 /* Chord Room — accessibility menu + the page-wide adjustments it switches on (classes on <html>). */
-@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap");
+/* perf: Atkinson Hyperlegible is self-hosted (assets/fonts/fonts.css); it downloads only when the readable-font switch is on */
 
 /* =========================================================
    1. Page-wide adjustments
@@ -9,7 +9,8 @@
    The app sizes type in px, so a root font-size would do nothing. We zoom every element that does NOT contain a
    <canvas> and whose parent does: text, buttons and panels grow, while the canvases themselves (waveforms, DJ decks,
    meters) keep zoom 1, so their pixel mapping (getBoundingClientRect vs clientX) and backing-store sharpness are untouched. */
-:root:is(.a11y-t115,.a11y-t130,.a11y-t150) :has(canvas) > :not(:has(canvas),canvas,#a11y-root,script,style,template){zoom:var(--a11y-z,1)}
+/* perf: the zoom rule itself is in assets/a11y-zoom.css, attached by a11y.js only while a larger size is on (its :has(canvas)
+   made every DOM change re-style the whole page, even at 100 %) */
 /* rows of fixed-size buttons that never wrapped at 100% must be allowed to wrap once they are larger */
 :root:is(.a11y-t115,.a11y-t130,.a11y-t150) :is(.hc,.dbar,.grp){flex-wrap:wrap}
 

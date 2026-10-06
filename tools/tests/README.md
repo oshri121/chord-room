@@ -96,6 +96,11 @@ that the builders have not fixed yet, so the suite stays green and the report st
   `lib.reload(pg)` (waits for `#busy` first).
 * **Every new string in the app needs all five languages** — a test that checks a label in `he` should also flip
   `#lang` once (see `test_legal_home.py`).
+* **View modules load on first use** (perf, `PERF.md`): `dj.js`, `crate.js` (+ `heblat.js`, `cues.js`), `mashup.js`, `convert.js`,
+  `extended.js`, `voice.js` + `mp3.js` (with the tool), `legal.js` (terms/privacy/sign-up), `welcome.js`, `assistant.js` (when the
+  page is idle) are not in the page until `window.CRLOAD.need(name)` runs — the router does it when a view opens, and
+  `lib.wait_booted` waits for those loads. A test that uses `window.CRATE` (etc.) without opening its view, or the assistant
+  right after boot, calls `lib.need(pg, 'crate')` / `lib.need(pg, 'assistant')` first.
 
 ## SQL tests
 
@@ -153,6 +158,7 @@ unless `--keep-pg`.
 | node/growth | middleware per-page title/description/canonical/OG on /pricing /terms /privacy /accessibility /licenses /tool /about, page headers kept, `PAGE_HEADERS` = `_headers` `/*`, `_routes.json` / `_redirects` (200 rewrites) / sitemap agree, WhatsApp/Facebook preview rules (og:image PNG 1200×630 ≤ 300 KB, lengths, Hebrew-first, twitter card, robots) (76) |
 | ui/test_growth | Licenses page (components, copyleft notices + sources, 5 languages), accessibility statement page (all sections, no placeholders for visitors, admin warning, #about-a11y redirect, a11y panel link), real paths + canonical + crawler UAs, consent banner gating (no GA/Clarity request without ids or before "allow"; after: ids, signals off, page_view per view, key events without song names, Clarity masking, withdraw), A/B (off = control, sticky, one `ab_assign`, user property, admin Growth tab + results), reviews (prompt after 3 exports, dialog a11y + validation, moderation, home + JSON-LD from 5), referral disclosure; he/ar RTL, dark, 375 px, zero CSP violations (196, ≈ 4 min) |
 | ui/test_assistant_md | `ROOMY._render` against 33 hostile markdown inputs: only allowed elements/attributes/hrefs, nothing executes, fast on pathological input |
+| ui/test_perf | budgets from `PERF.md` (measured + ~15 %): home ≤ N requests / JS / CSS / font KB, no view-module JS on home, no Arabic/Cyrillic font files on a Hebrew page, no Google Fonts; no long task > 200 ms while home loads; CLS < 0.05 on home + pricing; idle home = no rAF callbacks for 3 s, background loop stopped, `<html data-idle>`, no running CSS animation, and input wakes it; every deep link (#tool #dj #crate #mashup #convert #extended #terms) cold → its module once (also after leaving and coming back), nothing else; og.png ≤ 150 KB at 1200×630. `CR_PERF_REPORT=1` prints the numbers without checking |
 | ui/test_chords | chord benchmark with ground truth (`fixtures/gen_chords.py`, 14 songs; `CR_CHORDS_FULL=1` ≈ 36): sheet labels after a real upload → majmin per beat ≥ 0.95 (each song ≥ 0.85), frame accuracy, change F1 + no early/late bias, key exact, bar lines, spelling; transpose/capo move every label, chord editor (beat + block); playback (`mock/audiotap.js`): the highlighted cell and "now" chord follow the HEARD audio (±40 ms, ≥ 95 % of beats) at 100 %, with tempo + key changed (Signalsmith latency = 120 ms from a click track) and with ~0.6 s output latency; `CR.analyzeTrack` = the tool (≈ 5 min) |
 
 ### Known app issues the suite reports (not failures)

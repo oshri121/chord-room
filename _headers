@@ -31,7 +31,7 @@
 #   for the page paths it rewrites — node/growth.test.mjs fails when the two differ.
 # - Permissions-Policy: microphone=(self) = the "My key" vocal range test (assets/voice.js; the audio stays in the browser).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://challenges.cloudflare.com https://www.googletagmanager.com https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; frame-src https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' blob: https://api.deezer.com https://challenges.cloudflare.com https://www.googletagmanager.com https://*.clarity.ms; style-src 'self' 'unsafe-inline'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; media-src 'self' blob: data: https://*.dzcdn.net https://ydyocusfrghsokjsectw.supabase.co; connect-src 'self' blob: data: https://ydyocusfrghsokjsectw.supabase.co wss://ydyocusfrghsokjsectw.supabase.co https://*.dzcdn.net https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com; worker-src 'self' blob:; child-src 'self' blob: https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; frame-src https://widget.deezer.com https://www.deezer.com https://challenges.cloudflare.com; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -49,10 +49,29 @@
   ! Content-Security-Policy
 
 # Caching. HTML is always revalidated (Pages' default), so a deploy with new ?v= numbers is seen at once.
-# assets/*: the <script>/<link> tags carry ?v= (bump it on every change); short cache + background refresh as a
-# safety net for files that are fetched without ?v= (icon.svg).
+# perf: assets/* = a year, immutable. Every script/style there is requested with ?v= (index.html tags, the lazy-module
+# <template>, fonts.css?v=) and the browser + Cloudflare's edge cache by the FULL URL, so a new ?v= is a new file for
+# everyone at once. RULE: bump ?v= on every change. A worker inherits the ?v= of the script that starts it
+# (mp3-worker.js ← mp3.js, quicksep-worker.js ← mashup.js / extended.js, bg.js ← itself, ffmpeg-worker.js?v= in convert.js),
+# so bump that script too. assets/fonts/*.woff2 never change under their name (a new font = a new file name).
+# The few files fetched WITHOUT ?v= (icons, og image, email logos) get a short cache below ('!' drops the year).
 /assets/*
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cache-Control: public, max-age=31536000, immutable
+/assets/icon.svg
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/icon-192.png
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/icon-512.png
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/icon-512-maskable.png
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/apple-touch-icon.png
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 # Versioned third-party files never change under the same name.
 /vendor/lamejs-1.2.7.min.js
@@ -77,11 +96,13 @@
 # qw: the Open Graph image is fetched by link-preview bots (WhatsApp, Facebook, X) from other origins.
 /assets/og.png
   ! Cross-Origin-Resource-Policy
+  ! Cache-Control
   Cross-Origin-Resource-Policy: cross-origin
   Cache-Control: public, max-age=86400
 
 # The logo in the sign-up / reset emails is loaded by mail clients from other origins.
 /assets/email/*
   ! Cross-Origin-Resource-Policy
+  ! Cache-Control
   Cross-Origin-Resource-Policy: cross-origin
   Cache-Control: public, max-age=604800

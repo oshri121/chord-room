@@ -1188,7 +1188,7 @@ function play(){
     s.start(when,Math.min(P.pos,buf.duration-0.001));return [s,g]};
   if(S.stems){const r=S.stems.map((b,i)=>mk(b,stemGain(i)));P.srcs=r.map(x=>x[0]);P.gains=r.map(x=>x[1])}
   else{const r=mk(S.buffer,1);P.srcs=[r[0]];P.gains=[]}
-  P.startCtx=when+(fx?FX.lat:0);P.startPos=P.pos;P.rate=fx?S.rate:1;P.fx=fx;P.seg0=null;P.playing=true;lastClick=P.pos-0.001;setIcon();
+  P.startCtx=when+(fx?FX.lat:0);P.startPos=P.pos;P.rate=fx?S.rate:1;P.fx=fx;P.seg0=null;P.playing=true;lastClick=P.pos-0.001;setIcon();if(!metroT)metroT=setInterval(metroTick,25);/* perf */kickLoop();
 }
 /* chords: what the listener hears NOW entered the destination one output latency ago (device/OS buffer: ~10–40 ms wired,
    150–300 ms Bluetooth). The playhead, the chord sheet and "now/next" follow the heard position; scheduling (metronome, loops,
@@ -1223,8 +1223,10 @@ function seek(tm){
 function setIcon(){$('#icPlay').hidden=P.playing;$('#icPause').hidden=!P.playing;$('#play').classList.toggle('on',P.playing)}
 // metronome
 let lastClick=0;
-setInterval(()=>{
-  if(!P.playing||!S.click||!S.beats.length)return;
+let metroT=0;                                                           /* perf: the 25 ms tick runs only while playing (play() starts it) */
+function metroTick(){
+  if(!P.playing){clearInterval(metroT);metroT=0;return}
+  if(!S.click||!S.beats.length)return;
   const c=ac(),tt=now(),T=60/S.bpm;
   if(tt<lastClick)lastClick=tt-0.001;
   const b0=Math.max(0,Math.ceil((lastClick-S.beats[0])/T+1e-6));
@@ -1235,7 +1237,7 @@ setInterval(()=>{
     o.frequency.value=bar?1760:1175;g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(bar?0.5:0.3,at+0.002);g.gain.exponentialRampToValueAtTime(0.0001,at+0.05);
     o.connect(g).connect(c.destination);o.start(at);o.stop(at+0.06);lastClick=S.beats[b];
   }
-},25);
+}
 
 /* ---------- rendering ---------- */
 const fmt=x=>{x=Math.max(0,x);const m=Math.floor(x/60),s=x-m*60;return m+':'+(s<10?'0':'')+s.toFixed(1)};
@@ -1347,12 +1349,20 @@ function updateNow(tm){
   else{$('#nextName').textContent=t('end');$('#nextDia').innerHTML='';$('#nextWhen').textContent=''}
   document.querySelectorAll('.chip').forEach(el=>el.classList.toggle('cur',+el.dataset.c===c));
 }
-let lastT=-1;
+let lastT=-1,loopOn=false,loopIdle=0,loopAct=0;
 function loop(){
+  loopIdle=0;
+  /* perf: stop while the tool is hidden or the tab is in the background (kickLoop restarts it); `dirty` survives the pause */
+  if($('#toolView').hidden||document.hidden){loopOn=false;return}
   const tm=heard(); /* chords: draw what is heard, not what was just scheduled (output latency) */
-  if(tm!==lastT||dirty){drawZoom(tm);drawOverview(tm);$('#time').innerHTML=`${fmt(tm/S.rate)} <span>/ ${fmtS(S.dur/S.rate)}</span>`;updateNow(tm);lastT=tm;dirty=false}
-  requestAnimationFrame(loop);
+  if(tm!==lastT||dirty){drawZoom(tm);drawOverview(tm);$('#time').innerHTML=`${fmt(tm/S.rate)} <span>/ ${fmtS(S.dur/S.rate)}</span>`;updateNow(tm);lastT=tm;dirty=false;loopAct=performance.now()}
+  /* perf: every frame while playing / dragging / just changed; after 1.5 s of nothing, poll at 4 Hz (any input wakes it at once) */
+  if(P.playing||(GD&&GD.drag))loopAct=performance.now();
+  if(performance.now()-loopAct<1500)requestAnimationFrame(loop);else loopIdle=setTimeout(()=>{loopIdle=0;requestAnimationFrame(loop)},250);
 }
+function kickLoop(){loopAct=performance.now();if(loopIdle){clearTimeout(loopIdle);loopIdle=0;requestAnimationFrame(loop)}else if(!loopOn){loopOn=true;requestAnimationFrame(loop)}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('#toolView').hidden)kickLoop()});
+['pointerdown','pointermove','wheel','keydown'].forEach(ev=>document.addEventListener(ev,()=>{if(loopIdle)kickLoop()},{passive:true,capture:true}));
 
 /* ---------- chord editing ---------- */
 let popState=null;
@@ -1931,6 +1941,7 @@ async function download(){
     const fx=fxOn(),tag=fx?` (${fmtBpm(Math.round(ebpm()*100)/100)} BPM${S.key?' '+keyName(mod(S.key.pc+S.transpose,12),S.key.mode,true):''})`:'';
     const safe=((S.name||'song').replace(/[\\/:*?"<>|]/g,'_').slice(0,80)+tag).replace(/[\\/:*?"<>|]/g,'_'),files=[];
     const wavs=pick.filter(e=>!e.midi).length;let wi=0;
+    if(expFmt==='mp3')await needMod('tool').catch(()=>{});             /* perf: mp3.js comes with the tool's module */
     const mp3=expFmt==='mp3'&&window.MP3&&MP3.supported,EXT=mp3?'mp3':'wav';
     const W=async(L,R,sr,part)=>{
       let a=L,b=R;if(fx){msg.textContent=t('fxRender',{n:++wi,m:wavs});await tick();[a,b]=await fxRender(L,R,sr)}
@@ -2029,7 +2040,7 @@ AUTH.ready=new Promise(ok=>{AUTH.wait=ok;if(AUTH.known)ok()});
 setTimeout(()=>{if(!AUTH.known)authChanged(null,'TIMEOUT')},4000);
 function authChanged(uid,event){
   const first=!AUTH.known,prev=AUTH.uid;AUTH.known=true;AUTH.uid=uid;AUTH.wait();
-  if(first||prev!==uid)document.dispatchEvent(new CustomEvent('cr-user',{detail:{uid,prev,first,event}}));
+  if(first||prev!==uid){AUTH.last={uid,prev,first,event};document.dispatchEvent(new CustomEvent('cr-user',{detail:AUTH.last}))}   /* acct + perf: AUTH.last = CR.lastUser() */
   if(!first&&prev!==uid)userSwitched(uid,prev);
   if(typeof regate==='function')regate();
 }
@@ -2147,7 +2158,9 @@ function auShow(mode,keep){
   d.querySelector('.audlg').dataset.mode=mode;
   const ft=$('#auFoot');ft.innerHTML=mode==='in'?esc(t('auFooterIn')).replace('{t}',`<a href="#terms" target="_blank" rel="noopener">${esc(t('auLegal'))}</a>`).replace('{p}',`<a href="#privacy" target="_blank" rel="noopener">${esc(t('auPrivacy'))}</a>`):'';
   auHead(mode);if(!keep)auMsg('');
-  if(mode==='terms'){const sm=$('#auSum');sm.innerHTML=window.LEGAL?LEGAL.summary(LANG):'';sm.setAttribute('aria-label',t('auTermsBox'));sm.scrollTop=0;auTermsState()}
+  if(mode==='terms'){const sm=$('#auSum');sm.innerHTML=window.LEGAL?LEGAL.summary(LANG):'';sm.setAttribute('aria-label',t('auTermsBox'));sm.scrollTop=0;auTermsState()
+    if(!window.LEGAL)needMod('legal').then(()=>{if(AU.mode==='terms'&&window.LEGAL){sm.innerHTML=LEGAL.summary(LANG);auTermsState()}},()=>{})} /* perf: legal.js on demand */
+  if(mode==='up')needMod('legal').catch(()=>{});                      /* perf: sign-up → fetch the terms (summary + version) ahead */
   if(mode==='done')auDoneFill();
   auCoolPaint();
   if(!keep)setTimeout(()=>{if($('#authDlg').hidden||AU.mode!==mode)return;
@@ -2155,6 +2168,7 @@ function auShow(mode,keep){
     f&&f.focus({preventScroll:true})},40);
 }
 function openDlg(mode){
+  acctNeed();                                                          /* acct + perf: Turnstile, age label, word filter (assets/acct.js) */
   const d=$('#authDlg'),fresh=d.hidden;
   if(fresh){AU.ret=document.activeElement;auBrand();d.hidden=false;document.documentElement.classList.add('au-open')}
   let note='';
@@ -2175,7 +2189,7 @@ function closeDlg(){
 }
 async function auRun(btn,fn){
   if(btn.classList.contains('ld'))return;btn.classList.add('ld');btn.disabled=true;btn.setAttribute('aria-busy','true');
-  try{await fn()}finally{btn.classList.remove('ld');btn.removeAttribute('aria-busy');btn.disabled=btn.id==='auCreate'?!auTermsOk():false;if(btn.dataset.cool)auCoolPaint()}
+  try{await acctNeed();await fn()}finally{btn.classList.remove('ld');btn.removeAttribute('aria-busy');btn.disabled=btn.id==='auCreate'?!auTermsOk():false;if(btn.dataset.cool)auCoolPaint()}
 }
 async function busyBtn(btn,fn){btn.disabled=true;try{await fn()}finally{btn.disabled=false}}
 /* ---- resend cooldowns (60 s) ---- */
@@ -2301,6 +2315,7 @@ $('#fTerms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const username=$('#upUser').value.trim(),email=$('#upEmail').value.trim(),password=$('#upPass').value;
   auRun($('#auCreate'),async()=>{
     try{
+      await needMod('legal').catch(()=>{});                            /* perf: the accepted terms version comes from legal.js */
       const r=await Backend.signUp({username,email,password,terms:{version:window.LEGAL?LEGAL.version:'',at:new Date().toISOString()},age:{ok:$('#auAge').checked,at:new Date().toISOString(),min:window.ACCT?ACCT.minAge():16}/* acct */});
       $('#upPass').value=$('#upPass2').value='';pwPaint('upPass');auFe($('#upPass2'),'');
       AU.user=username;AU.email=email;
@@ -3196,7 +3211,7 @@ function keyBadge(a,status){
 function rowEl(r,n){
   const li=document.createElement('li');li.className='drow';li.dataset.id=r.id;
   const a=r.a,chips=a&&a.chords?a.chords.slice(0,4).map(c=>`<span>${esc(chordText(c,a))}</span>`).join(''):'';
-  li.innerHTML=`<span class="dn mono">${n}</span><a class="dcl" target="_blank" rel="noopener" title="Deezer"><img class="dc" alt="" loading="lazy"></a><div class="dt"><div class="tt"></div><div class="ar"></div></div>
+  li.innerHTML=`<span class="dn mono">${n}</span><a class="dcl" target="_blank" rel="noopener" title="Deezer"><img class="dc" alt="" loading="lazy" decoding="async" width="52" height="52"></a><div class="dt"><div class="tt"></div><div class="ar"></div></div>
     <div class="dk"></div><span class="db mono">${a?Math.round(a.bpm):'—'}<small>BPM</small></span><div class="dch" dir="ltr">${chips}</div>
     <div class="da"><button type="button" class="ib pv" aria-label="${esc(t('dPreview'))}" title="${esc(t('dPreview'))}">${DC.playing===r.id?'❚❚':'▶'}</button>
     <button type="button" class="ib fl" title="${esc(t('fullPlayT'))}">${FULL_IC}<span>${esc(t('fullPlay'))}</span></button>
@@ -3306,7 +3321,7 @@ const DP_IC={prev:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tru
 function dpEl(){
   let d=$('#dPlayer');if(d)return d;
   d=document.createElement('div');d.id='dPlayer';d.className='dplayer';d.hidden=true;d.setAttribute('role','region');
-  d.innerHTML=`<div class="dpin"><img class="dpc" alt=""><div class="dpt"><div class="tt"></div><div class="ar"></div></div><div class="dpk"></div>
+  d.innerHTML=`<div class="dpin"><img class="dpc" alt="" decoding="async" width="44" height="44"><div class="dpt"><div class="tt"></div><div class="ar"></div></div><div class="dpk"></div>
     <div class="dpctl" dir="ltr"><button type="button" class="dpb" data-dp="prev">${DP_IC.prev}</button><button type="button" class="dpb big" data-dp="play"></button><button type="button" class="dpb" data-dp="next">${DP_IC.next}</button><button type="button" class="dpb" data-dp="stop">${DP_IC.stop}</button></div>
     <div class="dpseek" dir="ltr"><span class="mono dpcur">0:00</span><input type="range" class="dpr" min="0" max="1000" value="0" step="1"><span class="mono dpdur">0:30</span></div>
     <div class="dpvol" dir="ltr"><button type="button" class="dpb" data-dp="mute"></button><input type="range" class="dpv" min="0" max="100" step="1"></div>
@@ -3391,7 +3406,7 @@ function renderMix(){
   if(!cands.length){ul.innerHTML=`<li class="dempty">${esc(t('mixNone'))}</li>`;return}
   for(const o of cands){
     const li=document.createElement('li');li.className='mrow';
-    li.innerHTML=`<img alt="" loading="lazy"><div class="dt"><div class="tt"></div><div class="ar"></div></div><span class="rel"></span><button type="button" class="ib pv">▶</button>`;
+    li.innerHTML=`<img alt="" loading="lazy" decoding="async" width="40" height="40"><div class="dt"><div class="tt"></div><div class="ar"></div></div><span class="rel"></span><button type="button" class="ib pv">▶</button>`;
     li.querySelector('img').src=o.x.cover||'assets/icon.svg';li.querySelector('.tt').textContent=o.x.title;
     li.querySelector('.ar').textContent=`${o.x.artist} · ${Math.round(o.x.a.bpm)} BPM`+(o.fit>0.005?` · ±${Math.max(1,Math.round(o.fit*100))}%`:'');
     li.insertBefore(keyBadge(o.x.a),li.querySelector('.rel'));li.querySelector('.rel').textContent=relName[o.rel];
@@ -3430,6 +3445,8 @@ function showView(v,anchor){
   else{stopPreview();if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(v==='tool'&&!lock)setTimeout(ensureSong,0);                      /* qw: the demo is analysed only when the tool is first shown */
   renderGuestBar();
+  if(!lock&&LAZY_OF[v])lazyView(LAZY_OF[v],$(VIEWS[v][0]));          /* perf: the view's module loads on first use */
+  if(v==='tool'&&!lock)kickLoop();                                     /* perf: the tool's draw loop runs only while the tool is shown */
   if(window.DJ)j?DJ.show():DJ.hide();
   if(window.CRATE)v==='crate'&&!lock?CRATE.show():CRATE.hide();
   if(window.MASHUP)v==='mashup'&&!lock?MASHUP.show():MASHUP.hide();   // Mashup Studio (assets/mashup.js)
@@ -3438,7 +3455,10 @@ function showView(v,anchor){
   if(v==='pricing')renderPricingPage();
   if(v==='about')renderAboutPage();
   if(v==='terms'||v==='privacy')renderLegal(v);else LEGAL_V.kind=null;
-  if((v==='licenses'||v==='accessibility')&&window.INFO)INFO.render(v,$('#infoView'));   /* growth: assets/info.js */
+  if(v==='licenses'||v==='accessibility'){const el=$('#infoView');                 /* growth: assets/info.js · perf: loaded on first use */
+    if(window.INFO)INFO.render(v,el);
+    else{el.innerHTML='';el.setAttribute('aria-busy','true');
+      needMod('info').then(()=>{if(GATE.v===v&&window.INFO){INFO.render(v,el);viewTitle(v,false,!!anchor)}},e=>{console.warn(e);toast(t('lazyFail'))}).finally(()=>el.removeAttribute('aria-busy'))}}
   document.documentElement.classList.remove('home');
   try{history.replaceState(null,'',viewUrl(v,anchor))}catch(e){}
   const tgt=anchor&&document.getElementById(anchor);
@@ -3446,6 +3466,20 @@ function showView(v,anchor){
   viewTitle(v,lock,!!anchor);
   try{document.dispatchEvent(new CustomEvent('cr-view',{detail:{v,lock}}))}catch(e){}   /* growth: page_view, per-page meta */
 }
+/* perf: view modules are loaded on demand (window.CRLOAD, assets/early.js + <template id="crLazy"> in index.html). Every module
+   shows itself when its view is already open when it finishes loading, so the router only starts the load. An empty view
+   gets aria-busy (a small spinner in app.css) until then. */
+const LAZY_OF={tool:'tool',dj:'dj',crate:'crate',mashup:'mashup',convert:'convert',extended:'extended',terms:'legal',privacy:'legal'};
+function lazyView(m,sec){const L=window.CRLOAD;if(!L||L.has(m))return;const empty=sec&&!sec.childElementCount;if(empty)sec.setAttribute('aria-busy','true');
+  L.need(m).catch(e=>{console.warn(e);toast(t('lazyFail'))}).finally(()=>{if(empty)sec.removeAttribute('aria-busy')})}
+const needMod=m=>window.CRLOAD&&!CRLOAD.has(m)?CRLOAD.need(m):Promise.resolve();
+/* acct + perf: assets/acct.js (2FA, delete account, Turnstile, idle sign-out, word filter) is a module too. It is needed by
+   signed-in accounts (idle sign-out, account/admin panels) and by the auth dialog (Turnstile token, age label), not by a guest
+   reading the home page: loaded for a saved session at boot, on sign-in, when the auth dialog opens (every auth submit waits
+   for it) and on a 2FA challenge. It catches up with what happened before it loaded (CR.lastUser(), Backend.mfaPending). */
+function acctNeed(){return ACC.on&&window.CRLOAD?needMod('acct').catch(e=>console.warn(e)):Promise.resolve()}
+document.addEventListener('cr-user',e=>{if(e.detail&&e.detail.uid)acctNeed()});
+document.addEventListener('cr-mfa',()=>acctNeed());
 /* qw: document.title per view + focus to the view's h1 (screen readers, history, tabs) */
 function viewTitle(v,lock,anchored){
   const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),nm=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():(v==='terms'||v==='privacy')&&window.LEGAL?LEGAL.title(v,LANG):(v==='licenses'||v==='accessibility')&&window.INFO?INFO.title(v):'';
@@ -3463,7 +3497,9 @@ const gated=v=>!!GATED[v]&&ACC.on&&!ACC.user;
 const needAccount=()=>ACC.on&&!ACC.user;
 function regate(){if(!GATE.v)return;const l=gated(GATE.v);if(l!==GATE.locked)showView(GATE.v);else if(l)renderGate(GATE.v);renderGuestBar()}
 /* qw: slim banner over the tool for guests */
-function renderGuestBar(){const el=$('#guestBar');if(!el)return;const on=needAccount()&&!$('#toolView').hidden&&AUTH.known;el.hidden=!on;if(!on)return;
+function renderGuestBar(){const el=$('#guestBar');if(!el)return;const on=needAccount()&&!$('#toolView').hidden&&AUTH.known;el.hidden=!on;
+  if(AUTH.known||!ACC.on)document.documentElement.classList.remove('cr-guest');   /* perf: the room kept for it (early.js) is no longer needed */
+  if(!on)return;
   el.innerHTML=`<span class="gbt">${esc(t('gbarT'))}</span><span class="gba"><button type="button" class="btn solid" data-g="up">${esc(t('gbarUp'))}</button><button type="button" class="btn ghost" data-g="in">${esc(t('signIn'))}</button></span>`}
 $('#guestBar').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b)openDlg(b.dataset.g)});
 function renderGate(v){
@@ -3514,7 +3550,7 @@ $('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscCo
 const LEGAL_V={kind:null};
 function renderLegal(kind){
   const el=$('#legalView');LEGAL_V.kind=kind;
-  if(!window.LEGAL){el.innerHTML='';return}
+  if(!window.LEGAL){el.innerHTML='';needMod('legal').then(()=>{if(window.LEGAL&&LEGAL_V.kind===kind&&!el.hidden){renderLegal(kind);viewTitle(kind,false,false)}},()=>{});return} /* perf: legal.js loads on demand */
   const u=LEGAL.ui(LANG),toc=LEGAL.toc(kind,LANG),tab=(k,label)=>`<a href="#${k}" class="lg-tab${k===kind?' on':''}"${k===kind?' aria-current="page"':''}>${esc(label)}</a>`;
   el.innerHTML=`<div class="pg lg"><header class="lg-head"><span class="pg-eb">${esc(u.eyebrow)}</span><h1 id="lgH">${esc(LEGAL.title(kind,LANG))}</h1>
     <p class="lg-meta"><span>${esc(u.version)} <b dir="ltr">${esc(LEGAL.version)}</b></span><span aria-hidden="true">·</span><span>${esc(u.effective.replace('{d}',LEGAL.date(LANG)))}</span></p>
@@ -3944,10 +3980,14 @@ Object.assign(window.CR,{onsetNear,
     chords:S.chords?Array.from(S.chords):null,edited:[...S.edited],cues:S.cues.slice(),win:S.win,pos:P.pos,undo:GD.undo.length,redo:GD.redo.length,snap:GD.snap,
     drag:!!GD.drag,det:S.gridDet?{bpm:S.gridDet.bpm,offset:S.gridDet.offset,down:S.gridDet.down}:null,loop:S.loop}),
     fresh:()=>S.chroma?Array.from(detectChords()):null,seek:x=>seek(x),setOn:gdSetOn}});
+/* perf: CR.need('crate', …) → Promise: load view modules on demand (window.CRLOAD in assets/early.js) */
+window.CR.need=(...m)=>window.CRLOAD?CRLOAD.need(...m):Promise.resolve();
+window.CR.lastUser=()=>AUTH.last||null;   /* acct + perf: the last 'cr-user' detail, for modules that load after it (assets/acct.js) */
 /* ---------- boot ---------- */
-applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();requestAnimationFrame(loop);initAccount().catch(e=>console.warn(e));
+applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();kickLoop();/* perf */initAccount().catch(e=>console.warn(e));
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
-document.addEventListener('DOMContentLoaded',()=>{hookPages();routeHash()});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{hookPages();routeHash()},0)); /* perf: route in a task of its own (the scripts' start-up was one long task with the first view's render) */
+try{for(let i=0;i<localStorage.length;i++)if(/^sb-.+-auth-token$/.test(localStorage.key(i)||'')){acctNeed();break}}catch(e){}   /* acct + perf: a saved session → acct.js now */
 AUTH.ready.then(()=>setTimeout(sepCrashCheck,1500));
 /* qw: no boot-time demo analysis — showView('tool') → ensureSong() */
 })();

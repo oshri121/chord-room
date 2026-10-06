@@ -883,3 +883,21 @@ h1[tabindex="-1"]:focus,h1[tabindex="-1"]:focus-visible{outline:none} /* qw: foc
 .gdhint[hidden]{display:none}
 .gdst{display:inline-block;color:var(--decktext);font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums}
 @media (max-width:640px){.gdhint{font-size:11.5px}}
+/* perf: a view whose module is still downloading (app.js lazyView → aria-busy on the empty section): a quiet spinner, no layout jump */
+.wrap[aria-busy="true"]:empty:not([hidden]){min-height:60vh;display:grid;place-items:center}
+.wrap[aria-busy="true"]:empty::before{content:"";width:28px;height:28px;border-radius:50%;border:2.5px solid var(--line2,#ddd);border-top-color:var(--ink,#111);animation:crLazySpin .8s linear infinite}
+@keyframes crLazySpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.wrap[aria-busy="true"]:empty::before{animation:none}}
+html.a11y-noanim .wrap[aria-busy="true"]:empty::before{animation:none}
+/* perf: the language menus list "العربية" and "Русский" on every page; in the UI font that pulled the Arabic and Cyrillic files
+   (~75 KB) for visitors who read neither. 'CR Menu' (fonts.css) = the same Latin + Hebrew files, other scripts come from the
+   system; Arabic / Russian pages keep their own script's web font (it is loaded for the page anyway). */
+#lang,#pLang,#cLang{font-family:'CR Menu',system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+html[lang="ar"] :is(#lang,#pLang,#cLang){font-family:'CR Menu',"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+html[lang="ru"] :is(#lang,#pLang,#cLang){font-family:"IBM Plex Sans","IBM Plex Sans Hebrew",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+:root.a11y-readable :is(#lang,#pLang,#cLang){font-family:var(--sans)}
+/* perf: likely guest (early.js html.cr-guest) → the guest banner's height is kept free on the tool until the account check
+   answers (heights measured in the five languages), instead of the whole tool jumping down by it (CLS 0.6) */
+html.cr-guest #guestBar[hidden]{display:block!important;visibility:hidden;min-height:58px;margin:14px 0 4px}
+@media (max-width:900px){html.cr-guest #guestBar[hidden]{min-height:64px}}
+@media (max-width:640px){html.cr-guest #guestBar[hidden]{min-height:112px}}

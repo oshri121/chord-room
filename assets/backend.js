@@ -73,6 +73,7 @@
       // mfaSignInVerify (the event 'cr-mfa' opens the code dialog). A re-authentication in the delete-account dialog
       // (B._reauth) keeps the user while it asks for the code. Decided from the session alone (no auth calls here).
       const gate = (event, session) => {
+        if (event === 'INITIAL_SESSION') return;   /* perf: getSession() below reports the start state once ('INITIAL'); this was a 2nd profile load */
         const st = mfaState(session);
         if (st && st.need && !(B._reauth && B.user && B.user.id === session.user.id)) {
           const was = B.mfaPending; B.mfaPending = { user: session.user, factors: st.factors }; B.user = null;

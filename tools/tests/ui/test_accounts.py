@@ -220,6 +220,7 @@ def test(t, srv, b):
     ctx = lib.context(b, srv, mock=mock_with({'idle_minutes': 30, 'idle_minutes_admin': 20}), lang='en')
     pg = ctx.new_page(); lib.watch(pg, t.errs)
     pg.goto(srv.url('#tool')); lib.wait_booted(pg)
+    lib.need(pg, 'acct')   # perf merge: acct.js loads on first use (sign-in / auth dialog / saved session); a guest page has it after need()
     pg.evaluate("window.__T=Date.now();ACCT._idle.setNow(()=>window.__T)")
     lib.sign_in(pg); time.sleep(0.3)
     t.eq('user limit from billing.idle_minutes', pg.evaluate('ACCT._idle.limit()'), 30 * 60000)
@@ -231,7 +232,7 @@ def test(t, srv, b):
     t.shot(pg, 'idle_warn')
     pg.click('#acIdleStay'); time.sleep(0.2)
     t.check('"stay signed in" closes it', pg.query_selector('#acIdleDlg') is None and pg.evaluate('!!Backend.user'))
-    pg2 = ctx.new_page(); lib.watch(pg2, t.errs); pg2.goto(srv.url('#tool')); lib.wait_booted(pg2)
+    pg2 = ctx.new_page(); lib.watch(pg2, t.errs); pg2.goto(srv.url('#tool')); lib.wait_booted(pg2); lib.need(pg2, 'acct')
     pg.evaluate("window.__T+=29*60000+40000;")
     pg2.evaluate(f"window.__T={pg.evaluate('window.__T')};ACCT._idle.setNow(()=>window.__T)"); lib.sign_in(pg2); time.sleep(0.3)
     pg2.evaluate("ACCT._idle.touch()"); time.sleep(0.3)
@@ -250,7 +251,7 @@ def test(t, srv, b):
 
     t.section('offensive words: browser = SQL, profile + sign-up refused, age checkbox')
     ctx, pg = lib.page(b, srv, t, mock=mock_with({'min_age': 18}), lang='he', init=lib.CSP_INIT)
-    pg.goto(srv.url('#tool')); lib.wait_booted(pg)
+    pg.goto(srv.url('#tool')); lib.wait_booted(pg); lib.need(pg, 'acct')   # TEXTGUARD / CR.offensive come with acct.js
     res = pg.evaluate("a=>a.map(s=>TEXTGUARD.offensive(s))", OFFENSIVE)
     t.check(f'all {len(OFFENSIVE)} offensive cases flagged in the browser', all(res), [s for s, r in zip(OFFENSIVE, res) if not r])
     res = pg.evaluate("a=>a.map(s=>TEXTGUARD.offensive(s))", CLEAN)

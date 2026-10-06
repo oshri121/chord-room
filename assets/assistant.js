@@ -612,7 +612,8 @@ function watchBottom() {
   new MutationObserver(() => { hookDp(); }).observe(document.body, { childList: true });
   hookDp();
   document.addEventListener('animationstart', e => { if (e.target.classList && (e.target.classList.contains('toast') || e.target.classList.contains('djnote'))) updLift(); }, true);
-  document.addEventListener('animationend', () => requestAnimationFrame(updLift), true);
+  // perf: only the toasts' own animations (every animationend on the page forced a layout here)
+  document.addEventListener('animationend', e => { if (e.target.classList && (e.target.classList.contains('toast') || e.target.classList.contains('djnote'))) requestAnimationFrame(updLift); }, true);
   window.addEventListener('resize', () => { updLift(); if (R.open) document.documentElement.classList.toggle('rm-sheet', mobile()); });
   updLift();
 }

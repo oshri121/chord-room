@@ -713,15 +713,16 @@ function idleStart() {
   IDLE.timer = setInterval(idleTick, 10000);
 }
 // signed in / out / switched: a stale stored activity (browser closed for longer than the limit) signs out right away
-document.addEventListener('cr-user', e => {
-  const d = e.detail || {};
+function idleUser(d) {
+  d = d || {};
   if (!d.uid) { idleHideWarn(); IDLE.last = 0; return; }
   const stored = idleStored(), n = IDLE.now();
   // a sign-in that just happened (password, 2FA code, recovery) starts fresh; an existing session (INITIAL…) is judged
   if (['SIGNED_IN', 'MFA_CHALLENGE_VERIFIED', 'PASSWORD_RECOVERY', 'USER_UPDATED'].includes(d.event) || !stored) { IDLE.last = n; idleWrite(n); return; }
   // wait for the profile (admin-panel accounts have the shorter limit) before judging an old session
   setTimeout(() => { if (signedIn() && IDLE.now() - idleLast() >= idleLimit()) idleSignOut(); else { IDLE.last = Math.max(IDLE.last, idleStored()); idleTick(); } }, 1500);
-});
+}
+document.addEventListener('cr-user', e => idleUser(e.detail));
 
 /* ---------- sign-in attempts: a client-side brake after repeated wrong passwords (the server has its own limits) ---------- */
 const TH = { K: 'chordroom.signin.th' };
@@ -871,12 +872,24 @@ observe($('#admin'), async () => { if ($('#admin').hidden) return; secPaint(); i
 observe($('#admUser'), () => adminUserDel());
 const udName = $('#udName'); if (udName) new MutationObserver(() => adminUserDel()).observe(udName, { childList: true, characterData: true, subtree: true });
 const tabs = $('#admTabs'); if (tabs) tabs.addEventListener('click', () => setTimeout(secPaint, 0));
-document.addEventListener('cr-user', e => {
+function mfaUser(d) {
   MFA.factors = null; WORDS.rows = null;
-  if (e.detail && e.detail.uid) setTimeout(async () => { await mfaLoad(); accPaint(); adminBanner(); }, 800);
-  const ban = $('#acMfaBan'); if (ban && !(e.detail && e.detail.uid)) ban.hidden = true;
-});
+  if (d && d.uid) setTimeout(async () => { await mfaLoad(); accPaint(); adminBanner(); }, 800);
+  const ban = $('#acMfaBan'); if (ban && !(d && d.uid)) ban.hidden = true;
+}
+document.addEventListener('cr-user', e => mfaUser(e.detail));
 wireProfile(); agePaint(); idleStart();
+/* perf: this file loads on first use (app.js acctNeed: a saved session at boot, sign-in, the auth dialog, a 2FA challenge),
+   so it catches up with what already happened: the last sign-in / out ('cr-user'), a 2FA sign-in waiting for its code and
+   the panels / dialog that are already open (their observers only see later changes). */
+(function catchUp() {
+  const last = CR.lastUser && CR.lastUser();
+  if (last) { idleUser(last); mfaUser(last); }
+  if (B().mfaPending) setTimeout(mfaChallenge, 60);
+  if (!$('#authDlg').hidden) capPrep();
+  const acc = $('#acc'); if (acc && !acc.hidden) { accSections(); mfaLoad().then(accPaint); }
+  const adm = $('#admin'); if (adm && !adm.hidden) { secPaint(); mfaLoad().then(adminBanner); wordsLoad(); }
+})();
 
 window.ACCT = {
   lang() { accPaint(); agePaint(); adminBanner(); if ($('#acSec')) secPaint(); adminUserDel(); const s = $('#acCapAu'); if (s) s.setAttribute('aria-label', t('acCapL')); },
