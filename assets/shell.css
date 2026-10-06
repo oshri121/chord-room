@@ -29,6 +29,15 @@ body{background:transparent}
 .top::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid transparent;transition:background .3s,box-shadow .3s,border-color .3s}
 .top.scrolled::before{background:var(--glass2);border-bottom-color:var(--glass-line);box-shadow:0 12px 32px -18px var(--shadow)}
 .top::after{content:"";position:absolute;inset-inline:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--acc-a),var(--acc-p),var(--acc-b),var(--acc-p),var(--acc-a));background-size:200% 100%;animation:crLine 12s linear infinite;opacity:.7;transition:opacity .3s;pointer-events:none}
+/* perf: the same moving line as a transform (runs on the compositor; animating background-position repainted the header every
+   frame on every page): a 3× wide strip [-2W, W] with the 2W-period gradient slides right by 2W, .top clips it sideways */
+@supports (overflow-x:clip){
+  .top{overflow-x:clip}
+  .top::after{inset-inline:auto;left:-200%;width:300%;background-size:66.6667% 100%;animation-name:crLineX}
+}
+@keyframes crLineX{to{transform:translateX(66.6667%)}}
+/* perf: nobody around for 6 s (bg.js sets <html data-idle>) → the header loops rest until the next input */
+html[data-idle] .top::after,html[data-idle] .top .logo .lfg rect,html[data-idle] .top .logo .lred{animation-play-state:paused}
 .top.scrolled::after{opacity:1}
 .top-glow{position:absolute;inset-inline:6%;bottom:-8px;height:10px;background:var(--acc-grad);filter:blur(12px);opacity:0;transition:opacity .4s;pointer-events:none}
 .top.scrolled .top-glow{opacity:.3}
@@ -74,7 +83,8 @@ body{background:transparent}
 .top .btn.thm svg{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
 .top .btn.thm:hover svg{transform:rotate(40deg)}
 .top .btn.solid.up{position:relative;background:var(--pri-bg);color:var(--pri-fg);border-color:var(--pri-bg);isolation:isolate}
-.top .btn.solid.up::before{content:"";position:absolute;inset:-2px;border-radius:inherit;background:linear-gradient(90deg,var(--acc-a),var(--acc-p),var(--acc-b),var(--acc-a));background-size:300% 100%;z-index:-1;opacity:0;transition:opacity .25s;animation:crLine 4s linear infinite}
+.top .btn.solid.up::before{content:"";position:absolute;inset:-2px;border-radius:inherit;background:linear-gradient(90deg,var(--acc-a),var(--acc-p),var(--acc-b),var(--acc-a));background-size:300% 100%;z-index:-1;opacity:0;transition:opacity .25s}
+.top .btn.solid.up:hover::before{animation:crLine 4s linear infinite}   /* perf: only while visible (it ran invisibly at opacity 0 on every page) */
 .top .btn.solid.up:hover{background:var(--pri-bg);box-shadow:0 10px 24px -12px var(--acc-p)}
 .top .btn.solid.up:hover::before{opacity:1}
 .langw{position:relative;display:inline-flex;align-items:center}

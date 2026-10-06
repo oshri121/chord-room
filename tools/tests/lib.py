@@ -238,8 +238,17 @@ def visible_views(pg):
     return pg.evaluate("s=>s.filter(x=>{const e=document.querySelector(x);return e&&!e.hidden})", VIEWS)
 
 def wait_booted(pg, timeout=30):
-    """App script ran and the router picked a view."""
-    poll(pg, "window.CR&&document.readyState==='complete'&&%s.some(x=>{const e=document.querySelector(x);return e&&!e.hidden})" % json.dumps(VIEWS), timeout)
+    """App script ran, the router picked a view and the view modules it asked for have loaded (window.CRLOAD, assets/early.js)."""
+    poll(pg, "window.CR&&document.readyState==='complete'&&%s.some(x=>{const e=document.querySelector(x);return e&&!e.hidden})"
+             "&&!document.documentElement.classList.contains('home')"      # the router ran (showView drops html.home)
+             "&&!(window.CRLOAD&&CRLOAD.pending())" % json.dumps(VIEWS), timeout)
+
+def need(pg, *mods, timeout=30):
+    """Load view modules on demand (they load on first use since the perf split): need(pg, 'crate') → window.CRATE exists.
+    Names: tool (voice + mp3), dj, crate, mashup, convert, extended, legal, welcome, assistant."""
+    poll(pg, "!!window.CRLOAD", timeout)
+    err = pg.evaluate("m=>CRLOAD.need(...m).then(()=>'',e=>String(e))", list(mods))
+    if err: raise RuntimeError('module load failed: ' + err)
 
 def wait_idle(pg, timeout=90):
     """Wait until no analysis is running (#busy hidden). Reloading/navigating while the boot-time demo analysis runs

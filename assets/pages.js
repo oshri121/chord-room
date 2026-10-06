@@ -789,9 +789,12 @@ function heroWave() {
     const [lo, mid, hi] = bands(i, r), m = Math.max(lo, mid, hi);
     const amp = (.25 + .75 * (lo * .6 + mid * .3 + hi * .15)) * h * .48 * (0.7 + .3 * Math.sin(i / 13));
     const col = 'rgb(' + Math.round(255 * lo / m) + ',' + Math.round(235 * mid / m) + ',' + Math.round(255 * hi / m) + ')';
-    g += '<rect x="' + (i * bw + bw * .18).toFixed(1) + '" y="' + (h / 2 - amp).toFixed(1) + '" width="' + (bw * .64).toFixed(1) + '" height="' + (amp * 2).toFixed(1) + '" rx="1.5" fill="' + col + '" style="--d:' + (-r() * 1.6).toFixed(2) + 's;--s:' + (.45 + r() * .4).toFixed(2) + '"/>';
+    /* perf: HTML bars placed like the old SVG <rect>s (same numbers, as % of the 1200×120 box): their transform animation runs on
+       the compositor, while 132 animated SVG rects re-styled and re-painted the hero on the main thread every frame */
+    const pc = v => (v * 100).toFixed(2) + '%';
+    g += '<i style="left:' + pc((i * bw + bw * .18) / w) + ';top:' + pc((h / 2 - amp) / h) + ';width:' + pc(bw * .64 / w) + ';height:' + pc(amp * 2 / h) + ';background:' + col + ';--d:' + (-r() * 1.6).toFixed(2) + 's;--s:' + (.45 + r() * .4).toFixed(2) + '"></i>';
   }
-  return '<svg class="pg-hw" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' + g + '</svg>';
+  return '<div class="pg-hw" aria-hidden="true">' + g + '</div>';
 }
 function artTool() {
   const r = rng(3), n = 72, x0 = 28, x1 = 452, cy = 122, bw = (x1 - x0) / n;
@@ -1020,7 +1023,7 @@ function renderAbout(el, billing) {
       '<div><span>' + t('rdKey') + '</span><b dir="ltr">Am</b></div>' +
       '<div><span>' + t('rdCam') + '</span><b dir="ltr">3:24</b></div>' +
       '<div><span>' + t('rdLufs') + '</span><b dir="ltr">−8.6</b></div></div>' +
-    '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '">' + c + '</span>').join('') + '</div>' +
+    '<div class="pg-cch" dir="ltr">' + ['Am', 'F', 'C', 'G'].map((c, i) => '<span style="--i:' + i + '" data-c="' + c + '">' + c + '</span>').join('') + '</div>' +
     '<div class="pg-stm">' + st.map((s, i) => '<div style="--c:' + stc[i] + ';--i:' + i + '"><span>' + s + '</span><i><u></u></i></div>').join('') + '</div></div>';
   const hero = '<section class="pg-hero" aria-labelledby="pgHeroH">' +
     '<div class="pg-glow g1"></div><div class="pg-glow g2"></div><div class="pg-glow g3"></div>' +
@@ -1208,7 +1211,7 @@ function renderPricing(el, billing, state) {
 
 /* ---------- behaviour: clicks, reveal, count-up ---------- */
 const last = { about: null, pricing: null };
-let io = null;
+let io = null, liveIO = null;
 function countUp(n) {
   const to = +n.dataset.count; if (!(to > 0) || reduced()) return;
   const t0 = performance.now(), d = 900;
@@ -1236,6 +1239,13 @@ function wire(el) {
     });
   }
   root.classList.add('pg-anim');
+  /* perf: the decorative loops of a section run only while it is near the screen (.pg-rest pauses them, pages.css) */
+  if ('IntersectionObserver' in window) {
+    if (!liveIO) liveIO = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('pg-rest', !e.isIntersecting)), { rootMargin: '100px 0px' });
+    (el.__pgLive || []).forEach(x => liveIO.unobserve(x));
+    el.__pgLive = Array.from(root.querySelectorAll('.pg-hero,.pg-sec,.pg-phead'));
+    el.__pgLive.forEach(x => { x.classList.add('pg-rest'); liveIO.observe(x); });
+  }
   const items = root.querySelectorAll('.rv');
   if (!('IntersectionObserver' in window) || reduced()) { items.forEach(x => x.classList.add('in')); return; }
   if (!io) io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });

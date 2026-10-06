@@ -274,6 +274,20 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
   defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
 
+- Performance (`PERF.md`, test `ui/test_perf.py` = budgets): core scripts are `defer` (config, supabase, backend, app, dj-i18n,
+  pages, shell, bg, a11y); every view module loads on first use from `<template id="crLazy">` in index.html via `window.CRLOAD`
+  (`assets/early.js`): `need(name)` → CSS first, then scripts in document order (`data-mod` = modules sharing a file: tool =
+  voice + mp3, dj, crate = heblat + cues + crate + mp3, mashup, convert, extended (+ crate for tagMp3), legal, welcome (only
+  without a saved language), assistant (when idle)). The router (`showView` → `lazyView`) starts it; each module shows itself
+  when its view is already open. Code that needs a module outside its view awaits `needMod('x')` (app.js) / `CR.need('x')`
+  (modules); tests use `lib.need(pg,'crate')`. Nav labels of lazy views live in dj-i18n.js (keep in sync). Fonts are
+  self-hosted (`assets/fonts/`, OFL, `fonts.css` with unicode-range; 'CR Menu' alias keeps the language menus from pulling the
+  Arabic/Cyrillic files). `html.home` hides the tool until the router shows a view; `html.cr-guest` keeps the guest banner's
+  room on the tool. bg.js draws in a worker (OffscreenCanvas) and stops after 6 s without input; `<html data-idle>` then
+  pauses the CSS loops too. Loops: the tool's draw loop runs only while the tool is shown (4 Hz when idle), the metronome
+  interval only while playing, the DJ frame loop drops to 10 fps when nothing plays. `_headers`: /assets/* = 1 year immutable
+  → always bump `?v=` (a worker inherits its starter's `?v=`).
+
 ## Rules of thumb
 - Keep it build-free: plain scripts, no bundler for the app itself.
 - Cache busting: bump the `?v=` query on the `<script>`/`<link>` tags in `index.html` when changing `assets/*`.

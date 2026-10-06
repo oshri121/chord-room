@@ -42,6 +42,7 @@
     async init(onChange) {
       if (!enabled) return;
       sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'INITIAL_SESSION') return;   /* perf: getSession() below reports the start state once ('INITIAL'); this was a 2nd profile load */
         B.user = session ? session.user : null;
         onChange(event, B.user);
       });

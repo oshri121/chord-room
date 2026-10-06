@@ -818,7 +818,7 @@ function renderRecs(){
   for(const o of out.slice(0,24)){
     const li=document.createElement('li');li.className='rrow';
     const cov=o.r&&coverOk(o.r.cover)?o.r.cover:'';
-    li.innerHTML=`<span class="kbw"></span>${cov?'<img alt="" loading="lazy">':'<i class="rimg"></i>'}<div class="rt"><div class="tt"></div><div class="ar"></div></div><span class="rtag"></span><div class="ra"></div>`;
+    li.innerHTML=`<span class="kbw"></span>${cov?'<img alt="" loading="lazy" decoding="async">':'<i class="rimg"></i>'}<div class="rt"><div class="tt"></div><div class="ar"></div></div><span class="rtag"></span><div class="ra"></div>`;
     li.querySelector('.kbw').append(CR.keyBadge(o.key));if(cov)li.querySelector('img').src=cov;
     li.querySelector('.tt').textContent=o.name;
     li.querySelector('.ar').textContent=`${Math.round(o.bpm)} BPM${o.fit>0.004?` · ±${Math.max(1,Math.round(o.fit*100))}%`:''} · ${relName[o.rel]}${o.shift?' · '+t('djWithKey',{s:(o.shift>0?'+':'')+o.shift}):''}`;
@@ -945,12 +945,16 @@ function frame(){
       con.style.setProperty(d.i?'--lb':'--la',(d.vu*(d.fader*d.fader)*xfGains(D.xf,D.curve)[d.i]).toFixed(3));
     }
     const ml=level(D.man);document.querySelectorAll('.mvu .vu').forEach((el,k)=>meter(el,MST[k],ml));
+    if(ml.pk>1e-4||D.rec||D.auto||D.decks.some(d=>d.playing))D.act=performance.now();   /* perf: sound, recording or auto mix = live */
     if(D.rec){const s=D.rec.frames/D.rec.sr;$('#djRecT').textContent=CR.fmtS(s)}
     drawViz();
   }
   drawWaves();
-  D.raf=requestAnimationFrame(frame);
+  /* perf: every frame while live or just touched (D.act); idle → 10 fps (pointer/keys on the page wake it at once) */
+  if(performance.now()-(D.act||0)<1500)D.raf=requestAnimationFrame(frame);
+  else D.raf=setTimeout(()=>{D.raf=requestAnimationFrame(frame)},100);
 }
+['pointerdown','pointermove','wheel','keydown'].forEach(ev=>document.addEventListener(ev,()=>{D.act=performance.now()},{passive:true,capture:true}));
 
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown',e=>{
