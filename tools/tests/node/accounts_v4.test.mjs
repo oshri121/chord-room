@@ -22,7 +22,7 @@ const realNow = Date.now; Date.now = () => clock;
 let fnCalls = 0;
 const call = async (path, { ip = '203.0.113.7', method = 'GET', len, waitUntil } = {}) => {
   const headers = { 'cf-connecting-ip': ip }; if (len != null) headers['content-length'] = String(len);
-  const ctx = { request: new Request('https://chord-room.pages.dev' + path, { method, headers }), next: async () => { fnCalls++; return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } }); } };
+  const ctx = { request: new Request('https://chord-room.com' + path, { method, headers }), next: async () => { fnCalls++; return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } }); } };
   if (waitUntil) ctx.waitUntil = waitUntil;
   return mw.onRequest(ctx);
 };

@@ -238,7 +238,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   inversion-tolerant bass, Viterbi with a bar-position prior, pushed changes moved to the bar; `refineKey` = key from the chords; weights `CHP`)
   in every path (tool, `analyzeTrack`, `quickAnalyze`, `regrid`); playhead/sheet/now-next draw `heard()` (getOutputTimestamp), scheduling keeps
   `now()`. Benchmark with ground truth: `tools/tests/ui/test_chords.py` (`fixtures/gen_chords.py`).
-- SEO/sharing: `<head>` OG/Twitter/canonical point at `https://chord-room.pages.dev` (change with a custom domain), `assets/og.png`
+- SEO/sharing: `<head>` OG/Twitter/canonical point at `https://chord-room.com` (change with a custom domain), `assets/og.png`
   (1200×630, regenerate with PIL if the brand changes), PNG icons + `apple-touch-icon.png`, `manifest.webmanifest`, `robots.txt`, `sitemap.xml`.
   Pricing shows ≈ USD next to ₪ for non-Hebrew languages from `billing.usd_rate` (admin settings, default 3.7); plans without an
   https checkout link render "coming soon" / "contact us" instead of a live CTA.

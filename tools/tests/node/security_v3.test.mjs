@@ -16,7 +16,7 @@ const check = (label, cond, info = '') => { if (cond) ok++; else bad.push(label)
 console.log('== middleware: hidden paths after normalisation');
 const M = async raw => {
   let passed = false;
-  const r = await mw.onRequest({ request: new Request('https://chord-room.pages.dev' + raw), next: async () => { passed = true; return new Response('static', { status: 200 }); } });
+  const r = await mw.onRequest({ request: new Request('https://chord-room.com' + raw), next: async () => { passed = true; return new Response('static', { status: 200 }); } });
   return { status: r.status, passed, csp: r.headers.get('content-security-policy') };
 };
 for (const p of ['/supabase%2Fschema.sql', '/supabase%2fschema.sql', '/%73upabase/schema.sql', '/%2573upabase/schema.sql',
@@ -77,7 +77,7 @@ globalThis.fetch = async (url, init = {}) => {
   }
   throw new Error('unexpected ' + url);
 };
-const post = body => as.onRequestPost({ request: new Request('https://chord-room.pages.dev/api/assistant', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + TOKEN }, body: JSON.stringify(body) }), env: { ANTHROPIC_API_KEY: 'sk-ant-TESTKEY-1' } });
+const post = body => as.onRequestPost({ request: new Request('https://chord-room.com/api/assistant', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + TOKEN }, body: JSON.stringify(body) }), env: { ANTHROPIC_API_KEY: 'sk-ant-TESTKEY-1' } });
 quota = { ok: false, why: 'site_limit' };
 let r = await post({ messages: [{ role: 'user', content: 'hi' }] });
 check('site_limit → 503 busy + retry-after, model not called', r.status === 503 && (await r.json()).error === 'busy' && r.headers.get('retry-after') === '3600' && lastBody === null);

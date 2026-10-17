@@ -22,12 +22,12 @@
    - Framework preset: **None**
    - Build command: *(ריק)*
    - Build output directory: `/`
-4. **Save and Deploy**. אחרי כדקה מקבלים כתובת כמו `chord-room.pages.dev`.
+4. **Save and Deploy**. אחרי כדקה מקבלים כתובת כמו `chord-room.com`.
 
 ### 3. חיבור הכתובת ל־Supabase (חובה בשביל מיילים של אימות ואיפוס סיסמה)
 ב־Supabase: **Authentication ← URL Configuration**:
-- **Site URL:** הכתובת של האתר, למשל `https://chord-room.pages.dev`
-- **Redirect URLs:** מוסיפים `https://chord-room.pages.dev/**`. אם חיברת דומיין משלך, מוסיפים גם אותו.
+- **Site URL:** הכתובת של האתר, למשל `https://chord-room.com`
+- **Redirect URLs:** מוסיפים `https://chord-room.com/**`. אם חיברת דומיין משלך, מוסיפים גם אותו.
 
 ### 4. דומיין משלך (אופציונלי)
 ב־Cloudflare Pages: **Custom domains ← Set up a custom domain**. אחר כך מעדכנים את ה־Site URL ב־Supabase.

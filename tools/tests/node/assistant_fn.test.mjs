@@ -55,11 +55,11 @@ globalThis.fetch = async (url, init = {}) => {
 };
 
 const env = { ANTHROPIC_API_KEY: KEY };
-function req(body, { token = TOKEN, ct = 'application/json', origin = 'https://chord-room.pages.dev', raw = null, method = 'POST', headers = {} } = {}) {
+function req(body, { token = TOKEN, ct = 'application/json', origin = 'https://chord-room.com', raw = null, method = 'POST', headers = {} } = {}) {
   const hd = { 'content-type': ct, ...headers };
   if (token) hd.authorization = 'Bearer ' + token;
   if (origin) hd.origin = origin;
-  return new Request('https://chord-room.pages.dev/api/assistant', { method, headers: hd, body: method === 'GET' ? undefined : (raw ?? JSON.stringify(body)) });
+  return new Request('https://chord-room.com/api/assistant', { method, headers: hd, body: method === 'GET' ? undefined : (raw ?? JSON.stringify(body)) });
 }
 const good = { messages: [{ role: 'user', content: 'היי, מה אתה יודע לעשות?' }], lang: 'he' };
 async function run(r, e = env) { calls = []; lastAnthBody = null; anthAborted = false; const res = await onRequestPost({ request: r, env: e }); return res; }

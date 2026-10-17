@@ -59,7 +59,7 @@ function fake() {
 
 async function load(F) {
   const events = [];
-  const win = { CHORDROOM_CONFIG: { supabaseUrl: 'https://x.supabase.co', supabaseAnonKey: 'k' }, location: { hostname: 'chord-room.pages.dev', origin: 'https://chord-room.pages.dev', pathname: '/' } };
+  const win = { CHORDROOM_CONFIG: { supabaseUrl: 'https://x.supabase.co', supabaseAnonKey: 'k' }, location: { hostname: 'chord-room.com', origin: 'https://chord-room.com', pathname: '/' } };
   let first = true;
   win.supabase = { createClient: () => { const c = F.client(); if (!first) c.__tmp = true; first = false; return c; } };
   const ctx = { window: win, location: win.location, document: { dispatchEvent: e => events.push(e.type) }, CustomEvent: class { constructor(t, o) { this.type = t; this.detail = o && o.detail; } },

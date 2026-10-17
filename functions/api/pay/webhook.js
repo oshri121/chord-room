@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: Lemon Squeezy webhook → Supabase.
-// Lemon Squeezy POSTs signed events here (https://chord-room.pages.dev/api/pay/webhook). This file holds NO secret:
+// Lemon Squeezy POSTs signed events here (https://chord-room.com/api/pay/webhook). This file holds NO secret:
 // it forwards the raw body and the X-Signature header to the database function public.pay_webhook, which checks the
 // HMAC-SHA256 signature with the signing secret stored only in the database (private.settings) and then activates
 // the plan / adds the points exactly once. See PAYMENTS.md.

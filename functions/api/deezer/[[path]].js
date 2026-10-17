@@ -26,7 +26,7 @@ export async function onRequest({ params, request }) {
   let upstream;
   try {
     upstream = await fetch(`https://api.deezer.com/${path}${q.toString() ? '?' + q : ''}`, {
-      headers: { accept: 'application/json', 'accept-language': 'en', 'user-agent': 'Mozilla/5.0 (compatible; ChordRoom/1.0; +https://chord-room.pages.dev)' },
+      headers: { accept: 'application/json', 'accept-language': 'en', 'user-agent': 'Mozilla/5.0 (compatible; ChordRoom/1.0; +https://chord-room.com)' },
       redirect: 'follow', cf: { cacheTtl: 900, cacheEverything: true }
     });
   } catch (e) {

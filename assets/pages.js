@@ -1313,7 +1313,7 @@ es: { about: ['Chord Room — tempo, tonalidad, acordes y pistas con IA de cualq
 };
 const seoL = () => { const l = (document.documentElement.lang || 'he').slice(0, 2).toLowerCase(); return SEO[l] ? l : 'en'; };
 const canonEl = document.querySelector('link[rel="canonical"]');
-let ORIGIN = 'https://chord-room.pages.dev';
+let ORIGIN = 'https://chord-room.com';
 try { if (canonEl) ORIGIN = new URL(canonEl.getAttribute('href')).origin; } catch (e) {}
 const PATHS = { about: '/', tool: '/tool', pricing: '/pricing', terms: '/terms', privacy: '/privacy', accessibility: '/accessibility', licenses: '/licenses' };
 const LOCALES = { he: 'he_IL', en: 'en_US', ar: 'ar_AR', ru: 'ru_RU', es: 'es_ES' };

@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: PayPal webhook → Supabase.
-// PayPal POSTs events here (https://chord-room.pages.dev/api/pay/paypal). We ask PayPal to verify the event
+// PayPal POSTs events here (https://chord-room.com/api/pay/paypal). We ask PayPal to verify the event
 // (POST /v1/notifications/verify-webhook-signature with PAYPAL_WEBHOOK_ID, the raw body passed through unchanged),
 // then sign  env + '\n' + body  with PAYPAL_RELAY_SECRET and hand it to public.pay_webhook_paypal, which checks that
 // HMAC with the same secret (private.settings) and activates the plan / adds the points exactly once. See PAYMENTS.md.

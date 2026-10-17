@@ -7,7 +7,7 @@
 It asks for the REST app's Client ID and Secret (or reads PAYPAL_CLIENT_ID / PAYPAL_CLIENT_SECRET), then, idempotently:
   1. finds or creates the product "Chord Room subscription";
   2. for every paid plan in the site's settings (price in ILS, monthly) finds or creates a PayPal billing plan;
-  3. finds or creates the webhook https://chord-room.pages.dev/api/pay/paypal with the events the site handles;
+  3. finds or creates the webhook https://chord-room.com/api/pay/paypal with the events the site handles;
 and prints what to paste where (admin Billing → PayPal plan ID, Cloudflare variables, Supabase relay secret).
 Standard library only (Python 3.8+). See PAYMENTS.md.
 """
@@ -15,7 +15,7 @@ import base64, getpass, json, os, secrets, sys, urllib.error, urllib.request
 
 SUPABASE_URL = 'https://ydyocusfrghsokjsectw.supabase.co'
 SUPABASE_KEY = 'sb_publishable_L7IuhkaBoV5BZNuX7ixmjw_3F3KdKdI'       # public key (same as config.js)
-SITE = os.environ.get('CR_SITE', 'https://chord-room.pages.dev').rstrip('/')
+SITE = os.environ.get('CR_SITE', 'https://chord-room.com').rstrip('/')
 PRODUCT_NAME = 'Chord Room subscription'
 EVENTS = ['BILLING.SUBSCRIPTION.ACTIVATED', 'BILLING.SUBSCRIPTION.UPDATED', 'BILLING.SUBSCRIPTION.RE-ACTIVATED',
           'BILLING.SUBSCRIPTION.CANCELLED', 'BILLING.SUBSCRIPTION.SUSPENDED', 'BILLING.SUBSCRIPTION.EXPIRED',

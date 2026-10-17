@@ -103,7 +103,7 @@ export const pagePath = raw => { const p = String(raw || '').toLowerCase().repla
 const attr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 // rewrite the <head> of index.html for one page path (string replace: the tags are written one per line in index.html)
 export function pageHead(html, p) {
-  const m = PAGE_META[p], co = (/<link rel="canonical" href="(https:\/\/[^/"]+)\/?"/.exec(html) || [, 'https://chord-room.pages.dev'])[1];
+  const m = PAGE_META[p], co = (/<link rel="canonical" href="(https:\/\/[^/"]+)\/?"/.exec(html) || [, 'https://chord-room.com'])[1];
   const url = co + (m ? p : '/');
   const set = (re, v) => { html = html.replace(re, (all, a, b) => a + v + b); };
   set(/(<link rel="canonical" href=")[^"]*(")/, url);

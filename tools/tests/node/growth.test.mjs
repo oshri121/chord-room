@@ -28,7 +28,7 @@ const unesc = s => String(s).replace(/&quot;/g, '"').replace(/&lt;/g, '<').repla
 console.log('== middleware: per-page meta on the page paths');
 const run = async (path, res) => {
   let passed = false;
-  const r = await mw.onRequest({ request: new Request('https://chord-room.pages.dev' + path, { headers: { 'user-agent': 'facebookexternalhit/1.1' } }), next: async () => { passed = true; return res(); } });
+  const r = await mw.onRequest({ request: new Request('https://chord-room.com' + path, { headers: { 'user-agent': 'facebookexternalhit/1.1' } }), next: async () => { passed = true; return res(); } });
   return { r, passed, body: await r.text() };
 };
 const page = () => new Response(html, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', etag: '"abc"', 'content-security-policy': root['content-security-policy'], 'x-frame-options': 'DENY' } });

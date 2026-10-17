@@ -1,7 +1,7 @@
 # מיילים של Chord Room — הגדרה ב־Supabase
 
 המסמך הזה מסביר איך לגרום לכך שמיילי ההרשמה ואיפוס הסיסמה ייצאו בשם **Chord Room**, בעיצוב של האתר, עם **קוד בן 6 ספרות** — ולא ״from Supabase״.
-התבניות נמצאות בתיקייה `supabase/email/`. הלוגו שבתוכן נטען מ־`https://chord-room.pages.dev/assets/email/logo-192.png` (הקובץ נמצא ב־`assets/email/` ויעלה לאוויר עם הדחיפה הבאה ל־`main`).
+התבניות נמצאות בתיקייה `supabase/email/`. הלוגו שבתוכן נטען מ־`https://chord-room.com/assets/email/logo-192.png` (הקובץ נמצא ב־`assets/email/` ויעלה לאוויר עם הדחיפה הבאה ל־`main`).
 
 > אין במסמך הזה ואין בקוד שום סיסמה או מפתח. כל סוד (סיסמת SMTP, מפתח API) מקלידים רק בלוח הבקרה של Supabase או של ספק המייל.
 
@@ -21,8 +21,8 @@ Supabase → **Authentication** → **Sign In / Providers** → **Email**:
 - **Secure email change** — מומלץ להשאיר פעיל (אישור בשתי הכתובות).
 
 Authentication → **URL Configuration**:
-- **Site URL**: ‏`https://chord-room.pages.dev`
-- **Redirect URLs**: להוסיף `https://chord-room.pages.dev/**` (וגם `http://localhost:8000/**` לבדיקות מקומיות).
+- **Site URL**: ‏`https://chord-room.com`
+- **Redirect URLs**: להוסיף `https://chord-room.com/**` (וגם `http://localhost:8000/**` לבדיקות מקומיות).
 
 ## 3. להדביק את התבניות
 Supabase → **Authentication** → **Emails** (בגרסאות ישנות: Email Templates). לכל תבנית: להדביק את **Subject** ואת כל תוכן קובץ ה־HTML בתיבת **Body** (מצב Source), ולשמור.
@@ -44,7 +44,7 @@ Supabase → **Authentication** → **Emails** (בגרסאות ישנות: Email
 השולח המובנה של Supabase **מוגבל מאוד** (כמה מיילים בשעה לכל הפרויקט), מופיע כשולח של Supabase, ומיועד לבדיקות בלבד. כדי שהשולח יהיה `Chord Room <no-reply@הדומיין-שלכם>` ושהמיילים יגיעו לתיבה ולא לספאם, צריך **Custom SMTP**.
 
 ### מה צריך קודם
-- **דומיין משלכם** (למשל `chordroom.co.il`). על `chord-room.pages.dev` אי אפשר להוסיף רשומות DNS, ולכן אי אפשר לאמת אותו לשליחת מייל.
+- **דומיין משלכם** (למשל `chordroom.co.il`). על `chord-room.com` אי אפשר להוסיף רשומות DNS, ולכן אי אפשר לאמת אותו לשליחת מייל.
 - חשבון אצל ספק מייל. מומלץ אחד מהשניים:
 
 **Resend** (resend.com) — פשוט ונוח:
