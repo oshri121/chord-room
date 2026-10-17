@@ -40,7 +40,7 @@ he:{navConvert:'המרה',cvEyebrow:'המרת קבצים · הכול במכשי�
   cvImgDropT:'גררו לכאן תמונות',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · עטיפות לשירים, בגודל שהנגנים אוהבים',
   cvImgSize:'גודל',cvImgSq:'{n} × {n} פיקסלים',cvImgOrig:'גודל מקורי',cvImgNote:'הגדלים הריבועיים נחתכים מהמרכז, כמו שנגנים מציגים עטיפות.',
   cvFiles:'{n} קבצים',cvAfter:'אחרי',cvFilesIn:'במכשיר',
-  stTagging:'כותב תגיות…',cvRunning:'ממיר…',cvEta:'נותרו בערך {t}',cvAllDone:'הכול מוכן',cvEngineH:'מכין את מנוע ההמרה…',cvEngineS:'פעם אחת בלבד · {s} MB',cvEngineLocal:'רץ אצלכם במכשיר. שום דבר לא עולה לשרת.',cvEng1:'הורדה',cvEng2:'פריסה',cvEng3:'הפעלה',cvAny:'כל פורמט',cvTagsKept:'תגיות נשמרות',cvNoTags:'בלי תגיות',cvTrimS:'חיתוך שקט',cvFadeS:'פייד',cvBkS:'BPM וסולם',cvLossless:'ללא איבוד',spDecode:'פענוח',spProcess:'עיבוד',spEncode:'קידוד',spTags:'תגיות',cvOfN:'{a} מתוך {b}',cvAgain:'המרה מחדש',cvSmaller:'קטן ב־{p}%',cvLarger:'גדול ב־{p}%',cvSummary:'סיכום ההגדרות'},
+  stTagging:'כותב תגיות…',cvHfr:'שחזור גבוהים (Enhance)',cvHfrT:'לקבצים שהגבוהים שלהם נחתכו (MP3 חלש, הורדות מהרשת): בונה מחדש את ה"אוויר" מההרמוניות שנשארו',cvHfrAmt:'עוצמת השחזור',cvHfr1:'עדין',cvHfr2:'רגיל',cvHfr3:'חזק',cvHfrS:'שחזור גבוהים',cvHfrNote:'השחזור פותח את הצליל, אבל לא מחזיר את ההקלטה המקורית. קבצים בטווח מלא לא משתנים.',stEnhancing:'משחזר גבוהים…',qChecking:'בודק איכות…',qFull:'טווח מלא',qCut:'הגבוהים חתוכים ב־{f} kHz · כמו MP3 של ~{b} kbps',qCutLow:'הגבוהים חתוכים ב־{f} kHz · איכות נמוכה',qRest:'שוחזר עד {f} kHz',qGraph:'ספקטרום: {a}',cvRunning:'ממיר…',cvEta:'נותרו בערך {t}',cvAllDone:'הכול מוכן',cvEngineH:'מכין את מנוע ההמרה…',cvEngineS:'פעם אחת בלבד · {s} MB',cvEngineLocal:'רץ אצלכם במכשיר. שום דבר לא עולה לשרת.',cvEng1:'הורדה',cvEng2:'פריסה',cvEng3:'הפעלה',cvAny:'כל פורמט',cvTagsKept:'תגיות נשמרות',cvNoTags:'בלי תגיות',cvTrimS:'חיתוך שקט',cvFadeS:'פייד',cvBkS:'BPM וסולם',cvLossless:'ללא איבוד',spDecode:'פענוח',spProcess:'עיבוד',spEncode:'קידוד',spTags:'תגיות',cvOfN:'{a} מתוך {b}',cvAgain:'המרה מחדש',cvSmaller:'קטן ב־{p}%',cvLarger:'גדול ב־{p}%',cvSummary:'סיכום ההגדרות'},
 en:{navConvert:'Convert',cvEyebrow:'File conversion · all on your device',cvTitle:'Converter',
   cvSub:'Drop many audio or video files and get MP3, WAV, FLAC, OGG or M4A, tags and cover included. Nothing is uploaded: the conversion runs in your browser.',
   cvTabAudio:'Audio',cvTabImages:'Images',cvAdd:'Add files',cvDropT:'Drop audio or video files here',
@@ -60,7 +60,7 @@ en:{navConvert:'Convert',cvEyebrow:'File conversion · all on your device',cvTit
   cvImgDropT:'Drop images here',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · cover art for your tracks, at the sizes players like',
   cvImgSize:'Size',cvImgSq:'{n} × {n} px',cvImgOrig:'Original size',cvImgNote:'Square sizes are cropped from the centre, the way players show cover art.',
   cvFiles:'{n} files',cvAfter:'after',cvFilesIn:'on device',
-  stTagging:'Tagging…',cvRunning:'Converting…',cvEta:'about {t} left',cvAllDone:'All done',cvEngineH:'Preparing the conversion engine…',cvEngineS:'Only once · {s} MB',cvEngineLocal:'Runs on your device. Nothing is uploaded.',cvEng1:'Download',cvEng2:'Unpack',cvEng3:'Start',cvAny:'any format',cvTagsKept:'tags kept',cvNoTags:'no tags',cvTrimS:'silence trimmed',cvFadeS:'fades',cvBkS:'BPM & key',cvLossless:'lossless',spDecode:'decode',spProcess:'process',spEncode:'encode',spTags:'tags',cvOfN:'{a} of {b}',cvAgain:'Convert again',cvSmaller:'{p}% smaller',cvLarger:'{p}% larger',cvSummary:'Settings summary'},
+  stTagging:'Tagging…',cvHfr:'Restore highs (Enhance)',cvHfrT:'For files whose highs were cut (weak MP3s, downloads): rebuilds the "air" from the harmonics that survived',cvHfrAmt:'Restore strength',cvHfr1:'Subtle',cvHfr2:'Normal',cvHfr3:'Strong',cvHfrS:'Highs restored',cvHfrNote:'Restoring opens up the sound but cannot bring back the original recording. Full-range files are left unchanged.',stEnhancing:'Restoring highs…',qChecking:'Checking quality…',qFull:'Full range',qCut:'Highs cut at {f} kHz · like a ~{b} kbps MP3',qCutLow:'Highs cut at {f} kHz · low quality',qRest:'Restored up to {f} kHz',qGraph:'Spectrum: {a}',cvRunning:'Converting…',cvEta:'about {t} left',cvAllDone:'All done',cvEngineH:'Preparing the conversion engine…',cvEngineS:'Only once · {s} MB',cvEngineLocal:'Runs on your device. Nothing is uploaded.',cvEng1:'Download',cvEng2:'Unpack',cvEng3:'Start',cvAny:'any format',cvTagsKept:'tags kept',cvNoTags:'no tags',cvTrimS:'silence trimmed',cvFadeS:'fades',cvBkS:'BPM & key',cvLossless:'lossless',spDecode:'decode',spProcess:'process',spEncode:'encode',spTags:'tags',cvOfN:'{a} of {b}',cvAgain:'Convert again',cvSmaller:'{p}% smaller',cvLarger:'{p}% larger',cvSummary:'Settings summary'},
 ar:{navConvert:'تحويل',cvEyebrow:'تحويل الملفات · كل شيء على جهازك',cvTitle:'محوّل الملفات',
   cvSub:'اسحب ملفات صوت أو فيديو كثيرة واحصل على MP3 أو WAV أو FLAC أو OGG أو M4A مع الوسوم والغلاف. لا يُرفع شيء: التحويل يعمل في متصفحك.',
   cvTabAudio:'صوت',cvTabImages:'صور',cvAdd:'إضافة ملفات',cvDropT:'اسحب ملفات صوت أو فيديو إلى هنا',
@@ -80,7 +80,7 @@ ar:{navConvert:'تحويل',cvEyebrow:'تحويل الملفات · كل شيء 
   cvImgDropT:'اسحب الصور إلى هنا',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · أغلفة لأغانيك بالأحجام التي تفضّلها المشغلات',
   cvImgSize:'الحجم',cvImgSq:'{n} × {n} بكسل',cvImgOrig:'الحجم الأصلي',cvImgNote:'الأحجام المربعة تُقص من المنتصف، كما تعرض المشغلات الأغلفة.',
   cvFiles:'{n} ملفات',cvAfter:'بعد',cvFilesIn:'على الجهاز',
-  stTagging:'يكتب الوسوم…',cvRunning:'يحوّل…',cvEta:'يتبقى نحو {t}',cvAllDone:'اكتمل كل شيء',cvEngineH:'يجهّز محرك التحويل…',cvEngineS:'مرة واحدة فقط · {s} MB',cvEngineLocal:'يعمل على جهازك. لا يُرفع شيء.',cvEng1:'تنزيل',cvEng2:'فك الضغط',cvEng3:'تشغيل',cvAny:'أي صيغة',cvTagsKept:'الوسوم محفوظة',cvNoTags:'بلا وسوم',cvTrimS:'قص الصمت',cvFadeS:'تدرّج',cvBkS:'BPM والمقام',cvLossless:'بلا فقدان',spDecode:'فك',spProcess:'معالجة',spEncode:'ترميز',spTags:'وسوم',cvOfN:'{a} من {b}',cvAgain:'تحويل من جديد',cvSmaller:'أصغر بنسبة {p}%',cvLarger:'أكبر بنسبة {p}%',cvSummary:'ملخص الإعدادات'},
+  stTagging:'يكتب الوسوم…',cvHfr:'استعادة الترددات العالية (Enhance)',cvHfrT:'للملفات التي قُطعت تردداتها العالية (MP3 ضعيف، تنزيلات): يعيد بناء "الهواء" من التوافقيات المتبقية',cvHfrAmt:'قوة الاستعادة',cvHfr1:'خفيفة',cvHfr2:'عادية',cvHfr3:'قوية',cvHfrS:'استعادة العالي',cvHfrNote:'الاستعادة تفتح الصوت لكنها لا تعيد التسجيل الأصلي. الملفات كاملة النطاق لا تتغير.',stEnhancing:'يستعيد الترددات العالية…',qChecking:'يفحص الجودة…',qFull:'نطاق كامل',qCut:'الترددات العالية مقطوعة عند {f} kHz · مثل MP3 بنحو {b} kbps',qCutLow:'الترددات العالية مقطوعة عند {f} kHz · جودة منخفضة',qRest:'استُعيد حتى {f} kHz',qGraph:'الطيف: {a}',cvRunning:'يحوّل…',cvEta:'يتبقى نحو {t}',cvAllDone:'اكتمل كل شيء',cvEngineH:'يجهّز محرك التحويل…',cvEngineS:'مرة واحدة فقط · {s} MB',cvEngineLocal:'يعمل على جهازك. لا يُرفع شيء.',cvEng1:'تنزيل',cvEng2:'فك الضغط',cvEng3:'تشغيل',cvAny:'أي صيغة',cvTagsKept:'الوسوم محفوظة',cvNoTags:'بلا وسوم',cvTrimS:'قص الصمت',cvFadeS:'تدرّج',cvBkS:'BPM والمقام',cvLossless:'بلا فقدان',spDecode:'فك',spProcess:'معالجة',spEncode:'ترميز',spTags:'وسوم',cvOfN:'{a} من {b}',cvAgain:'تحويل من جديد',cvSmaller:'أصغر بنسبة {p}%',cvLarger:'أكبر بنسبة {p}%',cvSummary:'ملخص الإعدادات'},
 ru:{navConvert:'Конвертер',cvEyebrow:'Конвертация файлов · всё на вашем устройстве',cvTitle:'Конвертер',
   cvSub:'Перетащите много аудио- или видеофайлов и получите MP3, WAV, FLAC, OGG или M4A вместе с тегами и обложкой. Ничего не загружается: конвертация идёт в браузере.',
   cvTabAudio:'Аудио',cvTabImages:'Изображения',cvAdd:'Добавить файлы',cvDropT:'Перетащите сюда аудио или видео',
@@ -100,7 +100,7 @@ ru:{navConvert:'Конвертер',cvEyebrow:'Конвертация файло
   cvImgDropT:'Перетащите сюда изображения',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · обложки для треков в размерах, которые любят плееры',
   cvImgSize:'Размер',cvImgSq:'{n} × {n} px',cvImgOrig:'Исходный размер',cvImgNote:'Квадратные размеры обрезаются по центру — так плееры показывают обложки.',
   cvFiles:'{n} файлов',cvAfter:'после',cvFilesIn:'на устройстве',
-  stTagging:'Запись тегов…',cvRunning:'Конвертация…',cvEta:'осталось около {t}',cvAllDone:'Всё готово',cvEngineH:'Подготовка движка конвертации…',cvEngineS:'Только один раз · {s} МБ',cvEngineLocal:'Работает на вашем устройстве. Ничего не загружается.',cvEng1:'Загрузка',cvEng2:'Распаковка',cvEng3:'Запуск',cvAny:'любой формат',cvTagsKept:'теги сохраняются',cvNoTags:'без тегов',cvTrimS:'обрезка тишины',cvFadeS:'фейды',cvBkS:'BPM и тональность',cvLossless:'без потерь',spDecode:'декодирование',spProcess:'обработка',spEncode:'кодирование',spTags:'теги',cvOfN:'{a} из {b}',cvAgain:'Конвертировать снова',cvSmaller:'меньше на {p}%',cvLarger:'больше на {p}%',cvSummary:'Сводка настроек'},
+  stTagging:'Запись тегов…',cvHfr:'Восстановление верхов (Enhance)',cvHfrT:'Для файлов с обрезанными верхами (слабый MP3, скачанное из сети): воссоздаёт «воздух» из уцелевших гармоник',cvHfrAmt:'Сила восстановления',cvHfr1:'Мягко',cvHfr2:'Обычно',cvHfr3:'Сильно',cvHfrS:'Верха восстановлены',cvHfrNote:'Восстановление раскрывает звук, но не возвращает исходную запись. Файлы с полным диапазоном не меняются.',stEnhancing:'Восстанавливаю верха…',qChecking:'Проверяю качество…',qFull:'Полный диапазон',qCut:'Верха обрезаны на {f} кГц · как MP3 ~{b} kbps',qCutLow:'Верха обрезаны на {f} кГц · низкое качество',qRest:'Восстановлено до {f} кГц',qGraph:'Спектр: {a}',cvRunning:'Конвертация…',cvEta:'осталось около {t}',cvAllDone:'Всё готово',cvEngineH:'Подготовка движка конвертации…',cvEngineS:'Только один раз · {s} МБ',cvEngineLocal:'Работает на вашем устройстве. Ничего не загружается.',cvEng1:'Загрузка',cvEng2:'Распаковка',cvEng3:'Запуск',cvAny:'любой формат',cvTagsKept:'теги сохраняются',cvNoTags:'без тегов',cvTrimS:'обрезка тишины',cvFadeS:'фейды',cvBkS:'BPM и тональность',cvLossless:'без потерь',spDecode:'декодирование',spProcess:'обработка',spEncode:'кодирование',spTags:'теги',cvOfN:'{a} из {b}',cvAgain:'Конвертировать снова',cvSmaller:'меньше на {p}%',cvLarger:'больше на {p}%',cvSummary:'Сводка настроек'},
 es:{navConvert:'Convertir',cvEyebrow:'Conversión de archivos · todo en tu dispositivo',cvTitle:'Conversor',
   cvSub:'Arrastra muchos archivos de audio o vídeo y obtén MP3, WAV, FLAC, OGG o M4A con sus etiquetas y carátula. No se sube nada: la conversión se hace en tu navegador.',
   cvTabAudio:'Audio',cvTabImages:'Imágenes',cvAdd:'Añadir archivos',cvDropT:'Arrastra aquí archivos de audio o vídeo',
@@ -120,7 +120,7 @@ es:{navConvert:'Convertir',cvEyebrow:'Conversión de archivos · todo en tu disp
   cvImgDropT:'Arrastra aquí imágenes',cvImgDropH:'PNG, JPG, WebP, GIF, BMP · carátulas para tus temas, en los tamaños que prefieren los reproductores',
   cvImgSize:'Tamaño',cvImgSq:'{n} × {n} px',cvImgOrig:'Tamaño original',cvImgNote:'Los tamaños cuadrados se recortan desde el centro, como muestran las carátulas los reproductores.',
   cvFiles:'{n} archivos',cvAfter:'después',cvFilesIn:'en el dispositivo',
-  stTagging:'Escribiendo etiquetas…',cvRunning:'Convirtiendo…',cvEta:'quedan unos {t}',cvAllDone:'Todo listo',cvEngineH:'Preparando el motor de conversión…',cvEngineS:'Solo una vez · {s} MB',cvEngineLocal:'Se ejecuta en tu dispositivo. No se sube nada.',cvEng1:'Descarga',cvEng2:'Descompresión',cvEng3:'Inicio',cvAny:'cualquier formato',cvTagsKept:'etiquetas conservadas',cvNoTags:'sin etiquetas',cvTrimS:'silencio recortado',cvFadeS:'fundidos',cvBkS:'BPM y tonalidad',cvLossless:'sin pérdida',spDecode:'decodificar',spProcess:'procesar',spEncode:'codificar',spTags:'etiquetas',cvOfN:'{a} de {b}',cvAgain:'Convertir de nuevo',cvSmaller:'{p}% más pequeño',cvLarger:'{p}% más grande',cvSummary:'Resumen de ajustes'}
+  stTagging:'Escribiendo etiquetas…',cvHfr:'Restaurar agudos (Enhance)',cvHfrT:'Para archivos con los agudos recortados (MP3 flojos, descargas): reconstruye el «aire» a partir de los armónicos que quedaron',cvHfrAmt:'Intensidad',cvHfr1:'Suave',cvHfr2:'Normal',cvHfr3:'Fuerte',cvHfrS:'Agudos restaurados',cvHfrNote:'La restauración abre el sonido, pero no devuelve la grabación original. Los archivos de rango completo no cambian.',stEnhancing:'Restaurando agudos…',qChecking:'Comprobando calidad…',qFull:'Rango completo',qCut:'Agudos cortados a {f} kHz · como un MP3 de ~{b} kbps',qCutLow:'Agudos cortados a {f} kHz · baja calidad',qRest:'Restaurado hasta {f} kHz',qGraph:'Espectro: {a}',cvRunning:'Convirtiendo…',cvEta:'quedan unos {t}',cvAllDone:'Todo listo',cvEngineH:'Preparando el motor de conversión…',cvEngineS:'Solo una vez · {s} MB',cvEngineLocal:'Se ejecuta en tu dispositivo. No se sube nada.',cvEng1:'Descarga',cvEng2:'Descompresión',cvEng3:'Inicio',cvAny:'cualquier formato',cvTagsKept:'etiquetas conservadas',cvNoTags:'sin etiquetas',cvTrimS:'silencio recortado',cvFadeS:'fundidos',cvBkS:'BPM y tonalidad',cvLossless:'sin pérdida',spDecode:'decodificar',spProcess:'procesar',spEncode:'codificar',spTags:'etiquetas',cvOfN:'{a} de {b}',cvAgain:'Convertir de nuevo',cvSmaller:'{p}% más pequeño',cvLarger:'{p}% más grande',cvSummary:'Resumen de ajustes'}
 });
 
 /* ---------- constants & state ---------- */
@@ -137,7 +137,7 @@ const VIDEO=new Set(['mp4','m4v','mov','webm','mkv','avi','3gp','mpg','mpeg','ts
 const FF_ONLY=new Set(['aif','aiff','aifc','wma','ac3','amr','wv','ape','mka','caf','dts','mpc','tta','au','mid']);
 const ACCEPT='audio/*,video/*,.mp3,.wav,.flac,.ogg,.oga,.opus,.m4a,.aac,.aif,.aiff,.wma,.mp4,.m4v,.mov,.webm,.mkv,.avi,.3gp';
 const IMG_ACCEPT='image/*,.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif';
-const DEF={fmt:'mp3',q:320,sr:0,ch:0,norm:false,trim:false,fin:0,fout:0,tags:true,bk:false,isize:1000,ifmt:'jpg'};
+const DEF={fmt:'mp3',q:320,sr:0,ch:0,norm:false,trim:false,fin:0,fout:0,tags:true,bk:false,hfr:false,hfrAmt:2,isize:1000,ifmt:'jpg'};
 const C={built:false,visible:false,tab:'audio',rows:[],irows:[],running:false,abort:null,o:loadOpts(),msg:'',msgErr:false,zipBusy:false,seq:0,ffp:null,batch:null,fin:0};
 function loadOpts(){let o={};try{o=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){}const r={...DEF,...o};if(!FMT[r.fmt])r.fmt=DEF.fmt;return r}
 function saveOpts(){try{localStorage.setItem(LS,JSON.stringify(C.o))}catch(e){}}
@@ -495,7 +495,12 @@ function outName(r,o){
 }
 async function runRow(r,o,sig){
   r.err=null;r.out=null;r.p=0;
-  const d=await decode(r,sig);chk(sig);
+  let d=await decode(r,sig);chk(sig);
+  // quality check (where the highs stop) + optional restoration of the cut band (assets/hfr.js)
+  if(window.HFR){r.q=HFR.analyze(d.chs,d.sr);r.q2=null;
+    if(o.hfr&&r.q.cutoff){r.status='enhancing';r.p=0;renderRow(r);
+      const chs=await HFR.restore(d.chs,d.sr,r.q.cutoff,{amount:o.hfrAmt,signal:sig,onProgress:x=>{r.p=x;renderRow(r)}});chk(sig);
+      d={chs,sr:d.sr};r.q2=HFR.analyze(chs,d.sr)}}
   if(o.bk&&CR.analyzeTrack){r.status='analyzing';renderRow(r);
     try{const a=await CR.analyzeTrack(toBuffer(d.chs,d.sr),p=>{r.p=p;renderRow(r)});chk(sig);if(a&&a.bpm)r.tags.bpm=String(Math.round(a.bpm));if(a&&a.key)r.tags.key=keyTag(a.key)}catch(e){if(e&&e.aborted)throw e}}
   const p=await process(d,o,r,sig);chk(sig);
@@ -531,6 +536,7 @@ async function convertAll(only){
   settleP(pay,todo.length-ok);   // failed + cancelled files → points back (+ close the crash journal)
   C.running=false;C.abort=null;C.ffp=null;C.batch=null;C.fin=sig.aborted?0:(bad?1:2);renderEngine();renderActs();renderTable();
   setMsg(sig.aborted?t('stCancelled'):tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok);
+  probeNext();
 }
 function cancelAll(){if(C.abort)C.abort.abort()}
 
@@ -541,9 +547,9 @@ function addFiles(list){
   if(files.length>room){setMsg(tt('erMany',{n:MAX_FILES}),true)}
   for(const f of files.slice(0,Math.max(0,room))){
     const e=ext(f.name);
-    C.rows.push({id:++C.seq,file:f,name:f.name,ext:e,size:f.size,dur:null,sr:0,ch:0,status:'ready',p:0,err:null,out:null,tags:{},fresh:true});
+    C.rows.push({id:++C.seq,file:f,name:f.name,ext:e,size:f.size,dur:null,sr:0,ch:0,status:'ready',p:0,err:null,out:null,tags:{},fresh:true,q:null,q2:null});
   }
-  renderTable();renderActs();
+  renderTable();renderActs();probeNext();
 }
 function removeRow(id){if(C.running)return;C.rows=C.rows.filter(r=>r.id!==id);if(!C.rows.length)C.fin=0;renderTable();renderActs()}
 function clearRows(){if(C.running)return;C.rows=[];C.fin=0;setMsg('');renderTable();renderActs()}
@@ -609,11 +615,11 @@ const IC={
   bad:'<svg class="cvbadx" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></svg>',
   eq:'<span class="cveq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>'
 };
-const RUNS=new Set(['reading','decoding','analyzing','processing','encoding','tagging']);
-const STG={ready:0,queued:0,reading:0.03,decoding:0.06,analyzing:0.36,processing:0.56,encoding:0.62,tagging:0.985,done:1,error:1,cancelled:0};
-const SPAN={decoding:0.3,analyzing:0.2,encoding:0.36};
+const RUNS=new Set(['reading','decoding','enhancing','analyzing','processing','encoding','tagging']);
+const STG={ready:0,queued:0,reading:0.03,decoding:0.06,enhancing:0.2,analyzing:0.36,processing:0.56,encoding:0.62,tagging:0.985,done:1,error:1,cancelled:0};
+const SPAN={decoding:0.14,enhancing:0.16,analyzing:0.2,encoding:0.36};
 const rowFrac=r=>Math.min(1,(STG[r.status]||0)+(SPAN[r.status]?SPAN[r.status]*(r.p||0):0));
-const STEP={reading:0,decoding:0,analyzing:1,processing:1,encoding:2,tagging:3,done:4};
+const STEP={reading:0,decoding:0,enhancing:1,analyzing:1,processing:1,encoding:2,tagging:3,done:4};
 const noMotion=()=>document.documentElement.classList.contains('a11y-noanim')||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const bump=(el,cls)=>{if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)};
 function build(){
@@ -687,10 +693,11 @@ function onOpt(e){
   const el=e.target,n=el.name;if(!n)return;
   if(e.type==='input'&&el.type!=='number')return; // radios/checkboxes/selects: 'change' only
   if(n==='fmt'){if(!el.checked)return;C.o.fmt=el.value;const f=FMT[C.o.fmt];if(f.q&&!f.q.includes(+C.o.q))C.o.q=f.dq;renderOpts();bump($('#cvPillDst'),'morph')}
+  else if(n==='hfrAmt')C.o.hfrAmt=clamp(+el.value||2,1,3);
   else if(n==='q')C.o.q=+el.value;else if(n==='sr')C.o.sr=+el.value;else if(n==='ch')C.o.ch=+el.value;
   else if(n==='fin'||n==='fout')C.o[n]=clamp(+el.value||0,0,30);
   else if(el.type==='checkbox')C.o[n]=el.checked;
-  saveOpts();renderSummary();if(n==='fmt'){renderActs();renderTable()}
+  saveOpts();renderSummary();if(n==='fmt'){renderActs();renderTable()}if(n==='hfr'){const s=$('#cvOpts select[name=hfrAmt]');if(s)s.disabled=!C.o.hfr}
 }
 function qualityLabel(o){const f=FMT[o.fmt];return f.q?tt(f.ql,{n:o.q}):t('cvLossless')}
 function summaryParts(o){
@@ -698,6 +705,7 @@ function summaryParts(o){
   if(o.sr)p.push(`${o.sr/1000} kHz`);
   p.push(o.ch===1?t('cvMono'):o.ch===2?t('cvStereo'):t('cvKeep'));
   if(o.norm)p.push('−14 LUFS');if(o.trim)p.push(t('cvTrimS'));if(+o.fin||+o.fout)p.push(t('cvFadeS'));
+  if(o.hfr)p.push(`${t('cvHfrS')} (${t('cvHfr'+(o.hfrAmt||2))})`);
   p.push(o.tags?t('cvTagsKept'):t('cvNoTags'));if(o.bk)p.push(t('cvBkS'));
   return p;
 }
@@ -727,11 +735,17 @@ function renderOpts(){
     <div class="tog cvtog cvfade"><span>${esc(t('cvFade'))}</span><span class="cvfi"><label><span>${esc(t('cvFadeIn'))}</span><input type="number" name="fin" min="0" max="30" step="0.5" value="${+o.fin||0}" dir="ltr"><i>${esc(t('cvSec'))}</i></label><label><span>${esc(t('cvFadeOut'))}</span><input type="number" name="fout" min="0" max="30" step="0.5" value="${+o.fout||0}" dir="ltr"><i>${esc(t('cvSec'))}</i></label></span></div>
     ${tog('tags','cvTags')}${tog('bk','cvBk','cvBkT')}
   </div>
+  <div class="cvog cvhfr">
+    ${tog('hfr','cvHfr','cvHfrT')}
+    ${sel('hfrAmt',[[1,t('cvHfr1')],[2,t('cvHfr2')],[3,t('cvHfr3')]],o.hfrAmt||2,'cvHfrAmt')}
+    <p class="snote cvinote">${esc(t('cvHfrNote'))}</p>
+  </div>
   <p class="cvsum" id="cvSum" aria-label="${esc(t('cvSummary'))}"></p>`;
   $('#cvIOpts').innerHTML=`<div class="cvog">
     ${sel('isize',ISIZES.map(s=>[s,s?tt('cvImgSq',{n:s}):t('cvImgOrig')]),o.isize,'cvImgSize')}
     ${sel('ifmt',Object.keys(IFMT).map(k=>[k,k.toUpperCase()]),o.ifmt,'cvFmt')}
     <p class="snote cvinote">${esc(t('cvImgNote'))}</p></div><p class="cvsum" id="cvISum" aria-label="${esc(t('cvSummary'))}"></p>`;
+  {const hs=$('#cvOpts select[name=hfrAmt]');if(hs)hs.disabled=!o.hfr}
   renderSummary();renderImgSummary();
 }
 /* batch console: ring + counter + status + the one big button */
@@ -806,7 +820,7 @@ function renderRow(r){
   }
   rowHtml(r,el);consoleTick();
 }
-const stageLabel=r=>{const s=r.status;return s==='encoding'?t('stEncoding').replace(/\s*\{p\}%/,''):t(s==='reading'?'stReading':s==='decoding'?'stDecoding':s==='analyzing'?'stAnalyzing':s==='tagging'?'stTagging':'stProcessing')};
+const stageLabel=r=>{const s=r.status;return s==='encoding'?t('stEncoding').replace(/\s*\{p\}%/,''):t(s==='reading'?'stReading':s==='decoding'?'stDecoding':s==='analyzing'?'stAnalyzing':s==='enhancing'?'stEnhancing':s==='tagging'?'stTagging':'stProcessing')};
 function stepsHtml(r){const k=STEP[r.status];if(k==null)return '';return `<ol class="cvsteps">${['spDecode','spProcess','spEncode','spTags'].map((s,i)=>`<li class="${i<k?'done':i===k?'now':''}">${esc(t(s))}</li>`).join('')}</ol>`}
 function ratioChip(a,b){if(!a||!b)return '';const d=Math.round((b-a)/a*100);if(!d)return '';const sm=d<0;return `<span class="cvchip ${sm?'dn':'up'}" dir="ltr" title="${esc(tt(sm?'cvSmaller':'cvLarger',{p:Math.abs(d)}))}">${sm?'−':'+'}${Math.abs(d)}%</span>`}
 function statusHtml(r){
@@ -825,7 +839,7 @@ function rowHtml(r,el){
   el.innerHTML=`<div class="cvfb" dir="ltr"><span class="cvbadge src">${esc(src)}</span><span class="cvarrow" aria-hidden="true"></span><span class="cvbadge dst">${esc(dst)}</span></div>
     <div class="cvmain">
       <div class="cvnm"><bdi>${esc(r.name)}</bdi>${r.tags&&(r.tags.title||r.tags.artist)?`<small><bdi>${esc([r.tags.artist,r.tags.title].filter(Boolean).join(' – '))}</bdi></small>`:''}</div>
-      ${statusHtml(r)}
+      ${statusHtml(r)}${qualityHtml(r)}
     </div>
     <div class="cvside">
       <div class="cvsz" dir="ltr"><span class="cvnum"><bdi dir="ltr">${esc(fsz(r.size))}</bdi></span>${r.out?`<span class="cvszarr" aria-hidden="true">→</span><span class="cvnum out"><bdi dir="ltr" data-bytes="${r.out.size}">${esc(fsz(r.out.size))}</bdi></span>${ratioChip(r.size,r.out.size)}`:''}${meta.length?`<span class="cvmeta"><bdi dir="ltr">${esc(meta.join(' · '))}</bdi></span>`:''}</div>
@@ -835,6 +849,38 @@ function rowHtml(r,el){
     </div>`;
   if(r.justDone){r.justDone=false;el.classList.add('just');countUp(el.querySelector('.cvnum.out bdi'))}
   if(r.status==='error')bump(el,'shake');
+}
+/* quality: where the highs stop (before → after restoring), a small spectrum */
+function qualityHtml(r){
+  if(!window.HFR)return '';
+  if(!r.q)return r.probing?`<div class="cvq dim"><span class="cvqc">${esc(t('qChecking'))}</span></div>`:'';
+  const q=r.q,kz=f=>(f/1000).toFixed(1).replace(/\.0$/,'');
+  const chip=q.full?`<span class="cvqc ok">${esc(t('qFull'))}</span>`:`<span class="cvqc warn">${esc(tt(q.est==='96'?'qCutLow':'qCut',{f:kz(q.cutoff),b:q.est}))}</span>`;
+  const rest=r.q2&&!q.full?`<span class="cvqc up">${esc(tt('qRest',{f:kz(r.q2.cutoff||Math.min(20000,r.q2.top||20000))}))}</span>`:'';
+  return `<div class="cvq">${chip}${rest}${specSvg(q,r.q2)}</div>`;
+}
+function specSvg(a,b){
+  if(!a.spec||!a.spec.length)return '';
+  const W=240,Hh=40,n=a.spec.length,top=a.top||22050;
+  const path=s=>s.map((v,i)=>`${i?'L':'M'}${(i/(n-1)*W).toFixed(1)} ${(Math.min(Hh,(-v/90)*Hh)).toFixed(1)}`).join('');
+  const x=f=>(f/top*W).toFixed(1);
+  const lbl=a.full?t('qFull'):tt('qCut',{f:(a.cutoff/1000).toFixed(1),b:a.est||''});
+  return `<svg class="cvspec" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" role="img" aria-label="${esc(tt('qGraph',{a:lbl}))}" dir="ltr">
+    ${[5000,10000,15000,20000].filter(f=>f<top).map(f=>`<line class="g" x1="${x(f)}" x2="${x(f)}" y1="0" y2="${Hh}"/>`).join('')}
+    ${b&&b.spec?`<path class="b" d="${path(b.spec)}"/>`:''}<path class="a" d="${path(a.spec)}"/>
+    ${a.cutoff?`<line class="c" x1="${x(a.cutoff)}" x2="${x(a.cutoff)}" y1="0" y2="${Hh}"/>`:''}</svg>`;
+}
+// quality check right after adding: decode in the browser (no ffmpeg), one file at a time, only while idle
+async function probeNext(){
+  if(C.probing||C.running||!window.HFR)return;
+  const r=C.rows.find(x=>!x.q&&!x.noProbe&&x.status==='ready'&&!VIDEO.has(x.ext)&&!FF_ONLY.has(x.ext)&&x.size<=120*1048576);
+  if(!r)return;
+  C.probing=true;r.probing=true;renderRow(r);
+  try{const ab=await r.file.arrayBuffer();const b=await CR.ac().decodeAudioData(ab);const chs=[];for(let c=0;c<Math.min(2,b.numberOfChannels);c++)chs.push(b.getChannelData(c));
+    r.q=HFR.analyze(chs,b.sampleRate);if(r.dur==null){r.dur=b.duration;r.sr=b.sampleRate;r.ch=chs.length}}
+  catch(e){r.noProbe=true}
+  r.probing=false;C.probing=false;if(C.rows.includes(r))renderRow(r);
+  setTimeout(probeNext,30);
 }
 function countUp(el){
   if(!el||noMotion())return;const n=+el.dataset.bytes||0,fin=el.textContent;if(!n)return;
@@ -880,7 +926,7 @@ window.CONVERT={
   hide(){C.visible=false;if(C.built)$('#convertView').classList.remove('over')},
   lang(){if(C.built)renderAll()},
   // for tests
-  _C:C,addFiles,addImages,convertAll,convertImages,cancelAll,readTags,id3Tag,id3Read,wavParse,ffLoad,FMT
+  _C:C,probeNext,addFiles,addImages,convertAll,convertImages,cancelAll,readTags,id3Tag,id3Read,wavParse,ffLoad,FMT
 };
 CR.applyLang();
 if($('#convertView')&&!$('#convertView').hidden)CONVERT.show();

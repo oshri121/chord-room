@@ -301,7 +301,7 @@ begin
       if coalesce(public.safe_int(p->>'points'), -1) not between 0 and 1000000 then raise exception 'bad billing: plan points' using errcode = '22023'; end if;
       if coalesce(p->>'price', '0') !~ '^\d{1,6}(\.\d{1,12})?$' then raise exception 'bad billing: plan price' using errcode = '22023'; end if;
       if coalesce(p->>'link', '') <> '' and (p->>'link' !~ url_re or char_length(p->>'link') > 500) then raise exception 'bad billing: plan link (https://)' using errcode = '22023'; end if;
-      if coalesce(p->>'variant', '') !~ '^(\d{1,12})?$' then raise exception 'bad billing: plan variant' using errcode = '22023'; end if;
+      if coalesce(p->>'variant', '') !~ '^(\d{1,12}|P-[A-Z0-9]{10,40})?$' then raise exception 'bad billing: plan variant' using errcode = '22023'; end if;
       if p ? 'discount' and public.safe_int(p->>'discount') is null then raise exception 'bad billing: plan discount' using errcode = '22023'; end if;
     end loop;
     -- points v2: plan discount clamped to 0…90 %

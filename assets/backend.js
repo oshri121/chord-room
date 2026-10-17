@@ -34,6 +34,15 @@
     return fail('generic', m);
   }
   const redirect = () => location.origin + location.pathname;
+  // SMS errors: no account with this number / no SMS provider / number refused, else the usual mapping
+  function smsError(err) {
+    const m = String(err && err.message || ''), c = String(err && err.code || '');
+    if (/signups? not allowed|user not found/i.test(m) || c === 'otp_disabled' || c === 'user_not_found') fail('nouser', m);
+    if (/phone.*(provider|disabled)|unsupported phone|sms.*(provider|disabled)/i.test(m) || c === 'phone_provider_disabled' || c === 'sms_send_failed') fail('sms', m);
+    if (/phone.*(exists|registered|already)/i.test(m) || c === 'phone_exists') fail('phone_taken', m);
+    if (/invalid phone|phone.*invalid|validate phone/i.test(m) || c === 'validation_failed') fail('phone', m);
+    mapAuthError(err);
+  }
 
   /* acct (accounts v4): Turnstile token for Supabase Auth (assets/acct.js sets B.captcha when a site key is configured;
      undefined = no CAPTCHA), the session's 2FA level from the JWT, retries with backoff for 429/503 */
@@ -124,6 +133,40 @@
     async verifyRecovery(email, token) {
       const { error } = await sb.auth.verifyOtp({ email, token: String(token).trim(), type: 'recovery' });
       if (error) mapAuthError(error);
+    },
+    // sign-in without a password: a one-time code to the account's email (existing accounts only; Magic Link template shows {{ .Token }})
+    async sendLoginCode(email) {
+      const captchaToken = await cap('signin');
+      const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: redirect(), captchaToken } });
+      if (error) { if (/signups? not allowed|user not found/i.test(String(error.message || '')) || error.code === 'otp_disabled' || error.code === 'user_not_found') fail('nouser', error.message); mapAuthError(error); }
+    },
+    async verifyLogin(email, token) {
+      const { data, error } = await sb.auth.verifyOtp({ email, token: String(token).trim(), type: 'email' });
+      if (error) mapAuthError(error);
+      const st = mfaState(data && data.session);
+      if (st && st.need) { B.mfaPending = { user: data.session.user, factors: st.factors }; B.user = null; setTimeout(mfaEvent, 0); fail('mfa'); }
+    },
+    // phone (SMS, needs an SMS provider in Supabase Auth): sign in with a code to a number already verified on the account,
+    // and add / change the account's number (Supabase sends a code to the new number)
+    async sendPhoneCode(phone) {
+      const captchaToken = await cap('signin');
+      const { error } = await sb.auth.signInWithOtp({ phone, options: { shouldCreateUser: false, captchaToken } });
+      if (error) smsError(error);
+    },
+    async verifyPhone(phone, token) {
+      const { data, error } = await sb.auth.verifyOtp({ phone, token: String(token).trim(), type: 'sms' });
+      if (error) mapAuthError(error);
+      const st = mfaState(data && data.session);
+      if (st && st.need) { B.mfaPending = { user: data.session.user, factors: st.factors }; B.user = null; setTimeout(mfaEvent, 0); fail('mfa'); }
+    },
+    async setPhone(phone) {
+      const { error } = await sb.auth.updateUser({ phone });
+      if (error) smsError(error);
+    },
+    async verifyPhoneChange(phone, token) {
+      const { data, error } = await sb.auth.verifyOtp({ phone, token: String(token).trim(), type: 'phone_change' });
+      if (error) mapAuthError(error);
+      if (data && data.user) B.user = data.user;
     },
     async signIn({ email, password }) {
       const captchaToken = await cap('signin');

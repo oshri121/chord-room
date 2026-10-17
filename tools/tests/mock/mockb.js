@@ -3,6 +3,7 @@
 // In-memory users/profiles/songs; window.__mock exposes them to tests. A second account is pre-seeded:
 //   dana@example.com / password1  (username dana_beats, plain user, profile language en)
 // Signing up with the username "oshri" makes an admin (like the first real account).
+// Sign-in by email code: any existing account, code 135790. Phone: verify a new number with 246810, SMS sign-in with 135790.
 // Per-test additions go AFTER this file (lib.mock_js(extra)) and may override any method.
 (() => {
   const users = [], profiles = [], songs = [];
@@ -37,6 +38,14 @@
       cur = u; B.user = u; cb('SIGNED_IN', u); return { needsConfirm: false };
     },
     async signIn({ email, password }) { const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); },
+    // sign-in by email code: the code is always 135790 (window.__loginCodes counts the sends)
+    async sendLoginCode(email) { if (!users.some(x => x.email === email)) fail('nouser'); window.__loginCodes = (window.__loginCodes || 0) + 1; },
+    // phone: setPhone → code 246810 to verify (verifyPhoneChange); sign-in by SMS to a verified number: code 135790
+    async setPhone(phone) { if (users.some(x => x.phone === phone.replace(/^\+/, '') && x !== cur)) fail('phone_taken'); window.__phoneCodes = (window.__phoneCodes || 0) + 1; },
+    async verifyPhoneChange(phone, token) { if (String(token) !== '246810') fail('otp'); cur.phone = phone.replace(/^\+/, ''); B.user = cur; },
+    async sendPhoneCode(phone) { if (!users.some(x => x.phone === phone.replace(/^\+/, ''))) fail('nouser'); window.__phoneCodes = (window.__phoneCodes || 0) + 1; },
+    async verifyPhone(phone, token) { const u = users.find(x => x.phone === phone.replace(/^\+/, '')); if (!u || String(token) !== '135790') fail('otp'); cur = u; B.user = u; cb('SIGNED_IN', u); },
+    async verifyLogin(email, token) { const u = users.find(x => x.email === email); if (!u || String(token) !== '135790') fail('otp'); cur = u; B.user = u; cb('SIGNED_IN', u); },
     async signOut() { cur = null; B.user = null; cb('SIGNED_OUT', null); },
     async sendReset() {}, async setPassword(p) { if (p.length < 8) fail('short'); cur.password = p; },
     async changePassword(c, n) { if (cur.password !== c) fail('curpass'); if (n.length < 8) fail('short'); cur.password = n; },

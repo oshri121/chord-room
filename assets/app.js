@@ -250,7 +250,7 @@ for(const k in IT)Object.assign(I[k],IT[k]);
 const IP={
 he:{navPricing:'מחירים',navAbout:'אודות',navHome:'בית',creditsL:'נקודות',creditsBal:'יתרת נקודות',seePlans:'מסלולים ומחירים',creditsHist:'היסטוריית נקודות',creditsTitle:'נקודות ומסלול',creditsCol:'נקודות',
   grantNote:'הערה (לא חובה)',grantBtn:'הוספה / הורדה של נקודות',setPlanBtn:'הפעלת מסלול',grantDone:'עודכן. יתרה: {b}',planDone:'המסלול עודכן.',months:'חודשים',
-  billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. קישור תשלום = קישור הקנייה של המסלול ב-Lemon Squeezy, ומזהה וריאנט = המספר שלו שם. אחרי תשלום המסלול מופעל והנקודות נכנסות אוטומטית (ההוראות ב-PAYMENTS.md). אפשר עדיין להפעיל מסלול ידנית מהפרטים של המשתמש.',
+  billingTitle:'נקודות ותשלומים',billingH:'כמה עולה כל פעולה, מתנת ההרשמה והמסלולים. מזהה תוכנית PayPal = מזהה ה-Plan של המסלול ב-PayPal (מתחיל ב-P-). אחרי תשלום המסלול מופעל והנקודות נכנסות אוטומטית (ההוראות ב-PAYMENTS.md). אפשר עדיין להפעיל מסלול ידנית מפרטי המשתמש.',
   billingOn:'שיטת הנקודות פעילה (כבוי = הכול בחינם)',billSignup:'מתנת הרשמה (נקודות)',billContact:'יצירת קשר לתשלום (מייל או קישור)',billSep:'עלות הפרדת ערוצים',billStems:'עלות הורדת סטמים',
   planPrice:'מחיר לחודש',planPoints:'נקודות לחודש',planLink:'קישור תשלום',planBest:'מומלץ',plan_free:'חינמי',plan_basic:'בסיסי',plan_pro:'מקצועי',plan_studio:'סטודיו',
   needSignIn:'כדי להשתמש בזה צריך להתחבר. נרשמים בחינם ומקבלים {n} נקודות מתנה.',noPoints:'אין מספיק נקודות: הפעולה עולה {n} ויש לך {b}.',charged:'ירדו {n} נקודות. נשארו {b}.',
@@ -259,7 +259,7 @@ he:{navPricing:'מחירים',navAbout:'אודות',navHome:'בית',creditsL:'�
   fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.',lk_sep:'הפרדת ערוצים',lk_stems:'הורדת סטמים',refunded:'ההפרדה לא הושלמה, הנקודות הוחזרו.'},
 en:{navPricing:'Pricing',navAbout:'About',navHome:'Home',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
   grantNote:'Note (optional)',grantBtn:'Add / remove points',setPlanBtn:'Activate plan',grantDone:'Updated. Balance: {b}',planDone:'Plan updated.',months:'months',
-  billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. Payment link = the plan\'s Lemon Squeezy checkout link; variant ID = its variant number there. After payment the plan turns on and the points arrive automatically (setup steps in PAYMENTS.md). You can still activate a plan by hand from the user\'s details.',
+  billingTitle:'Points & payments',billingH:'What each action costs, the signup gift and the plans. PayPal plan ID = the plan\'s billing plan ID in PayPal (starts with P-). After payment the plan turns on and the points arrive automatically (setup steps in PAYMENTS.md). You can still activate a plan by hand from the user\'s details.',
   billingOn:'Points system on (off = everything is free)',billSignup:'Signup gift (points)',billContact:'Billing contact (email or link)',billSep:'Stem separation cost',billStems:'Stems download cost',
   planPrice:'Price per month',planPoints:'Points per month',planLink:'Payment link',planBest:'Recommended',plan_free:'Free',plan_basic:'Basic',plan_pro:'Pro',plan_studio:'Studio',
   needSignIn:'Sign in to use this. Signing up is free and you get {n} points as a gift.',noPoints:'Not enough points: this costs {n} and you have {b}.',charged:'{n} points used. {b} left.',
@@ -268,7 +268,7 @@ en:{navPricing:'Pricing',navAbout:'About',navHome:'Home',creditsL:'points',credi
   fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.',lk_sep:'Stem separation',lk_stems:'Stems download',refunded:'The separation didn\'t finish, your points were returned.'},
 ar:{navPricing:'الأسعار',navAbout:'حول',navHome:'الرئيسية',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
   grantNote:'ملاحظة (اختياري)',grantBtn:'إضافة / خصم نقاط',setPlanBtn:'تفعيل الخطة',grantDone:'تم التحديث. الرصيد: {b}',planDone:'تم تحديث الخطة.',months:'أشهر',
-  billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. رابط الدفع = رابط شراء الخطة في Lemon Squeezy، ومعرّف النسخة = رقمها هناك. بعد الدفع تُفعَّل الخطة وتصل النقاط تلقائيًا (خطوات الإعداد في PAYMENTS.md). لا يزال بإمكانك تفعيل خطة يدويًا من تفاصيل المستخدم.',
+  billingTitle:'النقاط والمدفوعات',billingH:'تكلفة كل عملية، هدية التسجيل والخطط. معرّف خطة PayPal = معرّف خطة الفوترة في PayPal (يبدأ بـ P-). بعد الدفع تُفعَّل الخطة وتصل النقاط تلقائيًا (خطوات الإعداد في PAYMENTS.md). لا يزال بإمكانك تفعيل خطة يدويًا من تفاصيل المستخدم.',
   billingOn:'نظام النقاط مفعّل (إيقاف = كل شيء مجاني)',billSignup:'هدية التسجيل (نقاط)',billContact:'جهة اتصال للدفع (بريد أو رابط)',billSep:'تكلفة فصل المسارات',billStems:'تكلفة تنزيل المسارات',
   planPrice:'السعر الشهري',planPoints:'نقاط شهريًا',planLink:'رابط الدفع',planBest:'موصى بها',plan_free:'مجانية',plan_basic:'أساسية',plan_pro:'احترافية',plan_studio:'استوديو',
   needSignIn:'سجّل الدخول لاستخدام هذه الميزة. التسجيل مجاني وتحصل على {n} نقطة هدية.',noPoints:'النقاط غير كافية: العملية تكلف {n} ولديك {b}.',charged:'تم خصم {n} نقاط. المتبقي {b}.',
@@ -277,7 +277,7 @@ ar:{navPricing:'الأسعار',navAbout:'حول',navHome:'الرئيسية',cre
   fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.',lk_sep:'فصل المسارات',lk_stems:'تنزيل المسارات',refunded:'لم يكتمل الفصل، أُعيدت نقاطك.'},
 ru:{navPricing:'Тарифы',navAbout:'О проекте',navHome:'Главная',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
   grantNote:'Заметка (необязательно)',grantBtn:'Начислить / списать баллы',setPlanBtn:'Включить тариф',grantDone:'Готово. Баланс: {b}',planDone:'Тариф обновлён.',months:'мес.',
-  billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. Ссылка на оплату = ссылка покупки тарифа в Lemon Squeezy, ID варианта = его номер там. После оплаты тариф включается и баллы приходят автоматически (настройка описана в PAYMENTS.md). Тариф по-прежнему можно включить вручную в карточке пользователя.',
+  billingTitle:'Баллы и оплата',billingH:'Стоимость действий, подарок при регистрации и тарифы. ID плана PayPal = ID плана подписки в PayPal (начинается с P-). После оплаты тариф включается и баллы приходят автоматически (шаги настройки в PAYMENTS.md). Тариф по-прежнему можно включить вручную в данных пользователя.',
   billingOn:'Система баллов включена (выкл. = всё бесплатно)',billSignup:'Подарок при регистрации (баллы)',billContact:'Контакт по оплате (email или ссылка)',billSep:'Цена разделения на дорожки',billStems:'Цена скачивания дорожек',
   planPrice:'Цена в месяц',planPoints:'Баллов в месяц',planLink:'Ссылка на оплату',planBest:'Рекомендуем',plan_free:'Бесплатный',plan_basic:'Базовый',plan_pro:'Про',plan_studio:'Студия',
   needSignIn:'Войдите, чтобы пользоваться этим. Регистрация бесплатна, и вы получите {n} баллов в подарок.',noPoints:'Недостаточно баллов: действие стоит {n}, у вас {b}.',charged:'Списано {n} баллов. Осталось {b}.',
@@ -286,7 +286,7 @@ ru:{navPricing:'Тарифы',navAbout:'О проекте',navHome:'Главна
   fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.',lk_sep:'Разделение на стемы',lk_stems:'Скачивание стемов',refunded:'Разделение не завершилось, баллы возвращены.'},
 es:{navPricing:'Precios',navAbout:'Acerca de',navHome:'Inicio',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
   grantNote:'Nota (opcional)',grantBtn:'Sumar / restar puntos',setPlanBtn:'Activar plan',grantDone:'Actualizado. Saldo: {b}',planDone:'Plan actualizado.',months:'meses',
-  billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. Enlace de pago = el enlace de compra del plan en Lemon Squeezy; ID de variante = su número allí. Tras el pago, el plan se activa y los puntos llegan solos (pasos en PAYMENTS.md). Aún puedes activar un plan a mano desde los detalles del usuario.',
+  billingTitle:'Puntos y pagos',billingH:'Lo que cuesta cada acción, el regalo de registro y los planes. ID de plan de PayPal = el ID del plan de suscripción en PayPal (empieza por P-). Tras el pago, el plan se activa y los puntos llegan solos (pasos en PAYMENTS.md). Aún puedes activar un plan a mano desde los detalles del usuario.',
   billingOn:'Sistema de puntos activo (apagado = todo gratis)',billSignup:'Regalo de registro (puntos)',billContact:'Contacto de pagos (email o enlace)',billSep:'Coste de separar pistas',billStems:'Coste de descargar pistas',
   planPrice:'Precio al mes',planPoints:'Puntos al mes',planLink:'Enlace de pago',planBest:'Recomendado',plan_free:'Gratis',plan_basic:'Básico',plan_pro:'Pro',plan_studio:'Estudio',
   needSignIn:'Inicia sesión para usar esto. Registrarte es gratis y recibes {n} puntos de regalo.',noPoints:'No tienes puntos suficientes: esto cuesta {n} y tienes {b}.',charged:'Se usaron {n} puntos. Quedan {b}.',
@@ -341,23 +341,23 @@ for(const k in IPV)Object.assign(I[k],IPV[k]);
 const IPAY={
 he:{payWait:'התשלום התקבל, מפעילים את המסלול…',payDone:'המסלול {p} פעיל! יש לך עכשיו {n} נקודות.',paySlow:'התשלום עדיין מאושר אצל חברת הסליקה. זה יכול לקחת דקה, רעננו את הדף בעוד רגע. אם הנקודות לא מגיעות, כתבו לנו.',payContact:'יצירת קשר',
   payManage:'ניהול המנוי',payRenews:'מתחדש אוטומטית ב־{d}',payTrial:'תקופת ניסיון עד {d}',payCancelled:'המנוי בוטל, בתוקף עד {d}',payPastDue:'החיוב האחרון נכשל: עדכנו אמצעי תשלום בניהול המנוי',payPaused:'המנוי מושהה',payEnded:'המנוי הסתיים',
-  payHaveSub:'כבר יש לך מנוי. החלפת מסלול או ביטול נעשים בעמוד ניהול המנוי.',planVariant:'מזהה וריאנט (Lemon Squeezy)',payEvents:'תשלומים אחרונים',payNone:'עדיין אין תשלומים.',payTestL:'בדיקה',payEvCol:'אירוע',payResCol:'תוצאה',payUserCol:'משתמש',
+  payHaveSub:'כבר יש לך מנוי. החלפת מסלול או ביטול נעשים בעמוד ניהול המנוי.',payErr:'לא הצלחנו לפתוח את התשלום ב-PayPal. נסה שוב בעוד רגע.',planVariant:'מזהה תוכנית PayPal (P-…)',payEvents:'תשלומים אחרונים',payNone:'עדיין אין תשלומים.',payTestL:'בדיקה',payEvCol:'אירוע',payResCol:'תוצאה',payUserCol:'משתמש',
   lr_payment:'תשלום',payRefundL:'החזר כספי',payUpgradeL:'שדרוג'},
 en:{payWait:'Payment received, activating your plan…',payDone:'Your {p} plan is active! You now have {n} points.',paySlow:'Your payment is still being confirmed. This can take a minute, so refresh the page shortly. If the points don\'t arrive, contact us.',payContact:'Contact us',
   payManage:'Manage subscription',payRenews:'Renews automatically on {d}',payTrial:'Trial until {d}',payCancelled:'Cancelled, active until {d}',payPastDue:'The last payment failed: update your payment method in Manage subscription',payPaused:'Subscription paused',payEnded:'Subscription ended',
-  payHaveSub:'You already have a subscription. Change plan or cancel from the subscription page.',planVariant:'Variant ID (Lemon Squeezy)',payEvents:'Recent payments',payNone:'No payments yet.',payTestL:'test',payEvCol:'Event',payResCol:'Result',payUserCol:'User',
+  payHaveSub:'You already have a subscription. Change plan or cancel from the subscription page.',payErr:'Couldn\'t open the PayPal checkout. Try again in a moment.',planVariant:'PayPal plan ID (P-…)',payEvents:'Recent payments',payNone:'No payments yet.',payTestL:'test',payEvCol:'Event',payResCol:'Result',payUserCol:'User',
   lr_payment:'Payment',payRefundL:'Money refunded',payUpgradeL:'upgrade'},
 ar:{payWait:'تم استلام الدفع، جارٍ تفعيل خطتك…',payDone:'خطة {p} مفعّلة! لديك الآن {n} نقطة.',paySlow:'ما زال الدفع قيد التأكيد. قد يستغرق ذلك دقيقة، حدّث الصفحة بعد قليل. إن لم تصل النقاط، راسلنا.',payContact:'تواصل معنا',
   payManage:'إدارة الاشتراك',payRenews:'يتجدد تلقائيًا في {d}',payTrial:'فترة تجريبية حتى {d}',payCancelled:'أُلغي الاشتراك، ساري حتى {d}',payPastDue:'فشلت الدفعة الأخيرة: حدّث وسيلة الدفع من إدارة الاشتراك',payPaused:'الاشتراك متوقف مؤقتًا',payEnded:'انتهى الاشتراك',
-  payHaveSub:'لديك اشتراك بالفعل. غيّر الخطة أو ألغِها من صفحة إدارة الاشتراك.',planVariant:'معرّف النسخة (Lemon Squeezy)',payEvents:'آخر المدفوعات',payNone:'لا توجد مدفوعات بعد.',payTestL:'تجربة',payEvCol:'الحدث',payResCol:'النتيجة',payUserCol:'المستخدم',
+  payHaveSub:'لديك اشتراك بالفعل. غيّر الخطة أو ألغِها من صفحة إدارة الاشتراك.',payErr:'تعذّر فتح صفحة الدفع في PayPal. حاول مجددًا بعد قليل.',planVariant:'معرّف خطة PayPal (P-…)',payEvents:'آخر المدفوعات',payNone:'لا توجد مدفوعات بعد.',payTestL:'تجربة',payEvCol:'الحدث',payResCol:'النتيجة',payUserCol:'المستخدم',
   lr_payment:'دفعة',payRefundL:'استرداد المبلغ',payUpgradeL:'ترقية'},
 ru:{payWait:'Оплата получена, включаем тариф…',payDone:'Тариф «{p}» включён! Теперь у вас {n} баллов.',paySlow:'Оплата ещё подтверждается. Это может занять минуту, обновите страницу чуть позже. Если баллы не придут, напишите нам.',payContact:'Написать нам',
   payManage:'Управление подпиской',payRenews:'Продлится автоматически {d}',payTrial:'Пробный период до {d}',payCancelled:'Подписка отменена, действует до {d}',payPastDue:'Последний платёж не прошёл: обновите способ оплаты в управлении подпиской',payPaused:'Подписка приостановлена',payEnded:'Подписка закончилась',
-  payHaveSub:'У вас уже есть подписка. Сменить тариф или отменить её можно на странице управления подпиской.',planVariant:'ID варианта (Lemon Squeezy)',payEvents:'Последние платежи',payNone:'Платежей пока нет.',payTestL:'тест',payEvCol:'Событие',payResCol:'Результат',payUserCol:'Пользователь',
+  payHaveSub:'У вас уже есть подписка. Сменить тариф или отменить её можно на странице управления подпиской.',payErr:'Не удалось открыть оплату PayPal. Попробуйте ещё раз через минуту.',planVariant:'ID плана PayPal (P-…)',payEvents:'Последние платежи',payNone:'Платежей пока нет.',payTestL:'тест',payEvCol:'Событие',payResCol:'Результат',payUserCol:'Пользователь',
   lr_payment:'Оплата',payRefundL:'Возврат денег',payUpgradeL:'повышение'},
 es:{payWait:'Pago recibido, activando tu plan…',payDone:'¡Tu plan {p} está activo! Ahora tienes {n} puntos.',paySlow:'Tu pago aún se está confirmando. Puede tardar un minuto; recarga la página en un momento. Si los puntos no llegan, escríbenos.',payContact:'Contáctanos',
   payManage:'Gestionar suscripción',payRenews:'Se renueva automáticamente el {d}',payTrial:'Prueba hasta el {d}',payCancelled:'Cancelada, activa hasta el {d}',payPastDue:'El último pago falló: actualiza tu método de pago en Gestionar suscripción',payPaused:'Suscripción en pausa',payEnded:'La suscripción terminó',
-  payHaveSub:'Ya tienes una suscripción. Cambia de plan o cancela desde la página de la suscripción.',planVariant:'ID de variante (Lemon Squeezy)',payEvents:'Pagos recientes',payNone:'Aún no hay pagos.',payTestL:'prueba',payEvCol:'Evento',payResCol:'Resultado',payUserCol:'Usuario',
+  payHaveSub:'Ya tienes una suscripción. Cambia de plan o cancela desde la página de la suscripción.',payErr:'No se pudo abrir el pago de PayPal. Inténtalo de nuevo en un momento.',planVariant:'ID de plan de PayPal (P-…)',payEvents:'Pagos recientes',payNone:'Aún no hay pagos.',payTestL:'prueba',payEvCol:'Evento',payResCol:'Resultado',payUserCol:'Usuario',
   lr_payment:'Pago',payRefundL:'Dinero reembolsado',payUpgradeL:'mejora'}};
 for(const k in IPAY)Object.assign(I[k],IPAY[k]);
 const IREF={
@@ -468,7 +468,7 @@ he:{auTabs:'כניסה או הרשמה',auTabIn:'כניסה',auTabUp:'הרשמה
 auBenGift:'{n} נקודות מתנה בהרשמה',auBen1:'BPM, סולם ואקורדים לכל שיר',auBen2:'הפרדת ערוצים ב־AI, ישירות בדפדפן',auBen3:'מיקס DJ חי על שני דקים',auBen4:'ניתוח ספרייה שלמה וייצוא ל־rekordbox, ‏Serato ו־Traktor',auBen5:'השירים והקבצים שלכם נשמרים בחשבון, באופן פרטי',
 auInH:'ברוכים השבים',auInP:'נכנסים עם האימייל והסיסמה של החשבון.',auUpH:'יצירת חשבון',auUpP:'שלושה צעדים קצרים ואתם בפנים.',
 auSteps:'שלבי ההרשמה',auStep1:'פרטים',auStep2:'תנאים',auStep3:'אימות',auStepOf:'שלב {n} מתוך 3',
-auShow:'הצגת הסיסמה',auHide:'הסתרת הסיסמה',auCaps:'Caps Lock פועל',auForgotQ:'שכחתם סיסמה?',auNext:'המשך',auBack:'חזרה',
+auShow:'הצגת הסיסמה',auHide:'הסתרת הסיסמה',auCaps:'Caps Lock פועל',auForgotQ:'שכחתם סיסמה?',auSmsLink:'כניסה עם קוד ב-SMS',auSmsH:'כניסה עם הטלפון',auSmsP:'נשלח קוד חד־פעמי ב-SMS למספר שאימתתם בחשבון.',auSmsCodeH:'הקוד בדרך',auSmsCodeP:'שלחנו SMS עם קוד אל {e}. מקלידים אותו כאן.',auPhoneL:'מספר טלפון',auPhoneBad:'מספר הטלפון לא נראה תקין. למשל 050-123-4567 או +972501234567.',auSmsNoUser:'אין חשבון עם המספר הזה. אפשר להיכנס עם אימייל ולהוסיף את המספר בהגדרות החשבון.',auSmsOff:'שליחת SMS עדיין לא זמינה. אפשר להיכנס עם אימייל.',auOtpLink:'כניסה עם קוד במייל',auPwLink:'כניסה עם סיסמה',auOtpH:'כניסה עם קוד',auOtpP:'נשלח קוד חד־פעמי לאימייל של החשבון. בלי סיסמה.',auOtpCodeH:'הקוד בדרך',auOtpCodeP:'שלחנו אל {e} קוד חד־פעמי. מקלידים אותו כאן, או לוחצים על הקישור במייל.',auOtpNoUser:'אין חשבון עם האימייל הזה. אפשר להירשם.',auNext:'המשך',auBack:'חזרה',
 auUserChecking:'בודק אם השם פנוי…',auUserFree:'השם פנוי',auUserTaken:'השם הזה כבר תפוס',auEmailBad:'כתובת האימייל לא נראית תקינה.',
 auPwLen:'לפחות 8 תווים',auPwLvl:['חלשה מדי','חלשה','סבירה','חזקה','חזקה מאוד'],auPwStrength:'חוזק הסיסמה: {s}',auPwTip:'אפשר משפט קצר, או שילוב של אותיות, ספרות וסימנים.',auPwMatch:'הסיסמאות תואמות',auPwCommon:'הסיסמה הזאת נפוצה מדי. בחרו סיסמה אחרת.',
 auTermsH:'תנאי שימוש ופרטיות',auTermsP:'לפני יצירת החשבון, הנה עיקרי הדברים. הנוסח המלא הוא המחייב.',auTermsBox:'עיקרי התנאים',auTermsLink:'תנאי השימוש המלאים',auPrivLink:'מדיניות הפרטיות המלאה',auNewTab:'(נפתח בכרטיסייה חדשה)',
@@ -485,7 +485,7 @@ en:{auTabs:'Sign in or sign up',auTabIn:'Sign in',auTabUp:'Sign up',auBrandH:'Yo
 auBenGift:'{n} free points when you sign up',auBen1:'BPM, key and chords for every song',auBen2:'AI stem separation, right in the browser',auBen3:'Live DJ mix on two decks',auBen4:'Whole-library analysis with rekordbox, Serato and Traktor export',auBen5:'Your songs and files are saved privately in your account',
 auInH:'Welcome back',auInP:'Sign in with your account email and password.',auUpH:'Create your account',auUpP:'Three quick steps and you’re in.',
 auSteps:'Sign-up steps',auStep1:'Details',auStep2:'Terms',auStep3:'Verify',auStepOf:'Step {n} of 3',
-auShow:'Show password',auHide:'Hide password',auCaps:'Caps Lock is on',auForgotQ:'Forgot your password?',auNext:'Continue',auBack:'Back',
+auShow:'Show password',auHide:'Hide password',auCaps:'Caps Lock is on',auForgotQ:'Forgot your password?',auSmsLink:'Sign in with an SMS code',auSmsH:'Sign in with your phone',auSmsP:'We\'ll text a one-time code to the number verified on your account.',auSmsCodeH:'Check your messages',auSmsCodeP:'We texted a code to {e}. Enter it here.',auPhoneL:'Phone number',auPhoneBad:'That phone number doesn\'t look right. Use the international format, e.g. +972501234567.',auSmsNoUser:'There\'s no account with this number. Sign in with your email and add the number in your account settings.',auSmsOff:'Text messages aren\'t available yet. Sign in with your email.',auOtpLink:'Sign in with an email code',auPwLink:'Sign in with a password',auOtpH:'Sign in with a code',auOtpP:'We\'ll email a one-time code to your account. No password needed.',auOtpCodeH:'Check your email',auOtpCodeP:'We sent a one-time code to {e}. Enter it here, or click the link in the email.',auOtpNoUser:'There\'s no account with this email. You can sign up.',auNext:'Continue',auBack:'Back',
 auUserChecking:'Checking availability…',auUserFree:'Available',auUserTaken:'That username is taken',auEmailBad:'That email address doesn’t look right.',
 auPwLen:'At least 8 characters',auPwLvl:['Too weak','Weak','Fair','Strong','Very strong'],auPwStrength:'Password strength: {s}',auPwTip:'Try a short sentence, or mix letters, numbers and symbols.',auPwMatch:'Passwords match',auPwCommon:'That password is too common. Please pick another.',
 auTermsH:'Terms and privacy',auTermsP:'Before we create your account, here are the key points. The full text is what counts.',auTermsBox:'Key points',auTermsLink:'Full Terms of Use',auPrivLink:'Full Privacy Policy',auNewTab:'(opens in a new tab)',
@@ -502,7 +502,7 @@ ar:{auTabs:'الدخول أو التسجيل',auTabIn:'دخول',auTabUp:'تسج
 auBenGift:'{n} نقطة هدية عند التسجيل',auBen1:'BPM والمقام والكوردات لكل أغنية',auBen2:'فصل المسارات بالذكاء الاصطناعي داخل المتصفح',auBen3:'مزج DJ حيّ على منصّتين',auBen4:'تحليل مكتبة كاملة مع تصدير إلى rekordbox وSerato وTraktor',auBen5:'أغانيك وملفاتك محفوظة في حسابك بشكل خاص',
 auInH:'مرحبًا بعودتك',auInP:'ادخل بالبريد الإلكتروني وكلمة مرور حسابك.',auUpH:'إنشاء حساب',auUpP:'ثلاث خطوات قصيرة وتكون معنا.',
 auSteps:'خطوات التسجيل',auStep1:'البيانات',auStep2:'الشروط',auStep3:'التحقق',auStepOf:'الخطوة {n} من 3',
-auShow:'إظهار كلمة المرور',auHide:'إخفاء كلمة المرور',auCaps:'مفتاح Caps Lock مفعّل',auForgotQ:'نسيت كلمة المرور؟',auNext:'متابعة',auBack:'رجوع',
+auShow:'إظهار كلمة المرور',auHide:'إخفاء كلمة المرور',auCaps:'مفتاح Caps Lock مفعّل',auForgotQ:'نسيت كلمة المرور؟',auSmsLink:'الدخول برمز SMS',auSmsH:'الدخول بالهاتف',auSmsP:'سنرسل رمزًا لمرة واحدة برسالة SMS إلى الرقم الموثّق في حسابك.',auSmsCodeH:'تحقق من رسائلك',auSmsCodeP:'أرسلنا رمزًا برسالة SMS إلى {e}. أدخله هنا.',auPhoneL:'رقم الهاتف',auPhoneBad:'رقم الهاتف لا يبدو صحيحًا. استخدم الصيغة الدولية، مثل ‎+972501234567.',auSmsNoUser:'لا يوجد حساب بهذا الرقم. ادخل بالبريد الإلكتروني وأضف الرقم في إعدادات الحساب.',auSmsOff:'إرسال الرسائل النصية غير متاح بعد. ادخل بالبريد الإلكتروني.',auOtpLink:'الدخول برمز عبر البريد',auPwLink:'الدخول بكلمة المرور',auOtpH:'الدخول برمز',auOtpP:'سنرسل رمزًا لمرة واحدة إلى بريد الحساب، دون كلمة مرور.',auOtpCodeH:'تحقق من بريدك',auOtpCodeP:'أرسلنا رمزًا لمرة واحدة إلى {e}. أدخله هنا، أو اضغط على الرابط في البريد.',auOtpNoUser:'لا يوجد حساب بهذا البريد. يمكنك التسجيل.',auNext:'متابعة',auBack:'رجوع',
 auUserChecking:'جارٍ التحقق من التوفر…',auUserFree:'الاسم متاح',auUserTaken:'هذا الاسم مستخدم',auEmailBad:'عنوان البريد الإلكتروني لا يبدو صحيحًا.',
 auPwLen:'8 أحرف على الأقل',auPwLvl:['ضعيفة جدًا','ضعيفة','مقبولة','قوية','قوية جدًا'],auPwStrength:'قوة كلمة المرور: {s}',auPwTip:'جرّب جملة قصيرة، أو امزج الأحرف والأرقام والرموز.',auPwMatch:'كلمتا المرور متطابقتان',auPwCommon:'كلمة المرور هذه شائعة جدًا. اختر غيرها.',
 auTermsH:'الشروط والخصوصية',auTermsP:'قبل إنشاء الحساب، إليك أهم النقاط. النص الكامل هو المعتمد.',auTermsBox:'أهم النقاط',auTermsLink:'شروط الاستخدام الكاملة',auPrivLink:'سياسة الخصوصية الكاملة',auNewTab:'(تُفتح في علامة تبويب جديدة)',
@@ -519,7 +519,7 @@ ru:{auTabs:'Вход или регистрация',auTabIn:'Вход',auTabUp:'
 auBenGift:'{n} баллов в подарок при регистрации',auBen1:'BPM, тональность и аккорды для любой песни',auBen2:'Разделение на стемы с AI прямо в браузере',auBen3:'Живой DJ-микс на двух деках',auBen4:'Анализ целой библиотеки с экспортом в rekordbox, Serato и Traktor',auBen5:'Песни и файлы хранятся в аккаунте приватно',
 auInH:'С возвращением',auInP:'Войдите по email и паролю аккаунта.',auUpH:'Создание аккаунта',auUpP:'Три коротких шага — и вы внутри.',
 auSteps:'Шаги регистрации',auStep1:'Данные',auStep2:'Условия',auStep3:'Проверка',auStepOf:'Шаг {n} из 3',
-auShow:'Показать пароль',auHide:'Скрыть пароль',auCaps:'Включён Caps Lock',auForgotQ:'Забыли пароль?',auNext:'Продолжить',auBack:'Назад',
+auShow:'Показать пароль',auHide:'Скрыть пароль',auCaps:'Включён Caps Lock',auForgotQ:'Забыли пароль?',auSmsLink:'Войти по коду из SMS',auSmsH:'Вход по телефону',auSmsP:'Мы отправим одноразовый код по SMS на номер, подтверждённый в аккаунте.',auSmsCodeH:'Проверьте сообщения',auSmsCodeP:'Мы отправили SMS с кодом на {e}. Введите его здесь.',auPhoneL:'Номер телефона',auPhoneBad:'Номер выглядит неверно. Используйте международный формат, например +972501234567.',auSmsNoUser:'Аккаунта с этим номером нет. Войдите по почте и добавьте номер в настройках аккаунта.',auSmsOff:'Отправка SMS пока недоступна. Войдите по почте.',auOtpLink:'Войти по коду из письма',auPwLink:'Войти с паролем',auOtpH:'Вход по коду',auOtpP:'Мы отправим одноразовый код на почту аккаунта. Пароль не нужен.',auOtpCodeH:'Проверьте почту',auOtpCodeP:'Мы отправили одноразовый код на {e}. Введите его здесь или нажмите ссылку в письме.',auOtpNoUser:'Аккаунта с этой почтой нет. Можно зарегистрироваться.',auNext:'Продолжить',auBack:'Назад',
 auUserChecking:'Проверяем, свободно ли имя…',auUserFree:'Имя свободно',auUserTaken:'Это имя уже занято',auEmailBad:'Похоже, email указан неверно.',
 auPwLen:'Не меньше 8 символов',auPwLvl:['Слишком слабый','Слабый','Средний','Надёжный','Очень надёжный'],auPwStrength:'Надёжность пароля: {s}',auPwTip:'Подойдёт короткая фраза или сочетание букв, цифр и символов.',auPwMatch:'Пароли совпадают',auPwCommon:'Этот пароль слишком распространён. Выберите другой.',
 auTermsH:'Условия и конфиденциальность',auTermsP:'Перед созданием аккаунта — главное. Обязательным является полный текст.',auTermsBox:'Главное',auTermsLink:'Полные условия использования',auPrivLink:'Полная политика конфиденциальности',auNewTab:'(откроется в новой вкладке)',
@@ -536,7 +536,7 @@ es:{auTabs:'Entrar o registrarse',auTabIn:'Entrar',auTabUp:'Registrarse',auBrand
 auBenGift:'{n} puntos de regalo al registrarte',auBen1:'BPM, tonalidad y acordes de cada canción',auBen2:'Separación de pistas con IA en el navegador',auBen3:'Mezcla DJ en vivo con dos platos',auBen4:'Análisis de bibliotecas completas con exportación a rekordbox, Serato y Traktor',auBen5:'Tus canciones y archivos se guardan en tu cuenta de forma privada',
 auInH:'Hola de nuevo',auInP:'Entra con el email y la contraseña de tu cuenta.',auUpH:'Crea tu cuenta',auUpP:'Tres pasos rápidos y listo.',
 auSteps:'Pasos del registro',auStep1:'Datos',auStep2:'Términos',auStep3:'Verificar',auStepOf:'Paso {n} de 3',
-auShow:'Mostrar contraseña',auHide:'Ocultar contraseña',auCaps:'Bloq Mayús está activado',auForgotQ:'¿Olvidaste la contraseña?',auNext:'Continuar',auBack:'Atrás',
+auShow:'Mostrar contraseña',auHide:'Ocultar contraseña',auCaps:'Bloq Mayús está activado',auForgotQ:'¿Olvidaste la contraseña?',auSmsLink:'Entrar con un código por SMS',auSmsH:'Entrar con tu teléfono',auSmsP:'Te enviaremos un código de un solo uso por SMS al número verificado en tu cuenta.',auSmsCodeH:'Revisa tus mensajes',auSmsCodeP:'Enviamos un SMS con un código a {e}. Escríbelo aquí.',auPhoneL:'Número de teléfono',auPhoneBad:'Ese número no parece correcto. Usa el formato internacional, p. ej. +972501234567.',auSmsNoUser:'No hay ninguna cuenta con este número. Entra con tu email y añade el número en los ajustes de la cuenta.',auSmsOff:'Los SMS aún no están disponibles. Entra con tu email.',auOtpLink:'Entrar con un código por email',auPwLink:'Entrar con contraseña',auOtpH:'Entrar con un código',auOtpP:'Te enviaremos un código de un solo uso al email de tu cuenta. Sin contraseña.',auOtpCodeH:'Revisa tu email',auOtpCodeP:'Enviamos un código de un solo uso a {e}. Escríbelo aquí o pulsa el enlace del email.',auOtpNoUser:'No hay ninguna cuenta con este email. Puedes registrarte.',auNext:'Continuar',auBack:'Atrás',
 auUserChecking:'Comprobando disponibilidad…',auUserFree:'Disponible',auUserTaken:'Ese nombre ya está en uso',auEmailBad:'Ese email no parece correcto.',
 auPwLen:'Al menos 8 caracteres',auPwLvl:['Demasiado débil','Débil','Aceptable','Fuerte','Muy fuerte'],auPwStrength:'Seguridad de la contraseña: {s}',auPwTip:'Prueba con una frase corta, o mezcla letras, números y símbolos.',auPwMatch:'Las contraseñas coinciden',auPwCommon:'Esa contraseña es demasiado común. Elige otra.',
 auTermsH:'Términos y privacidad',auTermsP:'Antes de crear tu cuenta, estos son los puntos clave. Lo que vale es el texto completo.',auTermsBox:'Puntos clave',auTermsLink:'Términos de uso completos',auPrivLink:'Política de privacidad completa',auNewTab:'(se abre en una pestaña nueva)',
@@ -2113,8 +2113,8 @@ function renderAccount(){
 /* auth dialog: sign in · sign up in steps (details → terms → email code → welcome) · password reset by code.
    The reset link from the email still works (PASSWORD_RECOVERY → 'reset'). Backend methods added later
    (verifySignup/resendSignup/sendRecoveryCode/verifyRecovery/usernameFree) are optional: a mock backend may lack them. */
-const AU={mode:'in',email:'',pendingAt:0,user:'',recEmail:'',recOk:false,recovering:false,cool:{},tick:0,ret:null,uSeq:0,uFree:null,uTimer:0,done:null};
-const AU_FORMS={in:'#fIn',up:'#fUp',terms:'#fTerms',code:'#fCode',done:'#auDone',forgot:'#fForgot',recover:'#fRecover',reset:'#fReset'};
+const AU={mode:'in',otpEmail:'',smsPhone:'',email:'',pendingAt:0,user:'',recEmail:'',recOk:false,recovering:false,cool:{},tick:0,ret:null,uSeq:0,uFree:null,uTimer:0,done:null};
+const AU_FORMS={in:'#fIn',up:'#fUp',terms:'#fTerms',code:'#fCode',done:'#auDone',forgot:'#fForgot',recover:'#fRecover',reset:'#fReset',otp:'#fOtp',otpcode:'#fOtpCode',sms:'#fSms',smscode:'#fSmsCode'};
 const AU_UP=['up','terms','code','done'];
 const EMAIL_RE=/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
 const USER_RE=(window.Backend&&Backend.USERNAME_RE)||/^[A-Za-z0-9_.-]{3,24}$/;
@@ -2142,8 +2142,8 @@ function auBrand(){
 }
 function auHead(mode){
   const e=`⁨${AU.email}⁩`,r=`⁨${AU.recEmail}⁩`;
-  const H={in:['auInH','auInP'],up:['auUpH','auUpP'],terms:['auTermsH','auTermsP'],code:['auCodeH','auCodeP'],forgot:['auForgotH','auForgotP'],recover:['auRecH','auRecP'],reset:['auLinkH','auLinkP'],done:AU.done==='pass'?['auPassDoneH','auPassDoneP']:['auDoneH','auDoneP']}[mode];
-  $('#authTitle').textContent=t(H[0],{u:AU.user||myName()});$('#authSub').textContent=t(H[1],{e:mode==='recover'?r:e});
+  const H={in:['auInH','auInP'],up:['auUpH','auUpP'],terms:['auTermsH','auTermsP'],code:['auCodeH','auCodeP'],forgot:['auForgotH','auForgotP'],otp:['auOtpH','auOtpP'],otpcode:['auOtpCodeH','auOtpCodeP'],sms:['auSmsH','auSmsP'],smscode:['auSmsCodeH','auSmsCodeP'],recover:['auRecH','auRecP'],reset:['auLinkH','auLinkP'],done:AU.done==='pass'?['auPassDoneH','auPassDoneP']:['auDoneH','auDoneP']}[mode];
+  $('#authTitle').textContent=t(H[0],{u:AU.user||myName()});$('#authSub').textContent=t(H[1],{e:mode==='recover'?r:mode==='otpcode'?`⁨${AU.otpEmail}⁩`:mode==='smscode'?`⁦${AU.smsPhone}⁩`:e});
 }
 function auShow(mode,keep){
   if(mode==='done'&&AU.done==='new'&&AU.mode!=='done'){try{document.dispatchEvent(new CustomEvent('cr-signup'))}catch(e){}}   /* growth: analytics sign_up */
@@ -2151,7 +2151,7 @@ function auShow(mode,keep){
   for(const [m,sel] of Object.entries(AU_FORMS))$(sel).hidden=m!==mode;
   $('#auPanIn').hidden=mode!=='in';$('#auPanUp').hidden=!up;
   const seg=$('#auSeg');seg.hidden=!(mode==='in'||(up&&mode!=='done'));seg.dataset.on=mode==='in'?'in':'up';
-  const upOk=signupOpen();$('#auTabUp').hidden=!upOk;seg.classList.toggle('one',!upOk);$('#auAltUp').hidden=!upOk;
+  $('#auAltSms').hidden=!phoneLogin();const upOk=signupOpen();$('#auTabUp').hidden=!upOk;seg.classList.toggle('one',!upOk);$('#auAltUp').hidden=!upOk;
   [['#auTabIn',mode==='in'],['#auTabUp',up]].forEach(([s,on])=>{const b=$(s);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1});
   const st=$('#auSteps'),n={up:1,terms:2,code:3}[mode]||0;st.hidden=!n;st.setAttribute('aria-label',t('auSteps'));
   st.querySelectorAll('li').forEach(li=>{const s=+li.dataset.s;li.classList.toggle('on',s===n);li.classList.toggle('ok',s<n);if(s===n)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current')});
@@ -2239,7 +2239,7 @@ function wireOtp(inp){
   inp.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='Home')e.preventDefault()});
   inp.__paint=paint;
 }
-wireOtp($('#auCode'));wireOtp($('#rcCode'));
+wireOtp($('#auCode'));wireOtp($('#rcCode'));wireOtp($('#otCode'));wireOtp($('#smCode'));
 const otpSet=(inp,v)=>{inp.value=v;inp.__paint&&inp.__paint()};
 /* ---- show/hide password, caps lock ---- */
 document.querySelectorAll('#authDlg .au-eye').forEach(b=>{b.setAttribute('aria-label',t('auShow'));b.onclick=()=>{const i=$('#'+b.dataset.eye),show=i.type==='password';
@@ -2283,6 +2283,53 @@ $('#fIn').addEventListener('submit',e=>{e.preventDefault();auMsg('');
       if(err&&err.code==='mfa'){pw.value='';closeDlg();return}   /* acct: the 2FA code dialog (assets/acct.js) takes over */
       auMsg(authErr(err),'err');if(err&&err.code==='login'){pw.select&&pw.select();pw.focus()}}
   })});
+/* ---- sign in with a one-time code by email (no password) ---- */
+$('#toOtp').onclick=()=>{const e=$('#inEmail').value.trim();if(e&&!$('#otEmail').value)$('#otEmail').value=e;auShow('otp')};
+$('#toPw').onclick=$('#toPw2').onclick=()=>{if(AU.otpEmail&&!$('#inEmail').value)$('#inEmail').value=AU.otpEmail;auShow('in')};
+$('#otEmail').addEventListener('input',()=>auFe($('#otEmail'),''));
+const otpErr=err=>err&&err.code==='nouser'?t('auOtpNoUser'):authErr(err);
+$('#fOtp').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const em=$('#otEmail'),email=em.value.trim();
+  if(!EMAIL_RE.test(email))return auBad(em,t('auEmailBad'));
+  if(!Backend.sendLoginCode)return;
+  auRun($('#fOtp .au-cta'),async()=>{
+    try{await Backend.sendLoginCode(email);AU.otpEmail=email;auCool('login');otpSet($('#otCode'),'');auShow('otpcode')}
+    catch(err){if(err&&err.code==='rate')auCool('login',err.wait||60);auMsg(otpErr(err),'err')}
+  })});
+$('#fOtpCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const c=$('#otCode'),v=c.value.replace(/\D/g,'');
+  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  auRun($('#fOtpCode .au-cta'),async()=>{
+    try{await Backend.verifyLogin(AU.otpEmail,v);AU.otpEmail='';closeDlg()}
+    catch(err){if(err&&err.code==='mfa'){closeDlg();return}auFe(c,authErr(err));otpSet(c,'');c.focus()}
+  })});
+$('#otResend').onclick=()=>{if(!AU.otpEmail)return;const b=$('#otResend');
+  auRun(b,async()=>{try{await Backend.sendLoginCode(AU.otpEmail);auCool('login');auMsg(t('auResent'),'ok');otpSet($('#otCode'),'');$('#otCode').focus()}catch(err){if(err&&err.code==='rate')auCool('login',err.wait||60);auMsg(otpErr(err),'err')}});auCoolPaint()};
+/* ---- sign in with an SMS code (billing.phone_login; needs an SMS provider in Supabase + a number verified on the account) ---- */
+const phoneLogin=()=>BILL().phone_login===true&&!!(window.Backend&&Backend.sendPhoneCode);
+// Israeli local numbers (05x…) → +972…; anything else must already be international (+…)
+function normPhone(v){let d=String(v||'').trim().replace(/[\s().\-\u200e\u200f]/g,'');if(/^00/.test(d))d='+'+d.slice(2);
+  if(/^0\d{8,9}$/.test(d))d='+972'+d.slice(1);else if(/^972\d{8,9}$/.test(d))d='+'+d;return /^\+[1-9]\d{7,14}$/.test(d)?d:''}
+const smsErr=err=>{const c=err&&err.code;return c==='nouser'?t('auSmsNoUser'):c==='sms'?t('auSmsOff'):c==='phone'?t('auPhoneBad'):authErr(err)};
+$('#toSms').onclick=()=>auShow('sms');
+$('#toPw3').onclick=$('#toPw4').onclick=()=>auShow('in');
+$('#smPhone').addEventListener('input',()=>auFe($('#smPhone'),''));
+$('#fSms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const ph=$('#smPhone'),phone=normPhone(ph.value);
+  if(!phone)return auBad(ph,t('auPhoneBad'));
+  auRun($('#fSms .au-cta'),async()=>{
+    try{await Backend.sendPhoneCode(phone);AU.smsPhone=phone;auCool('sms');otpSet($('#smCode'),'');auShow('smscode')}
+    catch(err){if(err&&err.code==='rate')auCool('sms',err.wait||60);auMsg(smsErr(err),'err')}
+  })});
+$('#fSmsCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
+  const c=$('#smCode'),v=c.value.replace(/\D/g,'');
+  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  auRun($('#fSmsCode .au-cta'),async()=>{
+    try{await Backend.verifyPhone(AU.smsPhone,v);AU.smsPhone='';closeDlg()}
+    catch(err){if(err&&err.code==='mfa'){closeDlg();return}auFe(c,authErr(err));otpSet(c,'');c.focus()}
+  })});
+$('#smResend').onclick=()=>{if(!AU.smsPhone)return;const b=$('#smResend');
+  auRun(b,async()=>{try{await Backend.sendPhoneCode(AU.smsPhone);auCool('sms');auMsg(t('auResent'),'ok');otpSet($('#smCode'),'');$('#smCode').focus()}catch(err){if(err&&err.code==='rate')auCool('sms',err.wait||60);auMsg(smsErr(err),'err')}});auCoolPaint()};
 /* ---- sign up, step 1: details ---- */
 $('#upUser').addEventListener('input',()=>userCheck(false));
 $('#upUser').addEventListener('blur',()=>{if($('#upUser').value.trim()&&!USER_RE.test($('#upUser').value.trim()))userState('err',t('usernameH'))});
@@ -2962,11 +3009,14 @@ function hookPages(){
   PAGES.onSubscribe=id=>{
     logAct('subscribe_click',id);
     const b=BILL(),p=b.plans.find(x=>x.id===id);
-    if(p&&/^https:\/\//.test(p.link||'')){
+    const pp=!!p&&PP_PLAN.test(p.variant||'');
+    if(p&&(pp||/^https:\/\//.test(p.link||''))){
       if(!ACC.user){if(ACC.on)openDlg('up');return}                       // the payment must know whose account to fill
       const c=ACC.cred||{};
       if(portalUrl(c)&&PAY_LIVE.includes(c.pay_status)){toast(t('payHaveSub'),[[t('payManage'),openPortal]]);return}   // change plan in the portal, not a 2nd subscription
-      PAY.opened=Date.now();window.open(checkoutUrl(p.link,p.id),'_blank','noopener');return}
+      PAY.opened=Date.now();
+      if(pp){paypalCheckout(p.id);return}
+      window.open(checkoutUrl(p.link,p.id),'_blank','noopener');return}
     const c=(b.contact||'').trim();
     if(c){toast(t('subNoLink',{c}),[contactAction(c)]);return}
     toast(t('subSoon'));
@@ -2974,6 +3024,20 @@ function hookPages(){
   PAGES.onManage=openPortal;
 }
 // ── automatic payments: checkout link → Lemon Squeezy → webhook (functions/api/pay/webhook.js → pay_webhook in SQL)
+// PayPal: /api/pay/paypal-subscribe creates the subscription (plan id from the settings, custom_id = this account) and
+// returns PayPal's approve link; the webhook (functions/api/pay/paypal.js → pay_webhook_paypal) turns the plan on.
+const PP_PLAN=/^P-[A-Z0-9]{10,40}$/;
+async function paypalCheckout(planId){
+  let w=null;try{w=window.open('','_blank');if(w)w.opener=null}catch(e){}   // opened now (the click), filled after the request
+  const fail=k=>{try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else toast(t('payErr'))};
+  try{
+    const tok=Backend.accessToken?await Backend.accessToken():null;if(!tok)return fail();
+    const r=await fetch('/api/pay/paypal-subscribe',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body:JSON.stringify({plan:planId}),credentials:'omit',cache:'no-store'});
+    const o=await r.json().catch(()=>({}));
+    if(!r.ok||!o.url||!/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(o.url))return fail(o.error);
+    if(w)w.location.href=o.url;else location.href=o.url;               // popup blocked → same tab (PayPal returns to ?paid=1#pricing)
+  }catch(e){fail()}
+}
 const PAY={opened:0,polling:false,focusAt:0};
 const PAY_LIVE=['active','on_trial','past_due','paused'];
 // the contact from the settings: an e-mail address (→ mailto:) or an https:// link only — never javascript:/data:
@@ -3034,7 +3098,7 @@ function fillBilling(){
     <label><span>${esc(t('planPrice'))}</span><input type="number" min="0" step="1" data-f="price" value="${+p.price||0}"></label>
     <label><span>${esc(t('planPoints'))}</span><input type="number" min="0" step="1" data-f="points" value="${+p.points||0}"></label>
     <label class="wide"><span>${esc(t('planLink'))}</span><input type="url" dir="ltr" data-f="link" placeholder="https://" value="${esc(p.link||'')}"></label>
-    <label><span>${esc(t('planVariant'))}</span><input type="text" inputmode="numeric" dir="ltr" data-f="variant" placeholder="123456" value="${esc(p.variant==null?'':p.variant)}"></label>
+    <label><span>${esc(t('planVariant'))}</span><input type="text" dir="ltr" autocapitalize="characters" spellcheck="false" data-f="variant" placeholder="P-…" value="${esc(p.variant==null?'':p.variant)}"></label>
     <label><span>${esc(t('planDisc'))}</span><input type="number" min="0" max="90" step="1" dir="ltr" data-f="discount" value="${Math.max(0,Math.min(90,parseInt(p.discount,10)||0))}"></label>
     <label class="best"><input type="radio" name="bBest" ${p.best?'checked':''}><span>${esc(t('planBest'))}</span></label></div>`).join('');
   setMsg($('#bMsg'),'');loadPayEvents();
@@ -3067,7 +3131,7 @@ $('#bSave').onclick=()=>busyBtn($('#bSave'),async()=>{
     costs,plans,
     referral:Math.min(1000,Math.max(0,parseInt($('#bRef').value,10)||0)),referral_max:Math.max(0,parseInt($('#bRefMax').value,10)||0)};
   const bad=plans.find(p=>p.link&&!/^https:\/\//.test(p.link));if(bad){setMsg($('#bMsg'),t('planLink')+': https://',true);return}
-  const badV=plans.find(p=>p.variant&&!/^\d{1,12}$/.test(p.variant));if(badV){setMsg($('#bMsg'),t('planVariant')+': 0-9',true);return}
+  const badV=plans.find(p=>p.variant&&!/^(\d{1,12}|P-[A-Z0-9]{10,40})$/.test(p.variant));if(badV){setMsg($('#bMsg'),t('planVariant'),true);return}
   try{const c={...ACC.config,billing};await Backend.saveConfig(c);ACC.config=c;applyConfig();setMsg($('#bMsg'),t('saved'))}catch(e){setMsg($('#bMsg'),t('saveFail'),true)}});
 function bumpSeps(){if(ACC.user)Backend.bumpSeps().then(()=>loadProfile(false)).catch(()=>{})}
 
@@ -3769,7 +3833,7 @@ if(mqDark&&mqDark.addEventListener)mqDark.addEventListener('change',()=>{applyTh
 document.addEventListener('a11y-change',()=>{applyMono();buildOverview();dirty=true;if(window.DJ&&DJ.redraw)DJ.redraw()});
 /* ---------- bridge for the DJ view (assets/dj.js) ---------- */
 window.CR={
-  t,$,esc,tick,mod,ac,applyLang,getLang:()=>LANG,addStrings:tb=>{for(const k in tb)Object.assign(I[k],tb[k])},
+  t,$,esc,tick,mod,ac,applyLang,normPhone,getLang:()=>LANG,addStrings:tb=>{for(const k in tb)Object.assign(I[k],tb[k])},
   analyzeTrack,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,wcol,
   camelot,camOf,camRel,bpmFit,camColor,keyText,keyBadge,CAM_MAJ,HC_COL,SHARP,FLAT,FLAT_MAJ,
   readLib,libItem:name=>readLib().find(x=>x.name===name)||null,ACC,DC,dz,freshPreview,rowFromCatalog,

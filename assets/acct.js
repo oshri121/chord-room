@@ -20,6 +20,7 @@ const t = (k, v) => CR.t(k, v);
 /* ---------- strings ---------- */
 const S = {
 he: {
+  acPhH: 'מספר טלפון', acPhNone: 'אין מספר בחשבון. אחרי שתוסיפו ותאמתו מספר, אפשר יהיה להיכנס גם עם קוד ב-SMS.', acPhCur: 'המספר המאומת: {p}. אפשר להיכנס איתו עם קוד ב-SMS.', acPhL: 'מספר טלפון', acPhSend: 'שליחת קוד', acPhGo: 'אימות המספר', acPhSent: 'שלחנו SMS עם קוד אל {p}.', acPhDone: 'המספר אומת ונשמר.', acPhBad: 'מספר הטלפון לא נראה תקין. למשל 050-123-4567 או +972501234567.', acPhTaken: 'המספר הזה כבר משויך לחשבון אחר.', acPhOff: 'שליחת SMS עדיין לא זמינה באתר.', acPhoneLogin: 'כניסה עם קוד SMS (צריך ספק SMS ב-Supabase ← Authentication ← Sign In / Providers ← Phone)',
   ac2faH: 'אימות דו־שלבי (2FA)', ac2faOff: 'כבוי. אפשר להוסיף קוד מאפליקציית אימות (Google Authenticator,‏ Microsoft Authenticator,‏ 1Password,‏ Authy…) לכל כניסה.',
   ac2faOn: 'פעיל — בכל כניסה נבקש קוד בן 6 ספרות מאפליקציית האימות.', ac2faEnable: 'הפעלת אימות דו־שלבי', ac2faRemove: 'הסרה', ac2faRemoveSure: 'לחצו שוב כדי להסיר',
   ac2faAdded: 'נוסף {d}', ac2faApp: 'אפליקציית אימות', ac2faHeld: 'הרשאות הניהול שלכם מושהות עד שתפעילו אימות דו־שלבי.', ac2faErr: 'לא הצלחנו לטעון את מצב האימות הדו־שלבי.',
@@ -56,6 +57,7 @@ he: {
   acMfaBannerGo: 'הפעלת אימות דו־שלבי', acAge: 'אני בן/בת {n} ומעלה', acSaved: 'נשמר', acSaveFail: 'השמירה נכשלה'
 },
 en: {
+  acPhH: 'Phone number', acPhNone: 'No number on the account. Once you add and verify one, you can also sign in with an SMS code.', acPhCur: 'Verified number: {p}. You can sign in with an SMS code to it.', acPhL: 'Phone number', acPhSend: 'Send code', acPhGo: 'Verify number', acPhSent: 'We texted a code to {p}.', acPhDone: 'Number verified and saved.', acPhBad: "That phone number doesn't look right. Use the international format, e.g. +972501234567.", acPhTaken: 'This number already belongs to another account.', acPhOff: "Text messages aren't available on the site yet.", acPhoneLogin: 'Sign-in with an SMS code (needs an SMS provider in Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Two-step verification (2FA)', ac2faOff: 'Off. Add a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Authy…) to every sign-in.',
   ac2faOn: 'On — every sign-in asks for a 6-digit code from your authenticator app.', ac2faEnable: 'Turn on 2FA', ac2faRemove: 'Remove', ac2faRemoveSure: 'Click again to remove',
   ac2faAdded: 'Added {d}', ac2faApp: 'Authenticator app', ac2faHeld: 'Your management permissions are paused until you turn on two-step verification.', ac2faErr: 'Couldn’t load the two-step verification status.',
@@ -92,6 +94,7 @@ en: {
   acMfaBannerGo: 'Turn on 2FA', acAge: 'I am {n} or older', acSaved: 'Saved', acSaveFail: 'Couldn’t save'
 },
 ar: {
+  acPhH: 'رقم الهاتف', acPhNone: 'لا يوجد رقم في الحساب. بعد إضافة رقم وتوثيقه يمكنك الدخول أيضًا برمز SMS.', acPhCur: 'الرقم الموثّق: {p}. يمكنك الدخول برمز SMS إليه.', acPhL: 'رقم الهاتف', acPhSend: 'إرسال الرمز', acPhGo: 'توثيق الرقم', acPhSent: 'أرسلنا رمزًا برسالة SMS إلى {p}.', acPhDone: 'تم توثيق الرقم وحفظه.', acPhBad: 'رقم الهاتف لا يبدو صحيحًا. استخدم الصيغة الدولية، مثل \u200e+972501234567.', acPhTaken: 'هذا الرقم مرتبط بحساب آخر.', acPhOff: 'إرسال الرسائل النصية غير متاح في الموقع بعد.', acPhoneLogin: 'الدخول برمز SMS (يتطلب مزوّد SMS في Supabase ← Authentication ← Sign In / Providers ← Phone)',
   ac2faH: 'التحقق بخطوتين (2FA)', ac2faOff: 'متوقف. أضف رمزًا من تطبيق مصادقة (Google Authenticator أو Microsoft Authenticator أو 1Password أو Authy…) إلى كل تسجيل دخول.',
   ac2faOn: 'مفعّل — نطلب في كل تسجيل دخول رمزًا من 6 أرقام من تطبيق المصادقة.', ac2faEnable: 'تفعيل التحقق بخطوتين', ac2faRemove: 'إزالة', ac2faRemoveSure: 'انقر مرة أخرى للإزالة',
   ac2faAdded: 'أُضيف {d}', ac2faApp: 'تطبيق مصادقة', ac2faHeld: 'صلاحيات الإدارة لديك معلّقة حتى تفعّل التحقق بخطوتين.', ac2faErr: 'تعذّر تحميل حالة التحقق بخطوتين.',
@@ -128,6 +131,7 @@ ar: {
   acMfaBannerGo: 'تفعيل التحقق بخطوتين', acAge: 'عمري {n} عامًا أو أكثر', acSaved: 'تم الحفظ', acSaveFail: 'تعذّر الحفظ'
 },
 ru: {
+  acPhH: 'Номер телефона', acPhNone: 'В аккаунте нет номера. Добавьте и подтвердите номер, чтобы входить и по коду из SMS.', acPhCur: 'Подтверждённый номер: {p}. На него можно получить код для входа.', acPhL: 'Номер телефона', acPhSend: 'Отправить код', acPhGo: 'Подтвердить номер', acPhSent: 'Мы отправили SMS с кодом на {p}.', acPhDone: 'Номер подтверждён и сохранён.', acPhBad: 'Номер выглядит неверно. Используйте международный формат, например +972501234567.', acPhTaken: 'Этот номер уже привязан к другому аккаунту.', acPhOff: 'Отправка SMS на сайте пока недоступна.', acPhoneLogin: 'Вход по коду из SMS (нужен SMS-провайдер в Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Двухэтапная проверка (2FA)', ac2faOff: 'Выключена. Добавьте к каждому входу код из приложения-аутентификатора (Google Authenticator, Microsoft Authenticator, 1Password, Authy…).',
   ac2faOn: 'Включена — при каждом входе мы спросим 6-значный код из приложения-аутентификатора.', ac2faEnable: 'Включить 2FA', ac2faRemove: 'Удалить', ac2faRemoveSure: 'Нажмите ещё раз для удаления',
   ac2faAdded: 'Добавлено {d}', ac2faApp: 'Приложение-аутентификатор', ac2faHeld: 'Ваши права администратора приостановлены, пока вы не включите двухэтапную проверку.', ac2faErr: 'Не удалось загрузить состояние двухэтапной проверки.',
@@ -164,6 +168,7 @@ ru: {
   acMfaBannerGo: 'Включить 2FA', acAge: 'Мне {n} лет или больше', acSaved: 'Сохранено', acSaveFail: 'Не удалось сохранить'
 },
 es: {
+  acPhH: 'Número de teléfono', acPhNone: 'La cuenta no tiene número. Cuando añadas y verifiques uno, también podrás entrar con un código por SMS.', acPhCur: 'Número verificado: {p}. Puedes entrar con un código por SMS a este número.', acPhL: 'Número de teléfono', acPhSend: 'Enviar código', acPhGo: 'Verificar número', acPhSent: 'Enviamos un SMS con un código a {p}.', acPhDone: 'Número verificado y guardado.', acPhBad: 'Ese número no parece correcto. Usa el formato internacional, p. ej. +972501234567.', acPhTaken: 'Este número ya pertenece a otra cuenta.', acPhOff: 'Los SMS aún no están disponibles en el sitio.', acPhoneLogin: 'Entrar con un código por SMS (requiere un proveedor de SMS en Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Verificación en dos pasos (2FA)', ac2faOff: 'Desactivada. Añade a cada inicio de sesión un código de una app de autenticación (Google Authenticator, Microsoft Authenticator, 1Password, Authy…).',
   ac2faOn: 'Activada: en cada inicio de sesión pediremos un código de 6 dígitos de tu app de autenticación.', ac2faEnable: 'Activar 2FA', ac2faRemove: 'Quitar', ac2faRemoveSure: 'Pulsa otra vez para quitar',
   ac2faAdded: 'Añadida el {d}', ac2faApp: 'App de autenticación', ac2faHeld: 'Tus permisos de gestión están en pausa hasta que actives la verificación en dos pasos.', ac2faErr: 'No se pudo cargar el estado de la verificación en dos pasos.',
@@ -417,6 +422,17 @@ function accSections() {
     bd.insertBefore(sec, $('#signOutBtn'));
     $('#acMfaOn').onclick = () => openEnroll();
   }
+  if (!$('#acPh')) {
+    const sec = document.createElement('div'); sec.id = 'acPhWrap';
+    sec.innerHTML = `<div class="sech" id="acPhH"></div><section class="acbox" id="acPh" aria-labelledby="acPhH"><p class="snote" id="acPhSt"></p>
+      <div class="fld"><label for="acPhIn" id="acPhL"></label><div class="row2"><input type="tel" id="acPhIn" dir="ltr" autocomplete="tel" inputmode="tel" spellcheck="false" placeholder="050-123-4567"><button type="button" class="btn ghost" id="acPhSend"></button></div></div>
+      <div id="acPhStep" hidden>${otpField('acPhCode', t('acCodeL'))}<div class="row2"><button type="button" class="btn solid" id="acPhGo"></button></div></div>
+      <p class="acmsg" id="acPhMsg" role="alert" hidden></p></section>`;
+    bd.insertBefore(sec, $('#acMfaWrap'));
+    wireDigits($('#acPhCode'));
+    $('#acPhSend').onclick = phSend; $('#acPhGo').onclick = phVerify;
+    $('#acPhCode').addEventListener('input', () => { if (digits($('#acPhCode')).length === 6) phVerify(); });
+  }
   if (!$('#acOutAll')) {
     const so = $('#signOutBtn'), row = document.createElement('div'); row.className = 'row2 acout'; so.replaceWith(row); row.append(so);
     const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.id = 'acOutAll'; row.append(b);
@@ -429,7 +445,36 @@ function accSections() {
   }
   accPaint();
 }
+/* ---------- phone number on the account (SMS sign-in, billing.phone_login) ---------- */
+const PH = { phone: '' };
+const phShow = p => (p ? '+' + String(p).replace(/^\+/, '') : '');
+function phPaint() {
+  const w = $('#acPhWrap'); if (!w) return;
+  const u = B().user || {}, has = !!u.phone;
+  w.hidden = !(billing().phone_login === true || has) || !B().setPhone;
+  $('#acPhH').textContent = t('acPhH'); $('#acPhL').textContent = t('acPhL'); $('#acPhSend').textContent = t('acPhSend'); $('#acPhGo').textContent = t('acPhGo');
+  $('#acPhCode').previousElementSibling.textContent = t('acCodeL');
+  $('#acPhSt').textContent = has ? t('acPhCur', { p: '\u2066' + phShow(u.phone) + '\u2069' }) : t('acPhNone');
+}
+const phErr = e => { const c = e && e.code; return c === 'phone' ? t('acPhBad') : c === 'phone_taken' ? t('acPhTaken') : c === 'sms' ? t('acPhOff') : c === 'otp' ? t('acCodeBad') : t('acSaveFail') + ' · ' + errMsg(e); };
+async function phSend() {
+  const b = $('#acPhSend'), m = $('#acPhMsg'), phone = CR.normPhone ? CR.normPhone($('#acPhIn').value) : '';
+  if (!phone) { msg(m, t('acPhBad'), 'err'); $('#acPhIn').focus(); return; }
+  busy(b, true);
+  try { await B().setPhone(phone); PH.phone = phone; $('#acPhStep').hidden = false; $('#acPhCode').value = ''; msg(m, t('acPhSent', { p: '\u2066' + phone + '\u2069' }), 'ok'); $('#acPhCode').focus(); }
+  catch (e) { msg(m, phErr(e), 'err'); }
+  busy(b, false);
+}
+async function phVerify() {
+  const b = $('#acPhGo'), m = $('#acPhMsg'), code = digits($('#acPhCode'));
+  if (!PH.phone || code.length !== 6 || b.disabled) return;
+  busy(b, true);
+  try { await B().verifyPhoneChange(PH.phone, code); PH.phone = ''; $('#acPhStep').hidden = true; $('#acPhIn').value = ''; msg(m, t('acPhDone'), 'ok'); phPaint(); }
+  catch (e) { msg(m, phErr(e), 'err'); $('#acPhCode').value = ''; $('#acPhCode').focus(); }
+  busy(b, false);
+}
 function accPaint() {
+  phPaint();
   if (!$('#acMfa')) return;
   $('#acMfaH').textContent = t('ac2faH');
   const on = mfaOn(), st = $('#acMfaSt');
@@ -790,6 +835,7 @@ function secBlock() {
       <div class="sgrid acsec">
         <div class="fld" style="grid-column:1/-1"><label for="acTs" id="acTsL"></label><input type="text" id="acTs" dir="ltr" maxlength="90" spellcheck="false" autocomplete="off" placeholder="0x4AAAAAAA…"><span class="snote" id="acTsH"></span></div>
         <label class="tog" style="grid-column:1/-1"><span id="acReqL"></span><input type="checkbox" id="acReq"></label>
+        <label class="tog" style="grid-column:1/-1"><span id="acPhoneL"></span><input type="checkbox" id="acPhoneOn"></label>
         <div class="fld"><label for="acIdleU" id="acIdleUL"></label><input type="number" id="acIdleU" min="5" max="525600" step="1" dir="ltr"></div>
         <div class="fld"><label for="acIdleA" id="acIdleAL"></label><input type="number" id="acIdleA" min="5" max="525600" step="1" dir="ltr"></div>
         <div class="fld"><label for="acAgeMin" id="acAgeL"></label><input type="number" id="acAgeMin" min="13" max="21" step="1" dir="ltr"></div>
@@ -810,13 +856,13 @@ function secPaint() {
   const a = ACC(), full = !!a.admin, owner = !!a.owner, b = billing();
   el.hidden = !(a.perms && a.perms.has('settings'));
   $('#acSecH').textContent = t('acSecH'); $('#acSecP').textContent = t('acSecP');
-  $('#acTsL').textContent = t('acTsKey'); $('#acTsH').textContent = t('acTsKeyH'); $('#acReqL').textContent = t('acReqMfa');
+  $('#acTsL').textContent = t('acTsKey'); $('#acTsH').textContent = t('acTsKeyH'); $('#acReqL').textContent = t('acReqMfa'); $('#acPhoneL').textContent = t('acPhoneLogin');
   $('#acIdleUL').textContent = t('acIdleU'); $('#acIdleAL').textContent = t('acIdleA'); $('#acAgeL').textContent = t('acMinAge'); $('#acSecSave').textContent = t('acSecSave');
   if (!el.contains(document.activeElement)) {
-    $('#acTs').value = String(b.turnstile_site_key || ''); $('#acReq').checked = b.require_mfa_admin === true;
+    $('#acTs').value = String(b.turnstile_site_key || ''); $('#acReq').checked = b.require_mfa_admin === true; $('#acPhoneOn').checked = b.phone_login === true;
     $('#acIdleU').value = intIn(b.idle_minutes, 5, 525600, 10080); $('#acIdleA').value = intIn(b.idle_minutes_admin, 5, 525600, 60); $('#acAgeMin').value = minAge();
   }
-  for (const id of ['#acTs', '#acIdleU', '#acIdleA', '#acAgeMin']) $(id).disabled = !full;
+  for (const id of ['#acTs', '#acPhoneOn', '#acIdleU', '#acIdleA', '#acAgeMin']) $(id).disabled = !full;
   $('#acReq').disabled = !owner; $('#acReq').title = owner ? '' : t('acSecOwnerOnly');
   $('#acSecSave').disabled = !full;
   $('#acWordsH').textContent = t('acWordsH'); $('#acWordsP').textContent = t('acWordsP');
@@ -831,7 +877,7 @@ async function secSave() {
   const m = $('#acSecMsg'), btn = $('#acSecSave'), a = ACC();
   const ts = $('#acTs').value.trim();
   if (ts && !/^[0-9]x[A-Za-z0-9_-]{10,80}$/.test(ts)) { m.textContent = t('acTsKey'); m.classList.add('err'); $('#acTs').focus(); return; }
-  const prev = billing(), nb = { ...prev, turnstile_site_key: ts,
+  const prev = billing(), nb = { ...prev, turnstile_site_key: ts, phone_login: $('#acPhoneOn').checked,
     idle_minutes: intIn($('#acIdleU').value, 5, 525600, 10080), idle_minutes_admin: intIn($('#acIdleA').value, 5, 525600, 60), min_age: intIn($('#acAgeMin').value, 13, 21, 16) };
   if (a.owner) nb.require_mfa_admin = $('#acReq').checked;
   busy(btn, true); m.classList.remove('err');

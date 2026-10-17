@@ -1137,7 +1137,7 @@ function renderPricing(el, billing, state) {
     if (kind === 'your') return '<button type="button" class="pg-btn line" disabled>' + ic('check') + '<span>' + t('btnYour') + '</span></button>';
     if (kind === 'incl') return '<button type="button" class="pg-btn line" disabled><span>' + t('btnIncl') + '</span></button>';
     if (kind === 'signup') return '<button type="button" class="pg-btn ink" data-signup="1"><span>' + t('btnSignup') + '</span>' + ic('arrow', 'pg-arr') + '</button>';
-    if ((kind === 'sub' || kind === 'subsignup') && !/^https:\/\//.test(id.link || '')) {   /* qw: no checkout link yet → no dead-end CTA (signed in or out) */
+    if ((kind === 'sub' || kind === 'subsignup') && !/^https:\/\//.test(id.link || '') && !/^P-[A-Z0-9]{10,40}$/.test(id.variant || '')) {   /* PayPal plan id = live too */   /* qw: no checkout link yet → no dead-end CTA (signed in or out) */
       const c = (billing.contact || '').trim(), isMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c), isUrl = /^https:\/\//i.test(c);
       if (isMail || isUrl) return '<a class="pg-btn line pg-soon" href="' + esc(isMail ? 'mailto:' + c : c) + '"' + (isUrl ? ' target="_blank" rel="noopener"' : '') + '>' + ic('mail') + '<span>' + t('btnContact') + '</span></a>';
       return '<button type="button" class="pg-btn line pg-soon" disabled aria-disabled="true"><span>' + t('btnSoon') + '</span></button>';

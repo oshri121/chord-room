@@ -45,10 +45,10 @@ const notFound = () => new Response('Not found', { status: 404, headers: { 'cont
 /* acct (accounts v4): per-client request limits for the API, best effort. Cloudflare Pages can't declare the Workers
    rate-limiting binding from the repo (no wrangler.toml for this project; adding one would move every binding/variable
    out of the dashboard), so this keeps a small counter per client IP and minute in the Cache API (per data centre, not
-   atomic). The real wall is the WAF rate-limiting rule in SECURITY-AUDIT.md "v4". /api/pay/webhook is never limited
-   (Lemon Squeezy retries; only its body size is capped). Over the limit → 429 + Retry-After (the browser backs off). */
+   atomic). The real wall is the WAF rate-limiting rule in SECURITY-AUDIT.md "v4". /api/pay/webhook and /api/pay/paypal are never limited
+   (the payment providers retry; only its body size is capped). Over the limit → 429 + Retry-After (the browser backs off). */
 export const LIMITS = [
-  { re: /^\/api\/pay\/webhook\/?$/i, name: null, max: 0, win: 0 },            // exempt
+  { re: /^\/api\/pay\/(?:webhook|paypal)\/?$/i, name: null, max: 0, win: 0 }, // exempt (payment webhooks)
   { re: /^\/api\/assistant(?:\/|$)/i, name: 'as', max: 20, win: 60 },
   { re: /^\/api\/deezer\//i, name: 'dz', max: 120, win: 60 },
   { re: /^\/api\//i, name: 'api', max: 60, win: 60 }

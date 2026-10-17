@@ -71,16 +71,20 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   session is free (`PAID`), Converter batch = `payN('convert',n)` + refund failed/cancelled files (Images free). Pricing table, plan
   card discounts, About tiles/FAQ: `assets/pages.js` (SV strings) from `billing`; admin settings: `#bCosts` (one field per kind) +
   plan `discount`. Points v2 SQL missing → new kinds free, sep/stems via the old RPC. Tests: `sql/test_points_v2.py`, `ui/test_points.py`.
-- Payments (Lemon Squeezy subscriptions; owner setup in `PAYMENTS.md`): each plan has `link` (checkout URL) + `variant` (id).
-  "Subscribe" (signed-in only) opens `link` + `checkout[custom][user_id|plan]` + `checkout[email]`; an active subscriber goes to
-  the portal instead. Webhooks → `functions/api/pay/webhook.js` (no secrets; forwards raw body + X-Signature) → SQL
-  `pay_webhook(p_body,p_sig)`: HMAC-SHA256 with `private.settings.lemon_signing_secret`, once per event in `pay_events`
-  (admin-readable), user = custom user_id → `profiles.pay_sub_id` → email; plan = variant → product/variant name →
-  custom plan (only while no variant is configured). Points go in with ledger reason 'payment', exactly once per key in the ref
-  (`ls:sub:<id>` first payment, `ls:inv:<id>` renewal, `ls:up:…` upgrade difference, `ls:rf:…` refund take-back).
-  `profiles.pay_*` (status/portal/renews/plan…) are webhook-only. `refill_credits` skips live subscriptions (points only
-  from payments) but still expires `plan_until` (= renews_at + 3 days). Return URL `?paid=1#pricing` polls `loadCredits`
-  (`payReturn`). `admin_set_plan` still works for manual plans. Local SQL tests: signed bodies via python HMAC.
+- Payments = PayPal subscriptions (owner setup in `PAYMENTS.md`; Lemon Squeezy's `webhook.js` + `pay_webhook` stay in place, unused).
+  Each plan's `variant` = PayPal plan id `P-…` (guard + admin accept `^(\d{1,12}|P-[A-Z0-9]{10,40})$`; `link` empty). "Subscribe"
+  (signed-in only, `paypalCheckout` in app.js) opens a window, POSTs `/api/pay/paypal-subscribe` (Function: Supabase-auth user, plan id
+  from `site_config`, refuses a live sub with 409 `have_sub`, creates the subscription with `custom_id` = uid, returns the approve link,
+  return URL `?paid=1#pricing` → `payReturn`). Webhook `/api/pay/paypal` (`functions/api/pay/paypal.js`, rate-limit exempt): verifies
+  with PayPal's verify-webhook-signature (raw body spliced in), then HMAC-SHA256 of `env\nbody` with `PAYPAL_RELAY_SECRET` → SQL
+  `pay_webhook_paypal(p_body,p_env,p_sig)` (secret `private.settings.paypal_relay_secret`; block `[paypal:begin…end]` = last block of
+  schema.sql = `supabase/paypal.sql`). Once per PayPal event id in `pay_events` (`pp:<id>`); user = custom_id → `pay_sub_id` → unique
+  confirmed email; SUBSCRIPTION.* sets `pay_*` (provider 'paypal', portal = paypal.com/myaccount/autopay) and the plan until next
+  billing + 3 days; points only from `PAYMENT.SALE.COMPLETED` (ledger ref `ls:pp:sale:<id>`, sales that arrived before ACTIVATED
+  are granted on ACTIVATED), full REFUNDED/REVERSED takes them back; sandbox counts only for admins. Env (Cloudflare): `PAYPAL_ENV`,
+  `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`, `PAYPAL_RELAY_SECRET` (shared helpers `paypal-lib.js`). Product,
+  plans (ILS, monthly, from the site's prices) and webhook: `python3 tools/paypal/setup.py [--live]` (owner runs it; prints the ids).
+  `refill_credits` skips live subscriptions (points only from payments) but still expires `plan_until`. `admin_set_plan` still works.
 - Crate (`#crateView`, hash `#crate`, nav "ניתוח ספרייה"): `assets/crate.js/css` (strings inside), talks only through `window.CR`.
   Batch BPM/key/Camelot/LUFS/energy for many files (sequential `CR.analyzeTrack`), sortable/filterable table, smart set order,
   exports CSV / rekordbox XML (Location from the folder path the user types, TEMPO beatgrid) / M3U8 / renamed-copies ZIP with ID3 TBPM+TKEY.
@@ -113,7 +117,12 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   resample through an OfflineAudioContext, −14 LUFS normalise with a −1 dBFS ceiling, linear fades. Tags: own readers (ID3v2
   in MP3/WAV/AIFF incl. APIC, Vorbis comments + PICTURE in FLAC/OGG, iTunes ilst in MP4/M4A/MOV, ID3v1 fallback) → written as
   ID3v2.3 (MP3, WAV `id3 ` chunk), `-metadata` + attached_pic / `METADATA_BLOCK_PICTURE` (ffmpeg targets), `tmpo` for M4A BPM;
-  "BPM & key into tags" = `CR.analyzeTrack` → TBPM/TKEY (off by default). "Images" tab = canvas resize/convert of cover art
+  "BPM & key into tags" = `CR.analyzeTrack` → TBPM/TKEY (off by default). Quality + "Restore highs" (`assets/hfr.js` = `window.HFR`,
+  loaded with the convert module): `HFR.analyze(chs,sr)` → brick-wall cutoff (≥ 18 dB drop within ~1 kHz that stays down; ≥ 19.6 kHz =
+  full range; est. kbps) + a 160-point spectrum, run on add (`probeNext`, decodeAudioData only, idle) and on convert; option `hfr` +
+  `hfrAmt` 1–3 → `HFR.restore` = STFT SBR (N 2048, hop N/4, integer-bin single-sideband shift with per-frame phase advance, patches of
+  the band below the cut, gain from the extrapolated slope, ramp + top fade to min(20 kHz, nyq−500)); output = original + added band
+  (below the cut bit-identical), peak-safe. Row shows chip + `.cvspec` (before/after). No YouTube/streaming downloads (licensing). "Images" tab = canvas resize/convert of cover art
   (500/1000/1500 px square centre-crop or original; jpg/png/webp). Options in localStorage `chordroom.convert.v1`; up to 50
   files, 300 MB each. Activity `convert` ("<n> files → <fmt>"). Test: `tools/tests/ui/test_convert.py` (fixtures from
   `tools/tests/fixtures/gen_media.py`, system ffmpeg + mutagen when present).
@@ -177,6 +186,13 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `handle_new_user`) → 6-digit email code (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
   (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
   owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
+- Sign-in methods (auth dialog, modes `in` / `otp`+`otpcode` / `sms`+`smscode`): password; a one-time code by email
+  (`Backend.sendLoginCode` = `signInWithOtp` shouldCreateUser:false, `verifyLogin` type 'email'; the Magic Link template must show
+  `{{ .Token }}` = custom SMTP, otherwise the email's link signs in); SMS code to a number verified on the account (`sendPhoneCode` /
+  `verifyPhone` type 'sms'), shown only with `billing.phone_login` (admin Settings → Security, acct.js) and an SMS provider in Supabase.
+  The account panel (acct.js `acPhWrap`) adds/changes the number: `setPhone` (updateUser) → `verifyPhoneChange` (type 'phone_change').
+  `normPhone` (app.js, `CR.normPhone`): 05x… → +972…, else international. Errors 'nouser' / 'sms' / 'phone' / 'phone_taken' (`smsError`).
+  Mock: email code 135790, SMS sign-in 135790, new number 246810. Local preview with a test user: `.claude/preview/mock.html` (seed.js).
 - Client hardening (`/* sec */`): every ZIP entry goes through `zipName` (app.js `zip()`, also `CR.zipName`; no `..`/absolute/drive
   paths, control/bidi characters, Windows device names or reserved characters; duplicates → ` (2)`) and every download name through
   `safeSeg` (`saveBlob`); Crate M3U8 fields are one line each (`m3l`) and point at the sanitised ZIP names; Deezer API data is
@@ -185,7 +201,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
   FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]` and `[growth-v4]` (the last block;
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]` and `[paypal]` (the last block;
   owner runs `accounts_v4.sql` before `growth_v4.sql`) (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
   adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
@@ -201,7 +217,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Accounts v4 (`assets/acct.js/css`, strings inside; only via `window.CR` + `Backend`; a lazy module ('acct', see Performance):
   app.js `acctNeed()` loads it for a saved session at boot, on sign-in, when the auth dialog opens (every `auRun` waits for it) and on
   `cr-mfa`; it catches up at load (`CR.lastUser()`, `Backend.mfaPending`, open panels); SQL `[accounts-v4:begin…end]` = after [security-v3],
-  before `[growth-v4]` (the last block) of schema.sql = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
+  before `[growth-v4]` of schema.sql = `supabase/accounts_v4.sql`; owner steps SECURITY-AUDIT.md "v4"): **delete account** (account panel danger zone: confirm username/DELETE/מחק +
   password re-auth or e-mail code + TOTP; browser removes `uploads|avatars/<uid>/*` via the Storage API, then `delete_my_account(p_confirm)`
   refuses owner / live subscription / no fresh amr (15 min) / aal1 with 2FA / files left; a BEFORE DELETE trigger on `auth.users` anonymises
   payment rows (`subject_hash`) + pay_events payloads, rewrites the uid in other rows, logs `account_deletions`; then `clearLocal(uid)`);

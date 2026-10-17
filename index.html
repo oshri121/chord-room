@@ -289,6 +289,8 @@
         <div class="au-fld"><label for="inEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="inEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="inEmailE"></div><p class="au-fe" id="inEmailE"></p></div>
         <div class="au-fld"><div class="au-lrow"><label for="inPass" data-i="password"></label><button type="button" class="au-lnk" id="toForgot" data-i="auForgotQ"></button></div><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="inPass" required minlength="8" autocomplete="current-password" aria-describedby="inPassCaps"><button type="button" class="au-eye" data-eye="inPass" aria-controls="inPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="inPassCaps" hidden><span data-i="auCaps"></span></p></div>
         <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt"><button type="button" class="au-lnk" id="toOtp" data-i="auOtpLink"></button></p>
+        <p class="au-alt" id="auAltSms" hidden><button type="button" class="au-lnk" id="toSms" data-i="auSmsLink"></button></p>
         <p class="au-alt" id="auAltUp"><button type="button" class="au-lnk" id="toUp" data-i="toUp"></button></p>
       </form>
       </div>
@@ -324,6 +326,26 @@
         <div class="au-fld"><label for="fgEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="fgEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="fgEmailE"></div><p class="au-fe" id="fgEmailE"></p></div>
         <button class="au-cta" type="submit"><span data-i="auSendCode"></span><i class="au-spin" aria-hidden="true"></i></button>
         <p class="au-alt"><button type="button" class="au-lnk" id="toIn2" data-i="auBackIn"></button></p>
+      </form>
+      <form id="fOtp" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="otEmail" data-i="email"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><input type="email" id="otEmail" dir="ltr" required autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="otEmailE"></div><p class="au-fe" id="otEmailE"></p></div>
+        <button class="au-cta" type="submit"><span data-i="auSendCode"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt"><button type="button" class="au-lnk" id="toPw" data-i="auPwLink"></button></p>
+      </form>
+      <form id="fOtpCode" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="otCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="otCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="otCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="otCodeE"></p></div>
+        <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <div class="au-row2"><button type="button" class="au-lnk" id="otResend" data-cool="login"></button><button type="button" class="au-lnk" id="toPw2" data-i="auPwLink"></button></div>
+      </form>
+      <form id="fSms" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="smPhone" data-i="auPhoneL"></label><div class="au-in"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg><input type="tel" id="smPhone" dir="ltr" required autocomplete="tel" inputmode="tel" spellcheck="false" placeholder="050-123-4567" aria-describedby="smPhoneE"></div><p class="au-fe" id="smPhoneE"></p></div>
+        <button class="au-cta" type="submit"><span data-i="auSendCode"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <p class="au-alt"><button type="button" class="au-lnk" id="toPw3" data-i="auPwLink"></button></p>
+      </form>
+      <form id="fSmsCode" class="au-form" novalidate hidden>
+        <div class="au-fld"><label for="smCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="smCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="smCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="smCodeE"></p></div>
+        <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
+        <div class="au-row2"><button type="button" class="au-lnk" id="smResend" data-cool="sms"></button><button type="button" class="au-lnk" id="toPw4" data-i="auPwLink"></button></div>
       </form>
       <form id="fRecover" class="au-form" novalidate hidden>
         <div class="au-fld"><label for="rcCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="rcCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required aria-describedby="rcCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="rcCodeE"></p></div>
@@ -418,10 +440,10 @@
      data-mod = the modules that need the file (a shared file loads once). -->
 <script src="config.js?v=1" defer></script>
 <script src="vendor/supabase.js" defer></script>
-<script src="assets/backend.js?v=14" defer></script>
-<script src="assets/app.js?v=34" defer></script>
+<script src="assets/backend.js?v=16" defer></script>
+<script src="assets/app.js?v=38" defer></script>
 <script src="assets/dj-i18n.js?v=4" defer></script>
-<script src="assets/pages.js?v=12" defer></script>
+<script src="assets/pages.js?v=13" defer></script>
 <script src="assets/shell.js?v=7" defer></script>
 <script src="assets/bg.js?v=3" defer></script>
 <script src="assets/a11y.js?v=4" defer></script>
@@ -436,7 +458,7 @@
 <link rel="stylesheet" href="assets/dj.css?v=4" data-mod="dj">
 <link rel="stylesheet" href="assets/crate.css?v=6" data-mod="crate">
 <link rel="stylesheet" href="assets/mashup.css?v=2" data-mod="mashup">
-<link rel="stylesheet" href="assets/convert.css?v=2" data-mod="convert">
+<link rel="stylesheet" href="assets/convert.css?v=3" data-mod="convert">
 <link rel="stylesheet" href="assets/extended.css?v=3" data-mod="extended">
 <link rel="stylesheet" href="assets/welcome.css?v=2" data-mod="welcome">
 <link rel="stylesheet" href="assets/acct.css?v=1" data-mod="acct">
@@ -446,14 +468,15 @@
 <script src="assets/crate.js?v=12" data-mod="crate extended"></script>
 <script src="assets/mp3.js?v=1" data-mod="tool crate mashup convert extended"></script>
 <script src="assets/mashup.js?v=4" data-mod="mashup"></script>
-<script src="assets/convert.js?v=3" data-mod="convert"></script>
+<script src="assets/hfr.js?v=1" data-mod="convert"></script>
+<script src="assets/convert.js?v=4" data-mod="convert"></script>
 <script src="assets/extended.js?v=4" data-mod="extended"></script>
 <script src="assets/welcome.js?v=2" data-mod="welcome"></script>
 <script src="assets/assistant.js?v=4" data-mod="assistant"></script>
 <script src="assets/voice.js?v=1" data-mod="tool"></script>
 <!-- acct (accounts v4: 2FA, delete account, Turnstile, idle sign-out, word filter): app.js loads it for a saved session at boot,
      on sign-in, when the auth dialog opens and on a 2FA challenge; growth: info = the licenses / accessibility pages -->
-<script src="assets/acct.js?v=1" data-mod="acct"></script>
+<script src="assets/acct.js?v=2" data-mod="acct"></script>
 <script src="assets/info.js?v=1" data-mod="info"></script>
 </template>
 </body>

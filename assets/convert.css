@@ -311,3 +311,17 @@ html.a11y-noanim .convert .bar i::after{display:none}
   .cvigrid{grid-template-columns:1fr}
   .cvstage.compact .cvdb{margin-inline-start:0}
 }
+/* quality check + restored highs (assets/hfr.js) */
+.cvhfr{align-items:center}
+.cvq{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:6px}
+.cvq.dim .cvqc{color:var(--faint);background:none;padding:0}
+.cvqc{display:inline-flex;align-items:center;min-height:20px;padding:0 8px;border-radius:var(--r-pill);font-size:11.5px;font-weight:600;background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink2)}
+.cvqc.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.cvqc.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:color-mix(in srgb,var(--warn) 70%,var(--ink))}
+.cvqc.up{background:color-mix(in srgb,var(--acc-a) 16%,transparent);color:color-mix(in srgb,var(--acc-a) 80%,var(--ink))}
+.cvspec{display:block;width:100%;max-width:300px;height:40px;flex-basis:100%;border-radius:6px;background:color-mix(in srgb,var(--ink) 4%,transparent);overflow:hidden}
+.cvspec path{fill:none;stroke-width:1.4;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.cvspec path.a{stroke:var(--ink2)}
+.cvspec path.b{stroke:color-mix(in srgb,var(--acc-a) 85%,transparent);stroke-width:1.8}
+.cvspec line.g{stroke:var(--line2);stroke-width:1;vector-effect:non-scaling-stroke}
+.cvspec line.c{stroke:color-mix(in srgb,var(--warn) 80%,transparent);stroke-width:1.2;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
