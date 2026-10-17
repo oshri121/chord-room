@@ -2956,12 +2956,13 @@ begin
     end if;
     if new.analytics is null or jsonb_typeof(new.analytics) <> 'object' then raise exception 'bad analytics' using errcode = '22023'; end if;
     for k in select jsonb_object_keys(new.analytics) loop
-      if k not in ('ga4', 'clarity', 'gsc') then raise exception 'bad analytics: unknown key %', k using errcode = '22023'; end if;
+      if k not in ('ga4', 'clarity', 'meta', 'gsc') then raise exception 'bad analytics: unknown key %', k using errcode = '22023'; end if;
       if jsonb_typeof(new.analytics->k) <> 'string' then raise exception 'bad analytics: %', k using errcode = '22023'; end if;
     end loop;
     if coalesce(new.analytics->>'ga4', '') !~ '^(G-[A-Z0-9]{4,16})?$' then raise exception 'bad analytics: ga4 (G-XXXXXXXXXX)' using errcode = '22023'; end if;
     if coalesce(new.analytics->>'clarity', '') !~ '^([a-z0-9]{6,16})?$' then raise exception 'bad analytics: clarity (project id)' using errcode = '22023'; end if;
     if coalesce(new.analytics->>'gsc', '') !~ '^([A-Za-z0-9_-]{10,100})?$' then raise exception 'bad analytics: gsc (verification token)' using errcode = '22023'; end if;
+    if coalesce(new.analytics->>'meta', '') !~ '^([0-9]{10,20})?$' then raise exception 'bad analytics: meta (Meta Pixel dataset id)' using errcode = '22023'; end if;
   end if;
   if new.experiments is distinct from oe then
     if new.experiments is null or jsonb_typeof(new.experiments) <> 'array' or jsonb_array_length(new.experiments) > 10 then

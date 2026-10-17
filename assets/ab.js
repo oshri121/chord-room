@@ -23,6 +23,7 @@ const T = {
 he: { gTitle: 'צמיחה: סטטיסטיקה, Search Console וניסויי A/B', anTitle: 'סטטיסטיקה ו־Search Console',
   anHelp: 'הכלים נטענים רק אחרי שהמבקר אישר ״סטטיסטיקה״ בחלון העוגיות. ריק = כבוי.',
   ga4: 'Google Analytics 4 — מזהה מדידה', ga4H: 'G-XXXXXXXXXX (GA4 → Admin → Data streams)', clarity: 'Microsoft Clarity — מזהה פרויקט', clarityH: 'אותיות קטנות וספרות (Clarity → Settings → Overview)',
+  meta: 'Meta Pixel — מזהה ערכת הנתונים', metaH: 'ספרות בלבד (מנהל האירועים ← ערכות נתונים)',
   gsc: 'Google Search Console — קוד אימות (meta)', gscH: 'רק הערך של content מתוך התג google-site-verification',
   anOnly: 'רק בעל האתר או מנהל מלא יכולים לשנות את המזהים.', bad: 'ערך לא תקין: {f}', save: 'שמירה', saved: 'נשמר', saveFail: 'השמירה נכשלה',
   exTitle: 'ניסויי A/B', exHelp: 'כל ניסוי כבוי עד שמסמנים ״פעיל״. התוצאות נספרות למשתמשים מחוברים (אורחים — דרך GA4, מאפיין משתמש ab_<מזהה>).',
@@ -32,6 +33,7 @@ he: { gTitle: 'צמיחה: סטטיסטיקה, Search Console וניסויי A/B
 en: { gTitle: 'Growth: analytics, Search Console and A/B tests', anTitle: 'Analytics & Search Console',
   anHelp: 'The tools load only after a visitor allows “Analytics” in the cookie banner. Empty = off.',
   ga4: 'Google Analytics 4 — measurement ID', ga4H: 'G-XXXXXXXXXX (GA4 → Admin → Data streams)', clarity: 'Microsoft Clarity — project ID', clarityH: 'lower-case letters and digits (Clarity → Settings → Overview)',
+  meta: 'Meta Pixel — dataset ID', metaH: 'digits only (Events Manager → Datasets)',
   gsc: 'Google Search Console — verification code (meta)', gscH: 'only the content value of the google-site-verification tag',
   anOnly: 'Only the site owner or a full admin can change these IDs.', bad: 'Invalid value: {f}', save: 'Save', saved: 'Saved', saveFail: 'Could not save',
   exTitle: 'A/B experiments', exHelp: 'Every experiment is off until you tick “On”. Results count signed-in members (guests: in GA4, user property ab_<id>).',
@@ -41,6 +43,7 @@ en: { gTitle: 'Growth: analytics, Search Console and A/B tests', anTitle: 'Analy
 ar: { gTitle: 'النمو: الإحصاءات وSearch Console واختبارات A/B', anTitle: 'الإحصاءات وSearch Console',
   anHelp: 'لا تُحمَّل الأدوات إلا بعد أن يسمح الزائر بـ«الإحصاءات» في نافذة ملفات تعريف الارتباط. فارغ = متوقف.',
   ga4: 'Google Analytics 4 — معرّف القياس', ga4H: 'G-XXXXXXXXXX (GA4 → Admin → Data streams)', clarity: 'Microsoft Clarity — معرّف المشروع', clarityH: 'أحرف صغيرة وأرقام (Clarity → Settings → Overview)',
+  meta: 'Meta Pixel — معرّف مجموعة البيانات', metaH: 'أرقام فقط (Events Manager → Datasets)',
   gsc: 'Google Search Console — رمز التحقق (meta)', gscH: 'قيمة content فقط من وسم google-site-verification',
   anOnly: 'يمكن لمالك الموقع أو لمدير كامل فقط تغيير هذه المعرّفات.', bad: 'قيمة غير صالحة: {f}', save: 'حفظ', saved: 'تم الحفظ', saveFail: 'تعذّر الحفظ',
   exTitle: 'تجارب A/B', exHelp: 'كل تجربة متوقفة حتى تحدد «مفعّلة». تُحتسب النتائج للأعضاء المسجّلين (الزوار: في GA4، خاصية المستخدم ab_<المعرّف>).',
@@ -50,6 +53,7 @@ ar: { gTitle: 'النمو: الإحصاءات وSearch Console واختبارا�
 ru: { gTitle: 'Рост: аналитика, Search Console и A/B-тесты', anTitle: 'Аналитика и Search Console',
   anHelp: 'Инструменты загружаются только после того, как посетитель разрешит «Аналитику» в окне cookie. Пусто = выключено.',
   ga4: 'Google Analytics 4 — идентификатор потока', ga4H: 'G-XXXXXXXXXX (GA4 → Admin → Data streams)', clarity: 'Microsoft Clarity — ID проекта', clarityH: 'строчные буквы и цифры (Clarity → Settings → Overview)',
+  meta: 'Meta Pixel — ID набора данных', metaH: 'только цифры (Events Manager → Datasets)',
   gsc: 'Google Search Console — код подтверждения (meta)', gscH: 'только значение content из тега google-site-verification',
   anOnly: 'Менять эти идентификаторы может только владелец сайта или полный администратор.', bad: 'Неверное значение: {f}', save: 'Сохранить', saved: 'Сохранено', saveFail: 'Не удалось сохранить',
   exTitle: 'A/B-эксперименты', exHelp: 'Каждый эксперимент выключен, пока не отмечено «Вкл.». Результаты считаются по вошедшим пользователям (гости — в GA4, свойство пользователя ab_<id>).',
@@ -59,6 +63,7 @@ ru: { gTitle: 'Рост: аналитика, Search Console и A/B-тесты', 
 es: { gTitle: 'Crecimiento: analítica, Search Console y pruebas A/B', anTitle: 'Analítica y Search Console',
   anHelp: 'Las herramientas se cargan solo después de que el visitante permita «Analítica» en el aviso de cookies. Vacío = desactivado.',
   ga4: 'Google Analytics 4 — ID de medición', ga4H: 'G-XXXXXXXXXX (GA4 → Admin → Data streams)', clarity: 'Microsoft Clarity — ID del proyecto', clarityH: 'minúsculas y dígitos (Clarity → Settings → Overview)',
+  meta: 'Meta Pixel — ID del conjunto de datos', metaH: 'solo dígitos (Events Manager → Datasets)',
   gsc: 'Google Search Console — código de verificación (meta)', gscH: 'solo el valor content de la etiqueta google-site-verification',
   anOnly: 'Solo el propietario del sitio o un administrador completo pueden cambiar estos ID.', bad: 'Valor no válido: {f}', save: 'Guardar', saved: 'Guardado', saveFail: 'No se pudo guardar',
   exTitle: 'Experimentos A/B', exHelp: 'Cada experimento está apagado hasta que marques «Activo». Los resultados cuentan miembros con sesión iniciada (invitados: en GA4, propiedad de usuario ab_<id>).',
@@ -153,13 +158,13 @@ function exRow(e, i) {
 }
 function renderAdmin(keepTyped) {
   const el = $('#admGrowth'); if (!el) return;
-  if (keepTyped && el.querySelector('#gxGa4')) { adm.av = { ga4: $('#gxGa4').value, clarity: $('#gxClarity').value, gsc: $('#gxGsc').value }; readDraft(); }
+  if (keepTyped && el.querySelector('#gxGa4')) { adm.av = { ga4: $('#gxGa4').value, clarity: $('#gxClarity').value, meta: $('#gxMeta').value, gsc: $('#gxGsc').value }; readDraft(); }
   adm.open = true;
   if (!adm.draft) adm.draft = exps().map(e => ({ ...e, variants: e.variants.slice() }));
   const a = adm.av || cfgA(), dis = !canIds(), ids = adm.draft.map(e => e.id), known = KNOWN.filter(k => !ids.includes(k.id));
   el.innerHTML = '<div class="bhead"><h3>' + esc(t('gTitle')) + '</h3></div>' +
     '<section class="gx-sec" aria-labelledby="gxAnH"><h4 id="gxAnH">' + esc(t('anTitle')) + '</h4><p class="snote">' + esc(t('anHelp')) + (dis ? ' ' + esc(t('anOnly')) : '') + '</p>' +
-    '<div class="sgrid">' + fld('gxGa4', t('ga4'), t('ga4H'), a.ga4, dis) + fld('gxClarity', t('clarity'), t('clarityH'), a.clarity, dis) + fld('gxGsc', t('gsc'), t('gscH'), a.gsc, dis) +
+    '<div class="sgrid">' + fld('gxGa4', t('ga4'), t('ga4H'), a.ga4, dis) + fld('gxClarity', t('clarity'), t('clarityH'), a.clarity, dis) + fld('gxMeta', t('meta'), t('metaH'), a.meta, dis) + fld('gxGsc', t('gsc'), t('gscH'), a.gsc, dis) +
     '<div class="row2" style="grid-column:1/-1"><button type="button" class="btn solid" id="gxSaveA"' + (dis ? ' disabled' : '') + '>' + esc(t('save')) + '</button><span class="snote" id="gxMsgA" role="status">' + esc(adm.msgA) + '</span></div></div></section>' +
     '<section class="gx-sec" aria-labelledby="gxExH"><h4 id="gxExH">' + esc(t('exTitle')) + '</h4><p class="snote">' + esc(t('exHelp')) + '</p>' +
     (adm.draft.length ? adm.draft.map(exRow).join('') : '<p class="snote">' + esc(t('exNone')) + '</p>') +
@@ -177,8 +182,8 @@ function readDraft() {
   });
 }
 async function saveA() {
-  const vals = { ga4: $('#gxGa4').value.trim(), clarity: $('#gxClarity').value.trim(), gsc: $('#gxGsc').value.trim() };
-  const RX = { ga4: /^(G-[A-Z0-9]{4,16})?$/, clarity: /^([a-z0-9]{6,16})?$/, gsc: /^([A-Za-z0-9_-]{10,100})?$/ };
+  const vals = { ga4: $('#gxGa4').value.trim(), clarity: $('#gxClarity').value.trim(), meta: $('#gxMeta').value.trim(), gsc: $('#gxGsc').value.trim() };
+  const RX = { ga4: /^(G-[A-Z0-9]{4,16})?$/, clarity: /^([a-z0-9]{6,16})?$/, meta: /^([0-9]{10,20})?$/, gsc: /^([A-Za-z0-9_-]{10,100})?$/ };
   const bad = Object.keys(vals).filter(k => !RX[k].test(vals[k]));
   if (bad.length) { adm.msgA = t('bad', { f: bad.join(', ') }); renderAdmin(); return; }
   try { await Backend.saveGrowth({ analytics: vals }); CR.ACC.config = { ...CR.ACC.config, analytics: vals }; adm.msgA = t('saved'); adm.av = null; document.dispatchEvent(new CustomEvent('cr-config')); }

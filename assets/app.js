@@ -3082,7 +3082,8 @@ function payReturn(){
   const u=new URL(location.href);u.searchParams.delete('paid');history.replaceState(history.state,'',u.pathname+u.search+u.hash);
   PAY.polling=true;const c0={...ACC.cred},t0=Date.now();
   toast(t('payWait'));
-  const done=()=>{PAY.polling=false;const c=ACC.cred||{};toast(t('payDone',{p:planName(c.plan||'free'),n:(c.credits||0).toLocaleString('en-US')}))};
+  const done=()=>{PAY.polling=false;const c=ACC.cred||{};toast(t('payDone',{p:planName(c.plan||'free'),n:(c.credits||0).toLocaleString('en-US')}));
+    try{const pl=(BILL().plans||[]).find(x=>x.id===c.plan);document.dispatchEvent(new CustomEvent('cr-paid',{detail:{plan:c.plan||'',value:pl?+pl.price||0:0}}))}catch(e){}};   /* growth: Meta Purchase / GA purchase */
   const tick=async()=>{
     await loadCredits(false);const c=ACC.cred||{};
     if((c.plan&&c.plan!==c0.plan)||(c.credits||0)>(c0.credits||0)||await recentPayment())return done();
