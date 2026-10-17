@@ -192,7 +192,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `verifyPhone` type 'sms'), shown only with `billing.phone_login` (admin Settings → Security, acct.js) and an SMS provider in Supabase.
   The account panel (acct.js `acPhWrap`) adds/changes the number: `setPhone` (updateUser) → `verifyPhoneChange` (type 'phone_change').
   `normPhone` (app.js, `CR.normPhone`): 05x… → +972…, else international. Errors 'nouser' / 'sms' / 'phone' / 'phone_taken' (`smsError`).
-  Mock: email code 135790, SMS sign-in 135790, new number 246810. Local preview with a test user: `.claude/preview/mock.html` (seed.js).
+  Mock: email code 135790, SMS sign-in 135790, new number 246810. Local preview with a test user: `.claude/preview/` (index.html = index.html + mock + seed.js; rebuild it after index.html changes).
 - Client hardening (`/* sec */`): every ZIP entry goes through `zipName` (app.js `zip()`, also `CR.zipName`; no `..`/absolute/drive
   paths, control/bidi characters, Windows device names or reserved characters; duplicates → ` (2)`) and every download name through
   `safeSeg` (`saveBlob`); Crate M3U8 fields are one line each (`m3l`) and point at the sanitised ZIP names; Deezer API data is

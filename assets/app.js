@@ -1979,9 +1979,19 @@ async function download(){
 
 /* ---------- library ---------- */
 const LK='chordroom.library.v2';
-function readLocal(){try{return JSON.parse(localStorage.getItem(LK)||'[]')}catch(e){return []}}
-function readLib(){return (typeof ACC!=='undefined'&&ACC.lib)?ACC.lib:readLocal()}
-function writeLib(l){try{localStorage.setItem(LK,JSON.stringify(l))}catch(e){}}
+// the local list is kept per account (`chordroom.library.v2:<uid|guest>`); the old shared key goes to the first account that signs in
+const libUid=()=>typeof ACC!=='undefined'&&ACC.user?ACC.user.id:'guest';
+function readLocal(){
+  const k=LK+':'+libUid();
+  try{
+    let v=localStorage.getItem(k);
+    if(v==null&&libUid()!=='guest'){const old=localStorage.getItem(LK);if(old!=null){localStorage.setItem(k,old);localStorage.removeItem(LK);v=old}}
+    return JSON.parse(v||'[]')
+  }catch(e){return []}
+}
+// signed out (accounts on) → nothing: one browser can be shared, so a guest never sees an account's songs
+function readLib(){if(typeof ACC!=='undefined'&&ACC.on&&!ACC.user)return [];return (typeof ACC!=='undefined'&&ACC.lib)?ACC.lib:readLocal()}
+function writeLib(l){try{localStorage.setItem(LK+':'+libUid(),JSON.stringify(l))}catch(e){}}
 function saveLib(){
   if(!S.chords||S.demo)return;
   const item={name:S.name,dur:S.dur,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,chords:Array.from(S.chords),edited:[...S.edited],cues:S.cues,rate:S.rate,transpose:S.transpose,lufs:S.lufs,peak:S.peak,saved:Date.now(),
@@ -2096,6 +2106,7 @@ function myName(){const p=ACC.profile||{};return p.display_name||p.username||(AC
 function renderAccount(){
   const on=ACC.on,user=ACC.user;
   renderAuthBtns();$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.panel;
+  $('#libBtn').hidden=!!on&&!user;if(on&&!user)$('#lib').hidden=true;   // My songs: only for a signed-in account
   if(!user)return;
   const p=ACC.profile||{};
   $('#accImg').src=avatarFor(p);$('#accBtn').setAttribute('aria-label',t('account'));
