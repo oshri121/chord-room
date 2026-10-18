@@ -235,15 +235,15 @@ aboutT:'El análisis ocurre en tu navegador. Con sesión iniciada, las canciones
 for(const k in IZ)Object.assign(I[k],IZ[k]);
 // tempo & key change
 const IT={
-he:{tempoDown:'האטה (Shift: 0.1)',tempoUp:'האצה (Shift: 0.1)',bpmEdit:'אפשר להקליד BPM חדש, השיר יתנגן בקצב הזה',keyDown:'הורדת הסולם בחצי טון',keyUp:'העלאת הסולם בחצי טון',origL:'מקור',resetL:'חזרה למקור',
+he:{keyOr:'או',keyOrT:'הסולם לא חד־משמעי: גם {k} מתאים לשיר',tempoDown:'האטה (Shift: 0.1)',tempoUp:'האצה (Shift: 0.1)',bpmEdit:'אפשר להקליד BPM חדש, השיר יתנגן בקצב הזה',keyDown:'הורדת הסולם בחצי טון',keyUp:'העלאת הסולם בחצי טון',origL:'מקור',resetL:'חזרה למקור',
   fxFail:'לא הצלחנו לטעון את מנוע שינוי הקצב והסולם בדפדפן הזה.',fxRender:'מעבד קצב וסולם לקובץ {n} מתוך {m}…',transposeH:'משנה את הסולם של השיר, גם בשמע וגם באקורדים'},
-en:{tempoDown:'Slower (Shift: 0.1)',tempoUp:'Faster (Shift: 0.1)',bpmEdit:'Type a new BPM and the song plays at that tempo',keyDown:'Key down a semitone',keyUp:'Key up a semitone',origL:'Original',resetL:'Back to original',
+en:{keyOr:'or',keyOrT:'The key is not clear-cut: {k} fits the song too',tempoDown:'Slower (Shift: 0.1)',tempoUp:'Faster (Shift: 0.1)',bpmEdit:'Type a new BPM and the song plays at that tempo',keyDown:'Key down a semitone',keyUp:'Key up a semitone',origL:'Original',resetL:'Back to original',
   fxFail:'Couldn\'t load the tempo and key engine in this browser.',fxRender:'Rendering tempo and key, file {n} of {m}…',transposeH:'Changes the song\'s key, both the audio and the chords'},
-ar:{tempoDown:'أبطأ (Shift: 0.1)',tempoUp:'أسرع (Shift: 0.1)',bpmEdit:'اكتب BPM جديدًا وستُعزف الأغنية بهذا الإيقاع',keyDown:'خفض المقام نصف درجة',keyUp:'رفع المقام نصف درجة',origL:'الأصل',resetL:'العودة إلى الأصل',
+ar:{keyOr:'أو',keyOrT:'المقام غير حاسم: {k} يناسب الأغنية أيضًا',tempoDown:'أبطأ (Shift: 0.1)',tempoUp:'أسرع (Shift: 0.1)',bpmEdit:'اكتب BPM جديدًا وستُعزف الأغنية بهذا الإيقاع',keyDown:'خفض المقام نصف درجة',keyUp:'رفع المقام نصف درجة',origL:'الأصل',resetL:'العودة إلى الأصل',
   fxFail:'تعذّر تحميل محرك تغيير الإيقاع والمقام في هذا المتصفح.',fxRender:'معالجة الإيقاع والمقام، الملف {n} من {m}…',transposeH:'يغيّر مقام الأغنية، في الصوت والكوردات معًا'},
-ru:{tempoDown:'Медленнее (Shift: 0.1)',tempoUp:'Быстрее (Shift: 0.1)',bpmEdit:'Введите новый BPM, и трек зазвучит в этом темпе',keyDown:'Тональность на полутон ниже',keyUp:'Тональность на полутон выше',origL:'Оригинал',resetL:'Вернуть оригинал',
+ru:{keyOr:'или',keyOrT:'Тональность неоднозначна: {k} тоже подходит',tempoDown:'Медленнее (Shift: 0.1)',tempoUp:'Быстрее (Shift: 0.1)',bpmEdit:'Введите новый BPM, и трек зазвучит в этом темпе',keyDown:'Тональность на полутон ниже',keyUp:'Тональность на полутон выше',origL:'Оригинал',resetL:'Вернуть оригинал',
   fxFail:'Не удалось загрузить движок темпа и тональности в этом браузере.',fxRender:'Обработка темпа и тональности, файл {n} из {m}…',transposeH:'Меняет тональность трека: и звук, и аккорды'},
-es:{tempoDown:'Más lento (Shift: 0.1)',tempoUp:'Más rápido (Shift: 0.1)',bpmEdit:'Escribe un BPM nuevo y la canción sonará a ese tempo',keyDown:'Bajar la tonalidad un semitono',keyUp:'Subir la tonalidad un semitono',origL:'Original',resetL:'Volver al original',
+es:{keyOr:'o',keyOrT:'La tonalidad no es clara: {k} también encaja',tempoDown:'Más lento (Shift: 0.1)',tempoUp:'Más rápido (Shift: 0.1)',bpmEdit:'Escribe un BPM nuevo y la canción sonará a ese tempo',keyDown:'Bajar la tonalidad un semitono',keyUp:'Subir la tonalidad un semitono',origL:'Original',resetL:'Volver al original',
   fxFail:'No se pudo cargar el motor de tempo y tonalidad en este navegador.',fxRender:'Procesando tempo y tonalidad, archivo {n} de {m}…',transposeH:'Cambia la tonalidad de la canción, tanto el audio como los acordes'}};
 for(const k in IT)Object.assign(I[k],IT[k]);
 // points, plans, pages, MP3
@@ -802,6 +802,9 @@ function detectKey(){
   const ch=S.chroma,tot=new Float64Array(12);
   for(let f=0;f<ch.frames;f++)for(let p=0;p<12;p++)tot[p]+=Math.sqrt(ch.tre[f*12+p])+0.5*Math.sqrt(ch.bas[f*12+p]);
   let best={pc:0,mode:0},bs=-2;S.keyR=new Float64Array(24); /* chords: all 24 correlations, refineKey uses them as a tie-breaker */
+  /* keys: the song's pitch-class share (treble + ½ bass) and the bass chroma's share per note, for refineKey */
+  {let z=0;for(let p=0;p<12;p++)z+=tot[p];S.keyPcp=tot.map(v=>v/(z||1));const bb=new Float64Array(12);let zb=0;for(let f=0;f<ch.frames;f++)for(let p=0;p<12;p++){const v=Math.sqrt(ch.bas[f*12+p]);bb[p]+=v;zb+=v}S.keyBass=bb.map(v=>v/(zb||1))}
+  S.keyAlt=null;S.keyConf=null;
   for(let k=0;k<12;k++)for(let mode=0;mode<2;mode++){
     const prof=mode?KMIN:KMAJ,rot=new Array(12);
     for(let p=0;p<12;p++)rot[p]=prof[mod(p-k,12)];
@@ -906,26 +909,45 @@ function chordPass(){S.chords=detectChords(false);detectDownbeat();refineKey();S
 /* chords: the key from the chords (REVIEW-MUSIC 1.3: ii–V–I and pad-heavy songs came out on the dominant, Am–F–C–G as C).
    Every key is scored by: share of beats on its diatonic chords (+ a major V in minor, half credit for the usual borrowed
    chords), share on its tonic triad, its cadences (V→I counts most, IV→I a little), how often bar 1 of a 4-bar phrase and the
-   first/last chord are its tonic, plus the chroma-profile correlation as a tie-breaker. */
+   first/last chord are its tonic, plus the chroma-profile correlation as a tie-breaker.
+   keys v2 (tools/tests/key_bench.js + fixtures/gen_keys.js, 152 songs in all 24 keys; KW = the weights):
+   · key signature: the song's pitch-class share with the 3rd/5th harmonics of every note taken out (`keyDecon`, so a G chord's
+     F♯ overtone no longer votes against D dorian) → out-of-key weight per interval (KOUT_*);
+   · a pop/EDM profile (KPOP_*: tonic and fifth strongest, ♭7 common in major, natural minor's ♭6/♭7 ≫ raised 7th) instead of
+     Krumhansl's for the correlation (Krumhansl stays in detectKey for the first chord pass);
+   · bass on the tonic (the bass chroma's share on the tonic note);
+   · a cadence only counts the motion that is not undone the other way (I–IV–I–IV vamps came out on the IV: C→F looked like V→I);
+   · weights re-fitted so the result survives chord-detection errors (35 % of the beats moved to a related chord in the bench).
+   S.keyAlt = the runner-up, S.keyConf = 0…1 from the score margin (< .35 → the tool shows "or <runner-up>"; analyzeTrack returns both). */
+const KOUT_MAJ=[0,1,0,.5,0,0,1,0,.5,0,.5,0],KOUT_MIN=[0,.75,0,0,1,0,1,0,0,.5,0,.5];   // out-of-key weight per interval: ½ = usual borrowed notes (major ♭3 ♭6 ♭7, minor's raised 7th / dorian 6th), ¾ = minor's ♭2
+const KPOP_MAJ=[6.0,1.8,3.6,1.8,4.8,4.2,1.8,5.4,2.0,3.8,2.4,2.8],KPOP_MIN=[6.0,1.8,3.4,5.0,2.0,4.0,1.8,5.0,4.0,2.2,3.6,2.4];
+const KW={fit:1,ton:0.2,cad:0.6,net:0.5,ph:0.25,r:0.2,s:1.5,b:0.35,h3:0.19,h5:0.11,conf:0.2};
+function keyDecon(P){const Q=new Float64Array(12);let z=0;for(let p=0;p<12;p++){Q[p]=Math.max(0,P[p]-KW.h3*P[mod(p-7,12)]-KW.h5*P[mod(p-4,12)]);z+=Q[p]}for(let p=0;p<12;p++)Q[p]/=z||1;return Q}
 function refineKey(){
-  const C=S.chords,d=typeof S.down==='number'?S.down:0,R=S.keyR;let N=0,ch=0;
+  const C=S.chords,d=typeof S.down==='number'?S.down:0,P=S.keyPcp,Bs=S.keyBass;let N=0,ch=0;
   const beats=new Float64Array(24),ph=new Float64Array(24),tr=new Map();let prev=-1,first=-1,last=-1,nph=0;
   for(let b=0;b<C.length;b++){const c=C[b];if(c<0)continue;N++;beats[c]++;if(first<0)first=c;last=c;
     if(mod(b-d,16)===0){ph[c]++;nph++}
     if(prev>=0&&c!==prev){ch++;const k=prev*24+c;tr.set(k,(tr.get(k)||0)+1)}prev=c}
-  if(!N)return;
+  const R=S.keyR;
+  if(!N){   // no chords: Krumhansl's ranking from detectKey
+    if(R){const o=[...R.keys()].sort((a,b)=>R[b]-R[a]);S.keyAlt={pc:o[1]%12,mode:o[1]>=12?1:0};S.keyConf=Math.min(1,Math.max(0,(R[o[0]]-R[o[1]])/KW.conf))}
+    return}
   ph[first]++;ph[last]++;nph+=2;
-  const T=(a,b)=>tr.get(a*24+b)||0;
-  let best=null,bs=-1e9;
+  const T=(a,b)=>tr.get(a*24+b)||0,TT=(a,b)=>T(a,b)-KW.net*Math.min(T(a,b),T(b,a));
+  const Q=P?keyDecon(P):null,sc=new Float64Array(24);
   for(let pc=0;pc<12;pc++)for(let mode=0;mode<2;mode++){
     const k={pc,mode},dia=diatonic(k),ton=pc+12*mode,V=mod(pc+7,12),IV=mod(pc+5,12)+12*mode;
     const bor=mode?[mod(pc+5,12)]:[mod(pc+10,12),mod(pc+5,12)+12,mod(pc+8,12)];   // minor: IV (dorian); major: bVII, iv, bVI
     let fit=0;for(let c=0;c<24;c++)if(beats[c])fit+=beats[c]*(dia.has(c)?1:bor.includes(c)?0.5:0);
-    const cad=(T(V,ton)+0.5*T(V+12,ton)+0.4*T(IV,ton))/Math.max(1,ch);
-    const sc=fit/N+0.5*beats[ton]/N+0.6*cad+0.25*ph[ton]/nph+0.4*(R?R[pc+12*mode]:0);
-    if(sc>bs){bs=sc;best=k}
+    const cad=(TT(V,ton)+0.5*TT(V+12,ton)+0.4*TT(IV,ton))/Math.max(1,ch);
+    let out=0,r=0;
+    if(P){const pr=mode?KPOP_MIN:KPOP_MAJ,rot=new Array(12);for(let i=0;i<12;i++){out+=Q[mod(pc+i,12)]*(mode?KOUT_MIN:KOUT_MAJ)[i];rot[i]=pr[mod(i-pc,12)]}r=pearson(P,rot)}
+    sc[ton]=KW.fit*fit/N+KW.ton*beats[ton]/N+KW.cad*cad+KW.ph*ph[ton]/nph+KW.r*r-KW.s*out+KW.b*(Bs?Bs[pc]:0);
   }
-  if(best)S.key=best;
+  const o=[...sc.keys()].sort((a,b)=>sc[b]-sc[a]);
+  S.key={pc:o[0]%12,mode:o[0]>=12?1:0};S.keyAlt={pc:o[1]%12,mode:o[1]>=12?1:0};
+  S.keyConf=Math.min(1,Math.max(0,(sc[o[0]]-sc[o[1]])/KW.conf));
 }
 function detectDownbeat(){
   const B=S.beats.length;if(!S.lowEnv){S.down=0;return}
@@ -1262,7 +1284,8 @@ function renderStats(){
   if(S.bpm){if(rch){const pct=(S.rate-1)*100;bs.append(rstBtn('rate'),`${t('origL')} `,ltrNode(`${fmtBpm(S.bpm)} · ${pct>0?'+':''}${pct.toFixed(1)}%`))}else bs.textContent='4/4'}
   const kch=!!S.transpose;$('#stKey').classList.toggle('chg',kch);['#kyM','#kyP'].forEach(x=>$(x).disabled=!S.key);
   if(S.key){const pc=mod(S.key.pc+S.transpose,12),ks=$('#sKeyS');$('#sKey').textContent=keyName(pc,S.key.mode);$('#sCam').textContent=camelot(pc,S.key.mode);
-    if(kch){ks.innerHTML='';ks.append(rstBtn('key'),`${t('origL')} `,ltrNode(`${keyName(S.key.pc,S.key.mode)} · ${S.transpose>0?'+':''}${S.transpose}`))}else ks.textContent=keyLong(pc,S.key.mode)}
+    if(kch){ks.innerHTML='';ks.append(rstBtn('key'),`${t('origL')} `,ltrNode(`${keyName(S.key.pc,S.key.mode)} · ${S.transpose>0?'+':''}${S.transpose}`))}else{ks.textContent=keyLong(pc,S.key.mode);ks.title='';const a=S.keyAlt;   /* keys: a close runner-up → "or <key>" */
+      if(a&&S.keyConf!=null&&S.keyConf<0.35&&(a.pc!==S.key.pc||a.mode!==S.key.mode)){const an=keyName(mod(a.pc+S.transpose,12),a.mode);ks.append(' · '+t('keyOr')+' ',ltrNode(an));ks.title=t('keyOrT',{k:an})}}}
   else{$('#sKey').textContent='—';$('#sKeyS').textContent='';$('#sCam').textContent='—'}
   $('#sDur').textContent=S.dur?fmtS(S.dur/S.rate):'—';
   $('#sLufs').textContent=S.lufs!=null?S.lufs.toFixed(1):'—';$('#sPeak').textContent=S.lufs!=null?`${t('peakL')} \u2066${S.peak.toFixed(1)} dB\u2069`:'';
@@ -1437,7 +1460,7 @@ const ANG={n:0},ULOAD={n:0,g:0};   // ULOAD: user loads (file / My Songs) runnin
 async function analyze(buffer,name,demo,nosave){
   const gen=++ANG.n,stale=()=>gen!==ANG.n;
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,bpm:0,offset:0,down:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,bpm:0,offset:0,down:0,chords:null,beats:[],key:null,keyAlt:null,keyConf:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null,drumHits:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -1501,6 +1524,7 @@ async function synthDemo(o){
 
 /* full analysis of any buffer without touching the tool's song (used by the DJ decks).
    hint = a saved library item with bpm/offset/key → skip the slow beat/chord passes */
+let lastAna=null;   /* the last analyzeTrack's beats + chords (benchmarks: CR._lastAna) */
 async function analyzeTrack(buffer,prog,hint){
   prog=prog||(()=>{});
   const x=await toMono(buffer);prog(0.06);await tick();
@@ -1514,7 +1538,7 @@ async function analyzeTrack(buffer,prog,hint){
   const g=fitGrid(genv,estimateTempo(on.env));
   const saved=S;let out;
   S={...saved,chroma,env:on.env,lowEnv:on.low,bpm:g.bpm,offset:g.offset,dur:buffer.duration,beats:[],chords:null,key:null,down:0,transpose:0,capo:0};
-  try{buildBeats();S.key=detectKey();chordPass();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key}}
+  try{buildBeats();S.key=detectKey();chordPass();out={bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,keyAlt:S.keyAlt,keyConf:S.keyConf};lastAna={beats:S.beats,chords:S.chords}}
   finally{S=saved}
   prog(1);return {...base,...out};
 }
@@ -2028,7 +2052,7 @@ function renderLib(){
 }
 function restoreSaved(saved){
   S.bpm=saved.bpm;S.offset=saved.offset;buildBeats();S.chords=Int8Array.from(saved.chords);S.down=saved.down;
-  S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key)S.key=saved.key;
+  S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key){if(!S.key||saved.key.pc!==S.key.pc||saved.key.mode!==S.key.mode)S.keyConf=null;S.key=saved.key}
   S.rate=saved.rate||1;S.transpose=saved.transpose||0;if(fxOn())ensureFx().catch(()=>{});renderAll();
 }
 async function openLib(it){ULOAD.n++;ULOAD.g++;try{await openLib0(it)}finally{ULOAD.n--}}   // a user load: the demo/last-song restore must not overwrite it
@@ -3951,7 +3975,7 @@ document.addEventListener('a11y-change',()=>{applyMono();buildOverview();dirty=t
 /* ---------- bridge for the DJ view (assets/dj.js) ---------- */
 window.CR={
   t,$,esc,tick,mod,ac,applyLang,normPhone,getLang:()=>LANG,addStrings:tb=>{for(const k in tb)Object.assign(I[k],tb[k])},
-  analyzeTrack,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,wcol,
+  analyzeTrack,_lastAna:()=>lastAna,synthDemo,loadScript,SS_SRC,sliceRange,saveBlob,wav,fmtS,fmtBpm,showNotice,wcol,
   camelot,camOf,camRel,bpmFit,camColor,keyText,keyBadge,CAM_MAJ,HC_COL,SHARP,FLAT,FLAT_MAJ,
   readLib,libItem:name=>readLib().find(x=>x.name===name)||null,ACC,DC,dz,freshPreview,rowFromCatalog,
   signedIn:()=>!!(ACC.on&&ACC.user),
