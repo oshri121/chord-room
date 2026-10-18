@@ -1,7 +1,7 @@
 # Chord Room — guide for Claude
 
 Static web app (no build step) for musicians/producers: BPM/key/chord detection, RGB DJ waveform,
-AI stem separation (Demucs v4 via ONNX Runtime Web), WAV/MIDI export for FL Studio, accounts + admin
+AI stem separation (Demucs v4 via ONNX Runtime Web), WAV/MIDI export for any DAW (FL Studio, Ableton, Cubase…; copy never says FL-only), accounts + admin
 on Supabase. Hosted on Cloudflare Pages from the `main` branch: every push deploys.
 
 The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
