@@ -19,7 +19,7 @@ const dbg=db=>Math.pow(10,db/20);
 const DEMOS=[{bpm:124,shift:0,key:'Am'},{bpm:126,shift:7,key:'Em'},{bpm:122,shift:5,key:'Dm'},{bpm:128,shift:-2,key:'Gm'}];
 let c=null;
 const D={ready:false,initP:null,decks:[],xf:0,curve:'smooth',master:0.85,lat:0,noStretch:false,visible:false,raf:0,win:7,
-  fx:{type:'echo',div:0.75,tg:'M',depth:0.55,on:false},masterI:0,auto:null,rec:null,autoBars:16,demoN:0,built:false,pickFor:0,cat:null,catP:null};
+  fx:{type:'echo',div:0.75,tg:'M',depth:0.55,on:false},masterI:0,auto:null,rec:null,autoBars:16,demoN:0,gen:0,built:false,pickFor:0,cat:null,catP:null};
 
 /* ================= audio engine ================= */
 function bq(type,f,q){const b=c.createBiquadFilter();b.type=type;b.frequency.value=f;if(q!=null)b.Q.value=q;return b}
@@ -113,10 +113,15 @@ function startDeck(d,when){
   renderDeck(d);renderMatch();
 }
 function stopDeck(d){
+  // a manual stop ends a running brake (its timer would stop the deck again after a restart)
+  if(d.brakeT){clearTimeout(d.brakeT);d.brakeT=0}d.braking=false;
+  if(D.fx.on&&D.fx.type==='brake'&&!D.decks.some(x=>x.braking)){D.fx.on=false;renderFx()}
   if(!d.playing)return;const now=c.currentTime;
-  d.pos=clamp(srcAt(d,now),0,d.track.dur);killSrc(d,now);d.playing=false;d.segs=[];d.bend=1;d.slip=null;d.waitUntil=0;d.cuePrev=false;
+  // a roll ends with the deck: back to the slip position and the user's own loop
+  d.pos=clamp(d.slip?slipEnd(d,now):srcAt(d,now),0,d.track.dur);killSrc(d,now);d.playing=false;d.segs=[];d.bend=1;d.waitUntil=0;d.cuePrev=false;
   stSched(d,{active:false,output:now+D.lat+0.15});
-  if(D.auto&&(D.auto.from===d||D.auto.to===d)&&!D.auto.ending)autoCancel();
+  // the outgoing deck stopped (ran out) → finish the transition; the incoming one stopped → cancel it
+  if(D.auto&&!D.auto.ending){if(D.auto.from===d)autoFinish();else if(D.auto.to===d)autoCancel()}
   renderDeck(d);
 }
 function jump(d,p){
@@ -274,10 +279,15 @@ function rollOn(d){
   const L=D.fx.div*T_(d),p=srcAt(d,now),ls=first(d)+Math.floor((p-first(d))/L)*L;
   setLoop(d,D.fx.div,ls);
 }
+// end of a roll: the virtual (slip) position, wrapped inside the loop that was set before the roll (restored)
+function slipEnd(d,now){
+  const s=d.slip;d.slip=null;let vp=s.p0+(now-s.t0)*s.r;d.loop=s.loop||null;
+  if(d.loop){const {ls,le}=d.loop;if(vp<ls||vp>=le)vp=ls+mod(vp-ls,le-ls)}
+  return vp;
+}
 function rollOff(d){
-  if(!d.slip)return;const s=d.slip,now=c.currentTime;d.slip=null;
-  const vp=s.p0+(now-s.t0)*s.r;d.loop=null;
-  if(d.playing)jump(d,vp);else d.pos=vp;
+  if(!d.slip)return;const vp=slipEnd(d,c.currentTime);
+  if(d.playing)jump(d,vp);else d.pos=clamp(vp,0,d.track.dur);
   renderDeck(d);
 }
 function brake(d){
@@ -286,7 +296,7 @@ function brake(d){
   d.braking=true;d.segs.push({t0:now,p0:p,r:effRate(d),ramp:dur,loop:null});
   const pr=d.src.playbackRate;pr.cancelScheduledValues(now);pr.setValueAtTime(effRate(d),now);pr.linearRampToValueAtTime(0.0001,now+dur);
   stSched(d,{semitones:d.semis,output:now+D.lat});
-  setTimeout(()=>{d.braking=false;if(d.playing){stopDeck(d);stSched(d,{semitones:semisOf(d)})}if(D.fx.on&&D.fx.type==='brake'){D.fx.on=false;renderFx()}},dur*1000+40);
+  d.brakeT=setTimeout(()=>{d.brakeT=0;d.braking=false;if(d.playing){stopDeck(d);stSched(d,{semitones:semisOf(d)})}if(D.fx.on&&D.fx.type==='brake'){D.fx.on=false;renderFx()}},dur*1000+40);
 }
 function setFxOn(on){
   const F=D.fx,was=F.on;F.on=on;
@@ -331,17 +341,21 @@ function autoStart(){
   if(D.auto){autoCancel();return}
   const from=D.decks.find(d=>d.playing&&d.track&&(D.decks.filter(x=>x.playing).length===1||d.i===D.masterI)),to=from&&other(from);
   if(!from||!to.track||to.playing){note(t('djAutoNeed'));return}
-  setSync(to,true);
-  const bars=D.autoBars,now=c.currentTime+0.05,pf=srcAt(from,now);
+  const now=c.currentTime+0.05,pf=srcAt(from,now);
   // start on the next bar of the playing song, at least half a second away
   let nb=Math.ceil(beatF(from,pf)-from.track.down);nb=Math.ceil(nb/4)*4+from.track.down;
   let tStart=now+(first(from)+nb*T_(from)-pf)/effRate(from);if(tStart<now+0.5)tStart+=4*T_(from)/effRate(from);
+  // fewer bars when the playing song ends sooner (30 s previews); not even 4 bars left → refuse
+  const barLen=4*60/(from.track.bpm*effRate(from)),rem=from.loop?Infinity:(from.track.dur-pf)/effRate(from)-(tStart-now);
+  let bars=D.autoBars;while(bars>4&&bars*barLen>rem)bars/=2;
+  if(bars*barLen>rem){note(t('djAutoShort'));return}
+  setSync(to,true);
   const p0=Math.max(to.pos,firstDown(to));to.pos=snapBar(to,p0);
   to.eq.lo=-1;applyEq(to);syncKnobs(to);
   if(to.fader<0.6){to.fader=0.85;applyFader(to);syncFader(to)}
   D.xf=from.i===0?-1:1;applyXf();syncXf();
   startDeck(to,tStart);
-  D.auto={from,to,t0:tStart,len:bars*4*60/(from.track.bpm*effRate(from)),swapped:false,ending:false};
+  D.auto={from,to,t0:tStart,len:bars*barLen,swapped:false,ending:false};
   renderAuto();
 }
 function autoStep(){
@@ -350,10 +364,23 @@ function autoStep(){
   if(now<A.t0){renderAuto();return}
   const dir=A.from.i===0?1:-1;D.xf=clamp(-dir+2*dir*Math.min(1,x*1.15),-1,1);applyXf();syncXf();
   if(!A.swapped&&x>=0.5){A.swapped=true;A.from.eq.lo=-1;A.to.eq.lo=0;applyEq(A.from);applyEq(A.to);syncKnobs(A.from);syncKnobs(A.to)}
-  if(x>=1){A.ending=true;const f=A.from;stopDeck(f);f.eq.lo=0;applyEq(f);syncKnobs(f);D.masterI=A.to.i;A.to.sync=false;D.auto=null;renderDeck(A.to);renderMatch();renderRecsSoon()}
+  if(x>=1)autoFinish();
   renderAuto(x);
 }
-function autoCancel(){D.auto=null;renderAuto()}
+// end of the transition (also when the outgoing song runs out early): both basses back, crossfader on the new song
+function autoFinish(){
+  const A=D.auto;if(!A)return;A.ending=true;const f=A.from,to=A.to;
+  if(f.playing)stopDeck(f);
+  f.eq.lo=0;to.eq.lo=0;applyEq(f);applyEq(to);syncKnobs(f);syncKnobs(to);
+  D.xf=to.i===0?-1:1;applyXf();syncXf();
+  D.masterI=to.i;to.sync=false;D.auto=null;renderAuto();renderDeck(to);renderMatch();renderRecsSoon();
+}
+// a cancel gives back the bass the transition killed (the crossfader stays where the user put it)
+function autoCancel(){
+  const A=D.auto;D.auto=null;
+  if(A){const d=A.swapped?A.from:A.to;d.eq.lo=0;applyEq(d);syncKnobs(d)}
+  renderAuto();
+}
 
 /* ---------- recording (AudioWorklet → 16-bit WAV) ---------- */
 const REC_SRC=`class R extends AudioWorkletProcessor{constructor(){super();this.on=true;this.n=0;this.L=new Float32Array(32768);this.R=new Float32Array(32768);this.port.onmessage=e=>{if(e.data==='stop'){this.flush();this.on=false;this.port.postMessage('done')}}}
@@ -361,11 +388,14 @@ flush(){if(this.n){this.port.postMessage([this.L.slice(0,this.n),this.R.slice(0,
 process(inp){if(!this.on)return false;const i=inp[0];if(i&&i.length){const a=i[0],b=i[1]||i[0];this.L.set(a,this.n);this.R.set(b,this.n);this.n+=a.length;if(this.n+256>this.L.length)this.flush()}return true}}
 registerProcessor('cr-rec',R);`;
 async function recToggle(){
+  if(D.recBusy)return;   // a second click while the recorder starts must not make a second (never stopped) recorder
   if(D.rec){recStop();return}
+  D.recBusy=true;const gen=D.gen;
   try{
     await init();c.resume();
     if(!D.recMod){D.recMod=c.audioWorklet.addModule(URL.createObjectURL(new Blob([REC_SRC],{type:'text/javascript'})))}
     await D.recMod;
+    if(gen!==D.gen)return;   // the account changed while the recorder started
     const node=new AudioWorkletNode(c,'cr-rec',{numberOfInputs:1,numberOfOutputs:1,channelCount:2,channelCountMode:'explicit',outputChannelCount:[1]});
     const sink=gain(0);node.connect(sink).connect(c.destination);D.lim.connect(node);
     const R={node,sink,chunks:[],frames:0,t0:performance.now(),sr:c.sampleRate};
@@ -377,10 +407,12 @@ async function recToggle(){
     };
     D.rec=R;renderRec();
   }catch(e){console.warn(e);note(t('djRecFail'))}
+  finally{D.recBusy=false}
 }
 function recStop(){const R=D.rec;if(!R)return;D.rec=null;try{D.lim.disconnect(R.node)}catch(e){}R.node.port.postMessage('stop');renderRec()}
 function recSave(R){
   try{R.node.disconnect();R.sink.disconnect()}catch(e){}
+  if(R.drop)return;   // stopped by an account switch
   const bytes=R.frames*4,h=new DataView(new ArrayBuffer(44)),w=(o,s)=>{for(let i=0;i<4;i++)h.setUint8(o+i,s.charCodeAt(i))};
   w(0,'RIFF');h.setUint32(4,36+bytes,true);w(8,'WAVE');w(12,'fmt ');h.setUint32(16,16,true);h.setUint16(20,1,true);h.setUint16(22,2,true);
   h.setUint32(24,R.sr,true);h.setUint32(28,R.sr*4,true);h.setUint16(32,4,true);h.setUint16(34,16,true);w(36,'data');h.setUint32(40,bytes,true);
@@ -393,7 +425,7 @@ function recSave(R){
 function keyEff(d){const k=d.track.key,sh=d.semis+(d.keyLock&&!D.noStretch?0:Math.round(12*Math.log2(effRate(d))));return {pc:mod(k.pc+sh,12),mode:k.mode}}
 const bpmEff=d=>d.track.bpm*d.rate;
 async function loadInto(d,getBuf,name,hint,meta){
-  await init();
+  const gen=D.gen;await init();
   if(d.loading)return;d.loading=true;
   if(CR.log)CR.log('dj_load',name);
   if(d.playing)stopDeck(d);
@@ -406,6 +438,7 @@ async function loadInto(d,getBuf,name,hint,meta){
       busyDeck(d,t('djAnalyzing'),0.1);
       a=await CR.analyzeTrack(buffer,p=>busyDeck(d,t('djAnalyzing'),0.1+p*0.9),hint);
     }
+    if(gen!==D.gen)return;   // the account changed while this was loading → not for the new account's deck
     if(d.slip)d.slip=null;
     d.track={name,buffer,bpm:a.bpm,offset:a.offset,down:a.down||0,key:a.key,wave:a.wave,lufs:a.lufs,dur:buffer.duration,preview:!!(meta&&meta.preview),artist:(meta&&meta.artist)||''};
     d.loop=null;d.cues=[null,null,null,null];d.semis=0;d.bend=1;d.segs=[];d.lastBeat=-9;
@@ -958,14 +991,29 @@ function frame(){
 
 /* ---------- keyboard ---------- */
 document.addEventListener('keydown',e=>{
-  if(!D.visible||e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
-  const [a,b]=D.decks;if(!a)return;const k=e.key.toLowerCase();
+  // a focused knob (role=slider) or any control that handled the key keeps it
+  if(!D.visible||e.defaultPrevented||e.target.closest('input,textarea,select,[role=slider]')||e.metaKey||e.ctrlKey||e.altKey)return;
+  const [a,b]=D.decks;if(!a)return;
+  // the letter on the key; Hebrew/Arabic/Russian layouts → the physical key (KeyQ → q)
+  let k=(e.key||'').toLowerCase();if(!/^[a-z]$/.test(k)&&/^Key[A-Z]$/.test(e.code||''))k=e.code.slice(3).toLowerCase();
   const go=fn=>{e.preventDefault();ensure().then(fn)};
   if(k==='q')go(()=>playPress(a));else if(k==='p')go(()=>playPress(b));
   else if(k==='w')go(()=>{cueDown(a);cueUp(a)});else if(k==='o')go(()=>{cueDown(b);cueUp(b)});
   else if(k==='e')go(()=>setSync(a,!a.sync));else if(k==='i')go(()=>setSync(b,!b.sync));
   else if(k==='f')go(()=>setFxOn(!D.fx.on));
   else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();if(D.auto)autoCancel();D.xf=clamp(D.xf+(e.key==='ArrowLeft'?-0.1:0.1),-1,1);if(D.ready)applyXf();syncXf()}
+});
+
+/* ---------- account switch: the decks hold the previous account's songs → empty them (a guest signing in keeps theirs) ---------- */
+document.addEventListener('cr-user',e=>{
+  const x=e.detail||{};if(!x.prev||x.prev===x.uid)return;
+  D.gen++;
+  if(D.ready){if(D.auto)autoCancel();if(D.rec){D.rec.drop=true;recStop()}if(D.fx.on)setFxOn(false)}   // the mix of the previous account is dropped, not downloaded
+  D.decks.forEach(d=>{if(!d)return;if(d.playing)stopDeck(d);
+    Object.assign(d,{track:null,pos:0,segs:[],rate:1,bend:1,tempo:0,semis:0,sync:false,k:1,cue:0,cues:[null,null,null,null],loop:null,slip:null,autoGain:0,lastBeat:-9,tiles:null,ovc:null});
+    if(D.ready)applyEq(d)});
+  D.masterI=0;
+  if(D.built){renderAll();renderRecsSoon()}
 });
 
 /* ---------- public ---------- */

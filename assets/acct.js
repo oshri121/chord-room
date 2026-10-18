@@ -454,7 +454,7 @@ function phPaint() {
   const u = B().user || {}, has = !!u.phone;
   w.hidden = !(billing().phone_login === true || has) || !B().setPhone;
   $('#acPhH').textContent = t('acPhH'); $('#acPhL').textContent = t('acPhL'); $('#acPhSend').textContent = t('acPhSend'); $('#acPhGo').textContent = t('acPhGo');
-  $('#acPhCode').previousElementSibling.textContent = t('acCodeL');
+  $('#acPhCode').previousElementSibling.textContent = t('acPhCodeL');
   $('#acPhSt').textContent = has ? t('acPhCur', { p: '\u2066' + phShow(u.phone) + '\u2069' }) : t('acPhNone');
 }
 const phErr = e => { const c = e && e.code; return c === 'phone' ? t('acPhBad') : c === 'phone_taken' ? t('acPhTaken') : c === 'sms' ? t('acPhOff') : c === 'otp' ? t('acCodeBad') : t('acSaveFail') + ' · ' + errMsg(e); };
@@ -678,7 +678,7 @@ async function clearLocal(id) {
 function adminUserDel() {
   const box = $('#admUser'); if (!box) return;
   let el = $('#acUdDelW');
-  const m = ACC().admUser, me = uid(), ok = !!(m && ACC().admin && ACC().perms && ACC().perms.has('users') && !m.owner && m.id !== me && (ACC().owner || m.role === 'user') && B().adminDeleteUser);
+  const m = ACC().admUser, me = uid(), ok = !!(m && ACC().admin && ACC().perms && ACC().perms.has('users') && !m.owner && m.id !== me && (ACC().owner || m.role === 'user') && !(LIVE.includes(m.pay_status) && m.pay_sub_id !== null) && B().adminDeleteUser);
   if (!el) { el = document.createElement('div'); el.id = 'acUdDelW'; el.className = 'acdanger acud'; el.innerHTML = '<button type="button" class="btn acdanger-btn" id="acUdDel"></button>'; box.append(el); $('#acUdDel').onclick = () => openAdminDelete(); }
   el.hidden = !ok; $('#acUdDel').textContent = t('acUdDel');
 }

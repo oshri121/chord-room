@@ -1,7 +1,8 @@
 """Points v2 (supabase/schema.sql "Points v2" block = supabase/points_v2.sql): a price for every paid action
 (billing.costs: song/sep/stems/usb/mashup/extended/convert), per-plan discounts while the plan is active, batches
 (spend_credits_n qty 1…500), price_quote, songs charged once per account (spend_song + charged_songs), partial batch
-refunds (refund_credits_n: own row, ≤ 30 min, never more than charged, daily caps), the old spend_credits /
+refunds (refund_credits_n: own row, ≤ 3 h, never more than charged; daily caps per kind from security v5 [V5-1]: 4 calls
++ one large refund per batch kind, single exports whole-row ≤ 30 min 2 a day, 1000 units), the old spend_credits /
 refund_credits callers, the settings guard (clamps), RLS on the new table, concurrency (no overdraw, no double song
 charge), points_v2.sql identical to the schema block and safe to run twice — also on an install from before v2."""
 import os, sys, json, subprocess, time
@@ -19,9 +20,13 @@ U1 = '00000000-0000-0000-0000-0000000000d1'
 U2 = '00000000-0000-0000-0000-0000000000d2'
 U3 = '00000000-0000-0000-0000-0000000000d3'
 U4 = '00000000-0000-0000-0000-0000000000d4'
+U5 = '00000000-0000-0000-0000-0000000000d5'   # refund caps (security v5): batches
+U6 = '00000000-0000-0000-0000-0000000000d6'   # refund caps: a call that gives back 0 points
+U7 = '00000000-0000-0000-0000-0000000000d7'   # refund caps: single exports
 X = '00000000-0000-0000-0000-0000000000e0'    # blocked
 for uid, mail, un in [(O, 'o@x', 'owner'), (A, 'a@x', 'adminA'), (U1, 'u1@x', 'userone'), (U2, 'u2@x', 'usertwo'),
-                      (U3, 'u3@x', 'userthree'), (U4, 'u4@x', 'userfour'), (X, 'x@x', 'blocky')]:
+                      (U3, 'u3@x', 'userthree'), (U4, 'u4@x', 'userfour'), (U5, 'u5@x', 'userfive'), (U6, 'u6@x', 'usersix'),
+                      (U7, 'u7@x', 'userseven'), (X, 'x@x', 'blocky')]:
     D.user(uid, mail, un)
 sql(f"update public.profiles set role='admin' where id='{A}'")
 sql(f"update public.profiles set blocked=true where id='{X}'")
@@ -237,21 +242,66 @@ check("a 'song' row through refund_credits_n", as_(U4, f"select public.refund_cr
 r = j(spend(U1, 'usb', 3)); lid = r.get('id')
 check("a usb row through refund_credits (sep only)", as_(U1, f"select public.refund_credits({lid})"), 'not refundable')
 check('refund qty 0 → bad qty', as_(U1, f"select public.refund_credits_n({lid}, 0)"), 'bad qty')
-# daily caps: 20 refunds, 1000 units (a failed 300-song Crate folder must still be refunded in full)
-sql(f"update public.profiles set plan='free', plan_until=null where id='{U1}'"); cr(U1, 5000)
-c300 = j(spend(U1, 'usb', 300, 'folder')).get('id')
-check('a whole failed 300-song folder is refunded (300 units)', as_(U1, f"select public.refund_credits_n({c300}, 300)->>'refunded'"), '300')
-b500 = j(spend(U1, 'convert', 500)).get('id')
-check('… and a whole 500-file batch the same day', as_(U1, f"select public.refund_credits_n({b500}, 500)->>'refunded'"), '500')
-calls = int(sql(f"select count(*) from public.credit_ledger where user_id='{U1}' and reason='refund' and ref like 'refundn:%'"))
-r = j(spend(U1, 'convert', 500)); big = r.get('id')
-units = int(sql(f"select coalesce(sum(qty),0) from public.credit_ledger where user_id='{U1}' and reason='refund' and ref like 'refundn:%'"))
-check('units cap: more than 1000 refunded units a day', as_(U1, f"select public.refund_credits_n({big}, {1000 - units + 1})"), 'refund limit')
-outs = [as_(U1, f"select public.refund_credits_n({big}, 1)") for _ in range(20 - calls)]
-check(f'{20 - calls} more single refunds fit the 20/day cap', str(sum(1 for o in outs if 'ERROR' in o)), '0')
-check('21st refund of the day → refund limit', as_(U1, f"select public.refund_credits_n({big}, 1)"), 'refund limit')
-s2 = j(as_(U1, "select public.spend_credits('sep','y')")).get('id')
-check('sep refunds have their own cap (not used up by batch refunds)', as_(U1, f"select public.refund_credits({s2})"), lambda o: o.isdigit())
+D.section('daily refund caps (security v5 [V5-1])')
+# batches ('usb', 'convert', future kinds): ≤ 3 h, 4 refund calls per kind a day and ONE large refund per kind a day
+# (units of the row > max(5, 25 % of it)); single exports ('mashup', 'extended'): the whole row once, ≤ 30 min, 2 a day;
+# ≤ 1000 units a day overall; every call counts (also one that gives back 0 points); a refused call does not
+for u in (U5, U6, U7): cr(u, 5000)
+rn = lambda u, lid, q: as_(u, f"select public.refund_credits_n({lid}, {q})")
+pts = lambda o: j(o).get('refunded')
+calls = lambda u: sql(f"select count(*) from private.refund_calls where user_id='{u}'")
+print('  batches: one large refund per kind a day')
+c1 = j(spend(U5, 'usb', 300, 'folder')).get('id')
+check('a whole failed 300-song folder is refunded once (large refund)', str(pts(rn(U5, c1, 300))), '300')
+c2 = j(spend(U5, 'usb', 300, 'folder 2')).get('id')
+check('a second large usb refund the same day → refund limit', rn(U5, c2, 300), 'refund limit')
+check('…nothing given back, the refused call is not counted', bal(U5) + ' ' + calls(U5) + ' ' + sql(f"select refunded from public.credit_ledger where id={c2}"), '4700 1 0')
+check('a small refund (≤ 25 % of the row) still works after it', str(pts(rn(U5, c2, 5))), '5')
+check('usb refund call 3 of the day', str(pts(rn(U5, c2, 1))), '1')
+check('usb refund call 4 of the day', str(pts(rn(U5, c2, 1))), '1')
+check('usb refund call 5 → refund limit (4 per kind a day)', rn(U5, c2, 1), 'refund limit')
+v1 = j(spend(U5, 'convert', 500)).get('id')
+check('another kind has its own large refund: a whole 500-file batch', str(pts(rn(U5, v1, 500))), '500')
+print('  1000 units a day overall')
+v2 = j(spend(U5, 'convert', 500)).get('id')
+check('convert: 125 of 500 (exactly 25 % = not large)', str(pts(rn(U5, v2, 125))), '125')
+v3 = j(spend(U5, 'convert', 500)).get('id')
+units = int(sql(f"select sum(qty) from private.refund_calls where user_id='{U5}'"))
+check('fixture: 932 units refunded today', str(units), '932')
+check('units cap: 69 more (1001) → refund limit', rn(U5, v3, 69), 'refund limit')
+check('…68 more (exactly 1000) still fit', str(pts(rn(U5, v3, 68))), '68')
+check('…and not one unit more', rn(U5, v3, 1), 'refund limit')
+check('balance = 5000 − the unrefunded units', bal(U5), str(5000 - 300 - 300 - 500 - 500 - 500 + 300 + 5 + 1 + 1 + 500 + 125 + 68))
+s5 = j(as_(U5, "select public.spend_credits('sep','y')")).get('id')
+check('sep refunds keep their own cap (not used up by batch refunds)', as_(U5, f"select public.refund_credits({s5})"), lambda o: o.isdigit())
+check('private.refund_calls not readable by users', as_(U5, "select count(*) from private.refund_calls"), 'permission denied')
+print('  every call counts, also one that gives back 0 points')
+plan(U6, 'pro', 5)
+c6 = j(spend(U6, 'usb', 10)).get('id')
+check('fixture: pro usb ×10 = 9 points', sql(f"select -delta from public.credit_ledger where id={c6}"), '9')
+check('refund 1 of 10 at 9 points → 0 points back', str(pts(rn(U6, c6, 1))), '0')
+check('…but the call is counted', calls(U6), '1')
+outs = [pts(rn(U6, c6, 1)) for _ in range(3)]
+check('calls 2…4 give back 1 each (sum follows the charged price)', str(outs), '[1, 1, 1]')
+check('call 5 → refund limit', rn(U6, c6, 1), 'refund limit')
+c7 = j(spend(U6, 'convert', 3)).get('id')
+check("…the 'convert' kind is not affected", str(pts(rn(U6, c7, 3))), '3')
+sql(f"update public.profiles set plan='free', plan_until=null where id='{U6}'")
+print('  single exports: the whole row once, ≤ 30 minutes, 2 a day')
+m1 = j(spend(U7, 'mashup', 1)).get('id')
+check('a failed mashup export → its 3 points back', str(pts(rn(U7, m1, 1))), '3')
+check('…the same export again → over refund', rn(U7, m1, 1), 'over refund')
+m2 = j(spend(U7, 'extended', 1)).get('id')
+sql(f"update public.credit_ledger set created_at = now() - interval '31 minutes' where id={m2}")
+check('an extended export charged 31 minutes ago → not refundable', rn(U7, m2, 1), 'not refundable')
+m3 = j(spend(U7, 'extended', 1)).get('id')
+sql(f"update public.credit_ledger set created_at = now() - interval '25 minutes' where id={m3}")
+check('25 minutes ago → refunded (2nd single-export refund today)', str(pts(rn(U7, m3, 1))), '3')
+m4 = j(spend(U7, 'mashup', 1)).get('id')
+check('a 3rd single-export refund the same day → refund limit', rn(U7, m4, 1), 'refund limit')
+m5 = j(spend(U7, 'mashup', 2)).get('id')
+check('part of an export row → not refundable (whole row only)', rn(U7, m5, 1), 'not refundable')
+check('calls counted for U7 = the 2 refunds that went through', calls(U7), '2')
 
 D.section('settings guard (admin saves billing)')
 def save(u, patch):

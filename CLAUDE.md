@@ -75,7 +75,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   Each plan's `variant` = PayPal plan id `P-…` (guard + admin accept `^(\d{1,12}|P-[A-Z0-9]{10,40})$`; `link` empty). "Subscribe"
   (signed-in only, `paypalCheckout` in app.js) opens a window, POSTs `/api/pay/paypal-subscribe` (Function: Supabase-auth user, plan id
   from `site_config`, refuses a live sub with 409 `have_sub`, creates the subscription with `custom_id` = uid, returns the approve link,
-  return URL `?paid=1#pricing` → `payReturn`). Webhook `/api/pay/paypal` (`functions/api/pay/paypal.js`, rate-limit exempt): verifies
+  return URL `?paid=1#pricing` → `payReturn`). Webhook `/api/pay/paypal` (`functions/api/pay/paypal.js`, own per-IP limit 300/min, cheap header/body checks first): verifies
   with PayPal's verify-webhook-signature (raw body spliced in), then HMAC-SHA256 of `env\nbody` with `PAYPAL_RELAY_SECRET` → SQL
   `pay_webhook_paypal(p_body,p_env,p_sig)` (secret `private.settings.paypal_relay_secret`; block `[paypal:begin…end]` = last block of
   schema.sql = `supabase/paypal.sql`). Once per PayPal event id in `pay_events` (`pp:<id>`); user = custom_id → `pay_sub_id` → unique
@@ -211,7 +211,11 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   it). assistant.sql: confirmed email required, site-wide ceiling `billing.assistant_site_daily` (default 3000, 0 = off) →
   `why:'site_limit'` → the Function answers 503 busy; the Function also trims the conversation to 12 000 chars.
   `_middleware.js` matches hidden paths on a normalised path (decoded, `//`, `\`, `..`, case) and `_routes.json` carries case
-  variants; only `/ai/worker.js` (not `/ai/*`) skips the page CSP. Tests: `sql/test_security_v3.py`, `node/security_v3.test.mjs`. `_headers` = strict CSP (no inline scripts: `assets/early.js`), frame-ancestors none,
+  variants; only `/ai/worker.js` (not `/ai/*`) skips the page CSP. Tests: `sql/test_security_v3.py`, `node/security_v3.test.mjs`.
+  `[security-v5:begin…end]` (= `supabase/security_v5.sql`, run once by the owner; now the LAST block, re-run it after any earlier block or
+  assistant.sql) adds `private.need_aal()` ('mfa_required' in user-acting SECURITY DEFINER RPCs — new ones must call it), per-kind refund caps,
+  overwrite-aware storage quota, admin file deletes via `storage_may_wipe`, admin-only point fields + `adm_config` audit, one referral per
+  canonical e-mail, and hides catalog `analyzed_by`/`full_by` (backend.js must list columns). `_headers` = strict CSP (no inline scripts: `assets/early.js`), frame-ancestors none,
   HSTS, cache rules; `functions/_middleware.js` + `_routes.json` hide repo files (supabase/, tools/, *.md) and add API headers.
   A new external origin must be added to the CSP. Mock backend only on localhost. Tests: `/var/tmp/crpay-pg/t/sec.py` (SQL),
   scratchpad `sec/sec_test.py` (XSS payloads + CSP).
@@ -231,7 +235,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   **Offensive words**: `private.is_offensive` / `CR.offensive` = `window.TEXTGUARD` (same normalisation + BASE list; token matching, no
   Scunthorpe), trigger `profiles_text_guard` (error 'offensive'), `username_available` false for offensive names, admin list (Settings →
   Security). **Age**: "I am N or older" from `billing.min_age` → `profiles.age_confirmed_at/age_min`. API limits per IP in `_middleware.js`
-  (Cache API, best effort; webhook exempt). Tests: `sql/test_accounts_v4.py`, `ui/test_accounts.py`, `node/accounts_v4.test.mjs`
+  (Cache API, best effort; payment webhooks 300/min). Tests: `sql/test_accounts_v4.py`, `ui/test_accounts.py`, `node/accounts_v4.test.mjs`
   (shared cases `fixtures/textguard_cases.py`).
 - Keys are shown as key names (Am, F#m, Db) everywhere; Camelot is only used internally for matching (the word does not appear in UI copy).
   Non-diatonic chord roots are spelled on the flat side (`chordFlat`). Onset frame times carry `ENV_LAG` (+15 ms); the LUFS highpass Q is in dB (−6.02).
@@ -327,7 +331,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   saved (`chordroom.consent.v1`); `[data-ck="open"]` anywhere = cookie settings `#ckDlg`; GA4 (signals/ad personalisation off,
   manual `page_view` with a virtual path, key events mapped from logAct names, never details) + Clarity (`data-clarity-mask` on
   inputs, song name, account/admin/tool views) load ONLY after "allow"; withdraw = consent denied + `ga-disable-<id>` + cookies
-  deleted. `analytics.gsc` → `<meta name="google-site-verification">` (HTML-file method: the owner sends the file, add it to the
+  deleted. Meta Pixel (`analytics.meta`) has its OWN choice `m` (advertising measurement, off by default, never implied by
+  the analytics `a`; an old record without `m` asks again only when a Meta id is set), loads with `autoConfig` off and no advanced matching. `analytics.gsc` → `<meta name="google-site-verification">` (HTML-file method: the owner sends the file, add it to the
   repo root). CSP: GA4 = www.googletagmanager.com (+ *.google-analytics.com, *.analytics.google.com for collect), Clarity =
   *.clarity.ms + c.bing.com. FABs lift above the banner (`#ckBar` in both `updLift`s).
   · `assets/ab.js` (`AB.variant(exp, variants)`): control unless `site_config.experiments` has it `on`; sticky

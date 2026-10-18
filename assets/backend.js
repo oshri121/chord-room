@@ -11,6 +11,8 @@
   }) : null;
 
   const USERNAME_RE = /^[A-Za-z0-9_.-]{3,24}$/;
+  // public.catalog columns the app reads (rowFromCatalog in app.js; dj.js uses the same function) — never analyzed_by / full_by
+  const CATALOG_COLS = 'id,source,ext_id,title,artist,album,cover,link,release_date,duration,bpm,key_pc,key_mode,chords,plays,created_at,is_full,full_at';
   const fail = (code, message) => { const e = new Error(message || code); e.code = code; throw e; };
   // Supabase Auth error → a short code the app turns into a translated message (app.js authErr)
   function mapAuthError(err) {
@@ -66,6 +68,25 @@
     }
   }
   const mfaEvent = () => { try { document.dispatchEvent(new CustomEvent('cr-mfa', { detail: { pending: !!B.mfaPending } })); } catch (e) {} };
+
+  // security v5 [V5-3]: the paid / personal RPCs refuse a session that has not passed 2FA on an account that has a
+  // factor ('mfa_required', SQLSTATE 42501) → error code 'mfa', and the 2FA code dialog opens (B.mfaPending + 'cr-mfa').
+  // The app stays signed in meanwhile (soft: the user is kept); mfaSignInVerify → aal2, mfaAbort signs out.
+  async function rpcErr(error) {
+    const m = String(error && error.message || '');
+    if (/mfa_required/.test(m)) {
+      if (B.user && !B.mfaPending && !B._reauth) {
+        try {
+          const { data } = await sb.auth.mfa.listFactors();
+          const factors = ((data && (data.totp || data.all)) || []).filter(f => f && f.status === 'verified' && (!f.factor_type || f.factor_type === 'totp'));
+          if (factors.length && B.user && !B.mfaPending) { B.mfaPending = { user: B.user, factors, soft: true }; setTimeout(mfaEvent, 0); }
+        } catch (e) {}
+      }
+      fail('mfa', m);
+    }
+    if (/insufficient_credits/.test(m)) fail('insufficient', m);
+    throw error;
+  }
 
   const B = {
     enabled,
@@ -279,32 +300,32 @@
     // the server decides the price from site_config.billing.costs[kind]; returns { balance, id }
     async spendCredits(kind, ref) {
       const { data, error } = await sb.rpc('spend_credits', { p_kind: kind, p_ref: ref == null ? null : String(ref).slice(0, 250) });
-      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      if (error) await rpcErr(error);
       return data || { balance: null, id: null };
     },
     // points v2 (schema.sql "Points v2"): qty units of a kind, priced on the server with the plan discount
     // → { balance, id, charged, unit, qty, discount, free }
     async spendN(kind, qty, ref) {
       const { data, error } = await sb.rpc('spend_credits_n', { p_kind: kind, p_qty: qty, p_ref: ref == null ? null : String(ref).slice(0, 250) });
-      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      if (error) await rpcErr(error);
       return data || { balance: null, id: null, charged: 0 };
     },
     // what it would cost now → { unit, qty, discount, total, balance, free, plan }
     async quote(kind, qty) {
       const { data, error } = await sb.rpc('price_quote', { p_kind: kind, p_qty: qty });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data;
     },
     // give back qty units of a batch charge (own row, ≤ 30 min) → { balance, refunded, left }
     async refundN(id, qty) {
       const { data, error } = await sb.rpc('refund_credits_n', { p_id: id, p_qty: qty });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data;
     },
     // the 'song' price once per song per account → spendN's answer + { already }
     async spendSong(key, ref) {
       const { data, error } = await sb.rpc('spend_song', { p_song_key: key, p_ref: ref == null ? null : String(ref).slice(0, 250) });
-      if (error) { if (/insufficient_credits/.test(error.message || '')) fail('insufficient', error.message); throw error; }
+      if (error) await rpcErr(error);
       return data || { balance: null, id: null, charged: 0 };
     },
     // which of these song keys this account already paid for
@@ -318,7 +339,7 @@
     // give back a separation charge that failed or was cancelled (own charge, within 20 minutes, once)
     async refundCredits(id) {
       const { data, error } = await sb.rpc('refund_credits', { p_id: id });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data;
     },
     // activity log: the user's own actions (written only through log_activity); admins read everyone's
@@ -337,12 +358,12 @@
     // invite a friend: my code + stats ({code, invited, earned}); claim = the new user joined through a code
     async myReferral() {
       const { data, error } = await sb.rpc('my_referral');
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data;
     },
     async claimReferral(code) {
       const { data, error } = await sb.rpc('claim_referral', { p_code: String(code || '').slice(0, 20) });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data || { ok: false };
     },
     async ledger(limit = 30) {
@@ -447,10 +468,10 @@
     // → {ok:true,status:'pending'} | {ok:false,error:'not_eligible'|'offensive'|'links'|'rate'|'too_long'|'bad_rating'|'blocked'|'auth'}
     async reviewSubmit({ rating, body, showName, lang }) {
       const { data, error } = await sb.rpc('review_submit', { p_rating: rating, p_body: String(body || '').slice(0, 400), p_show_name: !!showName, p_lang: lang || null });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return data;
     },
-    async reviewDelete() { const { error } = await sb.rpc('review_delete'); if (error) throw error; },
+    async reviewDelete() { const { error } = await sb.rpc('review_delete'); if (error) await rpcErr(error); },
     async adminReviews(status) {
       const { data, error } = await sb.rpc('admin_reviews', { p_status: status || null });
       if (error) throw error;
@@ -462,26 +483,28 @@
       return data;
     },
 
-    // shared catalog of analysed songs (Discover page)
+    // shared catalog of analysed songs (Discover page). Explicit columns: analyzed_by / full_by are not readable
+    // by the API roles (security v5 [V5-8]) and a select('*') would fail; the app (rowFromCatalog) reads only these.
     async catalogGet(ids) {
       if (!ids.length) return [];
-      const { data, error } = await sb.from('catalog').select('*').in('id', ids);
+      const { data, error } = await sb.from('catalog').select(CATALOG_COLS).in('id', ids);
       if (error) throw error;
       return data;
     },
     async catalogList(order, limit) {
-      const { data, error } = await sb.from('catalog').select('*').not('bpm', 'is', null).order(order, { ascending: false }).limit(limit || 50);
+      const { data, error } = await sb.from('catalog').select(CATALOG_COLS).not('bpm', 'is', null).order(order, { ascending: false }).limit(limit || 50);
       if (error) throw error;
       return data;
     },
     async catalogAdd(row) {
+      // no .select(): nothing is returned (return=minimal), so the hidden columns are never requested
       const { error } = await sb.from('catalog').insert(row);
       if (error && !/duplicate key/.test(error.message)) throw error;
     },
     async catalogPlay(id) { await sb.rpc('catalog_play', { cid: id }); },
     async catalogSetFull(id, a) {
       const { data, error } = await sb.rpc('catalog_set_full', { cid: id, p_bpm: a.bpm, p_pc: a.pc, p_mode: a.mode, p_chords: a.chords });
-      if (error) throw error;
+      if (error) await rpcErr(error);
       return !!data;
     },
 
@@ -600,20 +623,32 @@
     },
     // → {ok:true} | {ok:false, why: owner|subscription|confirm|reauth|mfa|files_left|not_found}
     async deleteMyAccount(confirm, onStep) {
-      const uid = B.user.id;
-      if (onStep) onStep('files');
-      await B.removeFolder('uploads', uid); await B.removeFolder('avatars', uid);
+      const uid = B.user.id, p = { p_confirm: String(confirm || '').slice(0, 80) };
+      // ask the server first: files_left is its last check, so files go only when nothing else refuses
       if (onStep) onStep('account');
-      const { data, error } = await sb.rpc('delete_my_account', { p_confirm: String(confirm || '').slice(0, 80) });
+      let { data, error } = await sb.rpc('delete_my_account', p);
       if (error) throw error;
+      if (data && data.why === 'files_left') {
+        if (onStep) onStep('files');
+        await B.removeFolder('uploads', uid); await B.removeFolder('avatars', uid);
+        if (onStep) onStep('account');
+        ({ data, error } = await sb.rpc('delete_my_account', p));
+        if (error) throw error;
+      }
       if (data && data.ok) { B._reauth = false; B.mfaPending = null; try { await sb.auth.signOut({ scope: 'local' }); } catch (e) {} }
       return data || { ok: false, why: 'generic' };
     },
     // owner / full admin: another account → {ok} | {ok:false, why: self|owner|staff|subscription|confirm|files_left|not_found}
     async adminDeleteUser(target, confirm) {
-      await B.removeFolder('uploads', target); await B.removeFolder('avatars', target);
-      const { data, error } = await sb.rpc('admin_delete_user', { target, p_confirm: String(confirm || '').slice(0, 80) });
+      const p = { target, p_confirm: String(confirm || '').slice(0, 80) };
+      // server checks first (files_left is the last one), so a refused deletion never removes the user's files
+      let { data, error } = await sb.rpc('admin_delete_user', p);
       if (error) throw error;
+      if (data && data.why === 'files_left') {
+        await B.removeFolder('uploads', target); await B.removeFolder('avatars', target);
+        ({ data, error } = await sb.rpc('admin_delete_user', p));
+        if (error) throw error;
+      }
       return data || { ok: false, why: 'generic' };
     },
 

@@ -66,7 +66,7 @@ he: {
   /* pricing */
   prEyebrow: 'מסלולים ונקודות', prH: 'משלמים רק על העבודה הכבדה.',
   prP: 'ניתוח, אקורדים, גלה שירים, המיקס החי ו־MIDI — בחינם. נקודות משמשות להפרדת ערוצים ב־AI ולהורדת ערוצים.',
-  stActive: 'המנוי פעיל', stRenews: 'מתחדש ב־{d}', stCancelled: 'המנוי בוטל · פעיל עד {d}', stCancelledNd: 'המנוי בוטל', stPastDue: 'התשלום נכשל — עדכנו את אמצעי התשלום', manage: 'ניהול המנוי',
+  stActive: 'המנוי פעיל', stRenews: 'מתחדש ב־{d}', stCancelled: 'המנוי בוטל · פעיל עד {d}', stCancelledNd: 'המנוי בוטל', stPastDue: 'התשלום נכשל — עדכנו את אמצעי התשלום', stPaused: 'המנוי מושהה — עדכנו את התשלום בניהול המנוי', stTrial: 'תקופת ניסיון פעילה', manage: 'ניהול המנוי',
   balance: 'היתרה שלכם', planL: 'מסלול', until: 'בתוקף עד {d}',
   free: 'חינם', perMonth: 'לחודש', oneTime: 'חד־פעמי', buyOr: 'או',
   incFree: ['BPM, סולם ועוצמה', 'אקורדים, דף אקורדים ודיאגרמות', 'גלה שירים ומיקס חי', 'ייצוא MIDI לפסנתר'],
@@ -142,7 +142,7 @@ en: {
   credits: 'Stem separation: Demucs v4 by Meta, run with ONNX Runtime Web · Tempo & key: Signalsmith Stretch · Charts & previews: Deezer',
   prEyebrow: 'Plans & points', prH: 'Pay only for the heavy lifting.',
   prP: 'Analysis, chords, Discover, the DJ mix and MIDI are free. Points are for AI stem separation and stem downloads.',
-  stActive: 'Subscription active', stRenews: 'Renews on {d}', stCancelled: 'Cancelled · active until {d}', stCancelledNd: 'Subscription cancelled', stPastDue: 'Payment failed — please update your payment method', manage: 'Manage subscription',
+  stActive: 'Subscription active', stRenews: 'Renews on {d}', stCancelled: 'Cancelled · active until {d}', stCancelledNd: 'Subscription cancelled', stPastDue: 'Payment failed — please update your payment method', stPaused: 'Subscription paused — update the payment in Manage subscription', stTrial: 'Free trial active', manage: 'Manage subscription',
   balance: 'Your balance', planL: 'Plan', until: 'Valid until {d}',
   free: 'Free', perMonth: 'per month', oneTime: 'one-time', buyOr: 'or',
   incFree: ['BPM, key, Camelot and loudness', 'Chords, chord sheet and diagrams', 'Discover and DJ Mix', 'Piano MIDI export'],
@@ -218,7 +218,7 @@ ar: {
   credits: 'فصل المسارات: Demucs v4 من Meta عبر ONNX Runtime Web · الإيقاع والمقام: Signalsmith Stretch · القوائم والمقاطع: Deezer',
   prEyebrow: 'الباقات والنقاط', prH: 'ادفع فقط مقابل العمل الثقيل.',
   prP: 'التحليل والكوردات والاكتشاف ومزج DJ وMIDI مجانًا. النقاط لفصل المسارات بالذكاء الاصطناعي وتنزيلها.',
-  stActive: 'الاشتراك فعّال', stRenews: 'يتجدد في {d}', stCancelled: 'أُلغي · فعّال حتى {d}', stCancelledNd: 'تم إلغاء الاشتراك', stPastDue: 'فشل الدفع — يرجى تحديث وسيلة الدفع', manage: 'إدارة الاشتراك',
+  stActive: 'الاشتراك فعّال', stRenews: 'يتجدد في {d}', stCancelled: 'أُلغي · فعّال حتى {d}', stCancelledNd: 'تم إلغاء الاشتراك', stPastDue: 'فشل الدفع — يرجى تحديث وسيلة الدفع', stPaused: 'الاشتراك موقوف مؤقتًا — حدّث الدفع في إدارة الاشتراك', stTrial: 'الفترة التجريبية فعّالة', manage: 'إدارة الاشتراك',
   balance: 'رصيدك', planL: 'الباقة', until: 'صالحة حتى {d}',
   free: 'مجاني', perMonth: 'شهريًا', oneTime: 'مرة واحدة', buyOr: 'أو',
   incFree: ['BPM والمقام وكاميلوت والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ', 'تصدير MIDI للبيانو'],
@@ -294,7 +294,7 @@ ru: {
   credits: 'Разделение: Demucs v4 от Meta через ONNX Runtime Web · Темп и тональность: Signalsmith Stretch · Чарты и превью: Deezer',
   prEyebrow: 'Тарифы и баллы', prH: 'Платите только за тяжёлую работу.',
   prP: 'Анализ, аккорды, обзор, DJ-микс и MIDI бесплатны. Баллы нужны для разделения на стемы с AI и скачивания стемов.',
-  stActive: 'Подписка активна', stRenews: 'Продлится {d}', stCancelled: 'Отменена · действует до {d}', stCancelledNd: 'Подписка отменена', stPastDue: 'Платёж не прошёл — обновите способ оплаты', manage: 'Управление подпиской',
+  stActive: 'Подписка активна', stRenews: 'Продлится {d}', stCancelled: 'Отменена · действует до {d}', stCancelledNd: 'Подписка отменена', stPastDue: 'Платёж не прошёл — обновите способ оплаты', stPaused: 'Подписка приостановлена — обновите оплату в управлении подпиской', stTrial: 'Пробный период активен', manage: 'Управление подпиской',
   balance: 'Ваш баланс', planL: 'Тариф', until: 'Действует до {d}',
   free: 'Бесплатно', perMonth: 'в месяц', oneTime: 'разово', buyOr: 'или',
   incFree: ['BPM, тональность и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор и DJ-микс', 'Экспорт фортепианного MIDI'],
@@ -370,7 +370,7 @@ es: {
   credits: 'Separación: Demucs v4 de Meta con ONNX Runtime Web · Tempo y tonalidad: Signalsmith Stretch · Listas y vistas previas: Deezer',
   prEyebrow: 'Planes y puntos', prH: 'Paga solo por el trabajo pesado.',
   prP: 'El análisis, los acordes, Descubrir, la mezcla DJ y el MIDI son gratis. Los puntos son para separar pistas con IA y descargarlas.',
-  stActive: 'Suscripción activa', stRenews: 'Se renueva el {d}', stCancelled: 'Cancelada · activa hasta el {d}', stCancelledNd: 'Suscripción cancelada', stPastDue: 'El pago falló: actualiza tu método de pago', manage: 'Gestionar suscripción',
+  stActive: 'Suscripción activa', stRenews: 'Se renueva el {d}', stCancelled: 'Cancelada · activa hasta el {d}', stCancelledNd: 'Suscripción cancelada', stPastDue: 'El pago falló: actualiza tu método de pago', stPaused: 'Suscripción en pausa: actualiza el pago en Gestionar suscripción', stTrial: 'Prueba gratuita activa', manage: 'Gestionar suscripción',
   balance: 'Tu saldo', planL: 'Plan', until: 'Válido hasta el {d}',
   free: 'Gratis', perMonth: 'al mes', oneTime: 'una vez', buyOr: 'o',
   incFree: ['BPM, tonalidad, Camelot y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir y Mezcla DJ', 'Exportación MIDI de piano'],
@@ -618,7 +618,7 @@ he: {
   per_song: 'לכל שיר', per_file: 'לכל קובץ', once_song: 'פעם אחת לשיר', per_exp: 'לכל ייצוא',
   tblPlan: '{p} · {d}', tblNote: 'במסלול, ההנחה יורדת מהסכום של כל פעולה ומעוגלת למעלה (למשל 45 שירים ב־−10%: 41 נקודות).',
   rowOpen: 'פתיחה מחדש של השירים שלכם, שיר הדוגמה וקטעי ״גלה שירים״', rowCrateX: 'ייצוא הספרייה: CSV,‏ rekordbox XML,‏ Traktor,‏ M3U8',
-  incDisc: '{d} על כל פעולה', ptsSong: 'ניתוח שיר', ptsUsb: 'שיר בתיקייה מיוצאת'
+  incDisc: '{d} מהסכום של כל פעולה (מעוגל למעלה)', ptsSong: 'ניתוח שיר', ptsUsb: 'שיר בתיקייה מיוצאת'
 },
 en: {
   prP: 'Discover, the DJ mix, editing and MIDI export are free. Points pay for actions: analysing a new song, AI stem separation, Crate folder, Mashup and Extended exports, and file conversions. The full price list is below.',
@@ -636,7 +636,7 @@ en: {
   per_song: 'per song', per_file: 'per file', once_song: 'once per song', per_exp: 'per export',
   tblPlan: '{p} · {d}', tblNote: 'On a plan the discount comes off the total of each action, rounded up (e.g. 45 songs at −10%: 41 points).',
   rowOpen: 'Reopening your songs, the demo song and Discover previews', rowCrateX: 'Library exports: CSV, rekordbox XML, Traktor, M3U8',
-  incDisc: '{d} on every action', ptsSong: 'song analysis', ptsUsb: 'song in an exported folder'
+  incDisc: '{d} off each action’s total (rounded up)', ptsSong: 'song analysis', ptsUsb: 'song in an exported folder'
 },
 ar: {
   prP: 'الاكتشاف ومزج DJ والتحرير وتصدير MIDI مجانًا. تُدفع النقاط مقابل العمليات: تحليل أغنية جديدة، فصل المسارات بالذكاء الاصطناعي، تصدير مجلدات المكتبة والماشاب والنسخة الممتدة، وتحويل الملفات. قائمة الأسعار الكاملة أدناه.',
@@ -654,7 +654,7 @@ ar: {
   per_song: 'لكل أغنية', per_file: 'لكل ملف', once_song: 'مرة لكل أغنية', per_exp: 'لكل تصدير',
   tblPlan: '{p} · {d}', tblNote: 'في الباقة يُخصم الخصم من مجموع كل عملية ويُقرَّب للأعلى (مثلًا 45 أغنية بخصم 10%: ‏41 نقطة).',
   rowOpen: 'إعادة فتح أغانيك والأغنية التجريبية ومقاطع الاكتشاف', rowCrateX: 'تصدير المكتبة: CSV و rekordbox XML و Traktor و M3U8',
-  incDisc: '{d} على كل عملية', ptsSong: 'تحليل أغنية', ptsUsb: 'أغنية في مجلد مُصدَّر'
+  incDisc: '{d} من مجموع كل عملية (مقرَّب للأعلى)', ptsSong: 'تحليل أغنية', ptsUsb: 'أغنية في مجلد مُصدَّر'
 },
 ru: {
   prP: 'Обзор, DJ-микс, редактирование и экспорт MIDI бесплатны. Баллы списываются за действия: анализ новой песни, разделение на стемы с AI, экспорт папок из библиотеки, мэшапа и extended, конвертацию файлов. Полный прайс — ниже.',
@@ -672,7 +672,7 @@ ru: {
   per_song: 'за песню', per_file: 'за файл', once_song: 'один раз на песню', per_exp: 'за экспорт',
   tblPlan: '{p} · {d}', tblNote: 'На тарифе скидка вычитается из суммы каждого действия с округлением вверх (например, 45 песен при −10%: 41 балл).',
   rowOpen: 'Повторное открытие ваших песен, демо и превью из обзора', rowCrateX: 'Экспорт библиотеки: CSV, rekordbox XML, Traktor, M3U8',
-  incDisc: '{d} на каждое действие', ptsSong: 'анализ песни', ptsUsb: 'песня в экспортированной папке'
+  incDisc: '{d} от суммы каждого действия (с округлением вверх)', ptsSong: 'анализ песни', ptsUsb: 'песня в экспортированной папке'
 },
 es: {
   prP: 'Descubrir, la mezcla DJ, la edición y la exportación MIDI son gratis. Los puntos pagan acciones: analizar una canción nueva, separar pistas con IA, exportar carpetas de la biblioteca, mashup y extended, y convertir archivos. La lista completa está abajo.',
@@ -690,7 +690,7 @@ es: {
   per_song: 'por canción', per_file: 'por archivo', once_song: 'una vez por canción', per_exp: 'por exportación',
   tblPlan: '{p} · {d}', tblNote: 'Con un plan, el descuento se resta del total de cada acción y se redondea hacia arriba (p. ej. 45 canciones con −10 %: 41 puntos).',
   rowOpen: 'Volver a abrir tus canciones, la demo y los fragmentos de Descubrir', rowCrateX: 'Exportaciones de biblioteca: CSV, rekordbox XML, Traktor, M3U8',
-  incDisc: '{d} en cada acción', ptsSong: 'análisis de canción', ptsUsb: 'canción en una carpeta exportada'
+  incDisc: '{d} sobre el total de cada acción (redondeado hacia arriba)', ptsSong: 'análisis de canción', ptsUsb: 'canción en una carpeta exportada'
 }
 };
 for (const l in SV) Object.assign(S[l], SV[l]);
@@ -1115,19 +1115,19 @@ function renderPricing(el, billing, state) {
   const accs = ['blue', 'purple', 'orange'];
 
   let bal = '';
-  /* subscription status from the payments integration: payStatus 'active' | 'cancelled' | 'past_due' | null, renews = ISO date */
-  const pay = state.signedIn && /^(active|cancelled|past_due)$/.test(state.payStatus || '') ? state.payStatus : null;
+  /* subscription status from the payments integration: payStatus 'active' | 'on_trial' | 'cancelled' | 'past_due' | 'paused' | null, renews = ISO date */
+  const pay = state.signedIn && /^(active|on_trial|cancelled|past_due|paused)$/.test(state.payStatus || '') ? state.payStatus : null;
   const dt = d => '<span dir="auto">' + esc(fmtDate(d)) + '</span>';
-  const endD = state.renews || state.planUntil || null;
+  const endD = state.planUntil || state.renews || null;   /* cancelled: the plan runs until plan_until (like the points box) */
   const stText = pay === 'active' ? (state.renews ? fill(t('stRenews'), { d: dt(state.renews) }) : t('stActive'))
     : pay === 'cancelled' ? (endD ? fill(t('stCancelled'), { d: dt(endD) }) : t('stCancelledNd'))
-    : pay === 'past_due' ? t('stPastDue') : '';
+    : pay === 'past_due' ? t('stPastDue') : pay === 'paused' ? t('stPaused') : pay === 'on_trial' ? t('stTrial') : '';
   if (state.signedIn) {
     bal = '<aside class="pg-bal rv" style="--i:2"><span class="pg-eb">' + t('balance') + '</span>' +
       '<div class="pg-balv"><b dir="ltr" data-count="' + (+state.credits || 0) + '">' + fmtN(+state.credits || 0) + '</b><span>' + plWord('ptsL', +state.credits || 0) + '</span></div>' +
       '<div class="pg-balm"><span>' + t('planL') + ': <strong>' + esc(planName(myPlan)) + '</strong></span>' +
       (!pay && state.planUntil && myPlan !== 'free' ? '<span>' + fill(t('until'), { d: dt(state.planUntil) }) + '</span>' : '') + '</div>' +
-      (pay ? '<p class="pg-st ' + esc(pay) + '" role="status"><i aria-hidden="true"></i><span>' + stText + '</span></p>' : '') +
+      (pay ? '<p class="pg-st ' + esc(pay === 'paused' ? 'past_due paused' : pay) + '" role="status"><i aria-hidden="true"></i><span>' + stText + '</span></p>' : '') +
       (state.portal ? '<button type="button" class="pg-btn line pg-manage" data-manage="1">' + ic('sliders') + '<span>' + t('manage') + '</span></button>' : '') + '</aside>';
   }
   const head = '<header class="pg-phead"><div>' + '<span class="pg-eb rv">' + t('prEyebrow') + '</span><h1 class="rv" style="--i:1">' + t('prH') + '</h1><p class="pg-lead rv" style="--i:2">' + t('prP') + '</p></div>' + bal + '</header>';
@@ -1181,13 +1181,14 @@ function renderPricing(el, billing, state) {
   }
 
   /* points v2: one row per kind in billing.costs (the built-in ones in this order, then any other key), a column per plan
-     with a discount (per-unit price after the discount; the real charge rounds the TOTAL up), then the free things */
+     with a discount (what one action really costs = ceil(unit·(100−d)/100); batch kinds (usb, convert) show the per-unit figure,
+     their charge rounds the batch TOTAL up), then the free things */
   const pv = (n, cls) => '<span class="pg-cost ' + cls + '">' + n + '</span>';
   const KR = { song: ['wave', 'rk_song', 'once_song'], sep: ['spark', 'rowSep', 'per_song'], stems: ['export', 'rowDl', 'once_song'], usb: ['layers', 'rk_usb', 'per_song'],
     mashup: ['merge', 'rk_mashup', 'per_exp'], extended: ['extend', 'rk_extended', 'per_exp'], convert: ['convert', 'rk_convert', 'per_file'] };
   const dplans = on ? plans.filter(p => disc(p) > 0) : [];
   const ncol = 2 + dplans.length;
-  const unitOf = (u, d) => Math.round(u * (100 - d)) / 100;
+  const unitOf = (u, d, k) => k === 'usb' || k === 'convert' ? Math.round(u * (100 - d)) / 100 : Math.ceil(u * (100 - d) / 100);
   const rows = [];
   if (on) {
     Object.keys(KR).concat(Object.keys(c).filter(k => !KR[k] && /^[a-z][a-z_]{1,23}$/.test(k))).forEach(k => {
@@ -1195,7 +1196,7 @@ function renderPricing(el, billing, state) {
       const r = KR[k]; if (!r) return;   /* unknown kinds have no label in five languages: not listed */
       if (!u) { rows.push([ic(r[0]), t(r[1]), '<td colspan="' + (ncol - 1) + '">' + pv(t('freeV'), 'free') + '</td>']); return; }
       rows.push([ic(r[0]), t(r[1]) + '<small class="pg-per1">' + t(r[2]) + '</small>',
-        '<td>' + pv(pl('pts', u), 'paid') + '</td>' + dplans.map(p => '<td>' + pv(num(unitOf(u, disc(p))), 'paid disc') + '</td>').join('')]);
+        '<td>' + pv(pl('pts', u), 'paid') + '</td>' + dplans.map(p => '<td>' + pv(num(unitOf(u, disc(p), k)), 'paid disc') + '</td>').join('')]);
     });
   }
   [[ic('wave'), t('rowOpen')], [ic('compass'), t('rowDisc')], [ic('sliders'), t('rowMidi')], [ic('layers'), t('rowCrateX')]]

@@ -39,7 +39,7 @@ he: { rmName: 'רומי', rmRole: 'העוזר המוזיקלי שלך', rmOnline
   rmErrSlow: 'וואו, מהר! 😅 חכו דקה ונמשיך.', rmErrBlocked: 'החשבון הזה לא יכול להשתמש ברומי כרגע.',
   rmErrOff: 'רומי לוקח הפסקה קצרה. נחזור בקרוב!', rmErrCfg: 'רומי עוד מתכונן להופעה — הוא יהיה זמין בקרוב.',
   rmErrBusy: 'יש עומס רגעי. נסו שוב בעוד כמה שניות.', rmErrNet: 'אין חיבור. בדקו את האינטרנט ונסו שוב.',
-  rmErrCut: 'התשובה נקטעה באמצע.', rmErrGen: 'משהו השתבש. נסו שוב.', rmErrAuth: 'פג תוקף ההתחברות. התחברו שוב ונמשיך.',
+  rmErrCut: 'התשובה נקטעה באמצע.', rmErrGen: 'משהו השתבש. נסו שוב.', rmErrMfa: 'צריך להזין את קוד האימות הדו־שלבי מהאפליקציה כדי להמשיך.', rmErrAuth: 'פג תוקף ההתחברות. התחברו שוב ונמשיך.',
   rmRetry: 'לנסות שוב', rmStopped: 'נעצר',
   sgSongKey: 'באיזה סולם השיר הזה? רעיונות למאשאפ איתו', sgSongRemix: 'איך לעשות רמיקס לשיר הזה?', sgStems: 'איך מפרידים את השירה מהשיר?',
   sgMidi: 'איך מייצאים MIDI ל־FL Studio?', sgDiscMatch: 'איך עובדות התאמות ה־DJ?', sgDiscSet: 'איך בונים סט מהמצעדים?',
@@ -58,7 +58,7 @@ en: { rmName: 'Roomy', rmRole: 'Your music buddy', rmOnline: 'Online', rmFab: 'C
   rmErrSlow: 'Whoa, that\'s fast! 😅 Give it a minute and we\'ll carry on.', rmErrBlocked: 'This account can\'t use Roomy right now.',
   rmErrOff: 'Roomy is taking a short break. Back soon!', rmErrCfg: 'Roomy is still warming up backstage — available soon.',
   rmErrBusy: 'It\'s busy right now. Try again in a few seconds.', rmErrNet: 'No connection. Check your internet and try again.',
-  rmErrCut: 'The answer was cut off.', rmErrGen: 'Something went wrong. Please try again.', rmErrAuth: 'Your session expired. Sign in again and we\'ll carry on.',
+  rmErrCut: 'The answer was cut off.', rmErrGen: 'Something went wrong. Please try again.', rmErrMfa: 'Enter the two-step verification code from your app to continue.', rmErrAuth: 'Your session expired. Sign in again and we\'ll carry on.',
   rmRetry: 'Try again', rmStopped: 'Stopped',
   sgSongKey: 'What key is this song? Ideas for a mashup with it', sgSongRemix: 'How would I remix this song?', sgStems: 'How do I separate the vocals?',
   sgMidi: 'How do I export MIDI to FL Studio?', sgDiscMatch: 'How do DJ matches work?', sgDiscSet: 'How do I build a set from the charts?',
@@ -77,7 +77,7 @@ ar: { rmName: 'رومي', rmRole: 'رفيقك الموسيقي', rmOnline: 'مت
   rmErrSlow: 'واو، بسرعة! 😅 انتظر دقيقة ونكمل.', rmErrBlocked: 'لا يمكن لهذا الحساب استخدام رومي حاليًا.',
   rmErrOff: 'رومي في استراحة قصيرة. نعود قريبًا!', rmErrCfg: 'رومي ما زال يستعد خلف الكواليس — سيتوفر قريبًا.',
   rmErrBusy: 'هناك ضغط الآن. حاول مجددًا بعد ثوانٍ.', rmErrNet: 'لا يوجد اتصال. تحقّق من الإنترنت وحاول مجددًا.',
-  rmErrCut: 'انقطعت الإجابة في المنتصف.', rmErrGen: 'حدث خطأ ما. حاول مجددًا.', rmErrAuth: 'انتهت الجلسة. سجّل الدخول مجددًا ونكمل.',
+  rmErrCut: 'انقطعت الإجابة في المنتصف.', rmErrGen: 'حدث خطأ ما. حاول مجددًا.', rmErrMfa: 'أدخل رمز التحقق بخطوتين من التطبيق للمتابعة.', rmErrAuth: 'انتهت الجلسة. سجّل الدخول مجددًا ونكمل.',
   rmRetry: 'حاول مجددًا', rmStopped: 'توقّف',
   sgSongKey: 'ما مقام هذه الأغنية؟ أفكار لماشأب معها', sgSongRemix: 'كيف أعمل ريمكس لهذه الأغنية؟', sgStems: 'كيف أفصل الغناء عن الأغنية؟',
   sgMidi: 'كيف أصدّر MIDI إلى FL Studio؟', sgDiscMatch: 'كيف تعمل توافقات الـDJ؟', sgDiscSet: 'كيف أبني سِتًّا من القوائم؟',
@@ -96,7 +96,7 @@ ru: { rmName: 'Руми', rmRole: 'Твой музыкальный помощн�
   rmErrSlow: 'Ого, как быстро! 😅 Подождите минуту, и продолжим.', rmErrBlocked: 'Этот аккаунт сейчас не может пользоваться Руми.',
   rmErrOff: 'Руми на коротком перерыве. Скоро вернёмся!', rmErrCfg: 'Руми ещё готовится за кулисами — скоро будет доступен.',
   rmErrBusy: 'Сейчас высокая нагрузка. Попробуйте через несколько секунд.', rmErrNet: 'Нет соединения. Проверьте интернет и попробуйте снова.',
-  rmErrCut: 'Ответ прервался.', rmErrGen: 'Что-то пошло не так. Попробуйте снова.', rmErrAuth: 'Сессия истекла. Войдите снова, и продолжим.',
+  rmErrCut: 'Ответ прервался.', rmErrGen: 'Что-то пошло не так. Попробуйте снова.', rmErrMfa: 'Чтобы продолжить, введите код двухэтапной проверки из приложения.', rmErrAuth: 'Сессия истекла. Войдите снова, и продолжим.',
   rmRetry: 'Повторить', rmStopped: 'Остановлено',
   sgSongKey: 'В какой тональности эта песня? Идеи для мэшапа', sgSongRemix: 'Как сделать ремикс на эту песню?', sgStems: 'Как отделить вокал от песни?',
   sgMidi: 'Как экспортировать MIDI в FL Studio?', sgDiscMatch: 'Как работают DJ-совпадения?', sgDiscSet: 'Как собрать сет из чартов?',
@@ -115,7 +115,7 @@ es: { rmName: 'Roomy', rmRole: 'Tu compañero musical', rmOnline: 'En línea', r
   rmErrSlow: '¡Uy, qué rápido! 😅 Espera un minuto y seguimos.', rmErrBlocked: 'Esta cuenta no puede usar Roomy ahora.',
   rmErrOff: 'Roomy está en una pausa corta. ¡Volvemos pronto!', rmErrCfg: 'Roomy todavía se prepara tras el escenario — pronto estará disponible.',
   rmErrBusy: 'Hay mucha demanda ahora. Inténtalo en unos segundos.', rmErrNet: 'Sin conexión. Revisa internet e inténtalo de nuevo.',
-  rmErrCut: 'La respuesta se cortó.', rmErrGen: 'Algo salió mal. Inténtalo de nuevo.', rmErrAuth: 'Tu sesión caducó. Vuelve a entrar y seguimos.',
+  rmErrCut: 'La respuesta se cortó.', rmErrGen: 'Algo salió mal. Inténtalo de nuevo.', rmErrMfa: 'Escribe el código de verificación en dos pasos de tu app para continuar.', rmErrAuth: 'Tu sesión caducó. Vuelve a entrar y seguimos.',
   rmRetry: 'Reintentar', rmStopped: 'Detenido',
   sgSongKey: '¿En qué tonalidad está esta canción? Ideas para un mashup', sgSongRemix: '¿Cómo haría un remix de esta canción?', sgStems: '¿Cómo separo la voz de la canción?',
   sgMidi: '¿Cómo exporto MIDI a FL Studio?', sgDiscMatch: '¿Cómo funcionan las coincidencias DJ?', sgDiscSet: '¿Cómo armo un set con las listas?',
@@ -639,13 +639,13 @@ async function refreshStatus() {
   if (!signedIn() || !Backend.assistantStatus) return;
   try {
     const s = await Backend.assistantStatus();
-    if (s && s.ok) { R.left = Number.isInteger(s.left) ? s.left : null; R.limit = Number.isInteger(s.limit) ? s.limit : null; if (R.left === 0 && !R.busy) R.note = { kind: 'err', key: 'rmErrQuota' }; }
+    if (s && s.ok) { R.left = Number.isInteger(s.left) ? s.left : null; R.limit = Number.isInteger(s.limit) ? s.limit : null; if (R.left === 0 && !R.busy) R.note = { kind: 'err', key: 'rmErrQuota' }; else if (R.left !== 0 && R.note && ['rmErrQuota', 'rmErrOff', 'rmErrBlocked'].includes(R.note.key)) R.note = null; }
     else if (s && s.why === 'off') R.note = { kind: 'info', key: 'rmErrOff' };
     else if (s && s.why === 'blocked') R.note = { kind: 'err', key: 'rmErrBlocked' };
     renderNote();
   } catch (e) {}
 }
-const ERR = { quota: 'rmErrQuota', slow: 'rmErrSlow', blocked: 'rmErrBlocked', off: 'rmErrOff', not_configured: 'rmErrCfg', busy: 'rmErrBusy', auth: 'rmErrAuth' };
+const ERR = { quota: 'rmErrQuota', slow: 'rmErrSlow', blocked: 'rmErrBlocked', off: 'rmErrOff', not_configured: 'rmErrCfg', busy: 'rmErrBusy', auth: 'rmErrAuth', mfa: 'rmErrMfa' };
 
 async function send(text) {
   const U = R.ui;

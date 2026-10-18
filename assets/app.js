@@ -254,7 +254,7 @@ he:{navPricing:'מחירים',navAbout:'אודות',navHome:'בית',creditsL:'�
   billingOn:'שיטת הנקודות פעילה (כבוי = הכול בחינם)',billSignup:'מתנת הרשמה (נקודות)',billContact:'יצירת קשר לתשלום (מייל או קישור)',billSep:'עלות הפרדת ערוצים',billStems:'עלות הורדת סטמים',
   planPrice:'מחיר לחודש',planPoints:'נקודות לחודש',planLink:'קישור תשלום',planBest:'מומלץ',plan_free:'חינמי',plan_basic:'בסיסי',plan_pro:'מקצועי',plan_studio:'סטודיו',
   needSignIn:'כדי להשתמש בזה צריך להתחבר. נרשמים בחינם ומקבלים {n} נקודות מתנה.',noPoints:'אין מספיק נקודות: הפעולה עולה {n} ויש לך {b}.',charged:'ירדו {n} נקודות. נשארו {b}.',
-  dlCostNote:'הורדת הסטמים עולה {n} נקודות (פעם אחת לשיר)',chargeFail:'לא הצלחנו לחייב נקודות. נסה שוב.',subNoLink:'כדי להצטרף למסלול כתבו לנו: {c}',subSoon:'ההצטרפות למסלולים תיפתח בקרוב.',
+  dlCostNote:'הורדת הסטמים עולה {n} נקודות (פעם אחת לשיר)',mfaNeed:'כדי להמשיך צריך להזין את קוד האימות הדו־שלבי.',chargeFail:'לא הצלחנו לחייב נקודות. נסה שוב.',subNoLink:'כדי להצטרף למסלול כתבו לנו: {c}',subSoon:'ההצטרפות למסלולים תיפתח בקרוב.',
   planUntil:'בתוקף עד {d}',planFreeL:'מסלול חינמי',lr_signup:'מתנת הרשמה',lr_spend:'שימוש',lr_grant:'עדכון ידני',lr_refill:'חידוש חודשי',lr_plan:'הפעלת מסלול',lr_refund:'החזר',
   fmtT:'פורמט הקבצים',encoding:'מקודד MP3 ({p}%)…',mp3Fail:'קידוד MP3 נכשל, נסה WAV.',noLedger:'אין תנועות עדיין.',lk_sep:'הפרדת ערוצים',lk_stems:'הורדת סטמים',refunded:'ההפרדה לא הושלמה, הנקודות הוחזרו.'},
 en:{navPricing:'Pricing',navAbout:'About',navHome:'Home',creditsL:'points',creditsBal:'Points balance',seePlans:'Plans & pricing',creditsHist:'Points history',creditsTitle:'Points & plan',creditsCol:'Points',
@@ -263,7 +263,7 @@ en:{navPricing:'Pricing',navAbout:'About',navHome:'Home',creditsL:'points',credi
   billingOn:'Points system on (off = everything is free)',billSignup:'Signup gift (points)',billContact:'Billing contact (email or link)',billSep:'Stem separation cost',billStems:'Stems download cost',
   planPrice:'Price per month',planPoints:'Points per month',planLink:'Payment link',planBest:'Recommended',plan_free:'Free',plan_basic:'Basic',plan_pro:'Pro',plan_studio:'Studio',
   needSignIn:'Sign in to use this. Signing up is free and you get {n} points as a gift.',noPoints:'Not enough points: this costs {n} and you have {b}.',charged:'{n} points used. {b} left.',
-  dlCostNote:'Downloading the stems costs {n} points (once per song)',chargeFail:'Couldn\'t charge points. Try again.',subNoLink:'To join a plan, write to us: {c}',subSoon:'Plans open for sign-up soon.',
+  dlCostNote:'Downloading the stems costs {n} points (once per song)',mfaNeed:'Enter your two-step verification code to continue.',chargeFail:'Couldn\'t charge points. Try again.',subNoLink:'To join a plan, write to us: {c}',subSoon:'Plans open for sign-up soon.',
   planUntil:'Valid until {d}',planFreeL:'Free plan',lr_signup:'Signup gift',lr_spend:'Used',lr_grant:'Manual update',lr_refill:'Monthly refill',lr_plan:'Plan activated',lr_refund:'Refund',
   fmtT:'File format',encoding:'Encoding MP3 ({p}%)…',mp3Fail:'MP3 encoding failed, try WAV.',noLedger:'No activity yet.',lk_sep:'Stem separation',lk_stems:'Stems download',refunded:'The separation didn\'t finish, your points were returned.'},
 ar:{navPricing:'الأسعار',navAbout:'حول',navHome:'الرئيسية',creditsL:'نقاط',creditsBal:'رصيد النقاط',seePlans:'الخطط والأسعار',creditsHist:'سجل النقاط',creditsTitle:'النقاط والخطة',creditsCol:'النقاط',
@@ -272,7 +272,7 @@ ar:{navPricing:'الأسعار',navAbout:'حول',navHome:'الرئيسية',cre
   billingOn:'نظام النقاط مفعّل (إيقاف = كل شيء مجاني)',billSignup:'هدية التسجيل (نقاط)',billContact:'جهة اتصال للدفع (بريد أو رابط)',billSep:'تكلفة فصل المسارات',billStems:'تكلفة تنزيل المسارات',
   planPrice:'السعر الشهري',planPoints:'نقاط شهريًا',planLink:'رابط الدفع',planBest:'موصى بها',plan_free:'مجانية',plan_basic:'أساسية',plan_pro:'احترافية',plan_studio:'استوديو',
   needSignIn:'سجّل الدخول لاستخدام هذه الميزة. التسجيل مجاني وتحصل على {n} نقطة هدية.',noPoints:'النقاط غير كافية: العملية تكلف {n} ولديك {b}.',charged:'تم خصم {n} نقاط. المتبقي {b}.',
-  dlCostNote:'تنزيل المسارات يكلف {n} نقاط (مرة واحدة لكل أغنية)',chargeFail:'تعذّر خصم النقاط. حاول مجددًا.',subNoLink:'للاشتراك في خطة راسلنا: {c}',subSoon:'سيُفتح الاشتراك في الخطط قريبًا.',
+  dlCostNote:'تنزيل المسارات يكلف {n} نقاط (مرة واحدة لكل أغنية)',mfaNeed:'أدخل رمز التحقق بخطوتين للمتابعة.',chargeFail:'تعذّر خصم النقاط. حاول مجددًا.',subNoLink:'للاشتراك في خطة راسلنا: {c}',subSoon:'سيُفتح الاشتراك في الخطط قريبًا.',
   planUntil:'سارية حتى {d}',planFreeL:'الخطة المجانية',lr_signup:'هدية التسجيل',lr_spend:'استخدام',lr_grant:'تحديث يدوي',lr_refill:'تجديد شهري',lr_plan:'تفعيل خطة',lr_refund:'استرداد',
   fmtT:'صيغة الملفات',encoding:'ترميز MP3 ({p}%)…',mp3Fail:'فشل ترميز MP3، جرّب WAV.',noLedger:'لا توجد حركات بعد.',lk_sep:'فصل المسارات',lk_stems:'تنزيل المسارات',refunded:'لم يكتمل الفصل، أُعيدت نقاطك.'},
 ru:{navPricing:'Тарифы',navAbout:'О проекте',navHome:'Главная',creditsL:'баллов',creditsBal:'Баланс баллов',seePlans:'Тарифы и цены',creditsHist:'История баллов',creditsTitle:'Баллы и тариф',creditsCol:'Баллы',
@@ -281,7 +281,7 @@ ru:{navPricing:'Тарифы',navAbout:'О проекте',navHome:'Главна
   billingOn:'Система баллов включена (выкл. = всё бесплатно)',billSignup:'Подарок при регистрации (баллы)',billContact:'Контакт по оплате (email или ссылка)',billSep:'Цена разделения на дорожки',billStems:'Цена скачивания дорожек',
   planPrice:'Цена в месяц',planPoints:'Баллов в месяц',planLink:'Ссылка на оплату',planBest:'Рекомендуем',plan_free:'Бесплатный',plan_basic:'Базовый',plan_pro:'Про',plan_studio:'Студия',
   needSignIn:'Войдите, чтобы пользоваться этим. Регистрация бесплатна, и вы получите {n} баллов в подарок.',noPoints:'Недостаточно баллов: действие стоит {n}, у вас {b}.',charged:'Списано {n} баллов. Осталось {b}.',
-  dlCostNote:'Скачивание дорожек стоит {n} баллов (один раз на песню)',chargeFail:'Не удалось списать баллы. Попробуйте ещё раз.',subNoLink:'Чтобы подключить тариф, напишите нам: {c}',subSoon:'Подключение тарифов скоро откроется.',
+  dlCostNote:'Скачивание дорожек стоит {n} баллов (один раз на песню)',mfaNeed:'Чтобы продолжить, введите код двухэтапной проверки.',chargeFail:'Не удалось списать баллы. Попробуйте ещё раз.',subNoLink:'Чтобы подключить тариф, напишите нам: {c}',subSoon:'Подключение тарифов скоро откроется.',
   planUntil:'Действует до {d}',planFreeL:'Бесплатный тариф',lr_signup:'Подарок за регистрацию',lr_spend:'Использовано',lr_grant:'Ручное изменение',lr_refill:'Ежемесячное пополнение',lr_plan:'Тариф включён',lr_refund:'Возврат',
   fmtT:'Формат файлов',encoding:'Кодирование MP3 ({p}%)…',mp3Fail:'Не удалось закодировать MP3, попробуйте WAV.',noLedger:'Пока нет операций.',lk_sep:'Разделение на стемы',lk_stems:'Скачивание стемов',refunded:'Разделение не завершилось, баллы возвращены.'},
 es:{navPricing:'Precios',navAbout:'Acerca de',navHome:'Inicio',creditsL:'puntos',creditsBal:'Saldo de puntos',seePlans:'Planes y precios',creditsHist:'Historial de puntos',creditsTitle:'Puntos y plan',creditsCol:'Puntos',
@@ -290,7 +290,7 @@ es:{navPricing:'Precios',navAbout:'Acerca de',navHome:'Inicio',creditsL:'puntos'
   billingOn:'Sistema de puntos activo (apagado = todo gratis)',billSignup:'Regalo de registro (puntos)',billContact:'Contacto de pagos (email o enlace)',billSep:'Coste de separar pistas',billStems:'Coste de descargar pistas',
   planPrice:'Precio al mes',planPoints:'Puntos al mes',planLink:'Enlace de pago',planBest:'Recomendado',plan_free:'Gratis',plan_basic:'Básico',plan_pro:'Pro',plan_studio:'Estudio',
   needSignIn:'Inicia sesión para usar esto. Registrarte es gratis y recibes {n} puntos de regalo.',noPoints:'No tienes puntos suficientes: esto cuesta {n} y tienes {b}.',charged:'Se usaron {n} puntos. Quedan {b}.',
-  dlCostNote:'Descargar las pistas cuesta {n} puntos (una vez por canción)',chargeFail:'No se pudieron cobrar los puntos. Inténtalo de nuevo.',subNoLink:'Para unirte a un plan, escríbenos: {c}',subSoon:'Los planes se abrirán pronto.',
+  dlCostNote:'Descargar las pistas cuesta {n} puntos (una vez por canción)',mfaNeed:'Introduce el código de verificación en dos pasos para continuar.',chargeFail:'No se pudieron cobrar los puntos. Inténtalo de nuevo.',subNoLink:'Para unirte a un plan, escríbenos: {c}',subSoon:'Los planes se abrirán pronto.',
   planUntil:'Válido hasta {d}',planFreeL:'Plan gratis',lr_signup:'Regalo de registro',lr_spend:'Uso',lr_grant:'Ajuste manual',lr_refill:'Recarga mensual',lr_plan:'Plan activado',lr_refund:'Reembolso',
   fmtT:'Formato de archivo',encoding:'Codificando MP3 ({p}%)…',mp3Fail:'Falló la codificación MP3, prueba WAV.',noLedger:'Aún no hay movimientos.',lk_sep:'Separación de pistas',lk_stems:'Descarga de pistas',refunded:'La separación no terminó, te devolvimos los puntos.'}};
 for(const k in IP)Object.assign(I[k],IP[k]);
@@ -456,12 +456,16 @@ ar:{dpBar:'مشغل الأغاني',dpPrev:'السابق',dpNext:'التالي',
 ru:{dpBar:'Плеер',dpPrev:'Предыдущая',dpNext:'Следующая',dpPlay:'Играть',dpPause:'Пауза',dpStop:'Стоп',dpMute:'Без звука',dpUnmute:'Включить звук',dpVol:'Громкость',dpSeek:'Позиция'},
 es:{dpBar:'Reproductor',dpPrev:'Anterior',dpNext:'Siguiente',dpPlay:'Reproducir',dpPause:'Pausa',dpStop:'Detener',dpMute:'Silenciar',dpUnmute:'Activar sonido',dpVol:'Volumen',dpSeek:'Posición'}};
 for(const k in IDP)Object.assign(I[k],IDP[k]);
-const IADM={he:{act_adm_role:'מנהל: שינוי רול',act_adm_block:'מנהל: חסימה',act_adm_owner:'מנהל: פעולת בעלים',act_adm_plan:'מנהל: מסלול',act_adm_credits:'מנהל: נקודות'},
-en:{act_adm_role:'Admin: role change',act_adm_block:'Admin: block',act_adm_owner:'Admin: owner action',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: points'},
-ar:{act_adm_role:'مدير: تغيير دور',act_adm_block:'مدير: حظر',act_adm_owner:'مدير: إجراء المالك',act_adm_plan:'مدير: خطة',act_adm_credits:'مدير: نقاط'},
-ru:{act_adm_role:'Админ: смена роли',act_adm_block:'Админ: блокировка',act_adm_owner:'Админ: действие владельца',act_adm_plan:'Админ: тариф',act_adm_credits:'Админ: баллы'},
-es:{act_adm_role:'Admin: cambio de rol',act_adm_block:'Admin: bloqueo',act_adm_owner:'Admin: acción del propietario',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: puntos'}};
+const IADM={he:{act_adm_role:'מנהל: שינוי רול',act_adm_block:'מנהל: חסימה',act_adm_owner:'מנהל: פעולת בעלים',act_adm_plan:'מנהל: מסלול',act_adm_credits:'מנהל: נקודות',act_adm_delete_user:'מנהל: מחיקת משתמש',act_adm_words:'מנהל: מילים חסומות'},
+en:{act_adm_role:'Admin: role change',act_adm_block:'Admin: block',act_adm_owner:'Admin: owner action',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: points',act_adm_delete_user:'Admin: delete user',act_adm_words:'Admin: blocked words'},
+ar:{act_adm_role:'مدير: تغيير دور',act_adm_block:'مدير: حظر',act_adm_owner:'مدير: إجراء المالك',act_adm_plan:'مدير: خطة',act_adm_credits:'مدير: نقاط',act_adm_delete_user:'مدير: حذف مستخدم',act_adm_words:'مدير: الكلمات المحظورة'},
+ru:{act_adm_role:'Админ: смена роли',act_adm_block:'Админ: блокировка',act_adm_owner:'Админ: действие владельца',act_adm_plan:'Админ: тариф',act_adm_credits:'Админ: баллы',act_adm_delete_user:'Админ: удаление пользователя',act_adm_words:'Админ: запрещённые слова'},
+es:{act_adm_role:'Admin: cambio de rol',act_adm_block:'Admin: bloqueo',act_adm_owner:'Admin: acción del propietario',act_adm_plan:'Admin: plan',act_adm_credits:'Admin: puntos',act_adm_delete_user:'Admin: eliminar usuario',act_adm_words:'Admin: palabras bloqueadas'}};
 for(const k in IADM)Object.assign(I[k],IADM[k]);
+/* the legal pages' tab bar also links the accessibility statement and the licenses page (same tabs as info.js) */
+const ILG={he:{lgA11y:'הצהרת נגישות',lgLic:'רישיונות וקרדיטים'},en:{lgA11y:'Accessibility statement',lgLic:'Licenses & credits'},ar:{lgA11y:'بيان إمكانية الوصول',lgLic:'التراخيص والشكر'},
+ru:{lgA11y:'Заявление о доступности',lgLic:'Лицензии и благодарности'},es:{lgA11y:'Declaración de accesibilidad',lgLic:'Licencias y créditos'}};
+for(const k in ILG)Object.assign(I[k],ILG[k]);
 /* auth dialog (sign-in / sign-up in steps / email code / password reset by code) */
 const IAU={
 he:{auTabs:'כניסה או הרשמה',auTabIn:'כניסה',auTabUp:'הרשמה',auBrandH:'האולפן שלכם, בתוך הדפדפן.',auBrandP:'חשבון אחד לכל הכלים, והשירים שלכם נשמרים באופן פרטי.',
@@ -469,7 +473,7 @@ auBenGift:'{n} נקודות מתנה בהרשמה',auBen1:'BPM, סולם ואק�
 auInH:'ברוכים השבים',auInP:'נכנסים עם האימייל והסיסמה של החשבון.',auUpH:'יצירת חשבון',auUpP:'שלושה צעדים קצרים ואתם בפנים.',
 auSteps:'שלבי ההרשמה',auStep1:'פרטים',auStep2:'תנאים',auStep3:'אימות',auStepOf:'שלב {n} מתוך 3',
 auShow:'הצגת הסיסמה',auHide:'הסתרת הסיסמה',auCaps:'Caps Lock פועל',auForgotQ:'שכחתם סיסמה?',auSmsLink:'כניסה עם קוד ב-SMS',auSmsH:'כניסה עם הטלפון',auSmsP:'נשלח קוד חד־פעמי ב-SMS למספר שאימתתם בחשבון.',auSmsCodeH:'הקוד בדרך',auSmsCodeP:'שלחנו SMS עם קוד אל {e}. מקלידים אותו כאן.',auPhoneL:'מספר טלפון',auPhoneBad:'מספר הטלפון לא נראה תקין. למשל 050-123-4567 או +972501234567.',auSmsNoUser:'אין חשבון עם המספר הזה. אפשר להיכנס עם אימייל ולהוסיף את המספר בהגדרות החשבון.',auSmsOff:'שליחת SMS עדיין לא זמינה. אפשר להיכנס עם אימייל.',auOtpLink:'כניסה עם קוד במייל',auPwLink:'כניסה עם סיסמה',auOtpH:'כניסה עם קוד',auOtpP:'נשלח קוד חד־פעמי לאימייל של החשבון. בלי סיסמה.',auOtpCodeH:'הקוד בדרך',auOtpCodeP:'שלחנו אל {e} קוד חד־פעמי. מקלידים אותו כאן, או לוחצים על הקישור במייל.',auOtpNoUser:'אין חשבון עם האימייל הזה. אפשר להירשם.',auNext:'המשך',auBack:'חזרה',
-auUserChecking:'בודק אם השם פנוי…',auUserFree:'השם פנוי',auUserTaken:'השם הזה כבר תפוס',auEmailBad:'כתובת האימייל לא נראית תקינה.',
+auUserChecking:'בודק אם השם פנוי…',auUserFree:'השם פנוי',auUserTaken:'השם הזה כבר תפוס',auUserPending:'השם @{u} שמור להרשמה שמחכה לקוד שנשלח אל {e}. הזינו את הקוד הזה, או בחרו שם משתמש אחר.',auEmailBad:'כתובת האימייל לא נראית תקינה.',
 auPwLen:'לפחות 8 תווים',auPwLvl:['חלשה מדי','חלשה','סבירה','חזקה','חזקה מאוד'],auPwStrength:'חוזק הסיסמה: {s}',auPwTip:'אפשר משפט קצר, או שילוב של אותיות, ספרות וסימנים.',auPwMatch:'הסיסמאות תואמות',auPwCommon:'הסיסמה הזאת נפוצה מדי. בחרו סיסמה אחרת.',
 auTermsH:'תנאי שימוש ופרטיות',auTermsP:'לפני יצירת החשבון, הנה עיקרי הדברים. הנוסח המלא הוא המחייב.',auTermsBox:'עיקרי התנאים',auTermsLink:'תנאי השימוש המלאים',auPrivLink:'מדיניות הפרטיות המלאה',auNewTab:'(נפתח בכרטיסייה חדשה)',
 auAgree:'קראתי ואני מסכים/ה לתנאי השימוש ולמדיניות הפרטיות',auAge:'אני בן/בת 16 ומעלה',auCreate:'יצירת החשבון',auNeedAgree:'כדי להמשיך צריך לסמן את שני האישורים.',
@@ -486,7 +490,7 @@ auBenGift:'{n} free points when you sign up',auBen1:'BPM, key and chords for eve
 auInH:'Welcome back',auInP:'Sign in with your account email and password.',auUpH:'Create your account',auUpP:'Three quick steps and you’re in.',
 auSteps:'Sign-up steps',auStep1:'Details',auStep2:'Terms',auStep3:'Verify',auStepOf:'Step {n} of 3',
 auShow:'Show password',auHide:'Hide password',auCaps:'Caps Lock is on',auForgotQ:'Forgot your password?',auSmsLink:'Sign in with an SMS code',auSmsH:'Sign in with your phone',auSmsP:'We\'ll text a one-time code to the number verified on your account.',auSmsCodeH:'Check your messages',auSmsCodeP:'We texted a code to {e}. Enter it here.',auPhoneL:'Phone number',auPhoneBad:'That phone number doesn\'t look right. Use the international format, e.g. +972501234567.',auSmsNoUser:'There\'s no account with this number. Sign in with your email and add the number in your account settings.',auSmsOff:'Text messages aren\'t available yet. Sign in with your email.',auOtpLink:'Sign in with an email code',auPwLink:'Sign in with a password',auOtpH:'Sign in with a code',auOtpP:'We\'ll email a one-time code to your account. No password needed.',auOtpCodeH:'Check your email',auOtpCodeP:'We sent a one-time code to {e}. Enter it here, or click the link in the email.',auOtpNoUser:'There\'s no account with this email. You can sign up.',auNext:'Continue',auBack:'Back',
-auUserChecking:'Checking availability…',auUserFree:'Available',auUserTaken:'That username is taken',auEmailBad:'That email address doesn’t look right.',
+auUserChecking:'Checking availability…',auUserFree:'Available',auUserTaken:'That username is taken',auUserPending:'@{u} is held for the sign-up waiting for the code sent to {e}. Enter that code, or choose a different username.',auEmailBad:'That email address doesn’t look right.',
 auPwLen:'At least 8 characters',auPwLvl:['Too weak','Weak','Fair','Strong','Very strong'],auPwStrength:'Password strength: {s}',auPwTip:'Try a short sentence, or mix letters, numbers and symbols.',auPwMatch:'Passwords match',auPwCommon:'That password is too common. Please pick another.',
 auTermsH:'Terms and privacy',auTermsP:'Before we create your account, here are the key points. The full text is what counts.',auTermsBox:'Key points',auTermsLink:'Full Terms of Use',auPrivLink:'Full Privacy Policy',auNewTab:'(opens in a new tab)',
 auAgree:'I have read and agree to the Terms of Use and the Privacy Policy',auAge:'I am 16 or older',auCreate:'Create account',auNeedAgree:'Please tick both boxes to continue.',
@@ -503,7 +507,7 @@ auBenGift:'{n} نقطة هدية عند التسجيل',auBen1:'BPM والمقا
 auInH:'مرحبًا بعودتك',auInP:'ادخل بالبريد الإلكتروني وكلمة مرور حسابك.',auUpH:'إنشاء حساب',auUpP:'ثلاث خطوات قصيرة وتكون معنا.',
 auSteps:'خطوات التسجيل',auStep1:'البيانات',auStep2:'الشروط',auStep3:'التحقق',auStepOf:'الخطوة {n} من 3',
 auShow:'إظهار كلمة المرور',auHide:'إخفاء كلمة المرور',auCaps:'مفتاح Caps Lock مفعّل',auForgotQ:'نسيت كلمة المرور؟',auSmsLink:'الدخول برمز SMS',auSmsH:'الدخول بالهاتف',auSmsP:'سنرسل رمزًا لمرة واحدة برسالة SMS إلى الرقم الموثّق في حسابك.',auSmsCodeH:'تحقق من رسائلك',auSmsCodeP:'أرسلنا رمزًا برسالة SMS إلى {e}. أدخله هنا.',auPhoneL:'رقم الهاتف',auPhoneBad:'رقم الهاتف لا يبدو صحيحًا. استخدم الصيغة الدولية، مثل ‎+972501234567.',auSmsNoUser:'لا يوجد حساب بهذا الرقم. ادخل بالبريد الإلكتروني وأضف الرقم في إعدادات الحساب.',auSmsOff:'إرسال الرسائل النصية غير متاح بعد. ادخل بالبريد الإلكتروني.',auOtpLink:'الدخول برمز عبر البريد',auPwLink:'الدخول بكلمة المرور',auOtpH:'الدخول برمز',auOtpP:'سنرسل رمزًا لمرة واحدة إلى بريد الحساب، دون كلمة مرور.',auOtpCodeH:'تحقق من بريدك',auOtpCodeP:'أرسلنا رمزًا لمرة واحدة إلى {e}. أدخله هنا، أو اضغط على الرابط في البريد.',auOtpNoUser:'لا يوجد حساب بهذا البريد. يمكنك التسجيل.',auNext:'متابعة',auBack:'رجوع',
-auUserChecking:'جارٍ التحقق من التوفر…',auUserFree:'الاسم متاح',auUserTaken:'هذا الاسم مستخدم',auEmailBad:'عنوان البريد الإلكتروني لا يبدو صحيحًا.',
+auUserChecking:'جارٍ التحقق من التوفر…',auUserFree:'الاسم متاح',auUserTaken:'هذا الاسم مستخدم',auUserPending:'الاسم @{u} محجوز للتسجيل الذي ينتظر الرمز المرسل إلى {e}. أدخل ذلك الرمز أو اختر اسم مستخدم آخر.',auEmailBad:'عنوان البريد الإلكتروني لا يبدو صحيحًا.',
 auPwLen:'8 أحرف على الأقل',auPwLvl:['ضعيفة جدًا','ضعيفة','مقبولة','قوية','قوية جدًا'],auPwStrength:'قوة كلمة المرور: {s}',auPwTip:'جرّب جملة قصيرة، أو امزج الأحرف والأرقام والرموز.',auPwMatch:'كلمتا المرور متطابقتان',auPwCommon:'كلمة المرور هذه شائعة جدًا. اختر غيرها.',
 auTermsH:'الشروط والخصوصية',auTermsP:'قبل إنشاء الحساب، إليك أهم النقاط. النص الكامل هو المعتمد.',auTermsBox:'أهم النقاط',auTermsLink:'شروط الاستخدام الكاملة',auPrivLink:'سياسة الخصوصية الكاملة',auNewTab:'(تُفتح في علامة تبويب جديدة)',
 auAgree:'قرأت شروط الاستخدام وسياسة الخصوصية وأوافق عليهما',auAge:'عمري 16 عامًا أو أكثر',auCreate:'إنشاء الحساب',auNeedAgree:'للمتابعة يجب تحديد المربعين.',
@@ -520,7 +524,7 @@ auBenGift:'{n} баллов в подарок при регистрации',auB
 auInH:'С возвращением',auInP:'Войдите по email и паролю аккаунта.',auUpH:'Создание аккаунта',auUpP:'Три коротких шага — и вы внутри.',
 auSteps:'Шаги регистрации',auStep1:'Данные',auStep2:'Условия',auStep3:'Проверка',auStepOf:'Шаг {n} из 3',
 auShow:'Показать пароль',auHide:'Скрыть пароль',auCaps:'Включён Caps Lock',auForgotQ:'Забыли пароль?',auSmsLink:'Войти по коду из SMS',auSmsH:'Вход по телефону',auSmsP:'Мы отправим одноразовый код по SMS на номер, подтверждённый в аккаунте.',auSmsCodeH:'Проверьте сообщения',auSmsCodeP:'Мы отправили SMS с кодом на {e}. Введите его здесь.',auPhoneL:'Номер телефона',auPhoneBad:'Номер выглядит неверно. Используйте международный формат, например +972501234567.',auSmsNoUser:'Аккаунта с этим номером нет. Войдите по почте и добавьте номер в настройках аккаунта.',auSmsOff:'Отправка SMS пока недоступна. Войдите по почте.',auOtpLink:'Войти по коду из письма',auPwLink:'Войти с паролем',auOtpH:'Вход по коду',auOtpP:'Мы отправим одноразовый код на почту аккаунта. Пароль не нужен.',auOtpCodeH:'Проверьте почту',auOtpCodeP:'Мы отправили одноразовый код на {e}. Введите его здесь или нажмите ссылку в письме.',auOtpNoUser:'Аккаунта с этой почтой нет. Можно зарегистрироваться.',auNext:'Продолжить',auBack:'Назад',
-auUserChecking:'Проверяем, свободно ли имя…',auUserFree:'Имя свободно',auUserTaken:'Это имя уже занято',auEmailBad:'Похоже, email указан неверно.',
+auUserChecking:'Проверяем, свободно ли имя…',auUserFree:'Имя свободно',auUserTaken:'Это имя уже занято',auUserPending:'Имя @{u} закреплено за регистрацией, которая ждёт код, отправленный на {e}. Введите этот код или выберите другое имя.',auEmailBad:'Похоже, email указан неверно.',
 auPwLen:'Не меньше 8 символов',auPwLvl:['Слишком слабый','Слабый','Средний','Надёжный','Очень надёжный'],auPwStrength:'Надёжность пароля: {s}',auPwTip:'Подойдёт короткая фраза или сочетание букв, цифр и символов.',auPwMatch:'Пароли совпадают',auPwCommon:'Этот пароль слишком распространён. Выберите другой.',
 auTermsH:'Условия и конфиденциальность',auTermsP:'Перед созданием аккаунта — главное. Обязательным является полный текст.',auTermsBox:'Главное',auTermsLink:'Полные условия использования',auPrivLink:'Полная политика конфиденциальности',auNewTab:'(откроется в новой вкладке)',
 auAgree:'Я прочитал(а) и принимаю Условия использования и Политику конфиденциальности',auAge:'Мне 16 лет или больше',auCreate:'Создать аккаунт',auNeedAgree:'Чтобы продолжить, отметьте оба пункта.',
@@ -537,7 +541,7 @@ auBenGift:'{n} puntos de regalo al registrarte',auBen1:'BPM, tonalidad y acordes
 auInH:'Hola de nuevo',auInP:'Entra con el email y la contraseña de tu cuenta.',auUpH:'Crea tu cuenta',auUpP:'Tres pasos rápidos y listo.',
 auSteps:'Pasos del registro',auStep1:'Datos',auStep2:'Términos',auStep3:'Verificar',auStepOf:'Paso {n} de 3',
 auShow:'Mostrar contraseña',auHide:'Ocultar contraseña',auCaps:'Bloq Mayús está activado',auForgotQ:'¿Olvidaste la contraseña?',auSmsLink:'Entrar con un código por SMS',auSmsH:'Entrar con tu teléfono',auSmsP:'Te enviaremos un código de un solo uso por SMS al número verificado en tu cuenta.',auSmsCodeH:'Revisa tus mensajes',auSmsCodeP:'Enviamos un SMS con un código a {e}. Escríbelo aquí.',auPhoneL:'Número de teléfono',auPhoneBad:'Ese número no parece correcto. Usa el formato internacional, p. ej. +972501234567.',auSmsNoUser:'No hay ninguna cuenta con este número. Entra con tu email y añade el número en los ajustes de la cuenta.',auSmsOff:'Los SMS aún no están disponibles. Entra con tu email.',auOtpLink:'Entrar con un código por email',auPwLink:'Entrar con contraseña',auOtpH:'Entrar con un código',auOtpP:'Te enviaremos un código de un solo uso al email de tu cuenta. Sin contraseña.',auOtpCodeH:'Revisa tu email',auOtpCodeP:'Enviamos un código de un solo uso a {e}. Escríbelo aquí o pulsa el enlace del email.',auOtpNoUser:'No hay ninguna cuenta con este email. Puedes registrarte.',auNext:'Continuar',auBack:'Atrás',
-auUserChecking:'Comprobando disponibilidad…',auUserFree:'Disponible',auUserTaken:'Ese nombre ya está en uso',auEmailBad:'Ese email no parece correcto.',
+auUserChecking:'Comprobando disponibilidad…',auUserFree:'Disponible',auUserTaken:'Ese nombre ya está en uso',auUserPending:'@{u} está reservado para el registro que espera el código enviado a {e}. Escribe ese código o elige otro nombre de usuario.',auEmailBad:'Ese email no parece correcto.',
 auPwLen:'Al menos 8 caracteres',auPwLvl:['Demasiado débil','Débil','Aceptable','Fuerte','Muy fuerte'],auPwStrength:'Seguridad de la contraseña: {s}',auPwTip:'Prueba con una frase corta, o mezcla letras, números y símbolos.',auPwMatch:'Las contraseñas coinciden',auPwCommon:'Esa contraseña es demasiado común. Elige otra.',
 auTermsH:'Términos y privacidad',auTermsP:'Antes de crear tu cuenta, estos son los puntos clave. Lo que vale es el texto completo.',auTermsBox:'Puntos clave',auTermsLink:'Términos de uso completos',auPrivLink:'Política de privacidad completa',auNewTab:'(se abre en una pestaña nueva)',
 auAgree:'He leído y acepto los Términos de uso y la Política de privacidad',auAge:'Tengo 16 años o más',auCreate:'Crear la cuenta',auNeedAgree:'Marca las dos casillas para continuar.',
@@ -1181,6 +1185,7 @@ function play(){
   }
   if(P.pos>=S.dur-0.05)P.pos=0;
   const when=c.currentTime+0.03;P.loop=S.loop?{...S.loop}:null;
+  if(P.loop&&P.pos>=P.loop.le)P.pos=P.loop.ls+mod(P.pos-P.loop.ls,Math.max(1e-6,P.loop.le-P.loop.ls));   // past a shortened loop: wrap like the sources do, so the playhead follows the sound
   const fx=fxOn()&&!!FX.node,out=fx?FX.node:c.destination;
   if(fx)FX.node.schedule({active:true,semitones:fxSemis(),output:when});
   const mk=(buf,gv)=>{const s=c.createBufferSource();s.buffer=buf;s.playbackRate.value=fx?S.rate:1;const g=c.createGain();g.gain.value=gv;s.connect(g).connect(out);
@@ -1387,6 +1392,7 @@ function applyPop(a){
   const p=$('#pop');p.hidden=true;if(a==='x'||!popState)return;
   const {bi,root,q}=popState;
   const raw=q===2?-1:mod(root-S.transpose+S.capo,12)+12*q;
+  if(GD){gdPush();gdUI()}   // a chord edit is its own undo step (Ctrl+Z must not jump past it to an older grid edit)
   const old=S.chords[bi];let i0=bi,i1=bi;
   if(a==='b'){while(i0>0&&S.chords[i0-1]===old)i0--;while(i1<S.chords.length-1&&S.chords[i1+1]===old)i1++}
   for(let i=i0;i<=i1;i++){S.chords[i]=raw;S.edited.add(i)}
@@ -1427,11 +1433,11 @@ function showNotice(text,actions){
 }
 /* ---------- analysis pipeline ---------- */
 function busy(msg,p){const o=$('#busy');if(msg===null){o.hidden=true;return}o.hidden=false;$('#busyMsg').textContent=msg;$('#busyBar').style.width=Math.round(p*100)+'%'}
-const ANG={n:0}; /* qw: a newer analyze() supersedes a running one (demo vs. an upload right after the tool opened) */
+const ANG={n:0},ULOAD={n:0,g:0};   // ULOAD: user loads (file / My Songs) running (n) and started so far (g) — ensureSong/restoreLast back off /* qw: a newer analyze() supersedes a running one (demo vs. an upload right after the tool opened) */
 async function analyze(buffer,name,demo,nosave){
   const gen=++ANG.n,stale=()=>gen!==ANG.n;
   stop();P.pos=0;cancelSep(true);
-  Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
+  Object.assign(S,{name,buffer,dur:buffer.duration,demo,stemsPaid:false,transpose:0,rate:1,capo:0,bpm:0,offset:0,down:0,chords:null,beats:[],key:null,wave:null,chroma:null,stems:null,stemKind:null,stemEnv:null,fileMeta:null,genre:'',
     edited:new Set(),cues:new Array(8).fill(null),loop:null,lufs:null,peak:null,notes:null,drumHits:null});
   $('#notice').hidden=true;renderStats();renderStemsUI();
   busy(t('bPrep'),0.02);await tick();
@@ -1450,7 +1456,13 @@ async function analyze(buffer,name,demo,nosave){
   if(!demo&&!nosave){saveLib();if(buffer.duration>=60)offerCatalogMatch()}
 }
 function recompute(){S.key=detectKey();chordPass();S.edited=new Set();renderAll();dirty=true}
-function regrid(){buildBeats();S.chords=detectChords(false);detectDownbeat();S.chords=detectChords(true);detectDownbeat();S.edited=new Set();S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
+function regrid(){
+  // user chord edits ride along by time: each edited old beat [tm, tm+T0) gives its chord to the new beats inside it (×2 → both halves, ÷2 → only a beat on it)
+  const keep=S.chords?[...S.edited].filter(i=>S.beats[i]!=null).map(i=>[S.beats[i],S.chords[i]]):[],T0=S.beats.length>1?S.beats[1]-S.beats[0]:60/S.bpm;
+  buildBeats();S.chords=detectChords(false);detectDownbeat();S.chords=detectChords(true);detectDownbeat();S.edited=new Set();
+  if(S.chords&&S.beats.length){const T=60/S.bpm,f=S.beats[0],eps=Math.min(T,T0)/2;
+    for(const [tm,c] of keep)for(let j=Math.max(0,Math.floor((tm-eps-f)/T));j<S.chords.length&&S.beats[j]<tm+T0-eps;j++)if(S.beats[j]>=tm-eps){S.chords[j]=c;S.edited.add(j)}}
+  S.loop=null;restart();renderAll();saveLibSoon();dirty=true}
 
 async function synthDemo(o){
   o=o||{};const sr=44100,T=60/(o.bpm||120),lead=0.3,barsN=o.bars||16,dur=lead+barsN*4*T+1,sh=o.shift||0,intro=o.intro||0;
@@ -2019,8 +2031,10 @@ function restoreSaved(saved){
   S.edited=new Set(saved.edited||[]);S.cues=saved.cues||new Array(8).fill(null);if(saved.key)S.key=saved.key;
   S.rate=saved.rate||1;S.transpose=saved.transpose||0;if(fxOn())ensureFx().catch(()=>{});renderAll();
 }
-async function openLib(it){
+async function openLib(it){ULOAD.n++;ULOAD.g++;try{await openLib0(it)}finally{ULOAD.n--}}   // a user load: the demo/last-song restore must not overwrite it
+async function openLib0(it){
   stop();P.pos=0;cancelSep(true);$('#lib').hidden=true;
+  ANG.n++;busy(null);   // supersede an analysis still running for the previous song (it must not draw over this one)
   if(it.file_path&&ACC.on&&ACC.user){
     try{
       busy(t('bCloud'),0.05);
@@ -2052,6 +2066,7 @@ function authChanged(uid,event){
   const first=!AUTH.known,prev=AUTH.uid;AUTH.known=true;AUTH.uid=uid;AUTH.wait();
   if(first||prev!==uid){AUTH.last={uid,prev,first,event};document.dispatchEvent(new CustomEvent('cr-user',{detail:AUTH.last}))}   /* acct + perf: AUTH.last = CR.lastUser() */
   if(!first&&prev!==uid)userSwitched(uid,prev);
+  document.documentElement.classList.remove('cr-signed');if(first&&typeof renderAuthBtns==='function')renderAuthBtns();
   if(typeof regate==='function')regate();
 }
 /* ---------- activity log (admin panel → Activity; log_activity in schema.sql) ---------- */
@@ -2106,7 +2121,7 @@ function myName(){const p=ACC.profile||{};return p.display_name||p.username||(AC
 function renderAccount(){
   const on=ACC.on,user=ACC.user;
   renderAuthBtns();$('#accBtn').hidden=!on||!user;$('#adminBtn').hidden=!ACC.panel;
-  $('#libBtn').hidden=!!on&&!user;if(on&&!user)$('#lib').hidden=true;   // My songs: only for a signed-in account
+  $('#libBtn').hidden=!!on&&!user&&!authWait();if(on&&!user)$('#lib').hidden=true;   // My songs: only for a signed-in account
   if(!user)return;
   const p=ACC.profile||{};
   $('#accImg').src=avatarFor(p);$('#accBtn').setAttribute('aria-label',t('account'));
@@ -2192,6 +2207,7 @@ function openDlg(mode){
 function closeDlg(){
   const d=$('#authDlg');if(d.hidden)return;d.hidden=true;document.documentElement.classList.remove('au-open');
   ['#inPass','#upPass','#upPass2','#rcPass','#rcPass2','#rsPass','#rsPass2'].forEach(s=>{const i=$(s);i.value='';i.type='password'});
+  ['upPass','rcPass','rsPass'].forEach(id=>pwPaint(id));['upPass2','rcPass2','rsPass2'].forEach(id=>auFe($('#'+id),''));   // empty fields → empty meter / match line
   document.querySelectorAll('#authDlg .au-eye').forEach(b=>{b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',t('auShow'))});
   if(AU.mode==='done'){AU.done=null;AU.email='';AU.pendingAt=0}
   const r=AU.ret;AU.ret=null;
@@ -2243,20 +2259,21 @@ function userCheck(now){
    ("Email OTP Length"); the length that last worked is remembered (chordroom.otplen): typing auto-submits only at that
    length, a paste/autofill of a whole code always ---- */
 const OTP_MIN=6,OTP_MAX=10;
-const otpLen=()=>{try{const n=+localStorage.getItem('chordroom.otplen');return n>=OTP_MIN&&n<=OTP_MAX?n:0}catch(e){return 0}};
-const otpOk=v=>{try{localStorage.setItem('chordroom.otplen',String(v.length))}catch(e){}};
+const otpK=ch=>ch==='sms'?'chordroom.otplen.sms':'chordroom.otplen';   // SMS and e-mail codes have their own lengths in Supabase
+const otpLen=ch=>{try{const n=+localStorage.getItem(otpK(ch));return n>=OTP_MIN&&n<=OTP_MAX?n:0}catch(e){return 0}};
+const otpOk=(v,ch)=>{try{localStorage.setItem(otpK(ch),String(v.length))}catch(e){}};
 const otpBad=v=>v.length<OTP_MIN||v.length>OTP_MAX;
 function wireOtp(inp){
-  const box=inp.parentElement.querySelector('.au-cells');let cells=[],prev=0;
+  const box=inp.parentElement.querySelector('.au-cells'),ch=inp.id==='smCode'?'sms':'email';let cells=[],prev=0;
   inp.maxLength=OTP_MAX;inp.pattern=`[0-9]{${OTP_MIN},${OTP_MAX}}`;
-  const paint=()=>{const v=inp.value,f=document.activeElement===inp,n=Math.min(OTP_MAX,Math.max(otpLen()||OTP_MIN,v.length));
+  const paint=()=>{const v=inp.value,f=document.activeElement===inp,n=Math.min(OTP_MAX,Math.max(otpLen(ch)||OTP_MIN,v.length));
     if(cells.length!==n){box.innerHTML='<i></i>'.repeat(n);cells=[...box.children];box.style.setProperty('--n',n);box.classList.toggle('long',n>6);
       cells[Math.ceil(n/2)-1].classList.add('g')}
     cells.forEach((c,i)=>{c.textContent=v[i]||'';c.classList.toggle('f',!!v[i]);c.classList.toggle('on',f&&i===Math.min(v.length,n-1)&&!(v.length===n&&i<n-1))})};
   const end=()=>{try{const n=inp.value.length;inp.setSelectionRange(n,n)}catch(e){}};
   inp.addEventListener('input',e=>{const v=inp.value.replace(/\D/g,'').slice(0,OTP_MAX);if(v!==inp.value)inp.value=v;auFe(inp,'');paint();end();
     // whole code at once = paste / drop / autofill (autofill fires an input event without inputType)
-    const whole=v.length-prev>=OTP_MIN||!e.inputType||/^insert(FromPaste|FromDrop|ReplacementText)$/.test(e.inputType),L=otpLen();prev=v.length;
+    const whole=v.length-prev>=OTP_MIN||!e.inputType||/^insert(FromPaste|FromDrop|ReplacementText)$/.test(e.inputType),L=otpLen(ch);prev=v.length;
     if(v.length>=OTP_MIN&&(L?v.length===L||whole:whole)&&inp.dataset.auto&&!inp.form.querySelector('.au-cta.ld'))inp.form.requestSubmit()});
   inp.addEventListener('focus',()=>{paint();setTimeout(end)});inp.addEventListener('blur',paint);inp.addEventListener('click',end);
   inp.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='Home')e.preventDefault()});
@@ -2348,7 +2365,7 @@ $('#fSmsCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const c=$('#smCode'),v=c.value.replace(/\D/g,'');
   if(otpBad(v))return auBad(c,t('auCodeShort'));
   auRun($('#fSmsCode .au-cta'),async()=>{
-    try{await Backend.verifyPhone(AU.smsPhone,v);otpOk(v);AU.smsPhone='';closeDlg()}
+    try{await Backend.verifyPhone(AU.smsPhone,v);otpOk(v,'sms');AU.smsPhone='';closeDlg()}
     catch(err){if(err&&err.code==='mfa'){closeDlg();return}auFe(c,authErr(err));otpSet(c,'');c.focus()}
   })});
 $('#smResend').onclick=()=>{if(!AU.smsPhone)return;const b=$('#smResend');
@@ -2391,11 +2408,13 @@ $('#fTerms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
       AU.user=username;AU.email=email;
       if(r&&r.needsConfirm){
         if(!Backend.verifySignup){auShow('up');auMsg(t('checkEmail',{e:email}),'info');return}   // no code support → the old "check your email" note
-        AU.pendingAt=Date.now();auCool('code');otpSet($('#auCode'),'');auShow('code');return}
+        AU.pendingAt=Date.now();AU.pendUser=username;auCool('code');otpSet($('#auCode'),'');auShow('code');return}
       AU.done='new';auShow('done');
     }catch(err){
       const c=err&&err.code;
-      if(c==='taken'||c==='user'){auShow('up',true);userState('err',c==='taken'?t('auUserTaken'):t('usernameH'));$('#upUser').focus();auMsg(authErr(err),'err');return}
+      if(c==='taken'){AU.uSeq++;clearTimeout(AU.uTimer);AU.uFree=false;AU.uOff=false}   // Continue must not skip the check and repeat the same failing sign-up
+      const held=c==='taken'&&AU.email&&AU.pendUser===username;                // our own unconfirmed sign-up holds the name (e.g. after "Change email")
+      if(c==='taken'||c==='user'){auShow('up',true);userState('err',c==='taken'?t('auUserTaken'):t('usernameH'));$('#upUser').focus();auMsg(held?t('auUserPending',{u:username,e:`⁨${AU.email}⁩`}):authErr(err),held?'info':'err');return}
       if(c==='exists'||c==='email'){auShow('up',true);auFe($('#upEmail'),authErr(err));$('#upEmail').focus();auMsg(authErr(err),'err');return}
       if(c==='short'||c==='weak'){auShow('up',true);auFe($('#upPass'),authErr(err));$('#upPass').focus();auMsg(authErr(err),'err');return}
       auMsg(authErr(err),'err');
@@ -2458,7 +2477,9 @@ $('#fReset').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   auRun($('#fReset .au-cta'),async()=>{try{await Backend.setPassword(p1.value);p1.value=p2.value='';AU.done='pass';auShow('done')}
     catch(err){const k=err&&err.code;if(k==='same'||k==='weak'||k==='short'){auFe(p1,authErr(err));p1.focus();return}auMsg(authErr(err),'err')}})});
 // header buttons: signed out → "sign in" + "sign up" (sign up hidden while registration is closed)
-function renderAuthBtns(){const on=ACC.on,user=ACC.user;$('#signInBtn').hidden=!on||!!user;$('#signUpBtn').hidden=!on||!!user||!signupOpen();if(typeof regate==='function')regate()}
+// a saved session (html.cr-signed, early.js) whose check hasn't answered yet: no "sign in / sign up" flash after a reload
+function authWait(){return !AUTH.known&&document.documentElement.classList.contains('cr-signed')}
+function renderAuthBtns(){const on=ACC.on,user=ACC.user,w=authWait();$('#signInBtn').hidden=!on||!!user||w;$('#signUpBtn').hidden=!on||!!user||w||!signupOpen();if(typeof regate==='function')regate()}
 // initial paint of the idle texts (the language switch repaints them through auLang)
 function auLang(){
   userCheck(false);['upPass','rcPass','rsPass'].forEach(id=>pwPaint(id));auCoolPaint();auTermsState();
@@ -2499,7 +2520,8 @@ $('#accClose').onclick=()=>$('#acc').hidden=true;
 /* site settings, gates */
 function applyConfig(){
   const c=ACC.config||{};
-  const ttl=(c.title||'').trim();document.querySelector('.mark .wm').textContent=ttl||'CHORD ROOM';document.title=ttl||'Chord Room';
+  const ttl=(c.title||'').trim();document.querySelector('.mark .wm').textContent=ttl||'CHORD ROOM';
+  let vt=false;try{if(GATE.v){viewTitle(GATE.v,GATE.locked,true);vt=true}}catch(e){}if(!vt)document.title=ttl||'Chord Room';   // keep the open view's name in the tab title
   const ann=(c.announce||'').trim();$('#banner').hidden=!ann;$('#bannerT').textContent=ann;
   if(c.lang&&I[c.lang]&&!LANG_CHOSEN&&!(ACC.profile&&ACC.profile.lang)&&c.lang!==LANG)setLang(c.lang,false);
   $('#blocked').hidden=!(ACC.profile&&ACC.profile.blocked);
@@ -2647,7 +2669,7 @@ function openRoleDlg(m){
   d.hidden=false;sel.focus();
 }
 /* activity (admin): everyone's recent actions, or one user's in the details view */
-const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy','mashup_export','voice_test','convert'/* converter */,'extended_export'/* extended */];
+const ACT_KEYS=['adm_role','adm_block','adm_owner','adm_plan','adm_credits','adm_delete_user','adm_words','role_change','roles_password','visit','sign_in','view','song_upload','song_open','discover_open','separate','export','dj_load','crate_analyze','crate_export','subscribe_click','invite_copy','mashup_export','voice_test','convert'/* converter */,'extended_export'/* extended */];
 const actName=a=>t('act_'+a)!=='act_'+a?t('act_'+a):a;
 async function loadActivity(uid){try{return await Backend.adminActivity(uid||null,uid?150:400)}catch(e){if(!missingDb(e))console.warn(e);return null}}
 function actRows(list,withUser){
@@ -2659,7 +2681,7 @@ function actRows(list,withUser){
 async function loadAdminAct(){ACC.actAll=await loadActivity(null);renderAdmin()}
 function renderAdminAct(){
   const list=ACC.actAll,sel=$('#aFilter'),q=$('#aSearch').value.trim().toLowerCase();
-  if(!sel.options.length){sel.innerHTML=`<option value="">${esc(t('actAll'))}</option>`+ACT_KEYS.map(k=>`<option value="${k}">${esc(actName(k))}</option>`).join('')}
+  {const v=sel.value;sel.innerHTML=`<option value="">${esc(t('actAll'))}</option>`+ACT_KEYS.map(k=>`<option value="${k}">${esc(actName(k))}</option>`).join('');sel.value=v}   // rebuilt every time: the labels follow the language
   const users={};for(const m of ACC.users||[])users[m.id]=m;
   const f=list&&list.filter(r=>(!sel.value||r.action===sel.value)&&(!q||[r.detail,(users[r.user_id]||{}).username,(users[r.user_id]||{}).email].some(x=>String(x||'').toLowerCase().includes(q))));
   $('#aBody').innerHTML=actRows(f,true);
@@ -2727,14 +2749,19 @@ $('#sSearch').addEventListener('input',()=>renderAdmin());
 /* cloud song library */
 async function loadCloudLib(){
   if(!ACC.user)return;
+  // local-only songs go up once per account (first sync) or when their own save failed (pending); after that the local list
+  // mirrors the cloud, so a song deleted on another device does not come back from this one
+  const sk='chordroom.libsync.v1:'+ACC.user.id;let first=true;try{first=!localStorage.getItem(sk)}catch(e){}
   try{
-    const cloud=await Backend.listSongs(),names=new Set(cloud.map(x=>x.name));
-    for(const it of readLocal())if(!names.has(it.name)){try{await Backend.saveSong(it);cloud.push(it)}catch(e){break}}
+    const cloud=await Backend.listSongs(),names=new Set(cloud.map(x=>x.name));let ok=true;
+    for(const it of readLocal())if(first?!names.has(it.name):it.pending){const {pending,...x}=it;try{await Backend.saveSong(x);const i=cloud.findIndex(c=>c.name===x.name);if(i>=0)cloud[i]=x;else cloud.push(x)}catch(e){ok=false;break}}
     ACC.lib=cloud.sort((a,b)=>(b.saved||0)-(a.saved||0));
+    if(ok){try{localStorage.setItem(sk,'1')}catch(e){}writeLib(ACC.lib.slice(0,80))}
   }catch(e){ACC.lib=null}
   renderLib();renderAccount();
 }
-async function cloudSave(item){if(!ACC.user||ACC.lib===null)return;try{await Backend.saveSong(item);ACC.lib=[item,...ACC.lib.filter(x=>x.name!==item.name)];loadProfile(false)}catch(e){console.warn(e)}}
+const libPending=item=>writeLib(readLocal().map(x=>x.name===item.name?{...x,pending:true}:x));   // not in the cloud yet → pushed by the next loadCloudLib
+async function cloudSave(item){if(!ACC.user)return;if(ACC.lib===null)return libPending(item);try{await Backend.saveSong(item);ACC.lib=[item,...ACC.lib.filter(x=>x.name!==item.name)];loadProfile(false)}catch(e){console.warn(e);libPending(item)}}
 async function cloudDelete(name){if(!ACC.user||ACC.lib===null)return;try{await Backend.deleteSong(name);ACC.lib=ACC.lib.filter(x=>x.name!==name);loadProfile(false)}catch(e){console.warn(e)}}
 /* ---------- points & plans ---------- */
 const KINDS=['song','sep','stems','usb','mashup','extended','convert'];   // points v2 (schema.sql "Points v2"); billing.costs may hold more
@@ -2808,7 +2835,9 @@ function renderCredits(){
   const chip=$('#creditsChip');if(chip){chip.hidden=!show;if(show){$('#creditsN').textContent=(c.credits||0).toLocaleString('en-US');chip.title=t('creditsBal')}}
   const box=$('#ptsBox');if(box){box.hidden=!show;if(show){$('#ptsN').textContent=c.credits||0;
     $('#ptsPlan').textContent=c.plan&&c.plan!=='free'?`${planName(c.plan)} · ${t('planUntil',{d:fmtDate(c.plan_until)})}`:t('planFreeL')}
-    renderPayLine(show?c:null)}
+    renderPayLine(show?c:null)
+    const d=box.querySelector('details'),uid=ACC.user?ACC.user.id:null,bal=show?c.credits:null;   // the history belongs to one account
+    if(d){if(ACC.ledgerUid!==uid){ACC.ledgerUid=uid;d.open=false;$('#ptsLog').replaceChildren()}else if(d.open&&bal!==ACC.ledgerBal)loadLedger();ACC.ledgerBal=bal}}
   renderRef();
   const ai=$('#aiCost');if(ai){const on=billingOn()&&!ACC.admin;ai.hidden=!on;ai.textContent=on?String(unitPrice('sep')):''}
   renderDlCost();
@@ -2834,13 +2863,15 @@ async function payFor(kind){
   if(have<need){toast(t('noPoints',{n:need,b:have}),[[t('seePlans'),()=>showView('pricing')]]);return false}
   return true;
 }
+// security v5: a 2FA account whose session has not passed the code yet → Backend opened the code dialog (cr-mfa); say why
+function mfaAsk(){acctNeed().then(()=>{try{if(Backend.mfaPending)document.dispatchEvent(new CustomEvent('cr-mfa',{detail:{pending:true}}))}catch(e){}});toast(t('mfaNeed'))}
 // spend points now (the server sets the price). Returns false when refused, else {id} of the ledger row (null = free)
 async function charge(kind,ref){
   if(!billingOn()||ACC.admin||!ACC.user)return {id:null};
   const n=unitPrice(kind);
   try{const r=await Backend.spendCredits(kind,String(ref||'').slice(0,200)),b=r&&r.balance;
     if(ACC.cred&&b!=null)ACC.cred.credits=b;renderCredits();if(r&&r.id)toast(t('charged',{n:r.charged!=null?r.charged:n,b}));return {id:(r&&r.id)||null}}
-  catch(e){if(missingDb(e)&&ACC.credMissing)return {id:null}; /* points not installed at all → free; anything else → refuse */if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
+  catch(e){if(missingDb(e)&&ACC.credMissing)return {id:null}; /* points not installed at all → free; anything else → refuse */if(e.code==='mfa')mfaAsk();else if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n,b:ACC.cred?ACC.cred.credits:0}),[[t('seePlans'),()=>showView('pricing')]])}else toast(t('chargeFail'));return false}
 }
 async function refund(pay){
   if(!pay||!pay.id)return;
@@ -2906,7 +2937,7 @@ async function payForN(kind,qty,o){
   if(!ACC.user){toast(t('needSignIn',{n:BILL().signup}),[[t('signIn'),()=>openDlg('up')]]);return null}
   if(!ACC.cred)await loadCredits(false);
   let q=null;
-  if(Backend.quote){try{q=await Backend.quote(kind,Math.min(500,qty));if(q&&ACC.cred&&q.balance!=null&&q.balance!==ACC.cred.credits){ACC.cred.credits=q.balance;renderCredits()}}catch(e){if(!missingDb(e))console.warn(e);q=null}}
+  if(Backend.quote){try{q=await Backend.quote(kind,Math.min(500,qty));if(q&&ACC.cred&&q.balance!=null&&q.balance!==ACC.cred.credits){ACC.cred.credits=q.balance;renderCredits()}}catch(e){if(e.code==='mfa'){mfaAsk();return null}if(!missingDb(e))console.warn(e);q=null}}
   if(!q||typeof q.total!=='number'){const p=priceOf(kind,qty);q={...p,balance:ACC.cred?ACC.cred.credits||0:0}}
   if(q.free||!(q.total>0))return {qty,free:true};
   const have=+q.balance||0;let fit=0;for(let k=qty;k>0;k--)if(priceTot(q.unit,k,q.discount)<=have){fit=k;break}
@@ -2930,7 +2961,7 @@ async function chargeN(kind,qty,ref,o){
     return {id:r.id||null,charged:+r.charged||0,qty};
   }catch(e){
     if(missingDb(e)&&ACC.credMissing)return {id:null,charged:0,qty};
-    if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(priceOf(kind,qty).total),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]])}else toast(t('chargeFail'));
+    if(e.code==='mfa')mfaAsk();else if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(priceOf(kind,qty).total),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]])}else toast(t('chargeFail'));
     return false;
   }
 }
@@ -2955,6 +2986,8 @@ async function payN(kind,qty,o){
    the job); CR.progressN(pay, done) records units already delivered (Converter files). The server allows ≤ 3 h and never
    more units than were charged, so a second tab doing the same check can't refund twice. */
 const JOB_K='chordroom.payjobs.v1',JOB_TTL=170*60000,JOBLIVE={};   // JOBLIVE: jobs of THIS tab → {rel (frees the lock), end}
+// security v5: the server refunds a single 'mashup' / 'extended' export charge only within 30 minutes (batches ≤ 3 h)
+const JOB_TTL_KIND={mashup:30*60000,extended:30*60000},jobTtl=k=>JOB_TTL_KIND[k]||JOB_TTL;
 function jobsGet(){try{const a=JSON.parse(localStorage.getItem(JOB_K)||'[]');return Array.isArray(a)?a.filter(j=>j&&j.id&&Date.now()-(+j.t||0)<JOB_TTL):[]}catch(e){return []}}
 function jobsPut(a){try{a.length?localStorage.setItem(JOB_K,JSON.stringify(a.slice(-30))):localStorage.removeItem(JOB_K)}catch(e){}}
 function jobStart(pay,kind){
@@ -2966,16 +2999,23 @@ function jobStart(pay,kind){
 function jobEnd(pay){if(!pay||!pay.id)return;jobsPut(jobsGet().filter(j=>j.id!==pay.id));const L=JOBLIVE[pay.id];if(L){L.end=true;if(L.rel)L.rel();delete JOBLIVE[pay.id]}}
 function progressN(pay,done){if(!pay||!pay.id)return;const a=jobsGet(),j=a.find(x=>x.id===pay.id);if(j){j.done=Math.max(0,Math.min(j.qty,Math.floor(+done||0)));jobsPut(a)}}
 // the job is over: give back `back` units (failed / cancelled / not delivered) and forget it
-async function settleN(pay,back){if(!pay)return 0;jobEnd(pay);back=Math.floor(+back||0);return back>0?refundN(pay,back):0}
+async function settleN(pay,back){if(!pay)return 0;const j=pay.id&&jobsGet().find(x=>x.id===pay.id);jobEnd(pay);back=Math.floor(+back||0);if(back<1)return 0;
+  // the account changed while the job ran (sign-out / switch, e.g. the Converter cancels on 'cr-user'): the refund is
+  // that account's own → keep it in the journal, payJobsCheck gives it back on its next sign-in
+  if(j&&j.uid!==AUTH.uid){jobsPut([...jobsGet(),{...j,done:Math.max(0,j.qty-back)}]);return 0}
+  return refundN(pay,back)}
 async function payJobsCheck(){
   const uid=AUTH.uid;if(!uid||!ACC.on||!Backend.refundN)return;
   const mine=jobsGet().filter(j=>j.uid===uid);if(!mine.length){jobsPut(jobsGet());return}
   let held;try{if(!navigator.locks||!navigator.locks.query)return;const q=await navigator.locks.query();held=new Set([...(q.held||[]),...(q.pending||[])].map(l=>l.name))}catch(e){return}
   const dead=mine.filter(j=>!held.has('crpay:'+j.id)&&!JOBLIVE[j.id]);if(!dead.length)return;
   jobsPut(jobsGet().filter(j=>!dead.some(d=>d.id===j.id)));
-  let n=0;
+  let n=0,keep=[];
   for(const j of dead){const k=Math.floor(j.qty-(j.done||0));if(k<1)continue;
-    try{const r=await Backend.refundN(j.id,k);if(r){n+=+r.refunded||0;if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance}}catch(e){console.warn('pay job',j.id,e)}}
+    if(Date.now()-(+j.t||0)>=jobTtl(j.kind))continue;   // past the server's refund window: don't try
+    try{const r=await Backend.refundN(j.id,k);if(r){n+=+r.refunded||0;if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance}}
+    catch(e){if(e&&e.code==='mfa'){keep.push(j);continue}console.warn('pay job',j.id,e)}}   // 2FA code not entered yet → try again on the next check
+  if(keep.length)jobsPut([...jobsGet(),...keep]);
   if(n>0){renderCredits();toast(t('pvCrash',{n:fmtPts(n)}))}
 }
 document.addEventListener('cr-user',e=>{if(e.detail&&e.detail.uid)setTimeout(payJobsCheck,1500)});
@@ -2984,7 +3024,7 @@ const songKey=(name,size)=>songKeyOf(String(name||'').replace(/\.[^./\\]{1,6}$/,
 async function commitSong(key,name){
   if(!billingOn()||ACC.admin||!ACC.user||!Backend.spendSong)return true;
   try{const r=await Backend.spendSong(key,String(name||'').slice(0,200));if(r&&ACC.cred&&r.balance!=null){ACC.cred.credits=r.balance;renderCredits()}return true}
-  catch(e){if(missingDb(e))return true;if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(costOf('song')),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]]);return false}
+  catch(e){if(missingDb(e))return true;if(e.code==='mfa'){mfaAsk();return false}if(e.code==='insufficient'){await loadCredits(false);toast(t('noPoints',{n:fmtPts(costOf('song')),b:fmtPts(ACC.cred?ACC.cred.credits:0)}),[[t('pvBuy'),()=>showView('pricing')]]);return false}
     console.warn(e);return true}   // a network hiccup never throws away the user's analysis (the gate is honest-user level)
 }
 // items [{name,size}] → {ok: the items allowed (paid before + the new ones the user confirmed), commit(item) → bool}
@@ -3004,8 +3044,10 @@ async function paySongs(items,o){
 function ledgerRef(r){
   if(r.reason==='refund'){const k=r.kind||(/^refund:/.test(r.ref||'')?'sep':'');return k&&I.en['lk_'+k]?t('lk_'+k)+(+r.qty>1?` ×${r.qty}`:''):''}
   if(!r.ref)return '';
-  if(r.reason==='payment'){const m=/^ls:(rf:)?(sub|inv|up):\S*\s*(\S*)\s*(upgrade)?/.exec(r.ref),test=/\(test\)\s*$/.test(r.ref)?' (test)':'';
+  if(r.reason==='payment'){const m=/^ls:(rf:)?(sub|inv|up|pp:sale):\S*\s*(\S*)\s*(upgrade)?/.exec(r.ref),test=/\(test\)\s*$/.test(r.ref)?' (test)':'';
     return m?(m[1]?t('payRefundL'):planName(m[3])+(m[4]?` · ${t('payUpgradeL')}`:''))+test:r.ref}
+  if(r.reason==='refill')return planName(r.ref);
+  if(r.reason==='plan'){const p=/^(\S+) x(\d+)$/.exec(r.ref);if(p)return planName(p[1])+(+p[2]>1?` ×${p[2]}`:'')}
   if(r.reason==='referral')return /^ref:inviter:/.test(r.ref)?t('refInviterL'):t('refJoinedL');
   const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);if(m)return t('lk_'+m[1])+(m[2]?` · ${m[2]}`:'');
   const v=/^([a-z][a-z_]{1,23}) ×(\d+)(?: (.*))?$/.exec(r.ref);   // points v2: "<kind> ×<qty> <ref>"
@@ -3018,16 +3060,18 @@ async function renderLedger(ul,rows){
     const rf=ledgerRef(r);li.querySelector('.lr').textContent=t('lr_'+r.reason)+(rf?` · ${rf}`:'');li.querySelector('.lt').textContent=fmtDate(r.created_at);
     const d=li.querySelector('b');d.textContent=(r.delta>0?'+':'')+r.delta;d.classList.toggle('neg',r.delta<0);ul.appendChild(li)}
 }
-$('#creditsChip').onclick=()=>showView('pricing');
-$('#ptsPlans').onclick=()=>{$('#acc').hidden=true;showView('pricing')};
-$('#ptsBox').querySelector('details').addEventListener('toggle',async e=>{if(e.target.open){try{renderLedger($('#ptsLog'),await Backend.ledger(30))}catch(x){}}});
+$('#creditsChip').onclick=()=>showView('pricing',null,NAV);
+$('#ptsPlans').onclick=()=>{$('#acc').hidden=true;showView('pricing',null,NAV)};
+function loadLedger(){const d=$('#ptsBox').querySelector('details'),uid=ACC.user&&ACC.user.id;if(!d.open||!uid)return;
+  Backend.ledger(30).then(rows=>{if(d.open&&ACC.user&&ACC.user.id===uid)renderLedger($('#ptsLog'),rows)},()=>{})}   // a reply for another account / a closed list is dropped
+$('#ptsBox').querySelector('details').addEventListener('toggle',e=>{if(e.target.open)loadLedger()});
 function pageState(){const c=ACC.cred||{};return {signedIn:!!ACC.user,plan:c.plan||'free',credits:c.credits||0,planUntil:c.plan_until||null,
   portal:portalUrl(c),payStatus:c.pay_status||null,renews:c.pay_renews||null}}
 function renderPricingPage(){if(window.PAGES)PAGES.renderPricing($('#pricingView'),BILL(),pageState());renderRef()}
 function renderAboutPage(){if(window.PAGES)PAGES.renderAbout($('#aboutView'),BILL())}
 function hookPages(){
   if(!window.PAGES||PAGES.__hooked)return;PAGES.__hooked=true;
-  PAGES.onNav=v=>showView(v);
+  PAGES.onNav=v=>showView(v,null,NAV);
   PAGES.onSignup=()=>{if(ACC.on)openDlg('up')};
   PAGES.onSubscribe=id=>{
     logAct('subscribe_click',id);
@@ -3037,6 +3081,7 @@ function hookPages(){
       if(!ACC.user){if(ACC.on)openDlg('up');return}                       // the payment must know whose account to fill
       const c=ACC.cred||{};
       if(portalUrl(c)&&PAY_LIVE.includes(c.pay_status)){toast(t('payHaveSub'),[[t('payManage'),openPortal]]);return}   // change plan in the portal, not a 2nd subscription
+      if(PAY.busy||Date.now()-PAY.opened<12000)return;                 // one checkout at a time: a double click / the 2nd button must not open a 2nd subscription
       PAY.opened=Date.now();
       if(pp){paypalCheckout(p.id);return}
       window.open(checkoutUrl(p.link,p.id),'_blank','noopener');return}
@@ -3051,8 +3096,10 @@ function hookPages(){
 // returns PayPal's approve link; the webhook (functions/api/pay/paypal.js → pay_webhook_paypal) turns the plan on.
 const PP_PLAN=/^P-[A-Z0-9]{10,40}$/;
 async function paypalCheckout(planId){
+  if(PAY.busy)return;PAY.busy=true;
+  const bs=[...document.querySelectorAll('[data-sub]')].filter(b=>b.dataset.sub===planId&&!b.disabled);bs.forEach(b=>{b.disabled=true;b.setAttribute('aria-busy','true')});
   let w=null;try{w=window.open('','_blank');if(w)w.opener=null}catch(e){}   // opened now (the click), filled after the request
-  const fail=k=>{try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else toast(t('payErr'))};
+  const fail=k=>{PAY.opened=0;try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else toast(t('payErr'))};
   try{
     const tok=Backend.accessToken?await Backend.accessToken():null;if(!tok)return fail();
     const r=await fetch('/api/pay/paypal-subscribe',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body:JSON.stringify({plan:planId}),credentials:'omit',cache:'no-store'});
@@ -3060,8 +3107,9 @@ async function paypalCheckout(planId){
     if(!r.ok||!o.url||!/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(o.url))return fail(o.error);
     if(w)w.location.href=o.url;else location.href=o.url;               // popup blocked → same tab (PayPal returns to ?paid=1#pricing)
   }catch(e){fail()}
+  finally{PAY.busy=false;bs.forEach(b=>{b.disabled=false;b.removeAttribute('aria-busy')})}
 }
-const PAY={opened:0,polling:false,focusAt:0};
+const PAY={opened:0,polling:false,focusAt:0,busy:false};
 const PAY_LIVE=['active','on_trial','past_due','paused'];
 // the contact from the settings: an e-mail address (→ mailto:) or an https:// link only — never javascript:/data:
 function contactHref(c){c=String(c||'').trim();if(/^[^\s@:\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(c))return 'mailto:'+c;try{const u=new URL(c);if(u.protocol==='https:')return u.href}catch(e){}return null}
@@ -3194,7 +3242,7 @@ async function israeliTracks(){
   for(const x of israeliFilter(lists.flat())){if(!seen.has(x.id)){seen.add(x.id);out.push(x)}}
   return out;   // chart order first, then the extra playlist
 }
-const DC={tab:'trend',genre:0,rows:{},lists:{},keyF:'',bpmMin:'',bpmMax:'',queue:[],working:false,audio:null,playing:null,loaded:false,mixFor:null,pool:null};
+const DC={tab:'trend',genre:0,rows:{},lists:{},keyF:'',bpmMin:'',bpmMax:'',queue:[],working:false,audio:null,playing:null,loaded:false,mixFor:null,pool:null,inflight:{},pvTok:0};
 const CACHE_K='chordroom.cat.v1';
 const cacheRead=()=>{try{return JSON.parse(localStorage.getItem(CACHE_K)||'{}')}catch(e){return {}}};
 const cacheWrite=c=>{try{localStorage.setItem(CACHE_K,JSON.stringify(c))}catch(e){}};
@@ -3252,9 +3300,11 @@ async function mergeKnown(rows){
   if(ACC.on){try{(await Backend.catalogGet(rows.map(r=>r.id))).forEach(rowFromCatalog)}catch(e){}}
 }
 async function loadTab(){
-  const tab=DC.tab,key=tab+':'+DC.genre;setDiscMsg('');
+  const tab=DC.tab,key=tab+':'+DC.genre,cur=()=>key===DC.tab+':'+DC.genre;setDiscMsg('');
   if(!DC.lists[key]){
     $('#dList').innerHTML=`<li class="dempty">${esc(t('dLoading'))}</li>`;
+    if(DC.inflight[key])return;   // already loading: that call renders the list when it settles (if it is still the current tab)
+    DC.inflight[key]=1;
     try{
       let rows=[];
       if(tab==='trend'&&DC.genre===-1){rows=(await israeliTracks()).slice(0,60).map(x=>rowFromTrack(x))}
@@ -3275,7 +3325,9 @@ async function loadTab(){
       }
       if(tab==='trend'||tab==='new')await mergeKnown(rows);
       DC.lists[key]=rows.map(r=>r.id);
-    }catch(e){console.warn(e);DC.lists[key]=null;$('#dList').innerHTML=`<li class="dempty">${esc(t('dLoadFail'))}</li>`;return}
+    }catch(e){console.warn(e);DC.lists[key]=null;if(cur())$('#dList').innerHTML=`<li class="dempty">${esc(t('dLoadFail'))}</li>`;return}
+    finally{delete DC.inflight[key]}
+    if(!cur())return;   // the user switched tab/genre meanwhile: the list is kept for later, the screen belongs to the new tab
   }
   renderList();queueVisible();
 }
@@ -3289,7 +3341,9 @@ function passesFilter(r){
   return true;
 }
 function renderList(){
-  const ids=DC.lists[DC.tab+':'+DC.genre]||[],ul=$('#dList');ul.innerHTML='';
+  const lk=DC.tab+':'+DC.genre,ids=DC.lists[lk]||[],ul=$('#dList');ul.innerHTML='';
+  if(DC.lists[lk]===null){ul.innerHTML=`<li class="dempty">${esc(t('dLoadFail'))}</li>`;return}
+  if(DC.inflight[lk]){ul.innerHTML=`<li class="dempty">${esc(t('dLoading'))}</li>`;return}
   const rows=ids.map(id=>DC.rows[id]).filter(passesFilter);
   if(!rows.length){ul.innerHTML=`<li class="dempty">${esc((DC.tab==='played'||DC.tab==='recent')&&!ids.length?t('dEmptyCat'):t('dNoMatch'))}</li>`;return}
   rows.forEach((r,i)=>ul.appendChild(rowEl(r,i+1)));
@@ -3319,12 +3373,21 @@ function rowEl(r,n){
 }
 // update a row in place (never replace it), so a click that is in progress is not lost
 function refreshRow(r){
+  const m=document.querySelector(`#mixList .mrow[data-id="${CSS.escape(r.id)}"] .pv`);if(m)m.textContent=DC.playing===r.id?'❚❚':'▶';
   const el=document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`);if(!el)return;
   const a=r.a,dk=el.querySelector('.dk');dk.innerHTML='';dk.appendChild(keyBadge(a,r.status));
   if(r.full){const f=document.createElement('span');f.className='fulltag';f.textContent=t('fullTag');f.title=t('fullTagT');dk.appendChild(f)}
   el.querySelector('.db').innerHTML=`${a?Math.round(a.bpm):'—'}<small>BPM</small>`;
   el.querySelector('.dch').innerHTML=a&&a.chords?a.chords.slice(0,4).map(c=>`<span>${esc(chordText(c,a))}</span>`).join(''):'';
   el.querySelector('.mx').disabled=!a;el.querySelector('.pv').textContent=DC.playing===r.id?'❚❚':'▶';
+}
+// a song analysed after the list was drawn may now pass the key/BPM filter: insert just that row in list order
+function insertRow(r){
+  if(!(DC.keyF||DC.bpmMin||DC.bpmMax)||!passesFilter(r))return;
+  const ids=DC.lists[DC.tab+':'+DC.genre]||[],i=ids.indexOf(r.id),ul=$('#dList');if(i<0||document.querySelector(`.drow[data-id="${CSS.escape(r.id)}"]`))return;
+  ul.querySelectorAll('li.dempty').forEach(x=>x.remove());
+  let before=null;for(let j=i+1;j<ids.length&&!before;j++)before=ul.querySelector(`.drow[data-id="${CSS.escape(ids[j])}"]`);
+  ul.insertBefore(rowEl(r,0),before);ul.querySelectorAll('.drow .dn').forEach((x,k)=>x.textContent=k+1);
 }
 function fmtDay(d){const x=new Date(d);return isNaN(x)?'':x.toLocaleDateString(LANG==='he'?'he-IL':LANG==='ar'?'ar':LANG,{day:'numeric',month:'short'})}
 function setDiscMsg(m){$('#dMsg').textContent=m||''}
@@ -3373,7 +3436,7 @@ async function pump(){
         if(ACC.on&&ACC.user&&!r.inCat){Backend.catalogAdd({id:r.id,ext_id:r.ext,title:r.title.slice(0,300),artist:r.artist.slice(0,300),album:(r.album||'').slice(0,300),cover:r.cover||'',link:r.link||'',
           release_date:r.release||null,duration:r.dur||null,bpm:Math.min(300,Math.max(30,r.a.bpm)),key_pc:r.a.pc,key_mode:r.a.mode,chords:r.a.chords}).then(()=>{r.inCat=true}).catch(e=>console.warn(e))}
       }catch(e){console.warn(e);r.status='err'}
-      refreshRow(r);if(DC.mixFor)renderMix();if(r.id===DC.cur)dpRender();
+      refreshRow(r);if(r.a)insertRow(r);if(DC.mixFor)renderMix();if(r.id===DC.cur)dpRender();
       await tick();
     }
   }finally{DC.working=false}
@@ -3390,9 +3453,12 @@ function dcAudio(){
 async function togglePreview(r){
   const au=dcAudio(),prev=DC.playing;
   if(prev===r.id){au.pause();DC.playing=null;refreshRow(r);dpRender();return}
+  if(DC.fullFor)closeFull();   // never the preview and Deezer's full-song widget at once (the widget would cover the player bar)
   if(!prev&&DC.cur===r.id&&au.src&&au.currentTime>0&&!au.ended){try{await au.play();DC.playing=r.id}catch(e){}refreshRow(r);dpRender();return}   // resume
   if(P.playing)stop();
-  try{au.src=await freshPreview(r);await au.play();DC.playing=r.id;DC.cur=r.id;if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{})}catch(e){setDiscMsg(t('dNoPreview'))}
+  const tok=++DC.pvTok;   // a newer click wins: an older call's late result or its interrupted play() is ignored
+  try{const u=await freshPreview(r);if(tok===DC.pvTok){au.src=u;await au.play();DC.playing=r.id;DC.cur=r.id;if($('#dMsg').textContent===t('dNoPreview'))setDiscMsg('');if(ACC.on&&r.inCat)Backend.catalogPlay(r.id).catch(()=>{})}}
+  catch(e){if(tok===DC.pvTok&&e.name!=='AbortError')setDiscMsg(t('dNoPreview'))}
   if(prev&&DC.rows[prev])refreshRow(DC.rows[prev]);refreshRow(r);dpRender();
 }
 function stopPreview(){if(DC.audio){DC.audio.pause()}const p=DC.playing;DC.playing=null;DC.cur=null;if(p&&DC.rows[p])refreshRow(DC.rows[p]);dpRender()}
@@ -3427,7 +3493,8 @@ function dpEl(){
     else if(k==='mute'){const au=dcAudio();au.muted=!au.muted}
     else if(k==='tool'){if(r){stopPreview();openInTool(r)}}
     else if(k==='full'){if(r)openFull(r)}});
-  const rg=d.querySelector('.dpr');rg.oninput=()=>{const au=DC.audio;if(au&&isFinite(au.duration))au.currentTime=rg.value/1000*au.duration};
+  const rg=d.querySelector('.dpr'),seekEnd=()=>{DC.seeking=false};rg.addEventListener('pointerdown',()=>{DC.seeking=true});rg.addEventListener('change',seekEnd);
+  window.addEventListener('pointerup',seekEnd);window.addEventListener('pointercancel',seekEnd);rg.oninput=()=>{const au=DC.audio;if(au&&isFinite(au.duration))au.currentTime=rg.value/1000*au.duration};
   const vv=d.querySelector('.dpv');vv.oninput=()=>{const au=dcAudio();au.volume=vv.value/100;au.muted=false;try{localStorage.setItem('chordroom.dvol',String(au.volume))}catch(e){}};
   return d;
 }
@@ -3452,7 +3519,7 @@ function dpRender(){
 function dpProgress(){
   const d=$('#dPlayer'),au=DC.audio;if(!d||d.hidden||!au)return;
   const dur=isFinite(au.duration)?au.duration:30;d.querySelector('.dpcur').textContent=fmtS(au.currentTime||0);d.querySelector('.dpdur').textContent=fmtS(dur);
-  const rg=d.querySelector('.dpr');if(document.activeElement!==rg)rg.value=Math.round((au.currentTime||0)/dur*1000);
+  const rg=d.querySelector('.dpr');if(!DC.seeking)rg.value=Math.round((au.currentTime||0)/dur*1000);
 }
 const FULL_IC='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3M4 12v5a2 2 0 0 0 2 2h1v-6H4"/></svg>';
 // Full songs play inside Deezer's official player: complete for listeners signed in to Deezer, 30 s otherwise.
@@ -3497,8 +3564,8 @@ function renderMix(){
   const ul=$('#mixList');ul.innerHTML='';
   if(!cands.length){ul.innerHTML=`<li class="dempty">${esc(t('mixNone'))}</li>`;return}
   for(const o of cands){
-    const li=document.createElement('li');li.className='mrow';
-    li.innerHTML=`<img alt="" loading="lazy" decoding="async" width="40" height="40"><div class="dt"><div class="tt"></div><div class="ar"></div></div><span class="rel"></span><button type="button" class="ib pv">▶</button>`;
+    const li=document.createElement('li');li.className='mrow';li.dataset.id=o.x.id;
+    li.innerHTML=`<img alt="" loading="lazy" decoding="async" width="40" height="40"><div class="dt"><div class="tt"></div><div class="ar"></div></div><span class="rel"></span><button type="button" class="ib pv">${DC.playing===o.x.id?'❚❚':'▶'}</button>`;
     li.querySelector('img').src=o.x.cover||'assets/icon.svg';li.querySelector('.tt').textContent=o.x.title;
     li.querySelector('.ar').textContent=`${o.x.artist} · ${Math.round(o.x.a.bpm)} BPM`+(o.fit>0.005?` · ±${Math.max(1,Math.round(o.fit*100))}%`:'');
     li.insertBefore(keyBadge(o.x.a),li.querySelector('.rel'));li.querySelector('.rel').textContent=relName[o.rel];
@@ -3524,7 +3591,8 @@ function viewUrl(v,anchor){
   if(PAGE_PATHS[v]&&pathView()===v&&!location.hash.replace('#',''))return location.pathname+location.search;   // opened at /pricing → keep the clean path
   return BASE_PATH+location.search+'#'+v;
 }
-function showView(v,anchor){
+const NAV={push:true},RT={href:null};   // NAV = a user navigation (pushState); RT.href = the URL the router last showed
+function showView(v,anchor,opt){
   if(!VIEWS[v])v='tool';
   const lock=gated(v);GATE.v=v;GATE.locked=lock;
   logAct('view',v);
@@ -3533,8 +3601,8 @@ function showView(v,anchor){
   $('#gateView').hidden=!lock;if(lock)renderGate(v);else $('#gateView').innerHTML='';
   const d=v==='discover'&&!lock,j=v==='dj'&&!lock;
   if((v!=='tool'||lock)&&P.playing)stop();
-  if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{renderList();pump()}}
-  else{stopPreview();if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
+  if(d){if(!DC.loaded){DC.loaded=true;renderDiscControls();loadTab()}else{loadTab();pump()}}   // loadTab retries a list that failed and only renders a loaded one
+  else{stopPreview();$('#mix').hidden=true;DC.mixFor=null;if(v==='tool'&&!lock)requestAnimationFrame(()=>{sizeCanvases();dirty=true})}
   if(v==='tool'&&!lock)setTimeout(ensureSong,0);                      /* qw: the demo is analysed only when the tool is first shown */
   renderGuestBar();
   if(!lock&&LAZY_OF[v])lazyView(LAZY_OF[v],$(VIEWS[v][0]));          /* perf: the view's module loads on first use */
@@ -3552,7 +3620,8 @@ function showView(v,anchor){
     else{el.innerHTML='';el.setAttribute('aria-busy','true');
       needMod('info').then(()=>{if(GATE.v===v&&window.INFO){INFO.render(v,el);viewTitle(v,false,!!anchor)}},e=>{console.warn(e);toast(t('lazyFail'))}).finally(()=>el.removeAttribute('aria-busy'))}}
   document.documentElement.classList.remove('home');
-  try{history.replaceState(null,'',viewUrl(v,anchor))}catch(e){}
+  try{const url=viewUrl(v,anchor);if(opt&&opt.push&&url!==location.pathname+location.search+location.hash)history.pushState(null,'',url);else history.replaceState(null,'',url)}catch(e){}   // user navigation = a history entry (Back works)
+  RT.href=location.href;
   const tgt=anchor&&document.getElementById(anchor);
   if(tgt)requestAnimationFrame(()=>tgt.scrollIntoView({block:'start'}));else window.scrollTo(0,0);
   viewTitle(v,lock,!!anchor);
@@ -3575,7 +3644,8 @@ document.addEventListener('cr-mfa',()=>acctNeed());
 /* qw: document.title per view + focus to the view's h1 (screen readers, history, tabs) */
 function viewTitle(v,lock,anchored){
   const navEl=VIEWS[v]&&VIEWS[v][1]&&$(VIEWS[v][1]),nm=navEl?(navEl.querySelector('span[data-i]')||navEl).textContent.trim():(v==='terms'||v==='privacy')&&window.LEGAL?LEGAL.title(v,LANG):(v==='licenses'||v==='accessibility')&&window.INFO?INFO.title(v):'';
-  document.title=v==='about'?`Chord Room · ${t('tagline')}`:`${lock?t('gateLock'):nm||v} · Chord Room`;
+  const br=((ACC.config||{}).title||'').trim()||'Chord Room';
+  document.title=v==='about'?`${br} · ${t('tagline')}`:`${lock?t('gateLock'):nm||v} · ${br}`;
   if(!VT.user)return;                                                    // only after a user navigation, not on boot
   const sec=lock?'#gateView':VIEWS[v][0],h=!anchored&&$(sec)&&$(sec).querySelector('h1');
   if(h){h.tabIndex=-1;try{h.focus({preventScroll:true})}catch(e){}}
@@ -3610,7 +3680,7 @@ function renderGate(v){
   </div>`;
 }
 $('#gateView').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;
-  if(g==='up'||g==='in')openDlg(g);else showView(g==='home'?'about':'pricing')});
+  if(g==='up'||g==='in')openDlg(g);else showView(g==='home'?'about':'pricing',null,NAV)});
 /* qw: skip link → the visible view's heading */
 $('#skipLink').onclick=()=>{const sec=Object.values(VIEWS).map(v=>$(v[0])).concat([$('#gateView')]).find(e=>e&&!e.hidden);if(!sec)return;const h=sec.querySelector('h1')||sec;h.tabIndex=-1;h.focus({preventScroll:true});h.scrollIntoView({block:'start'})};
 // uploading a song needs an account too (header button, drag & drop)
@@ -3628,16 +3698,16 @@ function renderDiscControls(){
 $('#dKey').onchange=e=>{DC.keyF=e.target.value;renderList()};
 $('#dBpmMin').oninput=e=>{DC.bpmMin=e.target.value;renderList()};
 $('#dBpmMax').oninput=e=>{DC.bpmMax=e.target.value;renderList()};
-$('#navDisc').onclick=()=>showView('discover');
-$('#navTool').onclick=()=>showView('tool');
-$('#navDj').onclick=()=>showView('dj');
-$('#navCrate').onclick=()=>showView('crate');
-$('#navMashup').onclick=()=>showView('mashup');
-$('#navConvert').onclick=()=>showView('convert'); /* converter */
-$('#navExtended').onclick=()=>showView('extended'); /* extended */
-$('#navPricing').onclick=()=>showView('pricing');
-$('#navAbout').onclick=()=>showView('about');
-$('#findMatches').onclick=()=>{DC.keyF='match';showView('discover');renderDiscControls();renderList()};
+$('#navDisc').onclick=()=>showView('discover',null,NAV);
+$('#navTool').onclick=()=>showView('tool',null,NAV);
+$('#navDj').onclick=()=>showView('dj',null,NAV);
+$('#navCrate').onclick=()=>showView('crate',null,NAV);
+$('#navMashup').onclick=()=>showView('mashup',null,NAV);
+$('#navConvert').onclick=()=>showView('convert',null,NAV); /* converter */
+$('#navExtended').onclick=()=>showView('extended',null,NAV); /* extended */
+$('#navPricing').onclick=()=>showView('pricing',null,NAV);
+$('#navAbout').onclick=()=>showView('about',null,NAV);
+$('#findMatches').onclick=()=>{DC.keyF='match';showView('discover',null,NAV);renderDiscControls();renderList()};
 /* Terms of Use / Privacy Policy (#terms, #privacy): text from assets/legal.js (window.LEGAL) */
 const LEGAL_V={kind:null};
 function renderLegal(kind){
@@ -3646,7 +3716,7 @@ function renderLegal(kind){
   const u=LEGAL.ui(LANG),toc=LEGAL.toc(kind,LANG),tab=(k,label)=>`<a href="#${k}" class="lg-tab${k===kind?' on':''}"${k===kind?' aria-current="page"':''}>${esc(label)}</a>`;
   el.innerHTML=`<div class="pg lg"><header class="lg-head"><span class="pg-eb">${esc(u.eyebrow)}</span><h1 id="lgH">${esc(LEGAL.title(kind,LANG))}</h1>
     <p class="lg-meta"><span>${esc(u.version)} <b dir="ltr">${esc(LEGAL.version)}</b></span><span aria-hidden="true">·</span><span>${esc(u.effective.replace('{d}',LEGAL.date(LANG)))}</span></p>
-    <nav class="lg-tabs" aria-label="${esc(u.eyebrow)}">${tab('terms',u.terms)}${tab('privacy',u.privacy)}</nav></header>
+    <nav class="lg-tabs" aria-label="${esc(u.eyebrow)}">${tab('terms',u.terms)}${tab('privacy',u.privacy)}${tab('accessibility',t('lgA11y'))}${tab('licenses',t('lgLic'))}</nav></header>
     <div class="lg-grid"><nav class="lg-toc" aria-labelledby="lgTocH"><details${matchMedia('(min-width:901px)').matches?' open':''}><summary id="lgTocH">${esc(u.toc)}</summary><ol>${toc.map(([id,h],i)=>`<li><a href="#${kind}" data-sec="${id}"><span class="lg-n" dir="ltr">${i+1}</span><span>${esc(h)}</span></a></li>`).join('')}</ol></details></nav>
     <article class="lg-doc" aria-labelledby="lgH">${LEGAL.html(kind,LANG,{contact:(BILL().contact||'').trim()})}</article></div>
     <p class="lg-foot"><button type="button" class="lnk" data-nav="about">${esc(u.back)}</button><button type="button" class="lnk" data-top="1">${esc(u.top)}</button></p></div>`;
@@ -3655,16 +3725,18 @@ $('#legalView').addEventListener('click',e=>{
   const a=e.target.closest('[data-sec]');
   if(a){e.preventDefault();const s=document.getElementById(a.dataset.sec);if(s){s.scrollIntoView({block:'start'});const h=s.querySelector('h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}return}
   const b=e.target.closest('[data-nav],[data-top]');if(!b)return;
-  if(b.dataset.nav)showView(b.dataset.nav);else{window.scrollTo(0,0);$('#lgH').tabIndex=-1;$('#lgH').focus({preventScroll:true})}
+  if(b.dataset.nav)showView(b.dataset.nav,null,NAV);else{window.scrollTo(0,0);$('#lgH').tabIndex=-1;$('#lgH').focus({preventScroll:true})}
 });
 // the About page is the home page (no hash); the tool lives at #tool
 /* growth: no hash → the path (/pricing …); #about-a11y (old links) → the accessibility statement page */
 const viewOfHash=()=>{const h=location.hash.slice(1).split('#')[0];if(!h)return pathView()||'about';return h==='about-a11y'?'accessibility':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
-const routeHash=()=>{const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();
+const routeHash=f=>{if(f!==true&&location.href===RT.href)return;   // popstate + hashchange of one Back step: route once
+  const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();
   const badPath=!h&&!pathView()&&pathSeg()&&!/^index\.html?$/.test(pathSeg());   /* before showView: it rewrites the URL */
   showView(v,null);
   if((h&&v==='about'&&h!=='about')||badPath)setTimeout(()=>toast(t('notFound')),300)}; /* qw: unknown hash → home + a notice */
 window.addEventListener('hashchange',routeHash);
+window.addEventListener('popstate',routeHash);   // Back/Forward between /pricing and /#dj style entries fires popstate only
 
 /* ---------- last song: the tool reopens it after a reload / browser restart (IndexedDB) ---------- */
 const LastDB=(()=>{let p=null;
@@ -3687,8 +3759,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)rememberPos
 /* qw: the demo (or the last song) is loaded the first time the tool is shown, not at boot on the home page */
 const ENS={p:null};
 function ensureSong(){
-  if(S.buffer||ENS.p||!$('#busy').hidden||$('#toolView').hidden)return ENS.p;
-  ENS.p=(async()=>{try{if(await restoreLast())return;busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);if(S.buffer===buf)S.owner=null}catch(e){console.error(e);busy(null)}finally{ENS.p=null}})();
+  if(S.buffer||ENS.p||ULOAD.n||!$('#busy').hidden||$('#toolView').hidden)return ENS.p;
+  ENS.p=(async()=>{try{const g0=ULOAD.g;if(await restoreLast())return;if(ULOAD.n||ULOAD.g!==g0)return;busy(t('bDemo'),0.01);const buf=await synthDemo();if(ULOAD.n||ULOAD.g!==g0){busy(null);return}await analyze(buf,t('demoName'),true);if(S.buffer===buf)S.owner=null}catch(e){console.error(e);busy(null)}finally{ENS.p=null}})();
   return ENS.p;
 }
 // signed in as someone else (or out): the tool must not keep showing the previous user's song
@@ -3703,14 +3775,17 @@ async function userSwitched(uid,prev){
   try{busy(t('bDemo'),0.01);const buf=await synthDemo();await analyze(buf,t('demoName'),true);if(S.buffer===buf)S.owner=null}catch(e){console.error(e);busy(null)}
 }
 async function restoreLast(){
+  const g0=ULOAD.g,late=()=>ULOAD.n||ULOAD.g!==g0;   // a user load started meanwhile → it wins, nothing is restored over it
   await AUTH.ready;
   let a=null;try{a=await LastDB.get('audio')}catch(e){}
   if(!a||!a.name)return false;
   if((a.uid||null)!==(AUTH.uid||null))return false;          // another user's song on this browser → not shown
+  if(late())return true;
   if(!a.blob){if(!a.meta)return false;try{await openLib(a.meta);return true}catch(e){return false}}
   try{
     busy(t('bReading'),0.01);
     const buf=await ac().decodeAudioData(await a.blob.arrayBuffer());
+    if(late()){busy(null);return true}
     await analyze(buf,a.name,false,true);if(S.buffer!==buf)return true; /* qw: superseded by a newer load */S.owner=a.uid||null;
     let st=null;try{st=await LastDB.get('state')}catch(e){}
     if(!st||st.name!==a.name||(st.uid||null)!==(AUTH.uid||null))st=readLib().find(x=>x.name===a.name)||null;
@@ -3728,6 +3803,9 @@ async function restoreLast(){
 async function loadFile(file){
   if(file&&needAccount()){askAccount();return}
   if(!file)return;
+  ULOAD.n++;ULOAD.g++;try{await loadFile0(file)}finally{ULOAD.n--;if(!ULOAD.n&&!S.buffer&&!S.name)setTimeout(ensureSong,0)}   // a user load: the demo/last-song restore must not overwrite it (nothing loaded, e.g. cancelled → the demo after all)
+}
+async function loadFile0(file){
   if($('#toolView').hidden)showView('tool');
   const name=file.name.replace(/\.[^.]+$/,'');
   // points v2: a new song costs the 'song' price once per account (asked before the analysis, charged after it worked)
@@ -3770,7 +3848,7 @@ $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.va
 $('#upLbl').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(needAccount())askAccount();else $('#file').click()}});
 $('#play').onclick=toggle;
 $('#lang').onchange=e=>setLang(e.target.value,true);
-function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.MASHUP)MASHUP.lang();if(window.CONVERT)CONVERT.lang();/* converter */if(window.EXTENDED)EXTENDED.lang();if(window.PAGES)PAGES.lang();if(window.ACCT)ACCT.lang();/* acct */auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}}
+function setLang(l,chosen){if(!I[l])return;LANG=l;if(typeof applyTheme==='function')setTimeout(applyTheme);if(chosen){LANG_CHOSEN=true;try{localStorage.setItem('chordroom.lang',LANG)}catch(x){}}applyLang();renderAll();renderLib();renderAccount();renderAdmin();renderCredits();renderFmt();renderExport();if(window.DJ)DJ.lang();if(window.CRATE)CRATE.lang();if(window.MASHUP)MASHUP.lang();if(window.CONVERT)CONVERT.lang();/* converter */if(window.EXTENDED)EXTENDED.lang();if(window.PAGES)PAGES.lang();if(window.ACCT)ACCT.lang();/* acct */auLang();if(LEGAL_V.kind)renderLegal(LEGAL_V.kind);if(typeof DC!=='undefined'&&DC.loaded){renderDiscControls();renderList();if(DC.mixFor)renderMix();dpRender()}try{if(GATE.v)viewTitle(GATE.v,GATE.locked,true)}catch(e){}}   /* the tab title follows the language */
 const ZOOMS=[2,3,4,6,8,12,16,24,32];
 const zoom=d=>{const i=ZOOMS.indexOf(S.win);S.win=ZOOMS[Math.max(0,Math.min(ZOOMS.length-1,i+d))];dirty=true};
 $('#zIn').onclick=()=>zoom(-1);$('#zOut').onclick=()=>zoom(1);
@@ -3816,6 +3894,7 @@ $('#libBtn').onclick=()=>{if(needAccount()){askAccount();return}renderLib();$('#
 document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
   if(!$('#djView').hidden||((!$('#mashupView').hidden||!$('#convertView').hidden/* converter */||!$('#extendedView').hidden)&&e.key!=='Escape'))return; // the DJ, Mashup, Converter and Extended views have their own keys
+  if($('#toolView').hidden&&e.key!=='Escape')return; // tool keys only while the tool is shown (Escape still closes panels)
   if(e.key!=='Escape'&&(!$('#authDlg').hidden||!$('#acc').hidden||!$('#admin').hidden||!$('#discover').hidden))return;
   const onBtn=e.target.closest('button,label');
   if(e.code==='Space'){if(onBtn)return;e.preventDefault();toggle()}
@@ -3870,7 +3949,7 @@ window.CR={
   toolSong:()=>S.buffer&&S.bpm&&S.key&&S.wave?{name:S.demo?t('demoName'):S.name,buffer:S.buffer,bpm:S.bpm,offset:S.offset,down:S.down,key:S.key,wave:S.wave,lufs:S.lufs,peak:S.peak,dur:S.dur,
     stems:S.stems?{vocals:S.stems[0],drums:S.stems[1],bass:S.stems[2],other:S.stems[3]}:null,stemKind:S.stemKind||null}:null,
   stopTool:()=>{if(P.playing)stop();stopPreview()},
-  showView,openFile:f=>{showView('tool');return loadFile(f)},zip,zipName,crc32,flats,keyName,
+  showView:(v,a)=>showView(v,a,NAV),openFile:f=>{showView('tool');return loadFile(f)},zip,zipName,crc32,flats,keyName,
   setLang:(l,c)=>setLang(l,c),
   log:(a,d)=>logAct(a,d),user:()=>({known:AUTH.known,uid:AUTH.uid}),
   /* Mashup Studio (assets/mashup.js) */
@@ -3954,7 +4033,7 @@ function gdApply(b,bpm,off,bi,tn){
   return k;
 }
 function gdRestore(st){S.bpm=st.bpm;S.offset=st.offset;buildBeats();S.down=st.down;S.chords=st.chords?Int8Array.from(st.chords):null;S.edited=new Set(st.edited);S.cues=st.cues.slice();
-  S.loop=null;renderAll();saveLibSoon();dirty=true}
+  const had=!!S.loop||!!P.loop;S.loop=null;renderAll();if(had)restart();saveLibSoon();dirty=true}   // a playing loop is rebuilt without it
 // the drag (or key burst) is over: chords re-detected on the new grid, user edits kept, saved with the song
 function gdCommit(){
   clearTimeout(GD.cT);GD.kb=null;
@@ -3964,7 +4043,7 @@ function gdCommit(){
 function gdUndo(){gdFresh();if(!GD.undo.length)return false;if(GD.drag)gdCancel();GD.redo.push(gdState());gdRestore(GD.undo.pop());gdSay();return true}
 function gdRedo(){gdFresh();if(!GD.redo.length)return false;if(GD.drag)gdCancel();GD.undo.push(gdState());gdRestore(GD.redo.pop());gdSay();return true}
 function gdReset(){const d=S.gridDet;if(!d||d.buf!==S.buffer||!gdCan())return;if(d.bpm===S.bpm&&d.offset===S.offset&&d.down===S.down)return;
-  gdPush();S.bpm=d.bpm;S.offset=d.offset;buildBeats();S.down=d.down;S.loop=null;gdCommit()}
+  gdPush();S.bpm=d.bpm;S.offset=d.offset;buildBeats();S.down=d.down;const had=!!S.loop||!!P.loop;S.loop=null;gdCommit();if(had)restart()}
 function gdSetOn(v){GD.on=!!v&&gdCan();if(!GD.on&&GD.drag)gdCancel();gdUI();dirty=true}
 // bar-1 time and the shift against the detected grid (sub-beat part) for the status line
 function gdDelta(){const d=S.gridDet;if(!d||d.buf!==S.buffer||!S.beats.length)return null;const T=60/S.bpm,T0=60/d.bpm,b1=S.beats[S.down]??S.beats[0],d1=mod(d.offset,T0)+mod(d.down,4)*T0;
@@ -4078,7 +4157,7 @@ window.CR.lastUser=()=>AUTH.last||null;   /* acct + perf: the last 'cr-user' det
 /* ---------- boot ---------- */
 applyTheme();applyLang();sizeCanvases();renderAll();renderFmt();renderExport();renderCredits();kickLoop();/* perf */initAccount().catch(e=>console.warn(e));
 // pages.js / a11y.js / shell.js are loaded after this file → wire them and route deep links once all scripts ran
-document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{hookPages();routeHash()},0)); /* perf: route in a task of its own (the scripts' start-up was one long task with the first view's render) */
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{hookPages();routeHash(true)},0)); /* perf: route in a task of its own (the scripts' start-up was one long task with the first view's render) */
 try{for(let i=0;i<localStorage.length;i++)if(/^sb-.+-auth-token$/.test(localStorage.key(i)||'')){acctNeed();break}}catch(e){}   /* acct + perf: a saved session → acct.js now */
 AUTH.ready.then(()=>setTimeout(sepCrashCheck,1500));
 /* qw: no boot-time demo analysis — showView('tool') → ensureSong() */

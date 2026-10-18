@@ -2,12 +2,13 @@
 // POST {plan:'pro'} with Authorization: Bearer <Supabase access token>  →  {url: PayPal approve link}
 // The PayPal plan id comes from site_config.billing.plans[].variant (P-…), never from the browser, and custom_id is
 // the user id checked with Supabase Auth, so the webhook (pay_webhook_paypal) knows whose account to fill.
-import { ppBase, ppToken, sbUrl, sbKey, json, withTimeout } from './paypal-lib.js';
+import { ppBase, ppToken, sbUrl, sbKey, json, withTimeout, readCapped } from './paypal-lib.js';
 
 const PLAN_RE = /^P-[A-Z0-9]{10,40}$/;
 const LIVE = ['active', 'on_trial', 'past_due', 'paused'];
 // upstream failures answer 424, not 502: Cloudflare swaps a 502 for its own HTML page and the browser loses the error code
 const FAIL = 424;
+const MAX_BODY = 2048;                                  // {plan:'…'} is a few bytes: never buffer more than this
 
 export async function onRequest({ request, env }) {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: { allow: 'POST' } });
@@ -15,8 +16,13 @@ export async function onRequest({ request, env }) {
   const m = /^Bearer\s+([\w.-]{20,4096})$/.exec(request.headers.get('authorization') || '');
   if (!m) return json({ error: 'auth' }, 401);
   const token = m[1], url = sbUrl(env), key = sbKey(env);
+  // body size checked before anything is parsed (a chunked body has no content-length: the read itself is capped)
+  if (+(request.headers.get('content-length') || 0) > MAX_BODY) return json({ error: 'too_large' }, 413);
+  let buf;
+  try { buf = await readCapped(request, MAX_BODY); } catch (e) { return json({ error: 'bad_request' }, 400); }
+  if (!buf) return json({ error: 'too_large' }, 413);
   let planId = '';
-  try { const b = await request.json(); planId = String((b && b.plan) || ''); } catch (e) {}
+  try { const b = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(buf)); planId = String((b && b.plan) || ''); } catch (e) {}
   if (!/^[a-z][a-z0-9_]{1,23}$/.test(planId) || planId === 'free') return json({ error: 'bad_plan' }, 400);
 
   const sb = (path) => withTimeout(8000, signal => fetch(`${url}${path}`, { signal, headers: { apikey: key, authorization: `Bearer ${token}`, accept: 'application/json' } }));

@@ -32,7 +32,7 @@ he:{navMashup:'מאשאפ',mxEyebrow:'שירה × ביט · התאמה אוטו�
   mxSlotA:'A · שירה',mxSlotB:'B · ביט',mxDrop:'גררו לכאן שיר',mxDropH:'MP3, WAV, M4A, FLAC, OGG',
   mxFile:'קובץ',mxLib:'השירים שלי',mxTool:'מהכלי',mxReplaceL:'החלפה:',mxClear:'הסרת השיר',mxSwap:'החלפה בין A ל־B',
   mxDecoding:'קורא את הקובץ…',mxAnalyzing:'מנתח… {p}%',mxCues:'מזהה את מבנה השיר…',mxNoTool:'קודם צריך לפתוח שיר בכלי.',
-  mxLibT:'השירים שלי',mxLibSearch:'חיפוש',mxLibEmpty:'עדיין אין שירים שמורים עם קובץ. שירים שמעלים בכלי (מחוברים) מופיעים כאן.',mxLibNoFile:'אין קובץ שמור',mxLoadTo:'לטעון ל־{s}',mxClose:'סגירה',
+  mxLibT:'השירים שלי',mxLibSearch:'חיפוש',mxLibEmpty:'עדיין אין שירים שמורים עם קובץ. שירים שמעלים בכלי (מחוברים) מופיעים כאן.',mxLibNoFile:'אין קובץ שמור',mxLibNone:'אין שירים תואמים',mxLoadTo:'לטעון ל־{s}',mxClose:'סגירה',
   mxFull:'השיר המלא (לא מופרד)',mxFullHintA:'כרגע מתנגן השיר כולו. הפרידו אותו כדי להשאיר רק את השירה.',mxFullHintB:'כרגע מתנגן השיר כולו, כולל השירה שלו. הפרידו אותו כדי לקבל ביט נקי.',
   mxSepAI:'הפרדה ב־AI',mxSepQuick:'הפרדה מהירה',mxQuickT:'חינם ומהיר, אבל באיכות נמוכה יותר: יהיו דליפות בין הערוצים.',mxCost:'{n} נקודות',
   mxAiStems:'ערוצי AI',mxQuickStems:'ערוצים מהירים · איכות נמוכה יותר',mxToolStems:'ערוצים מהכלי',mxCached:'כבר הופרד בביקור הזה',
@@ -61,7 +61,7 @@ en:{navMashup:'Mashup',mxEyebrow:'Vocals × beat · matched automatically',mxTit
   mxSlotA:'A · Vocals',mxSlotB:'B · Beat',mxDrop:'Drop a song here',mxDropH:'MP3, WAV, M4A, FLAC, OGG',
   mxFile:'File',mxLib:'My Songs',mxTool:'From the tool',mxReplaceL:'Replace:',mxClear:'Remove the song',mxSwap:'Swap A and B',
   mxDecoding:'Reading the file…',mxAnalyzing:'Analysing… {p}%',mxCues:'Finding the song\'s structure…',mxNoTool:'Open a song in the tool first.',
-  mxLibT:'My Songs',mxLibSearch:'Search',mxLibEmpty:'No saved songs with a file yet. Songs you upload in the tool (signed in) show up here.',mxLibNoFile:'no file saved',mxLoadTo:'Load into {s}',mxClose:'Close',
+  mxLibT:'My Songs',mxLibSearch:'Search',mxLibEmpty:'No saved songs with a file yet. Songs you upload in the tool (signed in) show up here.',mxLibNoFile:'no file saved',mxLibNone:'No matching songs',mxLoadTo:'Load into {s}',mxClose:'Close',
   mxFull:'Full song (not separated)',mxFullHintA:'The whole song plays now. Separate it to keep only the vocals.',mxFullHintB:'The whole song plays now, including its vocals. Separate it for a clean beat.',
   mxSepAI:'Separate with AI',mxSepQuick:'Quick separation',mxQuickT:'Free and fast, but lower quality: expect bleed between the parts.',mxCost:'{n} points',
   mxAiStems:'AI stems',mxQuickStems:'Quick stems · lower quality',mxToolStems:'Stems from the tool',mxCached:'already separated this session',
@@ -90,7 +90,7 @@ ar:{navMashup:'ماش أب',mxEyebrow:'غناء × إيقاع · مطابقة ت
   mxSlotA:'A · غناء',mxSlotB:'B · إيقاع',mxDrop:'اسحب أغنية إلى هنا',mxDropH:'MP3, WAV, M4A, FLAC, OGG',
   mxFile:'ملف',mxLib:'أغانيّ',mxTool:'من الأداة',mxReplaceL:'استبدال:',mxClear:'إزالة الأغنية',mxSwap:'تبديل A و B',
   mxDecoding:'قراءة الملف…',mxAnalyzing:'تحليل… {p}%',mxCues:'اكتشاف بنية الأغنية…',mxNoTool:'افتح أغنية في الأداة أولًا.',
-  mxLibT:'أغانيّ',mxLibSearch:'بحث',mxLibEmpty:'لا توجد أغانٍ محفوظة مع ملف بعد. الأغاني التي ترفعها في الأداة (مع تسجيل الدخول) تظهر هنا.',mxLibNoFile:'لا يوجد ملف محفوظ',mxLoadTo:'تحميل إلى {s}',mxClose:'إغلاق',
+  mxLibT:'أغانيّ',mxLibSearch:'بحث',mxLibEmpty:'لا توجد أغانٍ محفوظة مع ملف بعد. الأغاني التي ترفعها في الأداة (مع تسجيل الدخول) تظهر هنا.',mxLibNoFile:'لا يوجد ملف محفوظ',mxLibNone:'لا توجد أغانٍ مطابقة',mxLoadTo:'تحميل إلى {s}',mxClose:'إغلاق',
   mxFull:'الأغنية كاملة (غير مفصولة)',mxFullHintA:'تُشغَّل الأغنية كاملة الآن. افصلها لتبقي الغناء فقط.',mxFullHintB:'تُشغَّل الأغنية كاملة الآن مع غنائها. افصلها لتحصل على إيقاع نظيف.',
   mxSepAI:'فصل بالذكاء الاصطناعي',mxSepQuick:'فصل سريع',mxQuickT:'مجاني وسريع لكن بجودة أقل: ستتسرّب الأصوات بين المسارات.',mxCost:'{n} نقاط',
   mxAiStems:'مسارات AI',mxQuickStems:'مسارات سريعة · جودة أقل',mxToolStems:'مسارات من الأداة',mxCached:'فُصلت مسبقًا في هذه الجلسة',
@@ -119,7 +119,7 @@ ru:{navMashup:'Мэшап',mxEyebrow:'Вокал × бит · автоматич
   mxSlotA:'A · Вокал',mxSlotB:'B · Бит',mxDrop:'Перетащите песню сюда',mxDropH:'MP3, WAV, M4A, FLAC, OGG',
   mxFile:'Файл',mxLib:'Мои песни',mxTool:'Из инструмента',mxReplaceL:'Заменить:',mxClear:'Убрать песню',mxSwap:'Поменять A и B местами',
   mxDecoding:'Чтение файла…',mxAnalyzing:'Анализ… {p}%',mxCues:'Ищу структуру песни…',mxNoTool:'Сначала откройте песню в инструменте.',
-  mxLibT:'Мои песни',mxLibSearch:'Поиск',mxLibEmpty:'Пока нет сохранённых песен с файлом. Песни, загруженные в инструменте (после входа), появятся здесь.',mxLibNoFile:'файл не сохранён',mxLoadTo:'Загрузить в {s}',mxClose:'Закрыть',
+  mxLibT:'Мои песни',mxLibSearch:'Поиск',mxLibEmpty:'Пока нет сохранённых песен с файлом. Песни, загруженные в инструменте (после входа), появятся здесь.',mxLibNoFile:'файл не сохранён',mxLibNone:'Нет подходящих песен',mxLoadTo:'Загрузить в {s}',mxClose:'Закрыть',
   mxFull:'Вся песня (без разделения)',mxFullHintA:'Сейчас играет вся песня. Разделите её, чтобы оставить только вокал.',mxFullHintB:'Сейчас играет вся песня вместе с вокалом. Разделите её, чтобы получить чистый бит.',
   mxSepAI:'Разделить с AI',mxSepQuick:'Быстрое разделение',mxQuickT:'Бесплатно и быстро, но качество ниже: партии будут просачиваться друг в друга.',mxCost:'{n} баллов',
   mxAiStems:'AI-стемы',mxQuickStems:'Быстрые стемы · качество ниже',mxToolStems:'Стемы из инструмента',mxCached:'уже разделено в этом сеансе',
@@ -148,7 +148,7 @@ es:{navMashup:'Mashup',mxEyebrow:'Voz × base · ajuste automático',mxTitle:'Es
   mxSlotA:'A · Voz',mxSlotB:'B · Base',mxDrop:'Suelta aquí una canción',mxDropH:'MP3, WAV, M4A, FLAC, OGG',
   mxFile:'Archivo',mxLib:'Mis canciones',mxTool:'Desde la herramienta',mxReplaceL:'Cambiar:',mxClear:'Quitar la canción',mxSwap:'Intercambiar A y B',
   mxDecoding:'Leyendo el archivo…',mxAnalyzing:'Analizando… {p}%',mxCues:'Buscando la estructura de la canción…',mxNoTool:'Primero abre una canción en la herramienta.',
-  mxLibT:'Mis canciones',mxLibSearch:'Buscar',mxLibEmpty:'Aún no hay canciones guardadas con archivo. Las que subas en la herramienta (con sesión iniciada) aparecerán aquí.',mxLibNoFile:'sin archivo guardado',mxLoadTo:'Cargar en {s}',mxClose:'Cerrar',
+  mxLibT:'Mis canciones',mxLibSearch:'Buscar',mxLibEmpty:'Aún no hay canciones guardadas con archivo. Las que subas en la herramienta (con sesión iniciada) aparecerán aquí.',mxLibNoFile:'sin archivo guardado',mxLibNone:'No hay canciones que coincidan',mxLoadTo:'Cargar en {s}',mxClose:'Cerrar',
   mxFull:'Canción completa (sin separar)',mxFullHintA:'Ahora suena la canción entera. Sepárala para quedarte solo con la voz.',mxFullHintB:'Ahora suena la canción entera, con su voz. Sepárala para tener una base limpia.',
   mxSepAI:'Separar con IA',mxSepQuick:'Separación rápida',mxQuickT:'Gratis y rápida, pero de menor calidad: habrá sangrado entre las pistas.',mxCost:'{n} puntos',
   mxAiStems:'Pistas con IA',mxQuickStems:'Pistas rápidas · menor calidad',mxToolStems:'Pistas de la herramienta',mxCached:'ya separada en esta sesión',
@@ -326,7 +326,9 @@ function gridShift(i,d,b,o){
 function mSnap(){return {align:M.align,nudge:M.nudge,loop:M.loop,g:[gridBase(0),gridBase(1)]}}
 function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null}
 function mRestore(sn){M.align=sn.align;M.nudge=sn.nudge;M.loop=sn.loop;
-  sn.g.forEach((x,i)=>{const s=song(i);if(x&&s&&s.key===x.key){s.an=x.an;s.vStart=x.vStart;s.cues=x.cues;cachePut(s.key,{an:s.an,cues:s.cues})}});changed()}
+  sn.g.forEach((x,i)=>{const s=song(i);if(x&&s&&s.key===x.key){s.an=x.an;s.vStart=x.vStart;s.cues=x.cues;cachePut(s.key,{an:s.an,cues:s.cues})}});
+  const f=document.activeElement,fs=f&&f.closest&&f.closest('[id^="mxSlot"]'),fa=fs&&f.dataset.a;
+  renderSlot(0);renderSlot(1);if(fs){const n=(fa&&fs.querySelector('[data-a="'+fa+'"]'))||fs.querySelector('button');if(n)n.focus()}changed()}
 const sameSongs=sn=>sn.g.every((x,i)=>(x?x.key:null)===(song(i)?song(i).key:null));
 function mUndo(){while(M.undo.length&&!sameSongs(M.undo[M.undo.length-1]))M.undo.pop();if(!M.undo.length)return false;M.redo.push(mSnap());mRestore(M.undo.pop());M.gk=null;return true}
 function mRedo(){while(M.redo.length&&!sameSongs(M.redo[M.redo.length-1]))M.redo.pop();if(!M.redo.length)return false;M.undo.push(mSnap());mRestore(M.redo.pop());M.gk=null;return true}
@@ -452,7 +454,7 @@ function setMsg(m,err){M.msg=m||'';M.msgErr=!!err;const el=$('#mxMsg');if(el){el
 async function loadInto(i,getBuf,name,hint,pre){
   const sl=M.slots[i],tok=++sl.tok;
   stop(true);setMsg('');
-  sl.loading={msg:t('mxDecoding'),p:0.02};renderSlot(i);
+  sl.loading={msg:t('mxDecoding'),p:0.02};renderSlot(i);swapDis();
   try{
     let buffer,a=null,cues=null,stems=null,kind=null;
     if(pre){buffer=pre.buffer;a={bpm:pre.bpm,offset:pre.offset,down:pre.down||0,key:pre.key,wave:pre.wave,lufs:pre.lufs,dur:buffer.duration};if(pre.stems){stems=pre.stems;kind='tool'}}
@@ -471,14 +473,14 @@ async function loadInto(i,getBuf,name,hint,pre){
     if(tok!==sl.tok)return;
     cachePut(key,{an:a,cues,...(stems&&kind!=='tool'?{stems,kind}:{})});
     sl.song={key,name,buffer,an:a,cues,stems,kind,cached:!!(hit&&hit.stems&&stems===hit.stems),wave:null,waveKey:'',vStart:null,sep:null};
-    sl.loading=null;
+    sl.loading=null;if(E.playing)stop(true);
     M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();
     applyPair();
     const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;
     save();renderAll();updWave(i);
   }catch(e){
     console.warn(e);if(tok!==sl.tok)return;sl.loading=null;
-    setMsg(e&&e.big?t('mxBig'):e&&e.lib?t('mxErrLib'):e&&e.name==='EncodingError'||e&&/decode/i.test(String(e.message))?t('readErr'):t('mxErrLoad'),true);renderSlot(i);
+    setMsg(e&&e.big?t('mxBig'):e&&e.lib?t('mxErrLib'):e&&e.name==='EncodingError'||e&&/decode/i.test(String(e.message))?t('readErr'):t('mxErrLoad'),true);renderSlot(i);swapDis();
   }
 }
 function loadFile(i,file){
@@ -494,7 +496,7 @@ function loadLib(i,it){
 function loadTool(i){const s=CR.toolSong();if(!s){setMsg(t('mxNoTool'),true);return}loadInto(i,null,s.name,null,s)}
 function clearSlot(i){const sl=M.slots[i];sl.tok++;if(sl.song&&sl.song.sep)sl.song.sep.ctl.abort();stop();sl.song=null;sl.loading=null;mClearUndo();M.align=null;M.nudge=0;M.semis=null;M.loop=null;M.loopOn=false;const o=model();M.pos=o?o.t0:0;M.lastO=o;save();renderAll()}
 function swap(){
-  stop();const a=M.slots[0],b=M.slots[1];[a.song,b.song]=[b.song,a.song];[a.loading,b.loading]=[b.loading,a.loading];a.tok++;b.tok++;
+  stop();const a=M.slots[0],b=M.slots[1];[a.song,b.song]=[b.song,a.song];a.tok++;b.tok++;a.loading=b.loading=null;
   for(const s of [a.song,b.song])if(s){s.vStart=null;s.waveKey=''}
   M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();applyPair();
   const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;save();renderAll();updWave(0);updWave(1);
@@ -737,7 +739,7 @@ function wire(){
   $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;renderTransport();drawSoon()};   /* griddrag */
   $('#mxPlay').onclick=toggle;$('#mxStop').onclick=()=>stop();
   $('#mxLoop').onclick=loopToggle;
-  $('#mxLoopN').onchange=e=>{M.loopBars=+e.target.value;if(M.loopOn&&M.loop){M.loop={a:M.loop.a,b:M.loop.a+M.loopBars};restart()}save();drawSoon();renderTransport()};
+  $('#mxLoopN').onchange=e=>{M.loopBars=+e.target.value;if(M.loop){M.loop={a:M.loop.a,b:M.loop.a+M.loopBars};if(M.loopOn)restart()}save();drawSoon();renderTransport();renderExport()};
   $('#mxZi').onclick=()=>zoom(2);$('#mxZo').onclick=()=>zoom(0.5);
   $('#mxVolA').oninput=e=>{setVol(0,+e.target.value);$('#mxVolAo').textContent=Math.round(M.vol[0]*100)+'%'};
   $('#mxVolB').oninput=e=>{setVol(1,+e.target.value);$('#mxVolBo').textContent=Math.round(M.vol[1]*100)+'%'};
@@ -782,7 +784,7 @@ function loopToggle(){
   const o=model();if(!o)return;
   if(M.loopOn){M.loopOn=false}
   else{const h=heard(),k=Math.floor((h-o.bar0)/o.bar+1e-6);if(!M.loop||h<o.bar0+M.loop.a*o.bar||h>o.bar0+M.loop.b*o.bar)M.loop={a:k,b:k+M.loopBars};M.loopOn=true}
-  save();renderTransport();drawSoon();
+  save();renderTransport();renderExport();drawSoon();
   if(E.playing&&M.loopOn){const lt=loopT(o),h=heard();if(h<lt.a||h>=lt.b)startAt(lt.a,E.o)}
 }
 function zoom(f){
@@ -795,9 +797,9 @@ function openPick(i,btn){M.pickFor=i;M.pickFrom=btn||null;$('#mxPick').hidden=fa
 function closePick(){const p=$('#mxPick');if(!p||p.hidden)return;p.hidden=true;if(M.pickFrom&&document.contains(M.pickFrom))M.pickFrom.focus();M.pickFrom=null}
 function renderPick(){
   const q=$('#mxPickQ').value.trim().toLowerCase(),ul=$('#mxPickL'),signed=CR.signedIn();
-  const list=CR.readLib().filter(x=>x&&x.name&&(!q||String(x.name).toLowerCase().includes(q)));
-  const any=list.some(x=>x.file_path);
-  $('#mxPickN').textContent=!signed||!any?t('mxLibEmpty'):'';ul.innerHTML='';
+  const all=CR.readLib().filter(x=>x&&x.name),list=all.filter(x=>!q||String(x.name).toLowerCase().includes(q));
+  const any=all.some(x=>x.file_path);
+  $('#mxPickN').textContent=!signed||!any?t('mxLibEmpty'):q&&!list.some(x=>x.file_path)?t('mxLibNone'):'';ul.innerHTML='';
   for(const it of list){
     const ok=signed&&!!it.file_path,li=document.createElement('li');li.className='mxpr'+(ok?'':' dis');
     li.innerHTML='<span class="kbw"></span><div class="mxpt"><div class="tt"></div><div class="ar mono"></div></div><button type="button" class="btn ghost"></button>';
@@ -860,7 +862,7 @@ function renderMatch(keepInput){
   main.hidden=!o;$('#mxSteps').hidden=!!(song(0)&&song(1));
   if(!o)return;
   const A=an(0),B=an(1);
-  $('#mxTempo').querySelectorAll('[data-tm]').forEach(b=>{const on=b.dataset.tm===M.tempo||(!A&&b.dataset.tm==='B'&&M.tempo==='A');b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));b.disabled=(b.dataset.tm==='A'&&!A)||(b.dataset.tm==='B'&&!B)});
+  $('#mxTempo').querySelectorAll('[data-tm]').forEach(b=>{const eff=M.tempo==='custom'?'custom':(M.tempo==='A'&&A)||!B?'A':'B',on=b.dataset.tm===eff;b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));b.disabled=(b.dataset.tm==='A'&&!A)||(b.dataset.tm==='B'&&!B)});
   $('#mxBpmL').hidden=M.tempo!=='custom';if(!keepInput)$('#mxBpm').value=M.custom||'';
   const rt=[`${CR.fmtBpm(Math.round(o.T*10)/10)}\u00a0BPM`];
   if(o.hasA)rt.push(`A\u00a0${pct(o.rA)}${o.kA!==1?` (${o.kA===2?'2×':'½×'})`:''}`);
@@ -965,8 +967,9 @@ function renderExport(){
   $('#mxExpP').textContent=both&&o?t('mxExportP',{bpm:CR.fmtBpm(Math.round(o.T*10)/10),k:keyTxt(B.key)}):t('mxNeedBoth');
   $('#mxExpProg').hidden=!M.exporting;
 }
+function swapDis(){const b=$('#mxSwap');if(b)b.disabled=!(song(0)||song(1))||M.slots.some(s=>s.loading)}
 function renderAll(){
-  if(!M.built)return;renderSlot(0);renderSlot(1);$('#mxSwap').disabled=!(song(0)||song(1));
+  if(!M.built)return;renderSlot(0);renderSlot(1);swapDis();
   setMsg(M.msg,M.msgErr);renderMatch();renderTransport();renderExport();sizeCanvas();drawSoon();
 }
 

@@ -118,7 +118,9 @@ check('owner sets checkout links + variants', save(O, P(basic={'link': 'https://
 cur = json.loads(sql("select billing from public.site_config where id=1"))['plans']
 check("settings role saves through the app's upsert (was: RLS error)", save(S, [dict(p) for p in cur], costs={**b0['costs'], 'sep': 6}), 'saved')
 check('…the price change landed', sql("select billing->'costs'->>'sep' from public.site_config"), '6')
-check('settings role changes prices/points/discount', save(S, [dict(p, price=p.get('price', 0) + 1, points=p['points'] + 5, discount=5) for p in cur]), 'saved')
+check('settings role changes prices/discount', save(S, [dict(p, price=p.get('price', 0) + 1, discount=5) for p in cur]), 'saved')
+# security v5 [V5-5]: plan points mint points → owner / full admin only (test_security_v5 covers the other point fields)
+check('settings role changes plan points → refused (v5)', save(S, [dict(p, points=p['points'] + 5) for p in cur]), 'only the owner or a full admin can change plan points')
 cur = json.loads(sql("select billing from public.site_config where id=1"))['plans']
 evil = [dict(p) for p in cur]; evil[0]['link'] = 'https://evil.example/checkout'
 check('settings role re-points a checkout link → refused', save(S, evil), 'only the owner or a full admin')
@@ -198,8 +200,9 @@ v3 = open(os.path.join(pg.REPO, 'supabase', 'security_v3.sql'), encoding='utf-8'
 asql = open(pg.ASSISTANT, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v3 .*?-- \[security-v3:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v3] block', 'found' if m else 'missing', 'found')
-# acct / growth: only later blocks ([accounts-v4], [growth-v4]) may follow it
-later = re.sub(r'(?s)-- =+\n-- (?:Accounts|Growth) v4 .*?-- \[(?:accounts|growth)-v4:end\]\n-- =+\n', '', src[m.end():]) if m else src
+# only later blocks ([accounts-v4], [growth-v4], [paypal], [security-v5]) may follow it
+later = re.sub(r'(?s)-- =+\n-- (?:Accounts v4|Growth v4|Security v5) .*?-- \[(?:accounts-v4|growth-v4|security-v5):end\]\n-- =+\n', '', src[m.end():]) if m else src
+later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', later)
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('security_v3.sql contains the block verbatim', 'yes' if m and m.group(1) in v3 else 'no', 'yes')
 check('security_v3.sql ends with assistant.sql verbatim', 'yes' if v3.endswith(asql) else 'no', 'yes')

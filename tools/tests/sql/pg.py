@@ -1,6 +1,8 @@
 """Shared helpers for the SQL tests: a fresh database with a stub of the Supabase platform (auth.users + auth.uid(),
 storage.*, roles anon/authenticated/service_role, pgcrypto in `extensions`), then supabase/schema.sql (and
-optionally supabase/assistant.sql) from the repo. psql runs against the private cluster from setup_pg.sh.
+optionally supabase/assistant.sql, followed by supabase/security_v5.sql the way the owner runs it: v5 redefines
+assistant_status and adds a trigger on assistant_usage, which only exist after assistant.sql) from the repo.
+psql runs against the private cluster from setup_pg.sh.
 
     from pg import Db
     db = Db('secdb', assistant=True)      # fresh database, schema loaded (re-run twice to prove idempotence)
@@ -16,6 +18,7 @@ SOCK = os.environ.get('CR_PG') or '/var/tmp/chordroom-pg'
 PORT = '5499'
 SCHEMA = os.path.join(REPO, 'supabase', 'schema.sql')
 ASSISTANT = os.path.join(REPO, 'supabase', 'assistant.sql')
+SECURITY_V5 = os.path.join(REPO, 'supabase', 'security_v5.sql')   # = the last block of schema.sql
 
 STUB = """
 do $$ begin
@@ -79,6 +82,8 @@ class Db:
         if assistant:
             for i in range(2):
                 self.check(f'assistant.sql run {i + 1}', str(errs(psql(name, f=ASSISTANT))), '[]')
+            for i in range(2):
+                self.check(f'security_v5.sql after assistant.sql, run {i + 1}', str(errs(psql(name, f=SECURITY_V5))), '[]')
     def sql(self, s): return psql(self.name, s)
     def file(self, f): return psql(self.name, f=f)
     def as_(self, uid, s):

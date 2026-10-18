@@ -11,6 +11,7 @@ try {
   var signed = false;
   for (var i = 0; i < localStorage.length; i++) if (/^sb-.+-auth-token$/.test(localStorage.key(i) || "")) { signed = true; break; }
   if (!signed) document.documentElement.classList.add("cr-guest");
+  else document.documentElement.classList.add("cr-signed");   /* a saved session: app.js keeps "sign in / sign up" hidden until the session is checked */
 } catch (e) {}
 /* perf: the page's own script fonts start downloading now (Latin is preloaded in index.html), so the JS-rendered home /
    pricing text is laid out once in the right font instead of reflowing when it arrives (layout shift) */

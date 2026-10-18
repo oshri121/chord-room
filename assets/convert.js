@@ -138,7 +138,7 @@ const FF_ONLY=new Set(['aif','aiff','aifc','wma','ac3','amr','wv','ape','mka','c
 const ACCEPT='audio/*,video/*,.mp3,.wav,.flac,.ogg,.oga,.opus,.m4a,.aac,.aif,.aiff,.wma,.mp4,.m4v,.mov,.webm,.mkv,.avi,.3gp';
 const IMG_ACCEPT='image/*,.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif';
 const DEF={fmt:'mp3',q:320,sr:0,ch:0,norm:false,trim:false,fin:0,fout:0,tags:true,bk:false,hfr:false,hfrAmt:2,isize:1000,ifmt:'jpg'};
-const C={built:false,visible:false,tab:'audio',rows:[],irows:[],running:false,abort:null,o:loadOpts(),msg:'',msgErr:false,zipBusy:false,seq:0,ffp:null,batch:null,fin:0};
+const C={built:false,visible:false,tab:'audio',rows:[],irows:[],running:false,irunning:false,abort:null,o:loadOpts(),msg:'',msgErr:false,zipBusy:false,seq:0,ffp:null,batch:null,fin:0,gen:0,owner:null};
 function loadOpts(){let o={};try{o=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){}const r={...DEF,...o};if(!FMT[r.fmt])r.fmt=DEF.fmt;return r}
 function saveOpts(){try{localStorage.setItem(LS,JSON.stringify(C.o))}catch(e){}}
 const ext=n=>{const m=/\.([a-z0-9]+)$/i.exec(n||'');return m?m[1].toLowerCase():''};
@@ -194,7 +194,10 @@ function ffKill(err){
 }
 async function ffRun(files,args,outs,sig,onProg){
   chk(sig);
-  await ffLoad(p=>{C.ffp=p;renderEngine()});C.ffp=null;renderEngine();
+  // stop waiting on Cancel; the shared download keeps going in the background (FF.ready/FF.gz) for next time
+  try{await new Promise((res,rej)=>{const ab=()=>rej(new Aborted());if(sig){if(sig.aborted)return ab();sig.addEventListener('abort',ab,{once:true})}
+    ffLoad(p=>{C.ffp=p;renderEngine()}).then(res,rej).finally(()=>sig&&sig.removeEventListener('abort',ab))})}
+  finally{C.ffp=null;renderEngine()}
   chk(sig);
   return new Promise((res,rej)=>{
     const id=++FF.seq;FF.jobs[id]={res,rej,onProg};
@@ -383,6 +386,25 @@ function wavParse(u){ // → {sr, chs:[Float32Array…]} for the float/16/24/32-
 }
 
 /* ---------- decode ---------- */
+// the file's own sample rate from its header (decodeAudioData resamples to its context's rate) → 0 when unknown
+const MP3SR=[[11025,12000,8000],0,[22050,24000,16000],[44100,48000,32000]];
+function srcRate(u,e){
+  let p=0;if(u.length>10&&u[0]===73&&u[1]===68&&u[2]===51)p=10+ss(u,6)+(u[5]&16?10:0);   // skip ID3v2
+  if(p+4>u.length)return 0;const id=str4(u,p);
+  if(id==='RIFF'||id==='RF64'){let q=p+12;while(q+16<=u.length){const n=u32le(u,q+4);if(str4(u,q)==='fmt ')return u32le(u,q+12);if(n===0xFFFFFFFF)break;q+=8+n+(n&1)}return 0}
+  if(id==='fLaC')return p+18<=u.length&&(u[p+4]&127)===0?(u[p+18]<<12)|(u[p+19]<<4)|(u[p+20]>>4):0;
+  if(id==='OggS'){const q=p+27+u[p+26];if(q+16>u.length)return 0;if(u[q]===1&&str4(u,q+1)==='vorb')return u32le(u,q+12);if(str4(u,q)==='Opus')return 48000;return 0}
+  if(!/^mp[123]$|^mpga$/.test(e||''))return 0;
+  for(let q=p,end=Math.min(u.length-4,p+65536);q<end;q++){   // MPEG audio frame header
+    if(u[q]!==255||(u[q+1]&0xE0)!==0xE0)continue;const v=(u[q+1]>>3)&3,l=(u[q+1]>>1)&3,br=u[q+2]>>4,si=(u[q+2]>>2)&3;
+    if(v===1||l===0||br===15||br===0||si===3)continue;return MP3SR[v][si]}
+  return 0;
+}
+async function decodeAt(ab,u,e){   // → AudioBuffer at the file's own rate when the header says it
+  const sr=srcRate(u,e);
+  if(sr>=3000&&sr<=768000&&typeof OfflineAudioContext!=='undefined'){try{return await new OfflineAudioContext(1,1,sr).decodeAudioData(ab.slice(0))}catch(e){}}
+  return CR.ac().decodeAudioData(ab.slice(0));
+}
 function toBuffer(chs,sr){const b=CR.ac().createBuffer(chs.length,chs[0].length,sr);chs.forEach((x,i)=>b.copyToChannel(x,i));return b}
 async function decode(r,sig){
   const e=r.ext;
@@ -394,7 +416,7 @@ async function decode(r,sig){
   r.status='decoding';r.p=0;renderRow(r);
   let chs=null,sr=0;
   if(!VIDEO.has(e)&&!FF_ONLY.has(e)){
-    try{const b=await CR.ac().decodeAudioData(ab.slice(0));sr=b.sampleRate;chs=[];for(let c=0;c<Math.min(2,b.numberOfChannels);c++)chs.push(b.getChannelData(c))}catch(x){chs=null}
+    try{const b=await decodeAt(ab,u,e);sr=b.sampleRate;chs=[];for(let c=0;c<Math.min(2,b.numberOfChannels);c++)chs.push(b.getChannelData(c))}catch(x){chs=null}
   }
   chk(sig);
   if(!chs){
@@ -445,8 +467,8 @@ async function process(d,o,r,sig){
   if(fi>0||fo>0){chs=chs.map(x=>{const y=x.slice();const a=Math.min(fi,n);for(let i=0;i<a;i++)y[i]*=i/a;const b=Math.min(fo,n);for(let i=0;i<b;i++)y[n-1-i]*=i/b;return y})}
   return {chs,sr};
 }
-const KEYS=['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'],KEYSM=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const keyTag=k=>k?(k.mode?KEYSM[k.pc]+'m':KEYS[k.pc]):'';
+const KEYS=['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'];   // same spelling as the Crate's tags (crate.js RB_A/RB_B)
+const keyTag=k=>k?KEYS[k.pc]+(k.mode?'m':''):'';
 
 /* ---------- encode ---------- */
 function metaArgs(T,fmt){
@@ -505,19 +527,21 @@ async function runRow(r,o,sig){
     try{const a=await CR.analyzeTrack(toBuffer(d.chs,d.sr),p=>{r.p=p;renderRow(r)});chk(sig);if(a&&a.bpm)r.tags.bpm=String(Math.round(a.bpm));if(a&&a.key)r.tags.key=keyTag(a.key)}catch(e){if(e&&e.aborted)throw e}}
   const p=await process(d,o,r,sig);chk(sig);
   const blob=await encode(p,o,r,r.tags||{},sig);chk(sig);
-  r.out={blob,name:outName(r,o),size:blob.size,fmt:o.fmt};r.status='done';r.p=1;r.justDone=true;renderRow(r);
+  r.out={blob,name:outName(r,o),size:blob.size,fmt:o.fmt,key:optKey(o)};r.status='done';r.p=1;r.justDone=true;renderRow(r);
 }
 const settleP=(p,n)=>{if(!p)return;if(CR.settleN)CR.settleN(p,n);else if(n>0&&p.id&&CR.refundN)CR.refundN(p,n)};   // points v2
-const todoRows=only=>(only?[only]:C.rows.filter(r=>r.status!=='done'||r.outFmt!==C.o.fmt)).filter(Boolean);
+const optKey=o=>JSON.stringify(['fmt','q','sr','ch','norm','trim','fin','fout','tags','bk','hfr','hfrAmt'].map(k=>o[k]));   // options that change the output
+const todoRows=only=>(only?[only]:C.rows.filter(r=>!(r.status==='done'&&r.out&&r.out.key===optKey(C.o)))).filter(Boolean);
 /* points v2: a batch costs 'convert' × files (ONE confirmation, plan discount applied; "only the first K" when short);
    files that fail or are cancelled are refunded when the batch ends. Images are free. */
 async function convertAll(only){
-  if(C.running||C.paying)return;
-  let todo=todoRows(only);
+  if(C.running||C.irunning||C.paying)return;
+  const gen=C.gen;let todo=todoRows(only);
+  if(!todo.length&&!only)todo=C.rows.slice();   // "Convert again" with the same options = everything again, on purpose (the points dialog asks)
   if(!todo.length){setMsg(t('cvNothing'),true);return}
   let pay={qty:todo.length};
   if(CR.payN){C.paying=true;try{pay=await CR.payN('convert',todo.length,{ref:tt('cvRef',{n:todo.length,f:FMT[C.o.fmt].ext})})}finally{C.paying=false}
-    if(!pay||!pay.qty)return;if(C.running){settleP(pay,pay.qty);return}
+    if(!pay||!pay.qty)return;if(C.running||gen!==C.gen){settleP(pay,pay.qty);return}   // busy, or the account changed while asking
     if(pay.qty<todo.length){todo=todo.slice(0,pay.qty)}}
   const o={...C.o};C.running=true;C.abort=new AbortController();const sig=C.abort.signal;setMsg('');
   todo.forEach(r=>{r.status='queued';r.err=null});C.batch={t0:performance.now(),todo,total:todo.reduce((a,r)=>a+r.size,0)||1,ok:0,bad:0};C.fin=0;renderActs();renderTable();
@@ -535,7 +559,7 @@ async function convertAll(only){
   if(sig.aborted)C.rows.forEach(r=>{if(r.status==='queued'){r.status='cancelled';renderRow(r)}});
   settleP(pay,todo.length-ok);   // failed + cancelled files → points back (+ close the crash journal)
   C.running=false;C.abort=null;C.ffp=null;C.batch=null;C.fin=sig.aborted?0:(bad?1:2);renderEngine();renderActs();renderTable();
-  setMsg(sig.aborted?t('stCancelled'):tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok);
+  if(gen!==C.gen)setMsg('');else setMsg(sig.aborted?t('stCancelled'):tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok);
   probeNext();
 }
 function cancelAll(){if(C.abort)C.abort.abort()}
@@ -556,8 +580,9 @@ function clearRows(){if(C.running)return;C.rows=[];C.fin=0;setMsg('');renderTabl
 const safeUrl=f=>{try{return URL.createObjectURL(f)}catch(e){return ''}};
 const dropImg=r=>{if(r.url)try{URL.revokeObjectURL(r.url)}catch(e){}};
 async function zipAll(){
-  const rows=C.rows.filter(r=>r.out);if(!rows.length||C.zipBusy)return;C.zipBusy=true;renderActs();setMsg(t('cvZipBusy'));
+  const rows=C.rows.filter(r=>r.out),gen=C.gen;if(!rows.length||C.zipBusy)return;C.zipBusy=true;renderActs();setMsg(t('cvZipBusy'));
   try{const files=[];for(const r of rows)files.push({name:r.out.name,data:new Uint8Array(await r.out.blob.arrayBuffer())});
+    if(gen!==C.gen)return;   // the account changed while zipping
     const blob=CR.zip(files);CR.saveBlob(blob,'chord-room-convert.zip');setMsg(tt('cvZipDone',{s:mb(blob.size)}))}
   catch(e){console.error(e);setMsg(t('erRead'),true)}
   finally{C.zipBusy=false;renderActs()}
@@ -573,9 +598,10 @@ function addImages(list){
   C.irows.filter(r=>!r.w).forEach(async r=>{try{const b=await createImageBitmap(r.file);r.w=b.width;r.h=b.height;b.close&&b.close()}catch(e){}renderImgRow(r)});
 }
 async function convertImages(){
-  if(C.running)return;C.running=true;renderImgActs();
-  const size=+C.o.isize||0,f=IFMT[C.o.ifmt]||IFMT.jpg;let ok=0,bad=0;
+  if(C.running||C.irunning)return;C.irunning=true;renderImgActs();
+  const size=+C.o.isize||0,f=IFMT[C.o.ifmt]||IFMT.jpg,gen=C.gen;let ok=0,bad=0;
   for(const r of C.irows){
+    if(gen!==C.gen)break;   // the account changed: the list was emptied
     if(r.status==='done'&&r.outKey===size+f.ext)continue;
     r.status='processing';r.err=null;renderImgRow(r);
     try{
@@ -591,12 +617,13 @@ async function convertImages(){
     }catch(e){console.warn('image',r.name,e);r.status='error';r.err=t('erImg');bad++}
     renderImgRow(r);await new Promise(x=>setTimeout(x,0));
   }
-  C.running=false;renderImgActs();renderImgTable();
+  C.irunning=false;renderImgActs();renderImgTable();
+  if(gen!==C.gen)return;
   if(ok||bad)setMsg(tt('cvDone',{n:ok})+(bad?' · '+tt('cvDoneErr',{n:bad}):''),!!bad&&!ok,true);
 }
 async function zipImages(){
-  const rows=C.irows.filter(r=>r.out);if(!rows.length||C.zipBusy)return;C.zipBusy=true;renderImgActs();
-  try{const files=[];for(const r of rows)files.push({name:r.out.name,data:new Uint8Array(await r.out.blob.arrayBuffer())});CR.saveBlob(CR.zip(files),'chord-room-covers.zip')}
+  const rows=C.irows.filter(r=>r.out),gen=C.gen;if(!rows.length||C.zipBusy)return;C.zipBusy=true;renderImgActs();
+  try{const files=[];for(const r of rows)files.push({name:r.out.name,data:new Uint8Array(await r.out.blob.arrayBuffer())});if(gen===C.gen)CR.saveBlob(CR.zip(files),'chord-room-covers.zip')}
   catch(e){console.error(e)}finally{C.zipBusy=false;renderImgActs()}
 }
 
@@ -682,11 +709,11 @@ function build(){
   $('#cvBody').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const r=C.rows.find(x=>x.id===+b.dataset.id);if(!r)return;
     if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm')removeRow(r.id);else if(b.dataset.a==='retry')convertAll(r)});
   $('#cvIBody').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const r=C.irows.find(x=>x.id===+b.dataset.id);if(!r)return;
-    if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm'&&!C.running){dropImg(r);C.irows=C.irows.filter(x=>x!==r);renderImgTable();renderImgActs()}});
+    if(b.dataset.a==='dl'&&r.out)CR.saveBlob(r.out.blob,r.out.name);else if(b.dataset.a==='rm'&&!C.irunning){dropImg(r);C.irows=C.irows.filter(x=>x!==r);renderImgTable();renderImgActs()}});
   $('#cvOpts').addEventListener('change',onOpt);$('#cvOpts').addEventListener('input',onOpt);
   $('#cvIOpts').addEventListener('change',e=>{const el=e.target;if(el.name==='isize')C.o.isize=+el.value;if(el.name==='ifmt')C.o.ifmt=el.value;saveOpts();renderImgSummary()});
   $('#cvActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertAll();else if(a==='cancel')cancelAll();else if(a==='zip')zipAll();else if(a==='clear')clearRows()});
-  $('#cvIActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertImages();else if(a==='zip')zipImages();else if(a==='clear'&&!C.running){C.irows.forEach(dropImg);C.irows=[];renderImgTable();renderImgActs()}});
+  $('#cvIActs').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;if(a==='go')convertImages();else if(a==='zip')zipImages();else if(a==='clear'&&!C.irunning){C.irows.forEach(dropImg);C.irows=[];renderImgTable();renderImgActs()}});
 }
 function setTab(k){C.tab=k;$('#cvTabs').querySelectorAll('[data-tab]').forEach(b=>{const on=b.dataset.tab===k;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});$('#cvAudio').hidden=k!=='audio';$('#cvImages').hidden=k!=='images'}
 function onOpt(e){
@@ -759,10 +786,10 @@ document.addEventListener('cr-prices',()=>{if(C.built&&!C.running)renderActs()})
 function renderActs(){
   const n=C.rows.length,done=C.rows.filter(r=>r.out).length,bad=C.rows.filter(r=>r.status==='error').length,run=C.running,p=run?batchFrac():0;
   const fin=!run&&n&&C.fin===2&&done===n;
-  const doneN=run?C.batch.ok+C.batch.bad:done;
+  const doneN=run&&C.batch?C.batch.ok+C.batch.bad:done;
   const status=run?`<span class="cvdot" aria-hidden="true"></span>${esc(t('cvRunning'))}`:fin?esc(t('cvAllDone')):bad?esc(tt('cvDoneErr',{n:bad})):'';
   const eta=run?etaText():'';
-  const goLbl=fin?t('cvAgain'):n>1?tt('cvConvertN',{n}):t('cvConvert');
+  const tn=todoRows().length,goLbl=fin||!tn?t('cvAgain'):tn>1?tt('cvConvertN',{n:tn}):t('cvConvert');
   $('#cvActs').innerHTML=n?`
     <div class="cvcs">${ring(fin?1:p,fin?'full':run?'live':'')}<div class="cvcst"><span class="cvcnt" dir="ltr" aria-label="${esc(tt('cvOfN',{a:doneN,b:n}))}"><b id="cvCntA">${doneN}</b><i>/</i>${n}</span><span class="cvstat" id="cvStat">${status}${eta?`<span class="cveta" id="cvEta">${esc(eta)}</span>`:''}</span></div></div>
     <div class="cvcb">
@@ -876,7 +903,7 @@ async function probeNext(){
   const r=C.rows.find(x=>!x.q&&!x.noProbe&&x.status==='ready'&&!VIDEO.has(x.ext)&&!FF_ONLY.has(x.ext)&&x.size<=120*1048576);
   if(!r)return;
   C.probing=true;r.probing=true;renderRow(r);
-  try{const ab=await r.file.arrayBuffer();const b=await CR.ac().decodeAudioData(ab);const chs=[];for(let c=0;c<Math.min(2,b.numberOfChannels);c++)chs.push(b.getChannelData(c));
+  try{const ab=await r.file.arrayBuffer();const b=await decodeAt(ab,new Uint8Array(ab),r.ext);const chs=[];for(let c=0;c<Math.min(2,b.numberOfChannels);c++)chs.push(b.getChannelData(c));
     r.q=HFR.analyze(chs,b.sampleRate);if(r.dur==null){r.dur=b.duration;r.sr=b.sampleRate;r.ch=chs.length}}
   catch(e){r.noProbe=true}
   r.probing=false;C.probing=false;if(C.rows.includes(r))renderRow(r);
@@ -900,16 +927,16 @@ function imgRowHtml(r,el){
       <div class="cvsz" dir="ltr"><span class="cvnum"><bdi dir="ltr">${esc(fsz(r.size))}</bdi></span>${r.w?`<span class="cvmeta"><bdi dir="ltr">${r.w} × ${r.h}</bdi></span>`:''}${r.out?`<span class="cvszarr" aria-hidden="true">→</span><span class="cvnum out"><bdi dir="ltr" data-bytes="${r.out.size}">${esc(fsz(r.out.size))}</bdi></span><span class="cvmeta"><bdi dir="ltr">${r.out.w} × ${r.out.h}</bdi></span>${ratioChip(r.size,r.out.size)}`:''}</div>
       ${st}
     </div>
-    <div class="cvact">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}${!C.running?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</div>`;
+    <div class="cvact">${r.out?`<button type="button" class="btn cvdl" data-a="dl" data-id="${r.id}" title="${esc(t('cvDownload'))}">${IC.dl}<span>${esc(t('cvDownload'))}</span></button>`:''}${!C.irunning?`<button type="button" class="cvx" data-a="rm" data-id="${r.id}" aria-label="${esc(t('cvRemove'))}" title="${esc(t('cvRemove'))}">${IC.x}</button>`:''}</div>`;
   if(r.justDone){r.justDone=false;el.classList.add('just');countUp(el.querySelector('.cvnum.out bdi'))}
 }
 function renderImgActs(){
-  const n=C.irows.length,done=C.irows.filter(r=>r.out).length,run=C.running&&C.tab==='images',fin=!run&&n&&done===n;
+  const n=C.irows.length,done=C.irows.filter(r=>r.out).length,run=C.irunning&&C.tab==='images',fin=!run&&n&&done===n;
   $('#cvIActs').innerHTML=n?`<div class="cvcs">${ring(fin?1:n?done/n:0,fin?'full':run?'live':'')}<div class="cvcst"><span class="cvcnt" dir="ltr" aria-label="${esc(tt('cvOfN',{a:done,b:n}))}"><b>${done}</b><i>/</i>${n}</span><span class="cvstat">${run?`<span class="cvdot" aria-hidden="true"></span>${esc(t('cvRunning'))}`:fin?esc(t('cvAllDone')):''}</span></div></div>
     <div class="cvcb">
     ${!run&&done>1?`<button type="button" class="btn cvgo${fin?' pri':''}" data-a="zip"${C.zipBusy?' disabled':''}>${IC.dl}<span>${esc(t('cvZip'))}</span></button>`:''}
-    <button type="button" class="btn cvgo${fin?' quiet':' pri'}" data-a="go"${C.running?' disabled':''}>${IC.play}<span class="lbl">${esc(fin?t('cvAgain'):n>1?tt('cvConvertN',{n}):t('cvConvert'))}</span></button>
-    ${!C.running?`<button type="button" class="btn ghost quiet" data-a="clear">${esc(t('cvClear'))}</button>`:''}</div>`:'';
+    <button type="button" class="btn cvgo${fin?' quiet':' pri'}" data-a="go"${C.running||C.irunning?' disabled':''}>${IC.play}<span class="lbl">${esc(fin?t('cvAgain'):n>1?tt('cvConvertN',{n}):t('cvConvert'))}</span></button>
+    ${!C.irunning?`<button type="button" class="btn ghost quiet" data-a="clear">${esc(t('cvClear'))}</button>`:''}</div>`:'';
   $('#cvIActs').classList.toggle('fin',!!fin);
 }
 function renderAll(){
@@ -919,6 +946,16 @@ function renderAll(){
   renderOpts();renderActs();renderEngine();renderTable();renderImgTable();renderImgActs();
   if(C.msg)setMsg(C.msg,C.msgErr);
 }
+
+/* ---------- account switch / sign-out: the queue holds the previous account's files and outputs → empty it
+   (a running batch is cancelled through the usual path, so its unused points are settled; a guest signing in keeps theirs) ---------- */
+function resetAccount(){
+  C.gen++;cancelAll();
+  C.rows=[];C.irows.forEach(dropImg);C.irows=[];C.fin=0;setMsg('');setMsg('',false,true);   // C.batch stays for a running loop (it ends itself)
+  if(C.built){renderActs();renderTable();renderImgTable();renderImgActs()}
+}
+C.owner=(CR.lastUser&&CR.lastUser()||{}).uid||null;
+document.addEventListener('cr-user',e=>{const u=(e.detail&&e.detail.uid)||null;if(u===C.owner)return;const was=C.owner;C.owner=u;if(was)resetAccount()});
 
 /* ---------- public ---------- */
 window.CONVERT={

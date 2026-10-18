@@ -17,7 +17,8 @@
 //   {"t":"text…"}                   answer text, many lines
 //   {"done":true,"stop":"end_turn"} last line on success
 //   {"error":"upstream"}            last line if the model stream breaks midway
-// Errors before streaming: JSON {error:code} with 400/401/403/405/413/415/429/502/503.
+// Errors before streaming: JSON {error:code} with 400/401/403/405/413/415/429/502/503
+// ('mfa' 403 = the account has 2FA but this session has not passed it: sign in again with the code).
 //
 // The URL and publishable key are the same PUBLIC values as config.js; override with env SUPABASE_URL / SUPABASE_KEY.
 const SUPABASE_URL = 'https://ydyocusfrghsokjsectw.supabase.co';
@@ -345,9 +346,14 @@ export async function onRequestPost({ request, env }) {
   let q;
   try {
     const r = await withTimeout(8000, signal => fetch(`${sbUrl}/rest/v1/rpc/assistant_use`, { method: 'POST', headers: sbHeaders(sbKey, token), body: '{}', signal }));
-    if (r.status === 401) return json({ error: 'auth' }, 401);
     if (r.status === 404) { console.log('assistant: assistant_use() missing — run supabase/assistant.sql'); return json({ error: 'not_configured' }, 503); }
-    if (!r.ok) { console.log('assistant: quota rpc', r.status); return json({ error: 'quota_unavailable' }, 502); }
+    if (!r.ok) {
+      // security v5: a 2FA account on a password-only (aal1) session → 'mfa_required' (SQLSTATE 42501; PostgREST answers 403)
+      let e = null; try { e = await r.json(); } catch (x) {}
+      if (e && (e.message === 'mfa_required' || (e.code === '42501' && /mfa/i.test(String(e.message || ''))))) return json({ error: 'mfa' }, 403);
+      if (r.status === 401) return json({ error: 'auth' }, 401);
+      console.log('assistant: quota rpc', r.status); return json({ error: 'quota_unavailable' }, 502);
+    }
     q = await r.json();
   } catch (e) { console.log('assistant: quota unreachable'); return json({ error: 'quota_unavailable' }, 502); }
   if (!q || typeof q !== 'object') return json({ error: 'quota_unavailable' }, 502);

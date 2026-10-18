@@ -1,6 +1,6 @@
 // Accounts v4 (SECURITY-AUDIT.md "v4"), the Functions / Pages-config side:
 //  * functions/_middleware.js: per-client API limits kept in the Cache API (best effort; the WAF rule is the real wall):
-//    /api/assistant 20/min, /api/deezer/* 120/min, other /api/* 60/min, /api/pay/webhook never limited; 429 + Retry-After;
+//    /api/assistant 20/min, /api/deezer/* 120/min, other /api/* 60/min, /api/pay/(webhook|paypal) 300/min; 429 + Retry-After;
 //    the counter key holds a hash, never the raw IP; each client and each minute counts separately; a broken cache never
 //    blocks the API; bodies over 300 KB → 413 before any Function runs
 //  * _headers: Cloudflare Turnstile allowed in script-src + frame-src/child-src only (nothing else widened)
@@ -51,7 +51,7 @@ check('60 other API requests pass', st.every(s => s === 200));
 check('61st → 429', (await call('/api/other', { ip: '192.0.2.2' })).status === 429);
 check('Deezer and the rest count separately', (await call('/api/other', { ip: '192.0.2.1' })).status === 200);
 
-console.log('== /api/pay/webhook: never limited, body capped');
+console.log('== /api/pay/webhook: own 300/min limit (PayPal retries), body capped');
 fnCalls = 0;
 st = await many(150, '/api/pay/webhook', { method: 'POST', ip: '192.0.2.50' });
 check('150 webhook deliveries from one IP all reach the Function', st.every(s => s === 200) && fnCalls === 150, fnCalls);
@@ -62,7 +62,7 @@ check('any API body over 300 KB → 413', r.status === 413);
 
 console.log('== privacy + robustness');
 check('no raw IP in any counter key', [...store.keys()].every(k => !/203\.0\.113|198\.51\.100|192\.0\.2/.test(k)), [...store.keys()][0]);
-check('keys are per limit + hashed client + minute', [...store.keys()].every(k => /^cr-ratelimit https:\/\/chord-room\.pages\.dev\/__rl\/(as|dz|api)\/[0-9a-f]{24}\/\d+$/.test(k)), [...store.keys()][0]);
+check('keys are per limit + hashed client + minute', [...store.keys()].every(k => /^cr-ratelimit https:\/\/chord-room\.pages\.dev\/__rl\/(as|dz|api|wh)\/[0-9a-f]{24}\/\d+$/.test(k)), [...store.keys()][0]);
 let waited = 0;
 r = await call('/api/x', { ip: '192.0.2.70', waitUntil: p => { waited++; return p; } });
 check('the counter write goes through waitUntil when available', r.status === 200 && waited === 1, waited);

@@ -18,12 +18,24 @@ export async function onRequest({ request, env }) {
   if (+(request.headers.get('content-length') || 0) > MAX_BODY) return text('too large', 413);
   const hv = H.map(h => (request.headers.get(h) || '').trim());
   if (hv.some(v => !v || v.length > 2000)) return text('bad signature', 401);
-  if (!/^https:\/\/api(-m)?\.(sandbox\.)?paypal\.com\//i.test(hv[1])) return text('bad signature', 401);
+  // cheap checks first, so a forged request never costs a PayPal API call (PayPal itself always sends these shapes)
+  const cu = /^https:\/\/api(-m)?\.(sandbox\.)?paypal\.com\//i.exec(hv[1]);
+  if (!cu) return text('bad signature', 401);
+  if (!!cu[2] !== (ppEnv(env) === 'sandbox')) return text('bad signature', 401);           // sandbox cert on live (or the other way)
+  if (hv[0] !== 'SHA256withRSA') return text('bad signature', 401);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(hv[2])) return text('bad signature', 401);
+  if (!/^[A-Za-z0-9+/]{40,1900}={0,2}$/.test(hv[3])) return text('bad signature', 401);
+  // transmission time: a wide window (PayPal retries for days), only nonsense / far-off times are refused
+  const tt = Date.parse(hv[4]), now = Date.now();
+  if (!isFinite(tt) || tt > now + 3600e3 || tt < now - 30 * 86400e3) return text('bad signature', 401);
 
   const buf = await readCapped(request, MAX_BODY);
   if (!buf) return text('too large', 413);
-  let body;
-  try { body = new TextDecoder('utf-8', { fatal: true }).decode(buf); JSON.parse(body); } catch (e) { return text('bad body', 400); }
+  let body, ev0;
+  try { body = new TextDecoder('utf-8', { fatal: true }).decode(buf); ev0 = JSON.parse(body); } catch (e) { return text('bad body', 400); }
+  // an event object (any event_type is accepted after verification: refusing new types would make PayPal retry)
+  if (!ev0 || typeof ev0 !== 'object' || Array.isArray(ev0) || !/^WH-[A-Za-z0-9-]{4,80}$/.test(String(ev0.id || '')) ||
+      typeof ev0.event_type !== 'string' || !ev0.event_type) return text('bad body', 400);
 
   // 1) PayPal says the event is genuine (the event goes in as the exact bytes we received: re-serialising can break it)
   try {

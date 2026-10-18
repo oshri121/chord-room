@@ -185,25 +185,25 @@ async function saveA() {
   const vals = { ga4: $('#gxGa4').value.trim(), clarity: $('#gxClarity').value.trim(), meta: $('#gxMeta').value.trim(), gsc: $('#gxGsc').value.trim() };
   const RX = { ga4: /^(G-[A-Z0-9]{4,16})?$/, clarity: /^([a-z0-9]{6,16})?$/, meta: /^([0-9]{10,20})?$/, gsc: /^([A-Za-z0-9_-]{10,100})?$/ };
   const bad = Object.keys(vals).filter(k => !RX[k].test(vals[k]));
-  if (bad.length) { adm.msgA = t('bad', { f: bad.join(', ') }); renderAdmin(); return; }
+  if (bad.length) { adm.msgA = t('bad', { f: bad.join(', ') }); renderAdmin(true); return; }
   try { await Backend.saveGrowth({ analytics: vals }); CR.ACC.config = { ...CR.ACC.config, analytics: vals }; adm.msgA = t('saved'); adm.av = null; document.dispatchEvent(new CustomEvent('cr-config')); }
-  catch (e) { adm.msgA = t('saveFail'); adm.av = vals; }
+  catch (e) { adm.msgA = t('saveFail'); readDraft(); adm.av = vals; }
   renderAdmin();
 }
 async function saveE() {
   readDraft();
   const ok = adm.draft.every(e => RX_ID.test(e.id) && e.variants.length >= 2 && e.variants.length <= 4 && e.variants.every(v => RX_V.test(v)) && new Set(e.variants).size === e.variants.length &&
     (!e.conversion || RX_ACT.test(e.conversion)) && e.note.length <= 120 && !/[<>]/.test(e.note));
-  if (!ok) { adm.msgE = t('bad', { f: t('exTitle') }); renderAdmin(); return; }
+  if (!ok) { adm.msgE = t('bad', { f: t('exTitle') }); renderAdmin(true); return; }
   const list = adm.draft.map(e => ({ id: e.id, on: !!e.on, variants: e.variants, conversion: e.conversion, note: e.note }));
   try { await Backend.saveGrowth({ experiments: list }); CR.ACC.config = { ...CR.ACC.config, experiments: list }; adm.msgE = t('saved'); document.dispatchEvent(new CustomEvent('cr-config')); }
   catch (e) { adm.msgE = t('saveFail'); }
-  renderAdmin();
+  renderAdmin(true);
 }
 async function results(id) {
-  adm.res[id] = 'loading'; renderAdmin();
+  adm.res[id] = 'loading'; renderAdmin(true);
   try { adm.res[id] = await Backend.abResults(id); } catch (e) { adm.res[id] = 'fail'; }
-  renderAdmin();
+  renderAdmin(true);
 }
 document.addEventListener('click', e => {
   const root = $('#admGrowth'); if (!root || !root.contains(e.target)) return;

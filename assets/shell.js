@@ -19,11 +19,11 @@
 
   /* labels owned by the shell (all five app languages) */
   var L={
-    he:{menu:'תפריט',open:'פתיחת התפריט',close:'סגירת התפריט',nav:'ניווט ראשי'},
-    en:{menu:'Menu',open:'Open menu',close:'Close menu',nav:'Main navigation'},
-    ar:{menu:'القائمة',open:'فتح القائمة',close:'إغلاق القائمة',nav:'التنقل الرئيسي'},
-    ru:{menu:'Меню',open:'Открыть меню',close:'Закрыть меню',nav:'Основная навигация'},
-    es:{menu:'Menú',open:'Abrir menú',close:'Cerrar menú',nav:'Navegación principal'}
+    he:{menu:'תפריט',open:'פתיחת התפריט',close:'סגירת התפריט',nav:'ניווט ראשי',lang:'שפה · Language'},
+    en:{menu:'Menu',open:'Open menu',close:'Close menu',nav:'Main navigation',lang:'Language'},
+    ar:{menu:'القائمة',open:'فتح القائمة',close:'إغلاق القائمة',nav:'التنقل الرئيسي',lang:'اللغة · Language'},
+    ru:{menu:'Меню',open:'Открыть меню',close:'Закрыть меню',nav:'Основная навигация',lang:'Язык · Language'},
+    es:{menu:'Menú',open:'Abrir menú',close:'Cerrar menú',nav:'Navegación principal',lang:'Idioma · Language'}
   };
   function lbl(){return L[root.lang]||L.en}
   function isOpen(){return top.classList.contains('open')}
@@ -34,6 +34,7 @@
     if(closeBtn)closeBtn.setAttribute('aria-label',l.close);
     if(burger)burger.setAttribute('aria-label',isOpen()?l.close:l.open);
     if(tabs)tabs.setAttribute('aria-label',l.nav);
+    var ls=document.getElementById('lang');if(ls&&ls.getAttribute('aria-label')!==l.lang)ls.setAttribute('aria-label',l.lang);
     var tl=document.querySelector('#navAbout span[data-i]:not(.tsh)');if(mark&&tl&&tl.textContent&&mark.title!==tl.textContent)mark.title=tl.textContent;
     /* icon-only tabs/tools (compact levels) still show their name on hover */
     Array.prototype.forEach.call(top.querySelectorAll('.tab,#libBtn,#adminBtn,#signInBtn,#signUpBtn'),function(b){

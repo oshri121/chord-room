@@ -954,7 +954,7 @@ async function loadSong(getBuf,name,pre){
   const tok=++X.tok;stopPB();abortGen();setMsg('');
   if(X.qctl)X.qctl.abort();
   if(X.sep)X.sep.ctl.abort();   // an AI separation of the previous song: cancelled → refunded (its stems would be thrown away)
-  X.song=null;X.plan=null;X.render=null;X.rwave=null;X.sel=-1;X.secEd=-1;closeSecEd();
+  X.song=null;X.plan=null;X.render=null;X.rpart=false;X.rwave=null;X.sel=-1;X.secEd=-1;closeSecEd();
   X.stage='analyzing';X.steps={};X.stepP=0;X.procName=name;AN_STEPS.forEach(k=>X.steps[k]='todo');renderAll();
   try{
     step('an','run',0.02);
@@ -1029,12 +1029,12 @@ function loadLib(it){
 }
 function loadTool(){const s=CR.toolSong();if(!s){setMsg(t('exNoTool'),true);return}loadSong(null,s.name,s)}
 async function upgradeAI(){
-  const s=X.song;if(!s||X.sep||s.kind==='ai'||s.kind==='tool')return;
+  const s=X.song;if(!s||X.sep||X.stage==='generating'||s.kind==='ai'||s.kind==='tool')return;
   if(CR.sepInfo().busy){setMsg(t('exSepBusy'),true);return}
-  const ctl=new AbortController();X.sep={ctl,p:0,msg:t('aiDl',{p:0})};setMsg('');renderSrc();
+  const ctl=new AbortController();X.sep={ctl,p:0,msg:t('aiDl',{p:0})};setMsg('');renderSrc();renderSettings();renderPreview();
   try{
     const stems=await CR.separateBuffer(s.buffer,{onProgress:(p,m)=>{if(X.sep){X.sep.p=p;X.sep.msg=m;renderSepP()}},signal:ctl.signal,ref:'extended: '+s.name});
-    if(X.song!==s)return;
+    if(X.song!==s)return;if(X.stage==='generating')abortGen();   // never change the stems under a running render
     s.stems=stems;s.kind='ai';s.E=null;s.snap=null;const keep=s.edited?s.secs:null;
     const tok=X.tok;await analyse(s,tok);if(tok!==X.tok)return;if(keep){s.secs=keep;s.edited=true;s.lock=phraseLock(s.secs,s.f.s0)}
     replan();save();
@@ -1046,9 +1046,9 @@ async function upgradeAI(){
 }
 
 /* ---------- generation ---------- */
-function abortGen(){X.genTok++;if(X.stage==='generating'){if(X.qctl)X.qctl.abort();X.stage=X.song?'ready':'empty'}}
+function abortGen(){X.genTok++;if(X.stage==='generating'){if(X.qctl)X.qctl.abort();X.stage=X.song?'ready':'empty';X.render=null;X.rpart=false;X.rwave=null;if(X.pb.which==='B')stopPB();X.pb.waitFull=false}}   // the first-minute head is not the result: drop it
 async function generate(){
-  const s=X.song;if(!s||X.stage==='generating')return;
+  const s=X.song;if(!s||X.stage==='generating'||X.sep||X.exporting)return;
   const tok=++X.genTok;stopPB();X.stage='generating';X.steps={};STEPS.forEach(k=>X.steps[k]='todo');X.stepP=0;X.reveal=0;X.sel=-1;X.fin=0;X.join=-1;
   X.render=null;X.rpart=false;X.rwave=null;X.quality=null;
   renderAll();
@@ -1114,7 +1114,11 @@ function playPB(which,pos,opt){
   Object.assign(P,{src,g,t0:at,p0:pos,playing:true});P.pos[which]=pos;renderTransport();kick();
 }
 function killPB(){const P=X.pb,c=CR.ac();if(!P.src)return;try{P.g.gain.cancelScheduledValues(c.currentTime);P.g.gain.setValueAtTime(P.g.gain.value,c.currentTime);P.g.gain.linearRampToValueAtTime(0,c.currentTime+0.03);P.src.stop(c.currentTime+0.04)}catch(e){}P.src.onended=null;P.src=null;P.until=null}
-function setVol(v){X.set.vol=clamp(Math.round(v*100)/100,0,1);save();const P=X.pb,c=CR.ac();if(P.playing&&P.g&&P.until==null){try{P.g.gain.cancelScheduledValues(c.currentTime);P.g.gain.setTargetAtTime(vol(),c.currentTime,0.02)}catch(e){}}}
+function setVol(v){X.set.vol=clamp(Math.round(v*100)/100,0,1);save();const P=X.pb,c=CR.ac();if(!P.playing||!P.g)return;const now=c.currentTime,gg=P.g.gain;
+  if(P.until==null){try{gg.cancelScheduledValues(now);gg.setTargetAtTime(vol(),now,0.02)}catch(e){}return}
+  // hear a join: new level up to the scheduled fade-out, then the fade again (already fading → leave it)
+  const end=P.t0+(P.until-P.p0),hold=end-0.06;if(now>=hold)return;
+  try{if(gg.cancelAndHoldAtTime)gg.cancelAndHoldAtTime(now);else gg.cancelScheduledValues(now);gg.setTargetAtTime(vol(),now,0.02);gg.setValueAtTime(vol(),hold);gg.linearRampToValueAtTime(0,end)}catch(e){}}
 // joins of the extended version (block boundaries where the source jumps or the stems change)
 function joinList(){const p=X.plan;return p&&p.joins?p.joins:[]}
 function playJoin(i){const p=X.plan,J=joinList();if(!J.length||!pbBuf('B'))return;i=clamp(i,0,J.length-1);X.join=i;const j=J[i],B=p.B;
@@ -1153,7 +1157,7 @@ function load(){
 }
 function setOwner(uid){
   uid=uid||null;if(X.owner===uid)return;const had=X.owner!==undefined;X.owner=uid;
-  if(had){X.tok++;abortGen();stopPB();if(X.qctl)X.qctl.abort();if(X.sep)X.sep.ctl.abort();X.song=null;X.plan=null;X.render=null;X.rwave=null;X.stage='empty';closePick();closeSecEd()}
+  if(had){X.tok++;abortGen();stopPB();if(X.qctl)X.qctl.abort();if(X.sep)X.sep.ctl.abort();X.song=null;X.plan=null;X.render=null;X.rpart=false;X.rwave=null;X.stage='empty';closePick();closeSecEd()}
   load();if(X.built)renderAll();
 }
 function applyPreset(k){const p=PRESETS[k];if(!p)return;Object.assign(X.set,{preset:k,add:p.add,intro:p.intro,outro:p.outro,is:p.is,os:p.os});changed()}
@@ -1252,9 +1256,9 @@ function wire(){
     if(el.id==='exIS'){X.set.is=el.value;changed()}else if(el.id==='exOS'){X.set.os=el.value;changed()}
     else if(el.id==='exCuesC'){X.set.cues=el.checked;save()}
     else if(el.id==='exCustom'){renderSettings()}});
-  v.addEventListener('input',e=>{const el=e.target;if(el.id==='exCustom'){const x=parseFloat(String(el.value).replace(',','.'));if(x>=0&&x<=600){X.set.custom=Math.round(x);X.set.add='custom';replan();save();renderPlan();renderExport();drawSoon()}}});
+  v.addEventListener('input',e=>{const el=e.target;if(el.id==='exCustom'){const x=parseFloat(String(el.value).replace(',','.'));if(x>=0&&x<=600){X.set.custom=Math.round(x);X.set.add='custom';replan();X.join=-1;save();renderPlan();renderExport();renderTransport();renderPreview();drawSoon()}}});
   $('#exSw').onclick=abSwitch;$('#exStopB').onclick=()=>stopPB();$('#exLoop').onclick=loopToggle;
-  $('#exPlay').onclick=()=>togglePB(X.pb.which==='A'&&!X.pb.playing?'B':null);
+  $('#exPlay').onclick=()=>togglePB(null);
   $('#exVol').addEventListener('input',e=>setVol(+e.target.value/100));
   $('#exPv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;const d=b.dataset,J=joinList();
     if(d.jn==='prev')playJoin((X.join<0?J.length:X.join)-1);else if(d.jn==='next')playJoin(X.join+1);else if(d.jn==='play')playJoin(X.join<0?0:X.join);
@@ -1373,7 +1377,7 @@ function renderSecs(){
 }
 function seg(name,items,cur,attr,label){return `<div class="mxseg exseg" role="radiogroup" aria-label="${esc(label)}">${items.map(([v,l])=>`<button type="button" role="radio" aria-checked="${String(v)===String(cur)}" class="${String(v)===String(cur)?'on':''}" data-${attr}="${v}">${l}</button>`).join('')}</div>`}
 function renderSettings(){
-  const el=$('#exSet');if(!el||!X.song)return;const S=X.set,busy=X.stage==='generating';
+  const el=$('#exSet');if(!el||!X.song)return;const S=X.set,busy=X.stage==='generating',lock=busy||!!X.exporting;
   const opt=(arr,cur,io)=>arr.map(k=>`<option value="${k}"${k===cur?' selected':''}>${esc(t(k==='orig'?(io==='i'?'exSt_origI':'exSt_origO'):'exSt_'+k))}</option>`).join('');
   const focus=document.activeElement&&document.activeElement.id==='exCustom';
   if(focus)return;
@@ -1387,8 +1391,8 @@ function renderSettings(){
     <div class="exfield"><h3>${esc(t('exOutro'))}</h3>${seg('ob',BARN.map(n=>[n,`<span dir="ltr">${n}</span>`]),S.outro,'ob',t('exOutro'))}
       <label class="exsel"><span>${esc(t('exOStyle'))}</span><select class="sel" id="exOS">${opt(STYLES,S.os,'o')}</select></label></div>
   </div>
-  <div class="exgen"><button type="button" class="btn solid exgo" data-a="gen"${busy?' disabled':''}>${IC.ext}<span>${esc(t(busy?'exGenBusy':fresh()?'exGenAgain':X.render?'exGenAgain':'exGen'))}</span></button></div>`;
-  el.querySelectorAll('button,select,input').forEach(x=>{if(busy&&!x.dataset.a)x.disabled=true});
+  <div class="exgen"><button type="button" class="btn solid exgo" data-a="gen"${lock||X.sep?' disabled':''}>${IC.ext}<span>${esc(t(busy?'exGenBusy':fresh()?'exGenAgain':X.render?'exGenAgain':'exGen'))}</span></button></div>`;
+  el.querySelectorAll('button,select,input').forEach(x=>{if(lock&&!x.dataset.a)x.disabled=true});
 }
 function blkText(b){
   const s=X.song,p=X.plan,nm=secNames(s.secs)[b.sec],n=b.sb-b.sa;
@@ -1433,7 +1437,7 @@ function renderTransport(){
     b.querySelector('.ic').innerHTML=on?IC.pause:IC.play;const l=t(on?'exPause':w==='A'?'exPlayO':'exPlayE');b.title=l;b.setAttribute('aria-label',l);
     b.classList.toggle('on',P.which===w);b.classList.toggle('live',on);b.disabled=!ok;b.setAttribute('aria-pressed',String(P.which===w))}
   $('#exTA').textContent=s?fmtD(s.buffer.duration):'';$('#exTB').textContent=p?fmtD(p.len)+(playable()?'':' · '+t('exPlanned')):'';
-  {const b=$('#exPlay'),on=P.playing,ok=!!pbBuf(P.which==='A'&&!on?'B':P.which);b.innerHTML=on?IC.pause:IC.play;const l=t(on?'exPause':P.which==='A'?'exPlayO':'exPlayE');
+  {const b=$('#exPlay'),on=P.playing,ok=!!pbBuf(P.which);b.innerHTML=on?IC.pause:IC.play;const l=t(on?'exPause':P.which==='A'?'exPlayO':'exPlayE');
     b.title=l;b.setAttribute('aria-label',l);b.disabled=!ok&&!on;b.classList.toggle('live',on)}
   {const v=$('#exVol');if(v&&document.activeElement!==v){v.value=String(Math.round(vol()*100))}if(v){v.setAttribute('aria-label',t('exVol'));v.setAttribute('aria-valuetext',Math.round(vol()*100)+'%')}}
   $('#exAB').setAttribute('aria-label',t('exOrig')+' / '+t('exExt'));
@@ -1484,7 +1488,7 @@ function renderPreview(){
     <div class="exqp" id="exQp"${open?'':' hidden'}><p class="exqh">${esc(t('exQT'))}</p><dl>
       ${row('exQClean',q.clean+'%',q.clean>=85)}${row('exQSeam',Math.round(q.seam*100)+'%',q.seam>=0.7)}${row('exQLu','±'+q.lu+' dB',q.lu<=1.5)}${row('exQCuts',q.cuts?String(q.cuts):t('exQNone'),!q.cuts)}</dl>
       ${q.bleed?`<p class="exqb">${esc(t('exQBleed'))}</p>`:''}
-      ${ai?`<button type="button" class="btn ghost exai" data-a="ai"${X.sep||info.busy?' disabled':''}>${IC.ai}<span>${esc(t('exQAi'))}</span>${info.cost?`<span class="mxcost mono">${esc(t('exCost',{n:info.cost}))}</span>`:''}</button>`:''}
+      ${ai?`<button type="button" class="btn ghost exai" data-a="ai"${X.sep||info.busy||X.stage==='generating'?' disabled':''}>${IC.ai}<span>${esc(t('exQAi'))}</span>${info.cost?`<span class="mxcost mono">${esc(t('exCost',{n:info.cost}))}</span>`:''}</button>`:''}
     </div>`:''}`;
 }
 function renderAll(){
@@ -1671,13 +1675,13 @@ async function exportExt(){
   if(X.exporting||X.paying)return;const s=X.song,p=X.plan;if(!s||!p||!fresh()){setExp(t('exNeedGen'),true);return}
   /* points v2: the export costs the 'extended' price; generating and previewing are free, and exporting the SAME render
      again in this session (another format / sample rate) is free too */
-  let pay=null,paidOk=false;
+  let pay=null,paidOk=false;const paidBuf=X.render;
   if(X.render&&!PAID.has(X.render)&&CR.payN){X.paying=true;try{pay=await CR.payN('extended',1,{ref:String(s.name).slice(0,150)})}finally{X.paying=false}   // no 2nd charge on a double click
     if(!pay)return;if(X.exporting||!fresh()){settleP(pay,1);return}}
-  X.exporting=true;stopPB(true);renderExport();const prog=q=>{const i=$('#exExpProg .bar i');if(i)i.style.width=Math.round(clamp(q,0,1)*100)+'%'};prog(0);setExp(t('exRendering',{p:0}));
+  X.exporting=true;stopPB(true);renderExport();renderSettings();const prog=q=>{const i=$('#exExpProg .bar i');if(i)i.style.width=Math.round(clamp(q,0,1)*100)+'%'};prog(0);setExp(t('exRendering',{p:0}));
   try{
     const S=X.set,mp3=S.fmt==='mp3'&&window.MP3&&MP3.supported;
-    let buf=X.render;if(buf.sampleRate!==S.sr){buf=await renderAudio(s,p,S.sr,q=>{prog(q*0.5);setExp(t('exRendering',{p:Math.round(q*50)}))})}
+    let buf=paidBuf;if(buf.sampleRate!==S.sr){buf=await renderAudio(s,p,S.sr,q=>{prog(q*0.5);setExp(t('exRendering',{p:Math.round(q*50)}))})}
     const L=buf.getChannelData(0),R=buf.getChannelData(1),sr=buf.sampleRate,base=fileBase(s.name),kn=CR.keyName(s.an.key.pc,s.an.key.mode,true),bpmS=String(Math.round(s.an.bpm*100)/100);
     let data,ext;
     if(mp3){
@@ -1686,12 +1690,12 @@ async function exportExt(){
       if(S.cues&&window.CRATE&&CRATE.tagMp3){try{data=CRATE.tagMp3(data,{bpm:bpmS,key:kn,cam:'',cues:newCues()})}catch(e){console.warn(e)}}
     }else{data=wavBytes(L,R,sr,S.fmt==='wav24'?24:16);ext='wav'}
     const fname=base+'.'+ext,blob=new Blob([data],{type:mp3?'audio/mpeg':'audio/wav'});
-    CR.saveBlob(blob,fname);prog(1);paidOk=true;if(X.render)PAID.add(X.render);
+    CR.saveBlob(blob,fname);prog(1);paidOk=true;if(paidBuf)PAID.add(paidBuf);
     CR.log('extended_export',`${s.name} · ${fmtD(p.len)} (+${Math.round(p.added)} s) · ${t('exP_'+S.preset)} · ${ext}${ext==='wav'?' '+(S.fmt==='wav24'?24:16):''} · ${sr}`);
     X.lastExport={name:fname,size:blob.size,sr,n:L.length,fmt:S.fmt};
     setExp(t('exDone',{f:fname,s:(blob.size/1048576).toFixed(1)}));
   }catch(e){console.error(e);setExp(e&&/MP3/.test(String(e.message))?t('mp3Fail'):t('exExpFail'),true)}
-  finally{X.exporting=false;settleP(pay,paidOk?0:1);   // failed export → points back
+  finally{X.exporting=false;settleP(pay,paidOk?0:1);renderSettings();   // failed export → points back
     if(!X.visible){freeMem();return}   // the view was left while exporting: free now (hide() skipped it)
     const m=$('#exExpMsg'),keep=m?[m.textContent,m.classList.contains('err')]:null;renderExport();if(keep)setExp(keep[0],keep[1])}
 }
@@ -1714,7 +1718,7 @@ document.addEventListener('keydown',e=>{
 /* ---------- public ---------- */
 function freeMem(){
   const s=X.song;if(s&&s.kind==='quick'){s.stems=null}     // AI stems cost points: kept for the current song; the tool's stay with the tool
-  if(s){s.F=null}X.render=null;X.rwave=null;if(X.stage==='done')X.stage='ready';
+  if(s){s.F=null}X.render=null;X.rpart=false;X.rwave=null;X.pb.waitFull=false;if(X.stage==='done')X.stage='ready';
 }
 document.addEventListener('cr-user',e=>setOwner(e.detail&&e.detail.uid));
 {const u=CR.user&&CR.user();if(u&&u.known)setOwner(u.uid)}

@@ -2,7 +2,7 @@
 the owner, table privileges, profiles columns/avatars/usernames, songs + downloads, catalog + rate limits, billing
 validation, storage policies + quotas, roles table, points (spend/refund/concurrent double-spend/admin grants),
 activity log, referrals, roles password lockout, Lemon Squeezy webhook (HMAC, replay, plan mapping), function
-hardening sweep. Ported from the original audit harness (171 checks)."""
+hardening sweep. Ported from the original audit harness (171 checks); catalog reads follow security v5 [V5-8]."""
 import os, sys, json, subprocess, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pg
@@ -95,12 +95,15 @@ check('blocked user logs download', as_(X, "insert into public.downloads(user_id
 check("U2 can't read U1 downloads", as_(U2, "select count(*) from public.downloads"), '0')
 
 D.section('catalog')
-row = lambda i, **k: "insert into public.catalog(id,ext_id,title,artist,cover,link,bpm,key_pc,key_mode,chords{extra}) values ('dz:{i}',{i},'T{i}','Art','{cover}','{link}',120,0,1,'{ch}'{extv}) returning plays||' '||is_full||' '||(analyzed_by=auth.uid())".format(
+# security v5 [V5-8]: the API roles can't read analyzed_by / full_by any more (not even in RETURNING) → checked as postgres
+by = lambda i, u: ' ' + sql(f"select analyzed_by='{u}' from public.catalog where id='dz:{i}'")
+row = lambda i, **k: "insert into public.catalog(id,ext_id,title,artist,cover,link,bpm,key_pc,key_mode,chords{extra}) values ('dz:{i}',{i},'T{i}','Art','{cover}','{link}',120,0,1,'{ch}'{extv}) returning plays||' '||is_full".format(
     i=i, cover=k.get('cover', f'https://e-cdns-images.dzcdn.net/images/cover/ab12/250x250-000000-80-0-0.jpg'),
     link=k.get('link', f'https://www.deezer.com/track/{i}'), ch=k.get('ch', '[0,5,7,9]'),
     extra=k.get('extra', ''), extv=k.get('extv', ''))
-check('member adds analysis', as_(U1, row(1)), '0 false t')
-check('forced plays/is_full/analyzed_by', as_(U1, row(2, extra=',plays,is_full,analyzed_by,created_at', extv=f",2000000000,true,'{U2}','2000-01-01'")), '0 false t')
+check('member adds analysis', as_(U1, row(1)) + by(1, U1), '0 false t')
+check('forced plays/is_full/analyzed_by', as_(U1, row(2, extra=',plays,is_full,analyzed_by,created_at', extv=f",2000000000,true,'{U2}','2000-01-01'")) + by(2, U1), '0 false t')
+check('RETURNING analyzed_by → permission denied (v5)', as_(U1, "insert into public.catalog(id,ext_id,title,artist,chords) values ('dz:10',10,'T','A','[]') returning analyzed_by"), 'permission denied')
 check('cover on attacker host', as_(U1, row(3, cover='https://evil.example/pixel.gif')), 'bad cover')
 check('javascript: link', as_(U1, row(4, link='javascript:alert(1)')), 'bad link')
 check('chords are strings', as_(U1, row(5, ch='["<img src=x onerror=alert(1)>"]')), 'bad chords')

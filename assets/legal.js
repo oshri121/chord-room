@@ -10,7 +10,7 @@
 (function () {
 'use strict';
 
-const VERSION = '2026-10-18';   // payments: PayPal (we are the seller) · Meta Pixel (consent) · Cloudflare Web Analytics · SMS sign-in
+const VERSION = '2026-10-18';   // payments: PayPal (we are the seller) · Meta Pixel (consent) · Cloudflare Web Analytics · SMS sign-in · Roomy → Anthropic (processor) · referral e-mail hash
 // earlier: 2026-10-06 — acct: account deletion, 2FA, Turnstile, retention · growth: cookies + consent-based analytics, A/B tests, reviews, invite disclosure
 /* the business that runs the site — shown in both documents */
 const OPERATOR = { name: '', reg: '', address: '' };
@@ -27,7 +27,7 @@ he: {
     'נקודות משמשות להפרדת ערוצים ולהורדת ערוצים ואין להן ערך כספי. מנויים נגבים דרך PayPal ואפשר לבטל אותם בכל עת.',
     'אסור לתקוף את האתר, לעקוף מגבלות או נקודות, או לגרד (scraping) את האתר והקטלוג.',
     'אנחנו מנהלים יומן פעילות (כניסות, צפיות, העלאות, הפרדות, ייצוא ועוד) לצורכי אבטחה, תמיכה ומניעת ניצול לרעה. הוא נשמר עד 180 יום, ורק מנהלים מורשים רואים אותו.',
-    'המידע מעובד אצל Supabase,‏ Cloudflare,‏ Deezer ו־PayPal. כלי סטטיסטיקה (Google Analytics ו־Microsoft Clarity) ומדידת המודעות שלנו ב־Meta פועלים רק אם הסכמתם בחלון העוגיות. אנחנו לא מוכרים מידע ולא מציגים פרסומות באתר.',
+    'המידע מעובד אצל Supabase,‏ Cloudflare,‏ Deezer ו־PayPal, וההודעות לעוזר רומי אצל Anthropic. כלי סטטיסטיקה (Google Analytics ו־Microsoft Clarity) ומדידת המודעות שלנו ב־Meta פועלים רק אם הסכמתם בחלון העוגיות. אנחנו לא מוכרים מידע ולא מציגים פרסומות באתר.',
     'גיל מינימלי: 16. אפשר לבקש עיון במידע, תיקון ומחיקה. על התנאים חל הדין הישראלי.'
   ],
   terms: { title: 'תנאי שימוש', intro: 'ברוכים הבאים ל־Chord Room. התנאים האלה מסדירים את השימוש באתר ובשירותים שלו. כדאי לקרוא אותם יחד עם <a href="#privacy">מדיניות הפרטיות</a>. הנוסח כתוב בלשון רבים ומתייחס לכל המגדרים.',
@@ -87,7 +87,8 @@ he: {
         ['<b>חשבון:</b> אימייל, שם משתמש, סיסמה (נשמרת רק כגיבוב מוצפן אצל ספק ההזדהות — אנחנו לא רואים אותה), שם תצוגה, ביו, תמונת פרופיל, שפה מועדפת, תפקיד והרשאות, תאריך הצטרפות, ביקור אחרון, וגרסת התנאים שאישרתם ומועד האישור. אם הוספתם מספר טלפון לחשבון (לכניסה בקוד SMS) — גם המספר.',
          '<b>שירים וקבצים:</b> שם השיר ונתוני הניתוח (BPM, סולם, אקורדים, גריד, נקודות קיו, ז׳אנר ומשך), קובצי השמע שהעליתם כשהייתם מחוברים, ויומן הורדות (שם השיר, רשימת הקבצים, הגודל והמועד).',
          '<b>נקודות ותשלומים:</b> יומן נקודות (זיכויים, חיובים והסיבה), המסלול, סטטוס המנוי, מועד החידוש ומזהי המנוי והתשלומים שמתקבלים מ־PayPal. אף פעם לא פרטי כרטיס אשראי.',
-         '<b>הזמנת חברים:</b> קוד ההזמנה שלכם, מי הצטרף דרך הקישור ואילו נקודות ניתנו.',
+         '<b>הזמנת חברים:</b> קוד ההזמנה שלכם, מי הצטרף דרך הקישור ואילו נקודות ניתנו. כדי למנוע ניצול לרעה של ההזמנות, כשמישהו מצטרף דרך הזמנה נשמר גיבוב חד־כיווני (עם ״מלח״ סודי) של כתובת האימייל שלו — לא הכתובת עצמה ובלי קישור לחשבון — עד כשנה, גם אם החשבון נמחק, כדי שאותה כתובת לא תקבל נקודות הזמנה שוב.',
+         '<b>העוזר רומי:</b> כשאתם כותבים לרומי, ההודעות שלכם ופרטי העמוד שאתם רואים (שם השיר או הקובץ, BPM, סולם, אקורדים, השירים בדקים של המיקס ונתוני ניתוח הספרייה) נשלחים ל־Anthropic כדי לענות לכם. אנחנו לא שומרים את תוכן השיחה בשרתים שלנו: היא נשמרת רק בדפדפן עד שסוגרים את הלשונית או מתנתקים. בשרת נשמר רק מספר ההודעות ליום (למכסה היומית), עד 60 יום.',
          '<b>יומן פעילות:</b> ראו הסעיף הבא.',
          '<b>מידע טכני:</b> כתובת IP ופרטי דפדפן מגיעים לספקי האחסון והתשתית (Cloudflare,‏ Supabase) כחלק רגיל מהפעלת האתר.',
          '<b>פניות:</b> מה שאתם כותבים לנו.'],
@@ -106,6 +107,7 @@ he: {
          '<b>ספק שליחת הודעות SMS</b> — שליחת קודי כניסה למספר הטלפון שהוספתם לחשבון.',
          '<b>PayPal</b> — תשלומים ומנויים. את פרטי התשלום מקלידים רק אצל PayPal, ועליהם חלה מדיניות הפרטיות שלה.',
          '<b>Deezer</b> — מצעדים, קטעי האזנה והנגן הרשמי. כשאתם מאזינים לקטע או פותחים את הנגן, הדפדפן מתחבר ישירות ל־Deezer.',
+         '<b>Anthropic</b> — מפעילה את מודל הבינה המלאכותית של העוזר רומי, כמעבד מידע מטעמנו. היא מקבלת את ההודעות שלכם, את פרטי העמוד (ראו ״העוזר רומי״ למעלה), את המסלול ויתרת הנקודות שלכם ומזהה פנימי של החשבון — בלי שם ובלי אימייל. Anthropic שומרת את המידע לזמן מוגבל לפי התנאים העסקיים שלה ולא משתמשת בו לאימון המודלים שלה. רומי פועל רק אם תכתבו לו.',
          '<b>Google Analytics,‏ Microsoft Clarity ו־Meta</b> — סטטיסטיקה, מפות חום ומדידת מודעות, רק בהסכמתכם (ראו ״עוגיות וסטטיסטיקה״).'],
         'חלק מהספקים שומרים ומעבדים מידע מחוץ לישראל, בהתאם להתחייבויות להגנה על מידע. נמסור מידע לגורם אחר רק אם הדין מחייב, כדי להגן על זכויות ובטיחות, או במסגרת העברת הפעילות לגורם שיתחייב למדיניות הזאת.'],
       ['p-browser', 'עיבוד בדפדפן ואחסון מקומי',
@@ -137,7 +139,7 @@ en: {
     'Points pay for stem separation and stem downloads and have no cash value. Subscriptions are billed through PayPal and can be cancelled at any time.',
     'No attacks, no bypassing limits or points, no scraping of the site or the catalog.',
     'We keep an activity log (sign-ins, page views, uploads, separations, exports and more) for security, support and abuse prevention. It is kept for up to 180 days and only authorized admins can see it.',
-    'Data is processed by Supabase, Cloudflare, Deezer and PayPal. Analytics tools (Google Analytics and Microsoft Clarity) and our Meta ad measurement run only if you allow them in the cookie banner. We don’t sell data and show no ads on the Site.',
+    'Data is processed by Supabase, Cloudflare, Deezer and PayPal, and messages to the Roomy assistant by Anthropic. Analytics tools (Google Analytics and Microsoft Clarity) and our Meta ad measurement run only if you allow them in the cookie banner. We don’t sell data and show no ads on the Site.',
     'Minimum age: 16. You can ask to access, correct or delete your data. Israeli law applies.'
   ],
   terms: { title: 'Terms of Use', intro: 'Welcome to Chord Room. These terms govern your use of the site and its services. Please read them together with the <a href="#privacy">Privacy Policy</a>.',
@@ -197,7 +199,8 @@ en: {
         ['<b>Account:</b> email, username, password (stored only as a secure hash by the sign-in provider — we never see it), display name, bio, profile photo, preferred language, role and permissions, join date, last visit, and the terms version you accepted and when. If you added a phone number to your account (for SMS sign-in codes), that number too.',
          '<b>Songs and files:</b> song name and analysis data (BPM, key, chords, grid, cue points, genre and duration), audio files you uploaded while signed in, and a download log (song name, file list, size and time).',
          '<b>Points and payments:</b> the points ledger (credits, charges and the reason), your plan, subscription status, renewal date and the subscription and payment IDs we receive from PayPal. Never card details.',
-         '<b>Invites:</b> your invite code, who joined through your link and which points were granted.',
+         '<b>Invites:</b> your invite code, who joined through your link and which points were granted. To prevent invite abuse, when someone joins through an invite we keep a salted one-way hash of their email address — not the address itself and with no link to the account — for up to about a year, even if the account is deleted, so the same address can’t collect invite points again.',
+         '<b>The Roomy assistant:</b> when you write to Roomy, your messages and details of the page you are on (the song or file name, BPM, key, chords, the tracks on the DJ decks and library analysis figures) are sent to Anthropic to answer you. We don’t keep the conversation on our servers: it stays only in your browser until you close the tab or sign out. On the server we keep only the number of messages per day (for the daily quota), for up to 60 days.',
          '<b>Activity log:</b> see the next section.',
          '<b>Technical data:</b> IP address and browser details reach our hosting and infrastructure providers (Cloudflare, Supabase) as a normal part of running the Site.',
          '<b>Messages:</b> whatever you write to us.'],
@@ -216,6 +219,7 @@ en: {
          '<b>An SMS provider</b> — sending sign-in codes to the phone number you added to your account.',
          '<b>PayPal</b> — payments and subscriptions. Payment details are typed only at PayPal, and its privacy policy covers them.',
          '<b>Deezer</b> — charts, previews and the official player. When you play a preview or open the player, your browser connects to Deezer directly.',
+         '<b>Anthropic</b> — runs the AI model behind the Roomy assistant, as a processor on our behalf. It receives your messages, the page details (see “The Roomy assistant” above), your plan and points balance and an internal account id — no name and no email. Anthropic keeps this data for a limited time under its commercial terms and does not use it to train its models. Roomy only runs if you write to it.',
          '<b>Google Analytics, Microsoft Clarity and Meta</b> — statistics, heatmaps and ad measurement, only with your consent (see “Cookies and analytics”).'],
         'Some providers store and process data outside Israel, under data-protection commitments. We only share information with anyone else if the law requires it, to protect rights and safety, or as part of transferring the business to someone who commits to this policy.'],
       ['p-browser', 'Processing in your browser and local storage',
@@ -247,7 +251,7 @@ ar: {
     'تُستخدم النقاط لفصل المسارات وتنزيلها وليست لها قيمة نقدية. تُحصَّل الاشتراكات عبر PayPal ويمكن إلغاؤها في أي وقت.',
     'يُمنع مهاجمة الموقع أو تجاوز الحدود أو النقاط أو استخراج بيانات الموقع والكتالوج آليًا.',
     'نحتفظ بسجل نشاط (تسجيلات الدخول، مشاهدة الصفحات، الرفع، الفصل، التصدير وغيرها) لأغراض الأمان والدعم ومنع إساءة الاستخدام. يُحفظ حتى 180 يومًا ولا يراه إلا المشرفون المخوّلون.',
-    'تُعالَج البيانات لدى Supabase وCloudflare وDeezer وPayPal. أدوات الإحصاء (Google Analytics وMicrosoft Clarity) وقياس إعلاناتنا لدى Meta تعمل فقط إذا وافقت عليها في نافذة ملفات تعريف الارتباط. لا نبيع البيانات ولا نعرض إعلانات في الموقع.',
+    'تُعالَج البيانات لدى Supabase وCloudflare وDeezer وPayPal، وتُعالَج رسائل المساعد رومي لدى Anthropic. أدوات الإحصاء (Google Analytics وMicrosoft Clarity) وقياس إعلاناتنا لدى Meta تعمل فقط إذا وافقت عليها في نافذة ملفات تعريف الارتباط. لا نبيع البيانات ولا نعرض إعلانات في الموقع.',
     'الحد الأدنى للعمر: 16 عامًا. يمكنك طلب الاطلاع على بياناتك وتصحيحها وحذفها. يسري القانون الإسرائيلي.'
   ],
   terms: { title: 'شروط الاستخدام', intro: 'مرحبًا بك في Chord Room. تنظّم هذه الشروط استخدامك للموقع وخدماته. يُرجى قراءتها مع <a href="#privacy">سياسة الخصوصية</a>.',
@@ -307,7 +311,8 @@ ar: {
         ['<b>الحساب:</b> البريد الإلكتروني، واسم المستخدم، وكلمة المرور (تُحفظ فقط كقيمة مشفّرة لدى مزوّد تسجيل الدخول — لا نراها)، واسم العرض، والنبذة، وصورة الملف الشخصي، واللغة المفضلة، والدور والصلاحيات، وتاريخ الانضمام، وآخر زيارة، وإصدار الشروط الذي وافقت عليه ووقت الموافقة. وإذا أضفت رقم هاتف إلى حسابك (لرموز الدخول عبر SMS) — فالرقم أيضًا.',
          '<b>الأغاني والملفات:</b> اسم الأغنية وبيانات التحليل (BPM والمقام والكوردات والشبكة ونقاط الإشارة والنوع والمدة)، والملفات الصوتية التي رفعتها أثناء تسجيل الدخول، وسجل التنزيلات (اسم الأغنية وقائمة الملفات والحجم والوقت).',
          '<b>النقاط والمدفوعات:</b> سجل النقاط (الإضافات والخصومات وسببها)، والباقة، وحالة الاشتراك، وتاريخ التجديد، ومعرّفات الاشتراك والمدفوعات التي نتلقاها من PayPal. لا بيانات بطاقة أبدًا.',
-         '<b>الدعوات:</b> رمز دعوتك، ومن انضم عبر رابطك، والنقاط الممنوحة.',
+         '<b>الدعوات:</b> رمز دعوتك، ومن انضم عبر رابطك، والنقاط الممنوحة. لمنع إساءة استخدام الدعوات، عندما ينضم شخص عبر دعوة نحتفظ بتجزئة أحادية الاتجاه (مع «ملح» سري) لعنوان بريده الإلكتروني — لا العنوان نفسه ودون ربط بالحساب — لمدة تصل إلى سنة تقريبًا، حتى لو حُذف الحساب، كي لا يحصل العنوان نفسه على نقاط الدعوة مرة أخرى.',
+         '<b>المساعد رومي:</b> عندما تكتب إلى رومي، تُرسَل رسائلك وتفاصيل الصفحة التي تراها (اسم الأغنية أو الملف، وBPM، والمقام، والكوردات، والأغاني على أسطوانات مزج DJ، وأرقام تحليل المكتبة) إلى Anthropic للرد عليك. لا نحتفظ بمحتوى المحادثة على خوادمنا: تبقى في متصفحك فقط حتى تغلق التبويب أو تسجّل الخروج. على الخادم نحتفظ فقط بعدد الرسائل في اليوم (للحصة اليومية) لمدة تصل إلى 60 يومًا.',
          '<b>سجل النشاط:</b> انظر القسم التالي.',
          '<b>البيانات التقنية:</b> يصل عنوان IP وتفاصيل المتصفح إلى مزوّدي الاستضافة والبنية التحتية (Cloudflare وSupabase) كجزء طبيعي من تشغيل الموقع.',
          '<b>الرسائل:</b> ما تكتبه لنا.'],
@@ -326,6 +331,7 @@ ar: {
          '<b>مزوّد رسائل SMS</b> — إرسال رموز الدخول إلى رقم الهاتف الذي أضفته إلى حسابك.',
          '<b>PayPal</b> — المدفوعات والاشتراكات. تُكتب بيانات الدفع لدى PayPal فقط، وتسري عليها سياسة الخصوصية الخاصة بها.',
          '<b>Deezer</b> — القوائم والمقاطع التجريبية والمشغّل الرسمي. عند الاستماع إلى مقطع أو فتح المشغّل، يتصل متصفحك بـ Deezer مباشرة.',
+         '<b>Anthropic</b> — تشغّل نموذج الذكاء الاصطناعي للمساعد رومي، بصفتها معالِجًا للبيانات نيابةً عنا. تتلقى رسائلك وتفاصيل الصفحة (انظر «المساعد رومي» أعلاه) وخطتك ورصيد نقاطك ومعرّفًا داخليًا للحساب — دون اسم ودون بريد إلكتروني. تحتفظ Anthropic بهذه البيانات لمدة محدودة وفق شروطها التجارية ولا تستخدمها لتدريب نماذجها. لا يعمل رومي إلا إذا كتبت إليه.',
          '<b>Google Analytics وMicrosoft Clarity وMeta</b> — إحصاءات وخرائط حرارية وقياس الإعلانات، بموافقتك فقط (راجع «ملفات تعريف الارتباط والإحصاءات»).'],
         'يحفظ بعض المزوّدين البيانات ويعالجونها خارج إسرائيل، وفق التزامات بحماية البيانات. لا نشارك المعلومات مع أي جهة أخرى إلا إذا اقتضى القانون ذلك، أو لحماية الحقوق والسلامة، أو ضمن نقل النشاط إلى جهة تلتزم بهذه السياسة.'],
       ['p-browser', 'المعالجة في المتصفح والتخزين المحلي',
@@ -357,7 +363,7 @@ ru: {
     'Баллы тратятся на разделение и скачивание стемов и не имеют денежной стоимости. Подписки оплачиваются через PayPal и отменяются в любой момент.',
     'Запрещено атаковать сайт, обходить ограничения или баллы и собирать данные сайта и каталога автоматически.',
     'Мы ведём журнал действий (входы, просмотры страниц, загрузки, разделения, экспорт и др.) для безопасности, поддержки и предотвращения злоупотреблений. Он хранится до 180 дней, и видят его только уполномоченные администраторы.',
-    'Данные обрабатываются в Supabase, Cloudflare, Deezer и PayPal. Инструменты аналитики (Google Analytics и Microsoft Clarity) и измерение нашей рекламы в Meta работают, только если вы разрешили их в окне cookie. Мы не продаём данные и не показываем рекламу на Сайте.',
+    'Данные обрабатываются в Supabase, Cloudflare, Deezer и PayPal, а сообщения ассистенту Roomy — в Anthropic. Инструменты аналитики (Google Analytics и Microsoft Clarity) и измерение нашей рекламы в Meta работают, только если вы разрешили их в окне cookie. Мы не продаём данные и не показываем рекламу на Сайте.',
     'Минимальный возраст — 16 лет. Вы можете запросить доступ к данным, их исправление и удаление. Действует право Израиля.'
   ],
   terms: { title: 'Условия использования', intro: 'Добро пожаловать в Chord Room. Эти условия регулируют использование сайта и его сервисов. Читайте их вместе с <a href="#privacy">Политикой конфиденциальности</a>.',
@@ -417,7 +423,8 @@ ru: {
         ['<b>Аккаунт:</b> email, имя пользователя, пароль (хранится только в виде защищённого хеша у сервиса входа — мы его не видим), отображаемое имя, описание, фото профиля, предпочитаемый язык, роль и права, дата регистрации, последний визит, а также версия принятых условий и время принятия. Если вы добавили к аккаунту номер телефона (для входа по SMS-коду) — и этот номер.',
          '<b>Песни и файлы:</b> название песни и данные анализа (BPM, тональность, аккорды, сетка, кью-точки, жанр и длительность), аудиофайлы, загруженные при входе в аккаунт, и журнал скачиваний (название, список файлов, размер и время).',
          '<b>Баллы и платежи:</b> журнал баллов (начисления, списания и причина), тариф, статус подписки, дата продления и идентификаторы подписки и платежей, получаемые от PayPal. Никаких данных карты.',
-         '<b>Приглашения:</b> ваш код приглашения, кто присоединился по вашей ссылке и какие баллы начислены.',
+         '<b>Приглашения:</b> ваш код приглашения, кто присоединился по вашей ссылке и какие баллы начислены. Чтобы предотвратить злоупотребления приглашениями, когда кто-то присоединяется по приглашению, мы храним необратимый хеш (с секретной «солью») его адреса электронной почты — не сам адрес и без связи с аккаунтом — примерно до года, даже если аккаунт удалён, чтобы тот же адрес не получил баллы за приглашение повторно.',
+         '<b>Ассистент Roomy:</b> когда вы пишете Roomy, ваши сообщения и сведения о странице, на которой вы находитесь (название песни или файла, BPM, тональность, аккорды, треки на деках DJ-микса и показатели анализа библиотеки), отправляются в Anthropic, чтобы ответить вам. Мы не храним переписку на наших серверах: она остаётся только в вашем браузере, пока вы не закроете вкладку или не выйдете из аккаунта. На сервере хранится только число сообщений в день (для дневного лимита), до 60 дней.',
          '<b>Журнал действий:</b> см. следующий раздел.',
          '<b>Технические данные:</b> IP-адрес и сведения о браузере попадают к провайдерам хостинга и инфраструктуры (Cloudflare, Supabase) при обычной работе Сайта.',
          '<b>Обращения:</b> всё, что вы нам пишете.'],
@@ -436,6 +443,7 @@ ru: {
          '<b>SMS-сервис</b> — отправка кодов входа на номер телефона, добавленный к аккаунту.',
          '<b>PayPal</b> — платежи и подписки. Платёжные данные вводятся только в PayPal, и к ним применяется его политика конфиденциальности.',
          '<b>Deezer</b> — чарты, превью и официальный плеер. Когда вы слушаете превью или открываете плеер, браузер подключается к Deezer напрямую.',
+         '<b>Anthropic</b> — работает модель ИИ ассистента Roomy; Anthropic обрабатывает данные по нашему поручению. Она получает ваши сообщения, сведения о странице (см. «Ассистент Roomy» выше), ваш тариф и баланс баллов и внутренний идентификатор аккаунта — без имени и без электронной почты. Anthropic хранит эти данные ограниченное время по своим коммерческим условиям и не использует их для обучения своих моделей. Roomy работает, только если вы ему пишете.',
          '<b>Google Analytics, Microsoft Clarity и Meta</b> — статистика, тепловые карты и измерение рекламы, только с вашего согласия (см. «Cookie и аналитика»).'],
         'Некоторые провайдеры хранят и обрабатывают данные за пределами Израиля, с обязательствами по их защите. Мы передаём данные другим лицам только по требованию закона, для защиты прав и безопасности или при передаче бизнеса тому, кто обязуется соблюдать эту политику.'],
       ['p-browser', 'Обработка в браузере и локальное хранилище',
@@ -467,7 +475,7 @@ es: {
     'Los puntos pagan la separación y descarga de pistas y no tienen valor monetario. Las suscripciones se cobran a través de PayPal y se pueden cancelar en cualquier momento.',
     'Prohibido atacar el sitio, eludir límites o puntos, o extraer datos del sitio y del catálogo de forma automatizada.',
     'Llevamos un registro de actividad (inicios de sesión, vistas de páginas, subidas, separaciones, exportaciones y más) para seguridad, soporte y prevención de abusos. Se guarda hasta 180 días y solo lo ven administradores autorizados.',
-    'Los datos se procesan en Supabase, Cloudflare, Deezer y PayPal. Las herramientas de analítica (Google Analytics y Microsoft Clarity) y la medición de nuestros anuncios en Meta solo funcionan si las permites en el aviso de cookies. No vendemos datos ni mostramos anuncios en el Sitio.',
+    'Los datos se procesan en Supabase, Cloudflare, Deezer y PayPal, y los mensajes al asistente Roomy en Anthropic. Las herramientas de analítica (Google Analytics y Microsoft Clarity) y la medición de nuestros anuncios en Meta solo funcionan si las permites en el aviso de cookies. No vendemos datos ni mostramos anuncios en el Sitio.',
     'Edad mínima: 16 años. Puedes pedir acceso, corrección y eliminación de tus datos. Se aplica la ley israelí.'
   ],
   terms: { title: 'Términos de uso', intro: 'Te damos la bienvenida a Chord Room. Estos términos regulan el uso del sitio y de sus servicios. Léelos junto con la <a href="#privacy">Política de privacidad</a>.',
@@ -527,7 +535,8 @@ es: {
         ['<b>Cuenta:</b> email, nombre de usuario, contraseña (guardada solo como hash seguro por el proveedor de inicio de sesión; nunca la vemos), nombre visible, bio, foto de perfil, idioma preferido, rol y permisos, fecha de alta, última visita, y la versión de los términos que aceptaste y cuándo. Si añadiste un número de teléfono a tu cuenta (para códigos de acceso por SMS), también ese número.',
          '<b>Canciones y archivos:</b> nombre de la canción y datos del análisis (BPM, tonalidad, acordes, rejilla, puntos cue, género y duración), los archivos de audio que subiste con la sesión iniciada y un registro de descargas (canción, lista de archivos, tamaño y hora).',
          '<b>Puntos y pagos:</b> el historial de puntos (abonos, cargos y motivo), tu plan, el estado de la suscripción, la fecha de renovación y los identificadores de suscripción y pagos que recibimos de PayPal. Nunca datos de tarjeta.',
-         '<b>Invitaciones:</b> tu código de invitación, quién se unió con tu enlace y qué puntos se concedieron.',
+         '<b>Invitaciones:</b> tu código de invitación, quién se unió con tu enlace y qué puntos se concedieron. Para evitar el abuso de las invitaciones, cuando alguien se une con una invitación guardamos un hash unidireccional con «sal» secreta de su dirección de correo (no la dirección en sí y sin vínculo con la cuenta) durante aproximadamente un año como máximo, aunque la cuenta se elimine, para que la misma dirección no vuelva a obtener puntos por invitación.',
+         '<b>El asistente Roomy:</b> cuando escribes a Roomy, tus mensajes y los datos de la página en la que estás (el nombre de la canción o del archivo, BPM, tonalidad, acordes, las canciones de los platos de la mezcla DJ y las cifras del análisis de bibliotecas) se envían a Anthropic para responderte. No guardamos la conversación en nuestros servidores: solo queda en tu navegador hasta que cierres la pestaña o cierres sesión. En el servidor solo guardamos el número de mensajes por día (para el límite diario), hasta 60 días.',
          '<b>Registro de actividad:</b> ver la siguiente sección.',
          '<b>Datos técnicos:</b> la dirección IP y los datos del navegador llegan a nuestros proveedores de alojamiento e infraestructura (Cloudflare, Supabase) como parte normal del funcionamiento del Sitio.',
          '<b>Mensajes:</b> lo que nos escribas.'],
@@ -546,6 +555,7 @@ es: {
          '<b>Un proveedor de SMS</b>: envío de códigos de acceso al número de teléfono que añadiste a tu cuenta.',
          '<b>PayPal</b>: pagos y suscripciones. Los datos de pago se escriben solo en PayPal, y su política de privacidad los cubre.',
          '<b>Deezer</b>: listas, vistas previas y el reproductor oficial. Cuando escuchas una vista previa o abres el reproductor, tu navegador se conecta directamente con Deezer.',
+         '<b>Anthropic</b>: ejecuta el modelo de IA del asistente Roomy, como encargado del tratamiento en nuestro nombre. Recibe tus mensajes, los datos de la página (ver «El asistente Roomy» arriba), tu plan y saldo de puntos y un identificador interno de la cuenta, sin nombre ni correo. Anthropic guarda estos datos durante un tiempo limitado según sus condiciones comerciales y no los usa para entrenar sus modelos. Roomy solo funciona si le escribes.',
          '<b>Google Analytics, Microsoft Clarity y Meta</b>: estadísticas, mapas de calor y medición de anuncios, solo con tu consentimiento (consulta «Cookies y analítica»).'],
         'Algunos proveedores guardan y procesan datos fuera de Israel, con compromisos de protección de datos. Solo compartimos información con terceros si la ley lo exige, para proteger derechos y seguridad, o al transferir la actividad a alguien que se comprometa con esta política.'],
       ['p-browser', 'Procesamiento en el navegador y almacenamiento local',
