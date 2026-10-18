@@ -19,10 +19,14 @@
  * same latency when that slot needs no tempo/key change, so A and B always line up) → level → master → limiter.
  * Export renders the same graph in an OfflineAudioContext (no limiter, normalised only when it would clip) and cuts
  * the stretcher latency off the front → WAV (CR.wav) or MP3 320 (window.MP3).
+ * Studio (assets/mashup-fx.js = window.MXFX): after the stretcher each slot runs through MXFX.chain (EQ → filter → comp →
+ * saturation → chorus → reverb/echo sends, + compare bypass) → level (vol × solo/mute) → master → width (→ limiter live).
+ * Regions (see "regions") replace the single clip: schedule() plays runs of regions with their envelopes, B's auto-duck
+ * curve (pre-stretch gain), chorus LFO phase + echo throws + transitions on the post-FX latency (G.pl), whole-sample starts.
  */
 (function(){
 'use strict';
-const CR=window.CR;if(!CR)return;
+const CR=window.CR;if(!CR||!window.MXFX)return;
 const {t,$,esc,mod}=CR;
 
 /* ---------- strings (he / en / ar / ru / es) ---------- */
@@ -217,6 +221,129 @@ es:{mxFree:'Mover libre',mxFreeT:'Mover libre (ms): haz clic en A o B para selec
   mxWheelH:'Rueda en la línea de tiempo: zoom · Shift+rueda: desplazar',mxSelA:'Seleccionada: A',mxSelB:'Seleccionada: B'}
 });
 
+/* studio: vocal FX, EQ, editing, transitions, auto-duck, compare, solo/mute, width, meter (he / en / ar / ru / es) */
+CR.addStrings({
+he:{mxFxH:'אפקטים לשירה',mxFxBH:'אפקטים לביט (B)',mxEqH:'EQ',mxEdH:'עריכה',
+  mxRev:'ריוורב',mxDly:'אקו',mxFlt:'פילטר',mxCmp:'קומפרסור',mxCho:'כורוס והכפלה',mxSat:'חום',
+  mxPSize:'גודל',mxPPre:'השהיה',mxPMix:'מינון',mxPFb:'חזרות',mxPHc:'עמעום החזרות',mxPLo:'חיתוך נמוכים',mxPHi:'חיתוך גבוהים',mxPAmt:'עוצמה',mxPDepth:'עומק',mxPWidth:'רוחב',mxPDrive:'דרייב',
+  mxRoom:'חדר',mxHall:'אולם',mxPlate:'פלייט',mxPP:'פינג־פונג',mxNoteL:'קצב החזרות',mxOnOff:'הפעלה: {s}',
+  mxPresets:'מוכנים',mxPDry:'יבש',mxPRadio:'רדיו',mxPClub:'מועדון',mxPLofi:'לו־פיי',mxPDreamy:'חלומי',mxPPhone:'טלפון',
+  mxEqOn:'EQ פעיל',mxEqFlat:'שטוח',mxEqMud:'הסרת בוץ',mxEqAir:'אוויר',mxEqWarm:'חום',mxEqVoc:'קול קדימה',mxEqBass:'שקט מבס',
+  mxEqHelp:'גוררים נקודה: תדר ועוצמה · גלגלת על נקודה: רוחב (Q) · לחיצה כפולה: איפוס הנקודה · מקשים 1–5 בוחרים נקודה, חצים מזיזים',
+  mxBand:'נקודה {n}',mxFreq:'תדר',mxDb:'עוצמה',mxQ:'רוחב (Q)',mxEqAria:'עקומת EQ של {s}',mxEqFor:'ערוץ',
+  mxCut:'חיתוך',mxCutT:'מצב חיתוך (C): לחיצה על שיר חותכת אותו שם (נצמד לפעמה, Shift לשש־עשריות, Alt חופשי)',mxSplit:'פיצול',mxSplitT:'פיצול בסמן (S)',
+  mxDup:'שכפול',mxDupT:'שכפול הקטע מיד אחריו (Ctrl/⌘+D)',mxMuteR:'השתקה',mxMuteRT:'השתקת הקטע (M)',mxDel:'מחיקה',mxDelT:'מחיקת הקטע (Delete)',mxDelBT:'ב־B: מחיקת התיבות והצמדת ההמשך (גם השירה באותו קטע נמחקת)',
+  mxRGain:'עוצמת הקטע',mxRFi:'כניסה',mxRFo:'יציאה',mxThrow:'אקו בסוף הקטע',mxThrowT:'האקו נפתח רק בפעמה האחרונה של הקטע וממשיך להדהד אחריו',
+  mxNoSel:'בחרו קטע בלחיצה על ציר הזמן, או פצלו שיר עם S כדי ליצור קטעים.',mxSelR:'{s} · קטע {n} · {a}–{b}',mxBeats:'{n} פעמות',
+  mxBBars:'הארכה וקיצור של הביט',mxBBarsP:'מהתיבה שבה נמצא הסמן; כל מה שאחרי זז בהתאם, גם השירה.',mxRepeat:'לחזור על {n} תיבות',mxRemove:'להסיר {n} תיבות',
+  mxTrans:'אפקטי מעבר',mxRiser:'רייזר',mxDown:'דאונליפטר',mxTrAdd:'הוספת {s} בתיבה של הסמן',mxTLen:'אורך',mxTLv:'עוצמה',mxTrSel:'{s} · תיבה {n}',mxTrNone:'אפשר לגרור אפקט מעבר על סרגל התיבות כדי להזיז אותו.',
+  mxDuck:'הנמכה אוטומטית של הביט',mxDuckT:'הביט יורד בכמה dB כשיש שירה',mxDuckAmt:'עומק',
+  mxResetEd:'ביטול העריכה של {s}',mxWidth:'רוחב סטריאו',mxCompare:'השוואה',mxCompareT:'החזיקו כדי לשמוע בלי אפקטים ובלי EQ',mxSolo:'סולו',mxMuteS:'השתקת {s}',mxSoloT:'סולו ל־{s}',mxMeter:'עוצמת יציאה',
+  mxEdHelp:'S פיצול · C חיתוך · Delete מחיקה · M השתקה · Ctrl/⌘+D שכפול · Esc ביטול בחירה · גוררים קטע כדי להזיז (נצמד לתיבות, Shift לפעמות, הזזה חופשית בלי הצמדה) · גוררים את הנקודות שבפינות כדי לקבוע כניסה ויציאה',
+  mxKeysH:'Space ניגון/השהיה · ← → תיבה · L לופ · S פיצול · C חיתוך'},
+en:{mxFxH:'Vocal effects',mxFxBH:'Beat effects (B)',mxEqH:'EQ',mxEdH:'Edit',
+  mxRev:'Reverb',mxDly:'Echo',mxFlt:'Filter',mxCmp:'Compressor',mxCho:'Chorus & double',mxSat:'Warmth',
+  mxPSize:'Size',mxPPre:'Pre-delay',mxPMix:'Mix',mxPFb:'Feedback',mxPHc:'Darken repeats',mxPLo:'Low cut',mxPHi:'High cut',mxPAmt:'Amount',mxPDepth:'Depth',mxPWidth:'Width',mxPDrive:'Drive',
+  mxRoom:'Room',mxHall:'Hall',mxPlate:'Plate',mxPP:'Ping-pong',mxNoteL:'Repeat rate',mxOnOff:'On: {s}',
+  mxPresets:'Presets',mxPDry:'Dry',mxPRadio:'Radio',mxPClub:'Club',mxPLofi:'Lo-fi',mxPDreamy:'Dreamy',mxPPhone:'Telephone',
+  mxEqOn:'EQ on',mxEqFlat:'Flat',mxEqMud:'Remove mud',mxEqAir:'Air',mxEqWarm:'Warm',mxEqVoc:'Vocal forward',mxEqBass:'Bass cut',
+  mxEqHelp:'Drag a point: frequency and gain · wheel on a point: width (Q) · double-click: reset the point · keys 1–5 pick a point, arrows move it',
+  mxBand:'Point {n}',mxFreq:'Frequency',mxDb:'Gain',mxQ:'Width (Q)',mxEqAria:'EQ curve of {s}',mxEqFor:'Channel',
+  mxCut:'Cut',mxCutT:'Cut mode (C): click a song to cut it there (snaps to beats, Shift = 16ths, Alt = free)',mxSplit:'Split',mxSplitT:'Split at the playhead (S)',
+  mxDup:'Duplicate',mxDupT:'Duplicate the part right after itself (Ctrl/⌘+D)',mxMuteR:'Mute',mxMuteRT:'Mute the part (M)',mxDel:'Delete',mxDelT:'Delete the part (Delete)',mxDelBT:'On B: deletes those bars and closes the gap (the vocals in that range go too)',
+  mxRGain:'Part level',mxRFi:'Fade in',mxRFo:'Fade out',mxThrow:'Echo at the end',mxThrowT:'The echo opens only on the part\'s last beat and keeps ringing after it',
+  mxNoSel:'Click a part on the timeline to select it, or split a song with S to make parts.',mxSelR:'{s} · part {n} · {a}–{b}',mxBeats:'{n} beats',
+  mxBBars:'Extend or shorten the beat',mxBBarsP:'From the bar under the playhead; everything after moves along, vocals included.',mxRepeat:'Repeat {n} bars',mxRemove:'Remove {n} bars',
+  mxTrans:'Transition FX',mxRiser:'Riser',mxDown:'Downlifter',mxTrAdd:'Add a {s} at the playhead\'s bar',mxTLen:'Length',mxTLv:'Level',mxTrSel:'{s} · bar {n}',mxTrNone:'Drag a transition on the bar ruler to move it.',
+  mxDuck:'Auto-duck the beat',mxDuckT:'The beat dips a few dB while the vocals sing',mxDuckAmt:'Depth',
+  mxResetEd:'Undo all edits on {s}',mxWidth:'Stereo width',mxCompare:'Compare',mxCompareT:'Hold to hear it without effects and EQ',mxSolo:'Solo',mxMuteS:'Mute {s}',mxSoloT:'Solo {s}',mxMeter:'Output level',
+  mxEdHelp:'S split · C cut · Delete delete · M mute · Ctrl/⌘+D duplicate · Esc deselect · drag a part to move it (snaps to bars, Shift = beats, Free move = no snapping) · drag the corner dots to set fades',
+  mxKeysH:'Space play/pause · ← → one bar · L loop · S split · C cut'},
+ar:{mxFxH:'مؤثرات الغناء',mxFxBH:'مؤثرات الإيقاع (B)',mxEqH:'EQ',mxEdH:'تحرير',
+  mxRev:'صدى المكان',mxDly:'إيكو',mxFlt:'فلتر',mxCmp:'ضاغط',mxCho:'كورس ومضاعفة',mxSat:'دفء',
+  mxPSize:'الحجم',mxPPre:'تأخير مسبق',mxPMix:'المقدار',mxPFb:'التكرارات',mxPHc:'تعتيم التكرارات',mxPLo:'قص المنخفضات',mxPHi:'قص المرتفعات',mxPAmt:'الشدة',mxPDepth:'العمق',mxPWidth:'العرض',mxPDrive:'الدفع',
+  mxRoom:'غرفة',mxHall:'قاعة',mxPlate:'صفيحة',mxPP:'بينغ بونغ',mxNoteL:'سرعة التكرار',mxOnOff:'تشغيل: {s}',
+  mxPresets:'جاهزة',mxPDry:'جاف',mxPRadio:'راديو',mxPClub:'نادٍ',mxPLofi:'لو-فاي',mxPDreamy:'حالم',mxPPhone:'هاتف',
+  mxEqOn:'EQ مفعّل',mxEqFlat:'مستوٍ',mxEqMud:'إزالة الطين',mxEqAir:'هواء',mxEqWarm:'دافئ',mxEqVoc:'الصوت للأمام',mxEqBass:'تخفيف الباص',
+  mxEqHelp:'اسحب نقطة: التردد والشدة · العجلة على نقطة: العرض (Q) · نقر مزدوج: إعادة النقطة · المفاتيح 1–5 تختار نقطة والأسهم تحركها',
+  mxBand:'النقطة {n}',mxFreq:'التردد',mxDb:'الشدة',mxQ:'العرض (Q)',mxEqAria:'منحنى EQ لـ {s}',mxEqFor:'المسار',
+  mxCut:'قص',mxCutT:'وضع القص (C): انقر على أغنية لقصها هناك (يلتصق بالنبضة، Shift لأجزاء 1/16، Alt بحرية)',mxSplit:'تقسيم',mxSplitT:'تقسيم عند المؤشر (S)',
+  mxDup:'نسخ',mxDupT:'نسخ المقطع بعده مباشرة (Ctrl/⌘+D)',mxMuteR:'كتم',mxMuteRT:'كتم المقطع (M)',mxDel:'حذف',mxDelT:'حذف المقطع (Delete)',mxDelBT:'في B: يحذف تلك المازورات ويغلق الفجوة (ويُحذف الغناء في ذلك الجزء أيضًا)',
+  mxRGain:'مستوى المقطع',mxRFi:'دخول تدريجي',mxRFo:'خروج تدريجي',mxThrow:'إيكو في النهاية',mxThrowT:'يُفتح الإيكو في آخر نبضة من المقطع فقط ويستمر بعده',
+  mxNoSel:'انقر على مقطع في الخط الزمني لتحديده، أو قسّم أغنية بالمفتاح S لإنشاء مقاطع.',mxSelR:'{s} · المقطع {n} · {a}–{b}',mxBeats:'{n} نبضات',
+  mxBBars:'إطالة الإيقاع أو تقصيره',mxBBarsP:'من المازورة التي تحت المؤشر؛ كل ما بعدها يتحرك معها، والغناء أيضًا.',mxRepeat:'تكرار {n} مازورات',mxRemove:'إزالة {n} مازورات',
+  mxTrans:'مؤثرات الانتقال',mxRiser:'رايزر',mxDown:'داون ليفتر',mxTrAdd:'إضافة {s} عند مازورة المؤشر',mxTLen:'الطول',mxTLv:'المستوى',mxTrSel:'{s} · المازورة {n}',mxTrNone:'اسحب مؤثر الانتقال على مسطرة المازورات لتحريكه.',
+  mxDuck:'خفض الإيقاع تلقائيًا',mxDuckT:'ينخفض الإيقاع بضع ديسيبلات أثناء الغناء',mxDuckAmt:'العمق',
+  mxResetEd:'إلغاء كل التحرير في {s}',mxWidth:'عرض الستيريو',mxCompare:'مقارنة',mxCompareT:'اضغط مطولًا لتسمع بلا مؤثرات ولا EQ',mxSolo:'منفرد',mxMuteS:'كتم {s}',mxSoloT:'{s} منفردًا',mxMeter:'مستوى الخرج',
+  mxEdHelp:'S تقسيم · C قص · Delete حذف · M كتم · Ctrl/⌘+D نسخ · Esc إلغاء التحديد · اسحب مقطعًا لتحريكه (يلتصق بالمازورات، Shift بالنبضات، التحريك الحر بلا التصاق) · اسحب النقاط في الزوايا لضبط الدخول والخروج',
+  mxKeysH:'Space تشغيل/إيقاف · ← → مازورة · L تكرار · S تقسيم · C قص'},
+ru:{mxFxH:'Эффекты для вокала',mxFxBH:'Эффекты для бита (B)',mxEqH:'Эквалайзер',mxEdH:'Монтаж',
+  mxRev:'Реверб',mxDly:'Эхо',mxFlt:'Фильтр',mxCmp:'Компрессор',mxCho:'Хорус и дабл',mxSat:'Теплота',
+  mxPSize:'Размер',mxPPre:'Предзадержка',mxPMix:'Доля',mxPFb:'Повторы',mxPHc:'Затемнение повторов',mxPLo:'Срез низов',mxPHi:'Срез верхов',mxPAmt:'Сила',mxPDepth:'Глубина',mxPWidth:'Ширина',mxPDrive:'Драйв',
+  mxRoom:'Комната',mxHall:'Зал',mxPlate:'Пластина',mxPP:'Пинг-понг',mxNoteL:'Шаг повторов',mxOnOff:'Включить: {s}',
+  mxPresets:'Пресеты',mxPDry:'Сухо',mxPRadio:'Радио',mxPClub:'Клуб',mxPLofi:'Лоу-фай',mxPDreamy:'Мечтательно',mxPPhone:'Телефон',
+  mxEqOn:'Эквалайзер включён',mxEqFlat:'Ровно',mxEqMud:'Убрать муть',mxEqAir:'Воздух',mxEqWarm:'Тепло',mxEqVoc:'Голос вперёд',mxEqBass:'Меньше баса',
+  mxEqHelp:'Тяните точку: частота и уровень · колесо на точке: ширина (Q) · двойной клик: сброс точки · клавиши 1–5 выбирают точку, стрелки двигают её',
+  mxBand:'Точка {n}',mxFreq:'Частота',mxDb:'Уровень',mxQ:'Ширина (Q)',mxEqAria:'Кривая эквалайзера: {s}',mxEqFor:'Канал',
+  mxCut:'Нарезка',mxCutT:'Режим нарезки (C): клик по песне разрезает её в этом месте (к долям, Shift — к 1/16, Alt — свободно)',mxSplit:'Разрезать',mxSplitT:'Разрезать по курсору (S)',
+  mxDup:'Дублировать',mxDupT:'Дублировать фрагмент сразу после него (Ctrl/⌘+D)',mxMuteR:'Заглушить',mxMuteRT:'Заглушить фрагмент (M)',mxDel:'Удалить',mxDelT:'Удалить фрагмент (Delete)',mxDelBT:'В B: удаляет эти такты и сдвигает остальное (вокал на этом участке тоже удаляется)',
+  mxRGain:'Уровень фрагмента',mxRFi:'Плавный вход',mxRFo:'Плавный выход',mxThrow:'Эхо в конце',mxThrowT:'Эхо открывается только на последней доле фрагмента и звучит дальше',
+  mxNoSel:'Кликните по фрагменту на шкале, чтобы выбрать его, или разрежьте песню клавишей S.',mxSelR:'{s} · фрагмент {n} · {a}–{b}',mxBeats:'долей: {n}',
+  mxBBars:'Удлинить или укоротить бит',mxBBarsP:'С такта под курсором; всё, что дальше, сдвигается, включая вокал.',mxRepeat:'Повторить тактов: {n}',mxRemove:'Убрать тактов: {n}',
+  mxTrans:'Переходы',mxRiser:'Райзер',mxDown:'Даунлифтер',mxTrAdd:'Добавить: {s} на такте курсора',mxTLen:'Длина',mxTLv:'Уровень',mxTrSel:'{s} · такт {n}',mxTrNone:'Тяните переход по линейке тактов, чтобы сдвинуть его.',
+  mxDuck:'Автоприглушение бита',mxDuckT:'Бит становится тише на несколько дБ, когда звучит вокал',mxDuckAmt:'Глубина',
+  mxResetEd:'Отменить весь монтаж {s}',mxWidth:'Ширина стерео',mxCompare:'Сравнить',mxCompareT:'Удерживайте, чтобы слушать без эффектов и эквалайзера',mxSolo:'Соло',mxMuteS:'Заглушить {s}',mxSoloT:'Соло {s}',mxMeter:'Выходной уровень',
+  mxEdHelp:'S разрезать · C нарезка · Delete удалить · M заглушить · Ctrl/⌘+D дублировать · Esc снять выбор · тяните фрагмент, чтобы сдвинуть (к тактам, Shift — к долям, свободный режим — без привязки) · тяните точки в углах для входа и выхода',
+  mxKeysH:'Space — пуск/пауза · ← → такт · L — луп · S — разрезать · C — нарезка'},
+es:{mxFxH:'Efectos de voz',mxFxBH:'Efectos de la base (B)',mxEqH:'EQ',mxEdH:'Edición',
+  mxRev:'Reverb',mxDly:'Eco',mxFlt:'Filtro',mxCmp:'Compresor',mxCho:'Chorus y doblaje',mxSat:'Calidez',
+  mxPSize:'Tamaño',mxPPre:'Pre-retardo',mxPMix:'Mezcla',mxPFb:'Repeticiones',mxPHc:'Oscurecer repeticiones',mxPLo:'Corte de graves',mxPHi:'Corte de agudos',mxPAmt:'Cantidad',mxPDepth:'Profundidad',mxPWidth:'Amplitud',mxPDrive:'Saturación',
+  mxRoom:'Sala',mxHall:'Auditorio',mxPlate:'Placa',mxPP:'Ping-pong',mxNoteL:'Ritmo del eco',mxOnOff:'Activar: {s}',
+  mxPresets:'Ajustes',mxPDry:'Seco',mxPRadio:'Radio',mxPClub:'Club',mxPLofi:'Lo-fi',mxPDreamy:'Soñador',mxPPhone:'Teléfono',
+  mxEqOn:'EQ activo',mxEqFlat:'Plano',mxEqMud:'Quitar barro',mxEqAir:'Aire',mxEqWarm:'Cálido',mxEqVoc:'Voz al frente',mxEqBass:'Menos graves',
+  mxEqHelp:'Arrastra un punto: frecuencia y ganancia · rueda sobre un punto: ancho (Q) · doble clic: restablecer el punto · teclas 1–5 eligen punto, flechas lo mueven',
+  mxBand:'Punto {n}',mxFreq:'Frecuencia',mxDb:'Ganancia',mxQ:'Ancho (Q)',mxEqAria:'Curva de EQ de {s}',mxEqFor:'Canal',
+  mxCut:'Cortar',mxCutT:'Modo corte (C): haz clic en una canción para cortarla ahí (se ajusta a tiempos, Shift a semicorcheas, Alt libre)',mxSplit:'Dividir',mxSplitT:'Dividir en el cursor (S)',
+  mxDup:'Duplicar',mxDupT:'Duplicar el fragmento justo después (Ctrl/⌘+D)',mxMuteR:'Silenciar',mxMuteRT:'Silenciar el fragmento (M)',mxDel:'Borrar',mxDelT:'Borrar el fragmento (Supr)',mxDelBT:'En B: borra esos compases y cierra el hueco (también la voz de ese tramo)',
+  mxRGain:'Nivel del fragmento',mxRFi:'Entrada',mxRFo:'Salida',mxThrow:'Eco al final',mxThrowT:'El eco se abre solo en el último tiempo del fragmento y sigue sonando después',
+  mxNoSel:'Haz clic en un fragmento de la línea de tiempo para elegirlo, o divide una canción con S.',mxSelR:'{s} · fragmento {n} · {a}–{b}',mxBeats:'{n} tiempos',
+  mxBBars:'Alargar o acortar la base',mxBBarsP:'Desde el compás bajo el cursor; todo lo que sigue se mueve, también la voz.',mxRepeat:'Repetir {n} compases',mxRemove:'Quitar {n} compases',
+  mxTrans:'Efectos de transición',mxRiser:'Riser',mxDown:'Downlifter',mxTrAdd:'Añadir {s} en el compás del cursor',mxTLen:'Duración',mxTLv:'Nivel',mxTrSel:'{s} · compás {n}',mxTrNone:'Arrastra una transición sobre la regla para moverla.',
+  mxDuck:'Atenuar la base automáticamente',mxDuckT:'La base baja unos dB mientras suena la voz',mxDuckAmt:'Profundidad',
+  mxResetEd:'Deshacer toda la edición de {s}',mxWidth:'Amplitud estéreo',mxCompare:'Comparar',mxCompareT:'Mantén pulsado para oírlo sin efectos ni EQ',mxSolo:'Solo',mxMuteS:'Silenciar {s}',mxSoloT:'Solo {s}',mxMeter:'Nivel de salida',
+  mxEdHelp:'S dividir · C cortar · Supr borrar · M silenciar · Ctrl/⌘+D duplicar · Esc quitar selección · arrastra un fragmento para moverlo (compases, Shift tiempos, Mover libre sin ajuste) · arrastra los puntos de las esquinas para las entradas y salidas',
+  mxKeysH:'Espacio reproducir/pausa · ← → un compás · L bucle · S dividir · C cortar'}
+});
+
+/* studio: smart EQ / smart FX (local analysis), undo / redo buttons (he / en / ar / ru / es) */
+CR.addStrings({
+he:{mxSmEq:'EQ חכם ✨',mxSmEqT:'מנתח את הסאונד של הערוץ ומכוון את ה־EQ בשבילו (בלי אינטרנט, בחינם)',mxSmFx:'אפקטים חכמים ✨',mxSmFxT:'בוחר אפקטים וכמויות לשירה לפי הקצב, הביט והקול (בלי אינטרנט, בחינם)',
+  mxSmDone:'מה עשיתי:',mxUndo:'ביטול',mxRedo:'חזרה',mxUndoT:'ביטול (Ctrl/⌘+Z)',mxRedoT:'חזרה (Ctrl/⌘+Shift+Z)',
+  mxSnLow:'ניקיתי נמוכים מתחת ל־{f}',mxSnMud:'חתכתי בוץ ב־{f}',mxSnHarsh:'ריככתי חדות ב־{f}',mxSnPres:'הוספתי נוכחות ב־{f}',mxSnAir:'הוספתי אוויר מ־{f}',mxSnCarve:'פיניתי מקום לשירה ב־{f}',
+  mxSnDelay:'אקו {n} לפי {bpm} BPM',mxSnBusy:'ביט עמוס: מעט ריוורב ואקו',mxSnSparse:'ביט אוורירי: יותר חלל ואקו',mxSnMid:'ריוורב ואקו במינון בינוני',mxSnWet:'השירה כבר רטובה: מעט ריוורב',mxSnDry:'שירה יבשה: הוספתי חלל',
+  mxSnCmp:'קומפרסור {p}% לפי הדינמיקה של הקול',mxSnWarm:'קול כהה: הוספתי חום',mxSnBright:'קול בהיר: בלי סטורציה',mxSnDuck:'הנמכה אוטומטית של הביט ב־{db} dB'},
+en:{mxSmEq:'Smart EQ ✨',mxSmEqT:'Analyses this channel\'s sound and sets the EQ for it (offline, free)',mxSmFx:'Smart effects ✨',mxSmFxT:'Picks vocal effects and amounts from the tempo, the beat and the voice (offline, free)',
+  mxSmDone:'What I did:',mxUndo:'Undo',mxRedo:'Redo',mxUndoT:'Undo (Ctrl/⌘+Z)',mxRedoT:'Redo (Ctrl/⌘+Shift+Z)',
+  mxSnLow:'cleaned the lows under {f}',mxSnMud:'cut mud at {f}',mxSnHarsh:'softened harshness at {f}',mxSnPres:'added presence at {f}',mxSnAir:'added air from {f}',mxSnCarve:'made room for the vocals at {f}',
+  mxSnDelay:'{n} echo at {bpm} BPM',mxSnBusy:'busy beat: little reverb and echo',mxSnSparse:'sparse beat: more space and echo',mxSnMid:'medium reverb and echo',mxSnWet:'the vocals are already wet: little reverb',mxSnDry:'dry vocals: added space',
+  mxSnCmp:'compressor {p}% from the voice\'s dynamics',mxSnWarm:'dark voice: added warmth',mxSnBright:'bright voice: no saturation',mxSnDuck:'beat ducks by {db} dB'},
+ar:{mxSmEq:'EQ ذكي ✨',mxSmEqT:'يحلل صوت هذا المسار ويضبط الـ EQ له (دون إنترنت، مجانًا)',mxSmFx:'مؤثرات ذكية ✨',mxSmFxT:'يختار مؤثرات الغناء ومقاديرها حسب الإيقاع والخلفية والصوت (دون إنترنت، مجانًا)',
+  mxSmDone:'ما فعلته:',mxUndo:'تراجع',mxRedo:'إعادة',mxUndoT:'تراجع (Ctrl/⌘+Z)',mxRedoT:'إعادة (Ctrl/⌘+Shift+Z)',
+  mxSnLow:'نظّفت المنخفضات تحت {f}',mxSnMud:'قصصت الطين عند {f}',mxSnHarsh:'خففت الحدة عند {f}',mxSnPres:'أضفت حضورًا عند {f}',mxSnAir:'أضفت هواءً من {f}',mxSnCarve:'أفسحت مكانًا للغناء عند {f}',
+  mxSnDelay:'إيكو {n} حسب {bpm} BPM',mxSnBusy:'إيقاع مزدحم: صدى وإيكو قليلان',mxSnSparse:'إيقاع خفيف: مساحة وإيكو أكثر',mxSnMid:'صدى وإيكو بمقدار متوسط',mxSnWet:'الغناء فيه صدى أصلًا: صدى قليل',mxSnDry:'غناء جاف: أضفت مساحة',
+  mxSnCmp:'ضاغط {p}% حسب ديناميكية الصوت',mxSnWarm:'صوت داكن: أضفت دفئًا',mxSnBright:'صوت ساطع: بلا تشبع',mxSnDuck:'خفض الإيقاع تلقائيًا {db} dB'},
+ru:{mxSmEq:'Умный EQ ✨',mxSmEqT:'Анализирует звук канала и настраивает эквалайзер под него (без интернета, бесплатно)',mxSmFx:'Умные эффекты ✨',mxSmFxT:'Подбирает эффекты для вокала и их долю по темпу, биту и голосу (без интернета, бесплатно)',
+  mxSmDone:'Что сделано:',mxUndo:'Отменить',mxRedo:'Повторить',mxUndoT:'Отменить (Ctrl/⌘+Z)',mxRedoT:'Повторить (Ctrl/⌘+Shift+Z)',
+  mxSnLow:'убрал низы ниже {f}',mxSnMud:'срезал муть на {f}',mxSnHarsh:'смягчил резкость на {f}',mxSnPres:'добавил присутствие на {f}',mxSnAir:'добавил воздух от {f}',mxSnCarve:'освободил место для вокала на {f}',
+  mxSnDelay:'эхо {n} под {bpm} BPM',mxSnBusy:'плотный бит: мало реверба и эха',mxSnSparse:'редкий бит: больше пространства и эха',mxSnMid:'реверб и эхо в меру',mxSnWet:'вокал уже с ревером: немного реверба',mxSnDry:'сухой вокал: добавил пространство',
+  mxSnCmp:'компрессор {p}% по динамике голоса',mxSnWarm:'тёмный голос: добавил теплоты',mxSnBright:'яркий голос: без сатурации',mxSnDuck:'бит приглушается на {db} дБ'},
+es:{mxSmEq:'EQ inteligente ✨',mxSmEqT:'Analiza el sonido de este canal y ajusta el EQ para él (sin conexión, gratis)',mxSmFx:'Efectos inteligentes ✨',mxSmFxT:'Elige los efectos de la voz y su cantidad según el tempo, la base y la voz (sin conexión, gratis)',
+  mxSmDone:'Lo que hice:',mxUndo:'Deshacer',mxRedo:'Rehacer',mxUndoT:'Deshacer (Ctrl/⌘+Z)',mxRedoT:'Rehacer (Ctrl/⌘+Shift+Z)',
+  mxSnLow:'limpié los graves bajo {f}',mxSnMud:'quité barro en {f}',mxSnHarsh:'suavicé la dureza en {f}',mxSnPres:'añadí presencia en {f}',mxSnAir:'añadí aire desde {f}',mxSnCarve:'hice sitio a la voz en {f}',
+  mxSnDelay:'eco {n} a {bpm} BPM',mxSnBusy:'base cargada: poca reverb y eco',mxSnSparse:'base ligera: más espacio y eco',mxSnMid:'reverb y eco moderados',mxSnWet:'la voz ya tiene reverb: poca reverb',mxSnDry:'voz seca: añadí espacio',
+  mxSnCmp:'compresor {p}% según la dinámica de la voz',mxSnWarm:'voz oscura: añadí calidez',mxSnBright:'voz brillante: sin saturación',mxSnDuck:'la base baja {db} dB'}
+});
+
 /* ---------- constants & state ---------- */
 const IDS=['vocals','drums','bass','other'];
 const LET=['A','B'];
@@ -234,7 +361,10 @@ const M={built:false,visible:false,slots:[newSlot(0),newSlot(1)],tempo:'B',custo
   vol:[1,1],fmt:'wav',onlyLoop:false,loop:null,loopOn:false,loopBars:8,zoom:1,view0:0,pos:0,owner:undefined,exporting:false,exp:null,
   msg:'',msgErr:false,pair:null,lastO:null,pickFor:0,pickFrom:null,drag:null,hover:null,lastBeat:null,
   gridOn:false,gLane:0,undo:[],redo:[],gk:null,
-  freeOn:false,sel:null,fk:null};   /* freemove: free move mode, the selected clip (0 = A, 1 = B), the arrow-key burst */   /* griddrag: grid mode, the lane the arrows move, undo/redo of alignment + grid edits */
+  freeOn:false,sel:null,fk:null,   /* freemove: free move mode, the selected clip (0 = A, 1 = B), the arrow-key burst */   /* griddrag: grid mode, the lane the arrows move, undo/redo of alignment + grid edits */
+  /* studio: FX + EQ per slot, regions per slot (null = untouched), transitions, auto-duck, width, solo/mute, edit tools */
+  fx:[MXFX.DEF_FX(),MXFX.DEF_FX()],eq:[MXFX.DEF_EQ(),MXFX.DEF_EQ()],reg:[null,null],tr:[],duckOn:false,duckAmt:6,width:1,
+  solo:[false,false],smute:[false,false],cutOn:false,rsel:null,tsel:null,lane:0,eqSlot:0,eqBand:0,cmp:false,bN:4,hov:null,fxNote:null,eqNote:[null,null]};
 const CACHE=new Map();                    // song key → {an, cues, stems, kind}: analysis + separated stems for this session
 const songKey=(name,buf)=>name+'|'+Math.round(buf.duration*1000)+'|'+buf.length;
 // memory cap: stems are 4 stereo float32 buffers per song (≈340 MB for 4 min), so keep the stems of the two slots' songs
@@ -326,17 +456,20 @@ function defAlign(o){
 }
 function model(){
   const a=song(0),b=song(1),A=a&&a.an,B=b&&b.an;if(!A&&!B)return null;
-  const T=target(),o={T,beat:60/T,bar:240/T,hasA:!!A,hasB:!!B,semis:0};
-  if(B){o.kB=fitK(B.bpm,T);o.rB=T/(B.bpm*o.kB);o.bar0=firstDown(B)/o.rB;o.t1=b.buffer.duration/o.rB}else o.bar0=0;
+  const T=target(),o={T,beat:60/T,bar:240/T,hasA:!!A,hasB:!!B,semis:0,seg:[[],[]]};
+  if(B){o.kB=fitK(B.bpm,T);o.rB=T/(B.bpm*o.kB);o.bar0=firstDown(B)/o.rB;
+    o.seg[1]=segsOf(1,o,Infinity);o.t1=o.seg[1].length?Math.max(...o.seg[1].map(x=>x.x1)):o.bar0+o.bar}else o.bar0=0;
   if(A){
     o.kA=fitK(A.bpm,T);o.rA=T/(A.bpm*o.kA);o.semis=B?semis():0;
     const v=vocalStart(a);o.vA=v.t;o.vSrc=v.src;
     const barA=240/A.bpm;o.aIn=!B||M.startA==='all'?0:M.startA==='pre'?Math.max(0,o.vA-barA):o.vA;
     if(B){o.alignAuto=defAlign(o);o.align=M.align!=null?M.align:o.alignAuto;o.anchor=o.bar0+o.align*o.bar+M.nudge}
-    else{o.anchor=o.vA/o.rA;o.t1=a.buffer.duration/o.rA}
-    o.aStart=o.anchor+(o.aIn-o.vA)/o.rA;o.aEnd=o.anchor+(a.buffer.duration-o.vA)/o.rA;
+    else o.anchor=o.vA/o.rA;
+    o.seg[0]=segsOf(0,o,B?o.t1:Infinity);const sa=o.seg[0];
+    o.aStart=sa.length?Math.min(...sa.map(x=>x.x0)):o.anchor;o.aEnd=sa.length?Math.max(...sa.map(x=>x.x1)):o.anchor;
+    if(!B)o.t1=Math.max(o.aEnd,o.beat);
   }
-  o.t0=A&&B?Math.min(0,o.aStart):0;
+  o.t0=Math.min(0,A&&B?o.aStart:0,...o.seg[1].map(x=>x.x0));
   o.aOut=A?Math.min(o.aEnd,o.t1):0;
   o.fi=Math.max(0.005,M.fadeIn*o.beat);o.fo=Math.max(0.005,M.fadeOut*o.beat);
   o.nBars=Math.max(1,Math.ceil((o.t1-o.bar0)/o.bar));
@@ -359,6 +492,125 @@ function mapPos(p,a,b){
 }
 const loopT=o=>M.loop&&o?{a:o.bar0+M.loop.a*o.bar,b:o.bar0+M.loop.b*o.bar}:null;
 
+/* ---------- regions: cutting / arranging parts ----------
+   A lane's audio = a list of regions {u0,u1,sh,g,fi,fo,m,th}. u0/u1 = the source range as timeline beats from the slot's
+   origin in the ORIGINAL layout (A: its vocal anchor = bar `align` of B + nudge, B: its first bar), so the vocal-entry lock
+   and every alignment control still move A as a whole; sh = how far the region was moved (beats), g = gain, fi/fo = fades
+   (beats), m = muted, th = echo throw on its last beat. Beats are tempo-independent: one beat of A = 60/(bpm·k) source s.
+   M.reg[i] = null → one region = the whole clip (A from `startA`). Placed regions ("segs") carry timeline x0/x1 + source s0;
+   contiguous neighbours (same source, no fades) are played as one run, so a split alone never changes the sound; every other
+   edit edge gets a 1 ms fade-in and a 4 ms overlapping tail (no clicks, keeps the downbeat). */
+const RMAX=200,EPS=1e-6;
+const origin=(i,o)=>i?o.bar0:o.anchor;
+const newReg=(u0,u1)=>({u0,u1,sh:0,g:1,fi:0,fo:0,m:false,th:false});
+function baseU(i,o){const s=song(i);return i?{u0:-o.bar0/o.beat,u1:(s.buffer.duration/o.rB-o.bar0)/o.beat}:{u0:(o.aIn-o.vA)/o.rA/o.beat,u1:(s.buffer.duration-o.vA)/o.rA/o.beat}}
+function segsOf(i,o,lim){
+  const s=song(i);if(!s)return [];const r=i?o.rB:o.rA,org=origin(i,o),out=[];
+  const regs=M.reg[i]||[newReg(baseU(i,o).u0,baseU(i,o).u1)];
+  regs.forEach((g,k)=>{let x0=org+(g.u0+g.sh)*o.beat,x1=org+(g.u1+g.sh)*o.beat,s0=i?(o.bar0+g.u0*o.beat)*o.rB:o.vA+g.u0*o.beat*o.rA;
+    if(s0<0){x0+=-s0/r;s0=0}x1=Math.min(x1,lim);if(x1-x0<1e-4)return;
+    const len=x1-x0;out.push({k:M.reg[i]?k:-1,x0,x1,s0,r,g:g.g,fi:Math.min(g.fi*o.beat,len/2),fo:Math.min(g.fo*o.beat,len/2),m:g.m,th:g.th})});
+  return out;
+}
+// unmuted segments grouped into runs that play from one set of sources; envelope points [x, gain] (piecewise linear)
+function runsOf(segs){
+  const ss=segs.filter(x=>!x.m&&x.g>0).sort((a,b)=>a.x0-b.x0),runs=[];
+  for(const sg of ss){const L=runs[runs.length-1],p=L&&L.segs[L.segs.length-1];
+    if(p&&Math.abs(sg.x0-p.x1)<EPS&&Math.abs(sg.s0-(p.s0+(p.x1-p.x0)*p.r))<1e-5&&!p.fo&&!sg.fi){L.segs.push(sg);L.x1=sg.x1}
+    else runs.push({x0:sg.x0,x1:sg.x1,s0:sg.s0,r:sg.r,segs:[sg]})}
+  for(const R of runs){const f=R.segs[0],l=R.segs[R.segs.length-1],P=[[R.x0,0],[R.x0+Math.max(f.fi,0.001),f.g]];
+    for(let j=1;j<R.segs.length;j++){const a=R.segs[j-1],b=R.segs[j];if(a.g!==b.g){P.push([b.x0-0.0025,a.g],[b.x0+0.0025,b.g])}}
+    if(l.fo>0){P.push([R.x1-l.fo,l.g],[R.x1,0]);R.end=R.x1}else{P.push([R.x1,l.g],[R.x1+0.004,0]);R.end=R.x1+0.004}
+    R.pts=P}
+  return runs;
+}
+function envAt(P,x){if(x<=P[0][0])return P[0][1];for(let j=1;j<P.length;j++)if(x<=P[j][0]){const a=P[j-1],b=P[j],d=b[0]-a[0];return d>0?a[1]+(b[1]-a[1])*(x-a[0])/d:b[1]}return P[P.length-1][1]}
+function envSched(p,P,pos,when){p.setValueAtTime(envAt(P,pos),when);for(const q of P)if(q[0]>pos)p.linearRampToValueAtTime(q[1],when+(q[0]-pos))}
+// the segment heard at timeline x (first unmuted wins) → source time + display gain
+function srcAt(i,o,x){
+  let mu=null;for(const sg of o.seg[i]){if(x<sg.x0||x>sg.x1)continue;
+    let f=sg.g;if(sg.fi>0&&x<sg.x0+sg.fi)f*=(x-sg.x0)/sg.fi;if(sg.fo>0&&x>sg.x1-sg.fo)f*=(sg.x1-x)/sg.fo;
+    const q={s:sg.s0+(x-sg.x0)*sg.r,f,sg};if(!sg.m&&sg.g>0)return q;if(!mu)mu={...q,f:0.12,muted:true}}
+  return mu;
+}
+// edit operations (callers push the undo snapshot)
+function mat(i,o){if(!M.reg[i]){const b=baseU(i,o);M.reg[i]=[newReg(b.u0,b.u1)]}return M.reg[i]}
+const placed=(i,o,g)=>({x0:origin(i,o)+(g.u0+g.sh)*o.beat,x1:origin(i,o)+(g.u1+g.sh)*o.beat});
+function splitRaw(i,o,x,k){
+  const regs=mat(i,o);if(k==null){k=-1;regs.forEach((g,j)=>{const p=placed(i,o,g);if(x>p.x0+EPS&&x<p.x1-EPS)k=j})}
+  if(k<0||regs.length>=RMAX)return -1;const g=regs[k],u=(x-origin(i,o))/o.beat-g.sh;if(u<=g.u0+1e-4||u>=g.u1-1e-4)return -1;
+  regs.splice(k,1,{...g,u1:u,fo:0,th:false},{...g,u0:u,fi:0});return k+1;
+}
+function canSplit(i,o,x){return o.seg[i].some(sg=>x>sg.x0+EPS&&x<sg.x1-EPS)}
+const laneOk=(i,o)=>!!(o&&song(i)&&(i?o.hasB:o.hasA));
+// insert Db beats of silence at timeline X in every lane (regions across X are split; later ones move); transitions follow
+function insertTime(o,X,Db){
+  for(const j of [0,1]){if(!laneOk(j,o)||!o.seg[j].some(sg=>sg.x1>X+EPS))continue;
+    const regs=mat(j,o);for(let k=regs.length-1;k>=0;k--){const p=placed(j,o,regs[k]);if(p.x0<X-EPS&&p.x1>X+EPS)splitRaw(j,o,X,k)}
+    for(const g of mat(j,o)){if(placed(j,o,g).x0>=X-EPS)g.sh+=Db}}
+  const kb=Math.round((X-o.bar0)/o.bar);if(Math.abs(Db/4-Math.round(Db/4))<1e-6)for(const tr of M.tr)if(tr.bar>=kb)tr.bar+=Math.round(Db/4);
+}
+// cut the timeline range [X0, X1] out of every lane and close the gap
+function cutTime(o,X0,X1){
+  const Db=(X1-X0)/o.beat;
+  for(const j of [0,1]){if(!laneOk(j,o)||!o.seg[j].some(sg=>sg.x1>X0+EPS))continue;
+    let regs=mat(j,o);for(const X of [X0,X1])for(let k=regs.length-1;k>=0;k--){const p=placed(j,o,regs[k]);if(p.x0<X-EPS&&p.x1>X+EPS)splitRaw(j,o,X,k)}
+    M.reg[j]=regs=regs.filter(g=>{const p=placed(j,o,g);return !(p.x0>=X0-EPS&&p.x1<=X1+EPS)});
+    for(const g of regs)if(placed(j,o,g).x0>=X1-EPS)g.sh-=Db}
+  const k0=Math.round((X0-o.bar0)/o.bar),n=Math.round(Db/4);if(Math.abs(Db/4-n)<1e-6){M.tr=M.tr.filter(t=>t.bar<k0||t.bar>=k0+n);for(const t of M.tr)if(t.bar>=k0+n)t.bar-=n}
+}
+function edited(){M.lastO=null;if(M.rsel&&!(M.reg[M.rsel.i]&&M.reg[M.rsel.i][M.rsel.k]))M.rsel=null;if(M.tsel!=null&&!M.tr[M.tsel])M.tsel=null;changed();renderEdit()}
+const snapX=(o,x,free,fine)=>free?x:o.bar0+Math.round((x-o.bar0)/(fine?o.beat/4:o.beat))*(fine?o.beat/4:o.beat);
+function splitAt(i,x,free,fine){
+  const o=model();if(!laneOk(i,o)||M.gridOn)return false;x=snapX(o,x,free,fine);if(!canSplit(i,o,x))return false;
+  mPush();const k=splitRaw(i,o,x);if(k<0){M.undo.pop();return false}M.rsel={i,k};M.tsel=null;M.lane=i;edited();return true;
+}
+function selReg(){const r=M.rsel;return r&&M.reg[r.i]&&M.reg[r.i][r.k]?M.reg[r.i][r.k]:null}
+function deleteSel(){
+  const g=selReg(),o=model();if(!g||!o)return;const i=M.rsel.i;mPush();
+  if(i===1){const p=placed(1,o,g);M.reg[1].splice(M.rsel.k,1);const m2=model();cutTimeKeep(m2,p.x0,p.x1)}else M.reg[0].splice(M.rsel.k,1);
+  M.rsel=null;edited();
+}
+// B delete: its own region is already gone; close the gap only when no other B region covers that range
+function cutTimeKeep(o,X0,X1){if(o.seg[1].some(sg=>sg.x0<X1-EPS&&sg.x1>X0+EPS))return;cutTime(o,X0,X1)}
+function muteSel(){const g=selReg();if(!g)return;mPush();g.m=!g.m;edited()}
+function dupSel(){
+  const g=selReg(),o=model();if(!g||!o)return;const i=M.rsel.i,regs=M.reg[i];if(regs.length>=RMAX)return;
+  mPush();const len=g.u1-g.u0,X=placed(i,o,g).x1;
+  if(i===1)insertTime(o,X,len);else for(const r of regs)if(r!==g&&placed(0,o,r).x0>=X-EPS)r.sh+=len;
+  const k=M.reg[i].indexOf(g),cp={...g,sh:g.sh+len};M.reg[i].splice(k+1,0,cp);M.rsel={i,k:k+1};edited();
+}
+// B: repeat / remove N bars from the bar under the playhead (everything after moves, vocals included)
+function bBars(n,rm){
+  const o=model();if(!laneOk(1,o))return;const k=Math.floor((heard()-o.bar0)/o.bar+1e-6),X0=o.bar0+k*o.bar,X1=X0+n*o.bar;
+  if(X0>=o.t1-EPS)return;mPush();
+  if(rm){cutTime(o,X0,X1)}
+  else{const regs=mat(1,o);for(const X of [X0,X1])for(let j=regs.length-1;j>=0;j--){const p=placed(1,o,regs[j]);if(p.x0<X-EPS&&p.x1>X+EPS)splitRaw(1,o,X,j)}
+    const inside=M.reg[1].filter(g=>{const p=placed(1,o,g);return p.x0>=X0-EPS&&p.x1<=X1+EPS});
+    insertTime(o,X1,n*4);for(const g of inside)M.reg[1].push({...g,sh:g.sh+n*4})}
+  M.rsel=null;edited();
+}
+function resetLane(i){if(!M.reg[i])return;mPush();M.reg[i]=null;if(M.rsel&&M.rsel.i===i)M.rsel=null;edited()}
+// transitions: riser ends on its bar, downlifter starts on it
+const TRK=['riser','down'],TRL=[1,2,4,8];
+function trPlace(o,tr){const xb=o.bar0+tr.bar*o.bar,d=tr.len*o.bar;return tr.k==='riser'?{x0:xb-d,x1:xb,d}:{x0:xb,x1:xb+d,d}}
+function addTr(k){const o=model();if(!o||M.tr.length>=32)return;const b=Math.max(0,Math.round((heard()-o.bar0)/o.bar));mPush();M.tr.push({k,bar:b,len:k==='riser'?4:2,lv:0.7});M.tsel=M.tr.length-1;M.rsel=null;edited()}
+// auto-duck: B dips under A's vocals; curve sampled at 100 Hz on the timeline, computed from the stem (same for preview + export)
+function duckCurve(o){
+  const a=song(0);if(!M.duckOn||!(M.duckAmt>0)||!o.hasA||!o.hasB||!a||effLvl(0)<=0)return null;
+  const src=a.stems&&M.slots[0].use.vocals?a.stems.vocals:a.buffer;
+  if(!a.venv||a.venvSrc!==src){a.venv=MXFX.vocalEnv(src);a.venvSrc=src}
+  const key=JSON.stringify([o.seg[0].map(x=>[x.x0,x.x1,x.s0,x.g,x.fi,x.fo,x.m]),o.t0,o.t1,M.duckAmt,o.fi,o.fo]);if(a.dk&&a.dk.key===key)return a.dk;
+  const env=a.venv,runs=runsOf(o.seg[0]),N=Math.max(2,Math.ceil((o.t1-o.t0)*100)+2),lev=new Float32Array(N);
+  for(let j=0;j<N;j++){const x=o.t0+j/100;let v=0;for(const R of runs){if(x<R.x0||x>R.x1)continue;const s=R.s0+(x-R.x0)*R.r,f=s*100,f0=Math.floor(f);if(f0<0||f0+1>=env.length)continue;
+    v+=(env[f0]+(env[f0+1]-env[f0])*(f-f0))*envAt(R.pts,x)}lev[j]=v*gA(o,x)}
+  const srt=Float32Array.from(lev).filter(x=>x>1e-5).sort(),ref=srt.length?srt[Math.floor(srt.length*0.95)]:0,out=new Float32Array(N);
+  const aa=1-Math.exp(-1/(100*0.015)),ar=1-Math.exp(-1/(100*0.25));let y=0;
+  for(let j=0;j<N;j++){const l=ref>0?clamp(lev[j]/ref,0,1):0;y+=(l>y?aa:ar)*(l-y);out[j]=Math.pow(10,-M.duckAmt*y/20)}
+  a.dk={key,t0:o.t0,v:out};return a.dk;
+}
+const effLvl=i=>M.vol[i]*(M.smute[i]?0:1)*(M.solo.some(Boolean)&&!M.solo[i]?0:1);
+
 /* ---------- griddrag: a song's own grid (fix a wrong downbeat), undo ----------
    Moving slot i's grid by d source seconds: its first downbeat (offset/down) moves by d; A's vocal entry (on one of A's bars)
    rides along, so after the edit A's corrected bar locks onto B's bar `align` again; B's structure cues ride along and, when
@@ -371,24 +623,28 @@ function gridShift(i,d,b,o){
   if(b.vStart){let vt=b.vStart.t+d;while(vt<0)vt+=bar;while(vt>=s.buffer.duration&&vt-bar>=0)vt-=bar;s.vStart={...b.vStart,t:vt}}else s.vStart=null;
   s.cues=(b.cues||[]).map(c=>({...c,t:Math.max(0,c.t+d)}));
   cachePut(s.key,{an:s.an,cues:s.cues});
-  if(i===1&&o&&o.rB){const w=Math.round((raw-fdN)/(o.bar*o.rB));if(w){if(M.align!=null)M.align+=w;if(M.loop)M.loop={a:M.loop.a+w,b:M.loop.b+w}}}
+  if(i===1&&o&&o.rB){const w=Math.round((raw-fdN)/(o.bar*o.rB));if(w){M.align=(M.align!=null?M.align:o.align!=null?o.align:0)+w;if(M.loop)M.loop={a:M.loop.a+w,b:M.loop.b+w};
+    /* studio: B's regions (beats from its first bar) and the transitions (bars) are renumbered too, so the edits stay on the same music */
+    if(M.reg[1])for(const g of M.reg[1]){g.u0+=4*w;g.u1+=4*w}for(const tr of M.tr)tr.bar+=w}}
 }
-function mSnap(){return {align:M.align,nudge:M.nudge,loop:M.loop,g:[gridBase(0),gridBase(1)]}}
-function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null;M.fk=null}
-function mRestore(sn){M.align=sn.align;M.nudge=sn.nudge;M.loop=sn.loop;
+function mSnap(snd){return {align:M.align,nudge:M.nudge,loop:M.loop,g:[gridBase(0),gridBase(1)],reg:MXFX.clone(M.reg),tr:MXFX.clone(M.tr),
+  ...(snd?{snd:MXFX.clone({fx:M.fx,eq:M.eq,duckOn:M.duckOn,duckAmt:M.duckAmt,fxNote:M.fxNote,eqNote:M.eqNote})}:{})}}   /* studio: regions + transitions; sound only for smart EQ/FX steps */   /* studio: regions + transitions too */
+function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null;M.fk=null;updUR()}
+function mRestore(sn){M.align=sn.align;M.nudge=sn.nudge;M.loop=sn.loop;if(sn.snd){Object.assign(M,MXFX.clone(sn.snd));fxApply(0);fxApply(1);if(M.built){renderRack(0);renderRack(1);renderEq();renderSmart()}}if(sn.reg){M.reg=MXFX.clone(sn.reg);M.tr=MXFX.clone(sn.tr)}if(M.rsel&&!(M.reg[M.rsel.i]&&M.reg[M.rsel.i][M.rsel.k]))M.rsel=null;if(M.tsel!=null&&!M.tr[M.tsel])M.tsel=null;
   sn.g.forEach((x,i)=>{const s=song(i);if(x&&s&&s.key===x.key){s.an=x.an;s.vStart=x.vStart;s.cues=x.cues;cachePut(s.key,{an:s.an,cues:s.cues})}});
   const f=document.activeElement,fs=f&&f.closest&&f.closest('[id^="mxSlot"]'),fa=fs&&f.dataset.a;
-  renderSlot(0);renderSlot(1);if(fs){const n=(fa&&fs.querySelector('[data-a="'+fa+'"]'))||fs.querySelector('button');if(n)n.focus()}changed()}
+  renderSlot(0);renderSlot(1);if(fs){const n=(fa&&fs.querySelector('[data-a="'+fa+'"]'))||fs.querySelector('button');if(n)n.focus()}changed();renderEdit()}
 const sameSongs=sn=>sn.g.every((x,i)=>(x?x.key:null)===(song(i)?song(i).key:null));
-function mUndo(){while(M.undo.length&&!sameSongs(M.undo[M.undo.length-1]))M.undo.pop();if(!M.undo.length)return false;M.redo.push(mSnap());mRestore(M.undo.pop());M.gk=null;return true}
-function mRedo(){while(M.redo.length&&!sameSongs(M.redo[M.redo.length-1]))M.redo.pop();if(!M.redo.length)return false;M.undo.push(mSnap());mRestore(M.redo.pop());M.gk=null;return true}
-const mClearUndo=()=>{M.undo=[];M.redo=[];M.gk=null};
+function mUndo(){while(M.undo.length&&!sameSongs(M.undo[M.undo.length-1]))M.undo.pop();if(!M.undo.length)return false;const sn=M.undo.pop();M.redo.push(mSnap(!!sn.snd));mRestore(sn);M.gk=null;updUR();return true}
+function mRedo(){while(M.redo.length&&!sameSongs(M.redo[M.redo.length-1]))M.redo.pop();if(!M.redo.length)return false;const sn=M.redo.pop();M.undo.push(mSnap(!!sn.snd));mRestore(sn);M.gk=null;updUR();return true}
+const mClearUndo=()=>{M.undo=[];M.redo=[];M.gk=null;updUR()};
+function updUR(){const u=$('#mxEdBody [data-ed="undo"]'),r=$('#mxEdBody [data-ed="redo"]');if(u)u.disabled=!M.undo.length;if(r)r.disabled=!M.redo.length}
 // arrow keys in grid mode: the last dragged lane's grid ±1 ms (Shift ±10 ms), one undo step per burst
 function gridKey(ms){
   const o=model();let i=M.gLane;if(!song(i))i=song(0)?0:1;const s=song(i);if(!o||!s)return;
   const tn=performance.now();if(!M.gk||M.gk.i!==i||tn-M.gk.t>900){const sn=mSnap();mPush(sn);M.gk={i,b:sn.g[i],acc:0,o}}
   const k=M.gk;k.t=tn;k.acc=Math.round((k.acc+ms/1000)*1e6)/1e6;
-  const al=M.undo[M.undo.length-1];M.align=al.align;M.loop=al.loop;     // renumbering is computed from the burst's start
+  const al=M.undo[M.undo.length-1];M.align=al.align;M.loop=al.loop;M.reg=MXFX.clone(al.reg);M.tr=MXFX.clone(al.tr);     // renumbering is computed from the burst's start
   gridShift(i,k.acc,k.b,k.o);changed();
 }
 
@@ -418,25 +674,36 @@ function renderOff(o){
 /* ---------- audio engine ---------- */
 let c=null;
 const E={ready:false,p:null,st:[null,null],dl:[null,null],fade:[null,null],lvl:[null,null],route:[null,null],master:null,lim:null,lat:0,noStretch:false,
-  playing:false,srcs:[],segs:[],o:null,timer:0,starting:false};
+  playing:false,srcs:[],segs:[],o:null,timer:0,starting:false,
+  ch:[null,null],wd:null,trIn:null,meter:null,spec:null,specOn:-1,fxLat:0};   /* studio: FX chains, width, transitions bus, meter + spectrum */
 function engine(){
   if(E.ready)return Promise.resolve();if(E.p)return E.p;
   E.p=(async()=>{
     c=CR.ac();
     E.master=c.createGain();E.master.gain.value=0.9;
     const l=c.createDynamicsCompressor();l.threshold.value=-1;l.knee.value=0;l.ratio.value=20;l.attack.value=0.002;l.release.value=0.12;E.lim=l;
-    E.master.connect(l).connect(c.destination);
-    for(const i of [0,1]){E.fade[i]=c.createGain();E.lvl[i]=c.createGain();E.lvl[i].gain.value=M.vol[i];E.lvl[i].connect(E.master)}
+    E.wd=MXFX.width(c);E.wd.set(M.width,true);
+    E.master.connect(E.wd.input);E.wd.output.connect(l);l.connect(c.destination);
+    E.meter=c.createAnalyser();E.meter.fftSize=2048;l.connect(E.meter);
+    E.spec=c.createAnalyser();E.spec.fftSize=4096;E.spec.smoothingTimeConstant=0.8;
+    E.trIn=c.createGain();E.trIn.connect(E.master);
+    E.fxLat=await MXFX.latency();
+    for(const i of [0,1]){E.fade[i]=c.createGain();E.lvl[i]=c.createGain();E.lvl[i].gain.value=effLvl(i);E.lvl[i].connect(E.master);
+      E.ch[i]=MXFX.chain(c);E.ch[i].output.connect(E.lvl[i])}
     try{
       await CR.loadScript(CR.SS_SRC);
-      for(const i of [0,1]){E.st[i]=await window.SignalsmithStretch(c);E.st[i].connect(E.lvl[i])}
+      for(const i of [0,1]){E.st[i]=await window.SignalsmithStretch(c);E.st[i].connect(E.ch[i].input)}
       E.lat=+(await E.st[0].latency())||0;
     }catch(e){console.warn(e);E.noStretch=true;E.st=[null,null];E.lat=0;setMsg(t('mxNoStretch'),true)}
-    for(const i of [0,1]){E.dl[i]=c.createDelay(1);E.dl[i].delayTime.value=E.lat;E.dl[i].connect(E.lvl[i])}
-    E.ready=true;
+    for(const i of [0,1]){E.dl[i]=c.createDelay(1);E.dl[i].delayTime.value=E.lat;E.dl[i].connect(E.ch[i].input)}
+    for(const i of [0,1])E.ch[i].setLat(E.fxLat);
+    E.ready=true;const o=model();for(const i of [0,1])fxApply(i,o,true);specRoute();
   })().catch(e=>{E.p=null;throw e});
   return E.p;
 }
+// FX/EQ settings → the live chain (smoothly); the export builds its own chain with the same values
+function fxApply(i,o,imm){if(!E.ready||!E.ch[i])return;o=o||model();E.ch[i].set(M.fx[i],M.eq[i],o?o.beat:0.5,!!imm)}
+function specRoute(){if(!E.ready)return;const want=M.eqSlot;if(E.specOn===want)return;if(E.specOn>=0)try{E.ch[E.specOn].output.disconnect(E.spec)}catch(e){}E.ch[want].output.connect(E.spec);E.specOn=want}
 const needSt=(i,o)=>{if(E.noStretch)return false;const r=i?o.rB:o.rA,s=i?0:o.semis;return !!r&&(Math.abs(r-1)>1e-4||s!==0)};
 const pitchOf=(i,o)=>(i?0:o.semis)-12*Math.log2(i?o.rB:o.rA);
 function route(i,o){const want=needSt(i,o)?'st':'dl';if(E.route[i]===want)return;try{E.fade[i].disconnect()}catch(e){}E.fade[i].connect(want==='st'?E.st[i]:E.dl[i]);E.route[i]=want}
@@ -446,34 +713,52 @@ function parts(i){
   if(s.stems)return IDS.map(id=>({id,buf:s.stems[id],g:gainOf(sl,id)}));
   return [{id:'full',buf:s.buffer,g:1}];
 }
-// schedule every source of both slots so that timeline position `pos` plays at context time `when` (ctx = c or offline)
-function schedule(ctx,o,when,pos,fadeN,out,ramp){
-  const made=[],wait=[];
+// schedule every source of both slots so that timeline position `pos` plays at context time `when` (ctx = c or offline).
+// G = {fade:[2 gain nodes], out:[stretchers or null], ch:[2 FX chains], trIn, pl}: pl = the latency after the fade nodes
+// (stretch + FX), so post-FX events (chorus LFO, echo throws, transitions) land on the same timeline position as the audio.
+function schedule(ctx,o,when,pos,G,ramp){
+  const made=[],wait=[],sr=ctx.sampleRate,q=x=>Math.round(x*sr)/sr,wp=when+(G.pl||0);
   for(const i of [0,1]){
     const s=song(i);if(!s||!s.an)continue;
-    const r=i?o.rB:o.rA,p=srcPos(i,o,pos),lo=i?0:o.aIn,end=i?o.t1:o.aOut;
-    if(pos>=end)continue;
-    for(const pt of parts(i)){
-      let at=when,off=p;if(off<lo){at=when+(lo-off)/r;off=lo}
-      if(off>=pt.buf.duration-0.002)continue;
-      const src=ctx.createBufferSource();src.buffer=pt.buf;src.playbackRate.value=r;
-      const g=ctx.createGain();
-      if(ramp){g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(pt.g,at+0.001)}else g.gain.value=pt.g;   // 1 ms: no click, keeps the downbeat transient
-      src.connect(g).connect(fadeN[i]);src.start(at,off);made.push({src,g,i,id:pt.id});
-    }
-    const fp=fadeN[i].gain;fp.cancelScheduledValues(when);
+    const r=i?o.rB:o.rA,end=i?o.t1:o.aOut;
+    const fp=G.fade[i].gain;fp.cancelScheduledValues(when);
     if(i===0){
       fp.setValueAtTime(gA(o,pos),when);
       const fi=Math.min(o.fi,(o.aOut-o.aStart)/2),fo=Math.min(o.fo,(o.aOut-o.aStart)/2);
       for(const x of [o.aStart,o.aStart+fi,o.aOut-fo,o.aOut].sort((a,b)=>a-b))if(x>pos)fp.linearRampToValueAtTime(gA(o,x),when+(x-pos));
     }else fp.setValueAtTime(1,when);
-    if(out&&out[i])wait.push(out[i].schedule({active:true,semitones:pitchOf(i,o),output:when}));
+    if(G.ch&&G.ch[i])G.ch[i].sched(wp,pos,o.seg[i].filter(x=>x.th&&!x.m).map(x=>({a:Math.max(x.x0,x.x1-o.beat),b:x.x1})),made);
+    if(pos>=end)continue;
+    let dst=G.fade[i];
+    if(i===1){const dc=duckCurve(o);if(dc){const n=Math.max(2,Math.ceil((o.t1-pos)*100)+1),cv=new Float32Array(n);
+      for(let k=0;k<n;k++){const f=(pos+k/100-dc.t0)*100,f0=clamp(Math.floor(f),0,dc.v.length-1),f1=Math.min(dc.v.length-1,f0+1);cv[k]=dc.v[f0]+(dc.v[f1]-dc.v[f0])*clamp(f-f0,0,1)}
+      const dk=ctx.createGain();dk.gain.setValueCurveAtTime(cv,when,(n-1)/100);dk.connect(G.fade[1]);dst=dk}}
+    for(const R of runsOf(o.seg[i])){
+      if(R.end<=pos)continue;const x=Math.max(pos,R.x0);let at=when+(x-pos),off=R.s0+(x-R.x0)*r;
+      const aq=q(at);off+=(aq-at)*r;at=aq;if(off<0){at=q(at+-off/r);off=0}   // whole-sample start (and whole-sample source offset per part, below)
+      const eg=ctx.createGain();envSched(eg.gain,R.pts,x,at);eg.connect(dst);
+      const stopAt=when+(R.end+0.002-pos);
+      for(const pt of parts(i)){
+        if(off>=pt.buf.duration-0.002)continue;
+        const src=ctx.createBufferSource();src.buffer=pt.buf;src.playbackRate.value=r;
+        const g=ctx.createGain();
+        if(ramp){g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(pt.g,at+0.001)}else g.gain.value=pt.g;   // 1 ms: no click, keeps the downbeat transient
+        src.connect(g).connect(eg);src.start(at,Math.round(off*pt.buf.sampleRate)/pt.buf.sampleRate);src.stop(Math.max(at+0.01,stopAt));made.push({src,g,i,id:pt.id});
+      }
+    }
+    if(G.out&&G.out[i])wait.push(G.out[i].schedule({active:true,semitones:pitchOf(i,o),output:when}));
   }
+  // transition FX (generated buffers) straight into the master, on the timeline
+  if(G.trIn)for(const tr of M.tr){const p=trPlace(o,tr);if(p.x1<=pos||p.d<0.05)continue;
+    const src=ctx.createBufferSource();src.buffer=MXFX.transition(ctx,tr.k,p.d);const g=ctx.createGain();g.gain.value=tr.lv;
+    src.connect(g).connect(G.trIn);const st=Math.max(0,p.x0-pos);src.start(q(wp+st),Math.max(0,pos-p.x0));made.push({src,g,post:true,id:'tr'})}
   made.wait=wait;return made;
 }
-function killSrcs(list,at){for(const x of list){try{x.g.gain.cancelScheduledValues(at);x.g.gain.setValueAtTime(x.g.gain.value,at);x.g.gain.linearRampToValueAtTime(0,at+0.004);x.src.stop(at+0.01)}catch(e){}}}
+function killSrcs(list,at,pl){for(const x of list){const t0=at+(x.post?pl||0:0);try{x.g.gain.cancelScheduledValues(t0);x.g.gain.setValueAtTime(x.g.gain.value,t0);x.g.gain.linearRampToValueAtTime(0,t0+0.004);if(x.src)x.src.stop(t0+0.01)}catch(e){}}}
 function nowPos(x){if(!E.segs.length)return M.pos;let s=E.segs[0];for(const q of E.segs)if(q.when<=x)s=q;return s.pos+Math.max(0,x-s.when)}
-const heard=()=>E.playing&&c?nowPos(c.currentTime-E.lat):M.pos;
+const LIM_LAT=0.006;   // the preview limiter's look-ahead (measured: 264 samples at 44.1 kHz)
+const heard=()=>E.playing&&c?nowPos(c.currentTime-E.lat-E.fxLat-LIM_LAT):M.pos;
+const liveG=()=>({fade:E.fade,out:E.st.map((n,i)=>E.route[i]==='st'?n:null),ch:E.ch,trIn:E.trIn,pl:E.lat+E.fxLat});
 async function play(from){
   const o=model();if(!o||E.starting)return;
   E.starting=true;renderTransport();
@@ -485,12 +770,12 @@ async function play(from){
   startAt(from!=null?from:M.pos,o2);
 }
 function startAt(pos,o){
-  if(E.playing)killSrcs(E.srcs,c.currentTime+0.02);
+  if(E.playing)killSrcs(E.srcs,c.currentTime+0.02,E.lat+E.fxLat);
   if(pos>=o.t1-0.05||pos<o.t0)pos=o.t0;
   const lt=M.loopOn&&loopT(o);if(lt&&(pos<lt.a||pos>=lt.b))pos=lt.a;
   for(const i of [0,1])route(i,o);
   const when=c.currentTime+0.06;
-  E.o=o;M.lastO=o;E.srcs=schedule(c,o,when,pos,E.fade,E.st.map((n,i)=>E.route[i]==='st'?n:null),E.playing);
+  E.o=o;M.lastO=o;E.srcs=schedule(c,o,when,pos,liveG(),E.playing);
   E.segs=[{when,pos}];E.playing=true;M.pos=pos;
   for(const i of [0,1])if(E.st[i]&&E.route[i]!=='st')E.st[i].schedule({active:false,output:when});
   clearInterval(E.timer);E.timer=setInterval(pump,40);
@@ -498,7 +783,7 @@ function startAt(pos,o){
 }
 function stop(keep){
   if(!E.playing){if(!keep){const o=model();M.pos=o?(M.loopOn&&loopT(o)?loopT(o).a:o.t0):0}renderTransport();kick();return}
-  const h=heard();killSrcs(E.srcs,c.currentTime);E.srcs=[];E.playing=false;E.segs=[];clearInterval(E.timer);
+  const h=heard();killSrcs(E.srcs,c.currentTime,0);E.srcs=[];E.playing=false;E.segs=[];clearInterval(E.timer);
   for(const i of [0,1])if(E.st[i])E.st[i].schedule({active:false,output:c.currentTime+E.lat+0.1});
   const o=E.o||model();M.pos=keep?h:o?(M.loopOn&&loopT(o)?loopT(o).a:o.t0):0;
   renderTransport();kick();
@@ -510,7 +795,7 @@ function pump(){
   const last=E.segs[E.segs.length-1];
   if(lt&&lt.b>lt.a+0.05&&last.pos<lt.b){
     const LE=last.when+(lt.b-last.pos);
-    if(LE-c.currentTime<0.25){const old=E.srcs;killSrcs(old,LE);E.srcs=schedule(c,o,LE,lt.a,E.fade,null,true);E.segs.push({when:LE,pos:lt.a});if(E.segs.length>6)E.segs.shift()}
+    if(LE-c.currentTime<0.25){const old=E.srcs;killSrcs(old,LE,E.lat+E.fxLat);E.srcs=schedule(c,o,LE,lt.a,{...liveG(),out:null},true);E.segs.push({when:LE,pos:lt.a});if(E.segs.length>6)E.segs.shift()}
   }else if(heard()>=o.t1-0.01){stop()}
 }
 // structural change while playing → restart from the same musical position
@@ -518,9 +803,12 @@ let rsT=0;
 function restart(){clearTimeout(rsT);rsT=setTimeout(()=>{if(!E.playing)return;const o=model();if(!o){stop();return}startAt(mapPos(nowPos(c.currentTime+0.06),E.o,o),o)},40)}
 function liveGains(){
   if(!E.playing)return;const now=c.currentTime;
-  for(const x of E.srcs){const sl=M.slots[x.i];const v=x.id==='full'?1:gainOf(sl,x.id);x.g.gain.cancelScheduledValues(now);x.g.gain.setTargetAtTime(v,now,0.015)}
+  for(const x of E.srcs){if(x.post||x.id==null)continue;const sl=M.slots[x.i];const v=x.id==='full'?1:gainOf(sl,x.id);x.g.gain.cancelScheduledValues(now);x.g.gain.setTargetAtTime(v,now,0.015)}
 }
-function setVol(i,v){M.vol[i]=v;if(E.lvl[i])E.lvl[i].gain.setTargetAtTime(v,c.currentTime,0.015);save()}
+function setVol(i,v){if(v!=null)M.vol[i]=v;if(E.lvl[i])E.lvl[i].gain.setTargetAtTime(effLvl(i),c.currentTime,0.015);save()}
+function lvlAll(){setVol(0);setVol(1);M.lastO=null;if(M.duckOn)restart();renderMix();renderExpPts()}
+function compare(on){if(M.cmp===on)return;M.cmp=on;const b=$('#mxCmpB');if(b){b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))}
+  if(!E.ready)return;for(const ch of E.ch)ch.bypass(on);E.wd.set(on?1:M.width)}
 
 /* ---------- loading songs ---------- */
 function setMsg(m,err){M.msg=m||'';M.msgErr=!!err;const el=$('#mxMsg');if(el){el.textContent=M.msg;el.classList.toggle('err',M.msgErr);el.hidden=!M.msg}}
@@ -547,7 +835,7 @@ async function loadInto(i,getBuf,name,hint,pre){
     cachePut(key,{an:a,cues,...(stems&&kind!=='tool'?{stems,kind}:{})});
     sl.song={key,name,buffer,an:a,cues,stems,kind,cached:!!(hit&&hit.stems&&stems===hit.stems),wave:null,waveKey:'',vStart:null,sep:null};
     sl.loading=null;if(E.playing)stop(true);
-    M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();
+    M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;M.reg=[null,null];M.tr=[];M.rsel=null;M.tsel=null;mClearUndo();
     applyPair();
     const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;
     save();renderAll();updWave(i);
@@ -567,11 +855,11 @@ function loadLib(i,it){
   loadInto(i,async()=>{let ab;try{const url=await CR.songFileUrl(it.file_path);const r=await fetch(url);if(!r.ok)throw new Error('http '+r.status);ab=await r.arrayBuffer()}catch(e){throw Object.assign(e,{lib:true})}return CR.ac().decodeAudioData(ab)},it.name,it);
 }
 function loadTool(i){const s=CR.toolSong();if(!s){setMsg(t('mxNoTool'),true);return}loadInto(i,null,s.name,null,s)}
-function clearSlot(i){const sl=M.slots[i];sl.tok++;if(sl.song&&sl.song.sep)sl.song.sep.ctl.abort();stop();sl.song=null;sl.loading=null;mClearUndo();M.align=null;M.nudge=0;M.semis=null;M.loop=null;M.loopOn=false;const o=model();M.pos=o?o.t0:0;M.lastO=o;save();renderAll()}
+function clearSlot(i){const sl=M.slots[i];sl.tok++;if(sl.song&&sl.song.sep)sl.song.sep.ctl.abort();stop();sl.song=null;sl.loading=null;mClearUndo();M.align=null;M.nudge=0;M.semis=null;M.loop=null;M.loopOn=false;M.reg=[null,null];M.tr=[];M.rsel=null;M.tsel=null;const o=model();M.pos=o?o.t0:0;M.lastO=o;save();renderAll()}
 function swap(){
   stop();const a=M.slots[0],b=M.slots[1];[a.song,b.song]=[b.song,a.song];a.tok++;b.tok++;a.loading=b.loading=null;
   for(const s of [a.song,b.song])if(s){s.vStart=null;s.waveKey=''}
-  M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;mClearUndo();applyPair();
+  M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;M.reg=[null,null];M.tr=[];M.rsel=null;M.tsel=null;mClearUndo();applyPair();
   const o=model();M.pos=o?o.t0:0;M.view0=M.pos;M.lastO=o;save();renderAll();updWave(0);updWave(1);
 }
 
@@ -632,8 +920,10 @@ function save(){
     const a=song(0),b=song(1);
     const o={v:1,tempo:M.tempo,custom:M.custom,fadeIn:M.fadeIn,fadeOut:M.fadeOut,startA:M.startA,vol:M.vol,fmt:M.fmt,onlyLoop:M.onlyLoop,loopBars:M.loopBars,
       use:M.slots.map(s=>s.use),gain:M.slots.map(s=>s.gain),
+      fx:M.fx,eq:M.eq,duck:{on:M.duckOn,amt:M.duckAmt},width:M.width,   /* studio: the last sound settings = the default for a new pair */
       pair:a&&b?{a:a.name,b:b.name,semis:M.semis,align:M.align,nudge:M.nudge,loop:M.loop,
-        grid:[a,b].map(s=>s.gfix?{bpm:s.an.bpm,offset:s.an.offset,down:s.an.down}:null)}:M.pair};   /* griddrag: grid fixes */
+        grid:[a,b].map(s=>s.gfix?{bpm:s.an.bpm,offset:s.an.offset,down:s.an.down}:null),   /* griddrag: grid fixes */
+        reg:M.reg,tr:M.tr,fx:M.fx,eq:M.eq,duck:{on:M.duckOn,amt:M.duckAmt},width:M.width}:M.pair};   /* studio: edits + sound of this pair */
     M.pair=o.pair;try{localStorage.setItem(lsKey(),JSON.stringify(o))}catch(e){}
   },250);
 }
@@ -643,6 +933,7 @@ function load(){
   const num=(x,a,b,d)=>typeof x==='number'&&isFinite(x)?clamp(x,a,b):d;
   M.tempo='B';M.custom=0;M.fadeIn=4;M.fadeOut=4;M.startA='pre';M.vol=[1,1];M.fmt='wav';M.onlyLoop=false;M.loopBars=8;M.pair=null;
   M.slots.forEach((s,i)=>{s.use={...DEF_USE[i]};s.gain={vocals:1,drums:1,bass:1,other:1}});
+  M.fx=[MXFX.DEF_FX(),MXFX.DEF_FX()];M.eq=[MXFX.DEF_EQ(),MXFX.DEF_EQ()];M.duckOn=false;M.duckAmt=6;M.width=1;M.reg=[null,null];M.tr=[];
   if(!o||o.v!==1)return;
   if(['A','B','custom'].includes(o.tempo))M.tempo=o.tempo;
   M.custom=num(o.custom,0,250,0);
@@ -651,6 +942,7 @@ function load(){
   if(Array.isArray(o.vol))M.vol=[0,1].map(i=>num(o.vol[i],0,1.5,1));
   if(o.fmt==='mp3'||o.fmt==='wav')M.fmt=o.fmt;M.onlyLoop=o.onlyLoop===true;
   if([4,8,16].includes(o.loopBars))M.loopBars=o.loopBars;
+  sound(o);
   M.slots.forEach((s,i)=>{
     const u=Array.isArray(o.use)&&o.use[i],g=Array.isArray(o.gain)&&o.gain[i];
     if(u&&typeof u==='object')for(const id of IDS)if(typeof u[id]==='boolean')s.use[id]=u[id];
@@ -661,21 +953,37 @@ function load(){
     const L=p.loop&&typeof p.loop==='object'&&typeof p.loop.a==='number'&&typeof p.loop.b==='number'&&isFinite(p.loop.a)&&isFinite(p.loop.b)&&p.loop.b>p.loop.a?{a:clamp(p.loop.a,-64,4096),b:clamp(p.loop.b,-64,4096)}:null;
     const G=x=>x&&typeof x==='object'&&typeof x.bpm==='number'&&isFinite(x.bpm)&&typeof x.offset==='number'&&isFinite(x.offset)&&Number.isInteger(x.down)?{bpm:clamp(x.bpm,20,400),offset:clamp(x.offset,0,10),down:mod(x.down,4)}:null;
     M.pair={a:p.a.slice(0,300),b:p.b.slice(0,300),semis:Number.isInteger(p.semis)?clamp(p.semis,-12,12):null,align:Number.isInteger(p.align)?clamp(p.align,-64,4096):null,nudge:num(p.nudge,-4,4,0),loop:L,
-      grid:Array.isArray(p.grid)?[G(p.grid[0]),G(p.grid[1])]:[null,null]};
+      grid:Array.isArray(p.grid)?[G(p.grid[0]),G(p.grid[1])]:[null,null],
+      reg:Array.isArray(p.reg)?[sanReg(p.reg[0]),sanReg(p.reg[1])]:[null,null],tr:sanTr(p.tr),snd:p.fx?sndOf(p):null};
   }
 }
+/* studio: sound settings (FX, EQ, duck, width) and edits (regions, transitions), read back as data */
+function sndOf(o){const n=(x,a,b,d)=>typeof x==='number'&&isFinite(x)?clamp(x,a,b):d;
+  return {fx:Array.isArray(o.fx)?[0,1].map(i=>MXFX.sanFx(o.fx[i])):null,eq:Array.isArray(o.eq)?[0,1].map(i=>MXFX.sanEq(o.eq[i])):null,
+    duck:o.duck&&typeof o.duck==='object'?{on:o.duck.on===true,amt:n(o.duck.amt,0,18,6)}:null,width:n(o.width,0,2,null)}}
+function sound(o){const x=sndOf(o);if(x.fx)M.fx=x.fx;if(x.eq)M.eq=x.eq;if(x.duck){M.duckOn=x.duck.on;M.duckAmt=x.duck.amt}if(x.width!=null)M.width=x.width}
+function sanReg(a){
+  if(!Array.isArray(a)||!a.length)return null;const n=(x,lo,hi)=>typeof x==='number'&&isFinite(x)?clamp(x,lo,hi):null,out=[];
+  for(const g of a.slice(0,RMAX)){if(!g||typeof g!=='object')continue;const u0=n(g.u0,-1e5,1e5),u1=n(g.u1,-1e5,1e5),sh=n(g.sh,-1e5,1e5);if(u0==null||u1==null||sh==null||u1<=u0)continue;
+    out.push({u0,u1,sh,g:n(g.g,0,4)??1,fi:n(g.fi,0,64)??0,fo:n(g.fo,0,64)??0,m:g.m===true,th:g.th===true})}
+  return out.length?out:null;
+}
+function sanTr(a){return Array.isArray(a)?a.slice(0,32).filter(x=>x&&TRK.includes(x.k)&&Number.isInteger(x.bar)&&TRL.includes(x.len)).map(x=>({k:x.k,bar:clamp(x.bar,-64,4096),len:x.len,lv:typeof x.lv==='number'&&isFinite(x.lv)?clamp(x.lv,0,1.5):0.7})):[]}
 // the same two songs as last time → their fine-tuning comes back
 function applyPair(){
   const a=song(0),b=song(1),p=M.pair;
   if(!a||!b||!p||p.a!==a.name||p.b!==b.name)return;
   M.semis=p.semis;M.align=p.align;M.nudge=p.nudge;M.loop=p.loop;
+  M.reg=MXFX.clone(p.reg||[null,null]);M.tr=MXFX.clone(p.tr||[]);if(p.snd){const x=p.snd;if(x.fx)M.fx=MXFX.clone(x.fx);if(x.eq)M.eq=MXFX.clone(x.eq);if(x.duck){M.duckOn=x.duck.on;M.duckAmt=x.duck.amt}if(x.width!=null)M.width=x.width}
+  if(M.built)renderStudio();if(E.ready){fxApply(0,null,false);fxApply(1,null,false);E.wd.set(M.width)}
   (p.grid||[]).forEach((g,i)=>{const s=song(i);if(g&&s&&Math.abs(g.bpm-s.an.bpm)<0.01){s.an={...s.an,offset:g.offset,down:g.down};s.gfix=true;s.vStart=null}});   /* griddrag */
 }
 function setOwner(uid){
   uid=uid||null;if(M.owner===uid)return;
   const had=M.owner!==undefined;M.owner=uid;
-  if(had){stop();for(const s of M.slots){s.tok++;if(s.song&&s.song.sep)s.song.sep.ctl.abort();s.song=null;s.loading=null}M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;closePick()}
-  load();if(M.built)renderAll();
+  if(had){stop();for(const s of M.slots){s.tok++;if(s.song&&s.song.sep)s.song.sep.ctl.abort();s.song=null;s.loading=null}M.semis=null;M.align=null;M.nudge=0;M.loop=null;M.loopOn=false;M.rsel=null;M.tsel=null;closePick();
+    mClearUndo();M.solo=[false,false];M.smute=[false,false];M.fxNote=null;M.eqNote=[null,null];M.cutOn=false}   /* studio: nothing of the previous account's session carries over */
+  load();if(M.built)renderAll();if(E.ready){fxApply(0);fxApply(1);E.wd.set(M.width);lvlAll()}
 }
 
 /* ---------- UI ---------- */
@@ -696,6 +1004,12 @@ const IC={
   bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
   grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v16M15 4v16M3 12h3M18 12h3M5 10l-2 2 2 2M19 10l2 2-2 2"/></svg>',
   free:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M2 12h3M19 12h3M4 10l-2 2 2 2M20 10l2 2-2 2"/></svg>',
+  cut:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg>',
+  split:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 8h6v8H3M21 8h-6v8h6"/></svg>',
+  dup:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
+  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+  mute:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4zM23 9l-6 6M17 9l6 6"/></svg>',
+  cmp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 7l-3 5 3 5M19 7l3 5-3 5"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>'
 };
 function build(){
@@ -751,19 +1065,44 @@ function build(){
       <span class="mxsp"></span>
       <button type="button" class="mxib mxgridb" id="mxGrid" aria-pressed="false" data-it="mxGridT">${IC.grid}<span data-i="mxGrid"></span></button>
       <button type="button" class="mxib mxgridb mxfreeb" id="mxFreeB" aria-pressed="false" data-it="mxFreeT">${IC.free}<span data-i="mxFree"></span></button>
+      <button type="button" class="mxib mxgridb mxcutb" id="mxCutB" aria-pressed="false" data-it="mxCutT">${IC.cut}<span data-i="mxCut"></span></button>
+      <button type="button" class="mxib" id="mxSplitB" data-it="mxSplitT">${IC.split}</button>
+      <button type="button" class="mxib mxgridb mxcmpb" id="mxCmpB" aria-pressed="false" data-it="mxCompareT">${IC.cmp}<span data-i="mxCompare"></span></button>
       <button type="button" class="mxib mxloop" id="mxLoop" aria-pressed="false">${IC.loop}<span data-i="mxLoop"></span></button>
       <select class="mxsel" id="mxLoopN"></select>
       <button type="button" class="mxib" id="mxZo" data-it="mxZoomOut">${IC.zout}</button><button type="button" class="mxib" id="mxZi" data-it="mxZoomIn">${IC.zin}</button>
     </div>
     <div class="mxtl" id="mxTl" dir="ltr"><canvas id="mxCv" role="img"></canvas><canvas id="mxOv" aria-hidden="true"></canvas></div>
     <div class="mxmix">
-      <label class="mxvol"><span class="mxlet a" dir="ltr">A</span><span class="vh" data-i="mxVolA"></span><input type="range" id="mxVolA" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolAo"></output></label>
-      <label class="mxvol"><span class="mxlet b" dir="ltr">B</span><span class="vh" data-i="mxVolB"></span><input type="range" id="mxVolB" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolBo"></output></label>
+      ${[0,1].map(i=>`<div class="mxvolw"><label class="mxvol"><span class="mxlet ${i?'b':'a'}" dir="ltr">${LET[i]}</span><span class="vh" data-i="mxVol${LET[i]}"></span><input type="range" id="mxVol${LET[i]}" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVol${LET[i]}o"></output></label>
+        <span class="mxsm" dir="ltr"><button type="button" class="mxsmb" data-sm="solo" data-s="${i}" aria-pressed="false">S</button><button type="button" class="mxsmb" data-sm="mute" data-s="${i}" aria-pressed="false">M</button></span></div>`).join('')}
+      <label class="mxvol"><span data-i="mxWidth"></span><input type="range" id="mxWidth" min="0" max="2" step="0.01" dir="ltr"><output class="mono" id="mxWidtho"></output></label>
+      <span class="mxmeter" dir="ltr"><canvas id="mxMeter" width="120" height="14" role="img"></canvas></span>
       <p class="mxhelp"><span data-i="mxTlHelp"></span> · <span data-i="mxKeysH"></span> · <span data-i="mxWheelH"></span></p>
       <p class="mxghelp" id="mxGHelp" data-i="mxGridHelp" hidden></p>
       <p class="mxghelp mxfhelp" id="mxFHelp" hidden><span data-i="mxFreeHelp"></span> <b class="mono" id="mxSelL"></b></p>
     </div>
   </section>
+  <div class="mxstudio" id="mxStudio">
+    <details class="mxpanel" id="mxPFx" open><summary><span class="mxlet a" dir="ltr">A</span><h2 data-i="mxFxH"></h2></summary>
+      <div class="mxpb"><div class="mxsmrow"><button type="button" class="btn solid mxsmartb" id="mxSmFx" data-it="mxSmFxT"><span data-i="mxSmFx"></span></button><p class="mxsmart" id="mxFxNote" role="status" aria-live="polite" hidden></p></div>
+        <div class="mxpre" id="mxPre0" role="group"></div><div class="mxrack" id="mxRack0"></div>
+        <details class="mxpanel mxsub" id="mxPFxB"><summary><span class="mxlet b" dir="ltr">B</span><h3 data-i="mxFxBH"></h3></summary>
+          <div class="mxpb"><div class="mxpre" id="mxPre1" role="group"></div><div class="mxrack" id="mxRack1"></div></div></details></div></details>
+    <details class="mxpanel" id="mxPEq" open><summary><h2 data-i="mxEqH"></h2></summary>
+      <div class="mxpb">
+        <div class="mxeqtop"><span class="snote" data-i="mxEqFor"></span><div class="mxseg" role="radiogroup" id="mxEqSlot"><button type="button" role="radio" data-eqs="0" dir="ltr">A</button><button type="button" role="radio" data-eqs="1" dir="ltr">B</button></div>
+          <label class="mxchk"><input type="checkbox" id="mxEqOn"><span data-i="mxEqOn"></span></label><button type="button" class="btn solid mxsmartb" id="mxSmEq" data-it="mxSmEqT"><span data-i="mxSmEq"></span></button><div class="mxpre" id="mxEqPre" role="group"></div></div>
+        <p class="mxsmart" id="mxEqNote" role="status" aria-live="polite" hidden></p>
+        <div class="mxeqw" dir="ltr"><canvas id="mxEqCv" tabindex="0" role="img"></canvas></div>
+        <div class="mxeqb" dir="ltr"><div class="mxbands" id="mxBands" role="radiogroup"></div>
+          <label class="mxfx1"><span data-i="mxFreq"></span><input type="range" id="mxEqF" min="0" max="1000" step="1"><output class="mono" id="mxEqFo"></output></label>
+          <label class="mxfx1"><span data-i="mxDb"></span><input type="range" id="mxEqG" min="-18" max="18" step="0.1"><output class="mono" id="mxEqGo"></output></label>
+          <label class="mxfx1"><span data-i="mxQ"></span><input type="range" id="mxEqQ" min="0" max="1000" step="1"><output class="mono" id="mxEqQo"></output></label></div>
+        <p class="snote mxeqh" data-i="mxEqHelp"></p></div></details>
+    <details class="mxpanel" id="mxPEd" open><summary><h2 data-i="mxEdH"></h2></summary>
+      <div class="mxpb" id="mxEdBody"></div></details>
+  </div>
   <section class="mxexp" aria-labelledby="mxExpH">
     <div class="mxexph"><h2 id="mxExpH" data-i="mxExportH"></h2><p class="snote" id="mxExpP"></p></div>
     <div class="mxexpr">
@@ -792,7 +1131,7 @@ function wire(){
       if(a==='file'){M.pickFor=i;$('#mxIn').value='';$('#mxIn').click()}
       else if(a==='lib')openPick(i,b);else if(a==='tool')loadTool(i);else if(a==='clear')clearSlot(i);
       else if(a==='ai'||a==='quick')separate(i,a);else if(a==='cancel'){const s=song(i);if(s&&s.sep)s.sep.ctl.abort()}
-      else if(a==='half'||a==='double'){const s=song(i);if(s){mPush();s.an={...s.an,bpm:s.an.bpm*(a==='half'?0.5:2)};s.vStart=null;cachePut(s.key,{an:s.an});M.align=null;M.nudge=0;M.lastO=null;renderAll();restart()}}
+      else if(a==='half'||a==='double'){const s=song(i);if(s){mPush();M.reg[i]=null;M.rsel=null;s.an={...s.an,bpm:s.an.bpm*(a==='half'?0.5:2)};s.vStart=null;cachePut(s.key,{an:s.an});M.align=null;M.nudge=0;M.lastO=null;renderAll();restart()}}
       else if(a==='use'||a==='mute'){const sl=M.slots[i],id=b.dataset.id;if(a==='use')sl.use[id]=!sl.use[id];else sl.mute[id]=!sl.mute[id];renderSlot(i);liveGains();updWave(i);save()}
       return;
     }
@@ -812,8 +1151,8 @@ function wire(){
   $('#mxFi').onchange=e=>{M.fadeIn=+e.target.value;changed()};
   $('#mxFo').onchange=e=>{M.fadeOut=+e.target.value;changed()};
   $('#mxReset').onclick=()=>{mPush();M.align=null;M.nudge=0;M.semis=null;changed()};
-  $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;if(M.gridOn)M.freeOn=false;renderTransport();drawSoon()};   /* griddrag */
-  $('#mxFreeB').onclick=()=>{M.freeOn=!M.freeOn;if(M.freeOn){M.gridOn=false;if(M.sel==null)M.sel=0}renderTransport();drawSoon()};   /* freemove */
+  $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;if(M.gridOn){M.freeOn=false;M.cutOn=false}renderTransport();renderEdit();drawSoon()};   /* griddrag */
+  $('#mxFreeB').onclick=()=>{M.freeOn=!M.freeOn;if(M.freeOn){M.gridOn=false;M.cutOn=false;if(M.sel==null)M.sel=0}renderTransport();renderEdit();drawSoon()};   /* freemove */
   $('#mxPlay').onclick=toggle;$('#mxStop').onclick=()=>stop();
   $('#mxLoop').onclick=loopToggle;
   $('#mxLoopN').onchange=e=>{M.loopBars=+e.target.value;if(M.loop){M.loop={a:M.loop.a,b:M.loop.a+M.loopBars};if(M.loopOn)restart()}save();drawSoon();renderTransport();renderExport()};
@@ -834,7 +1173,7 @@ function wire(){
   $('#mxPickX').onclick=closePick;$('#mxPick').onclick=e=>{if(e.target.id==='mxPick')closePick()};
   $('#mxPickQ').oninput=renderPick;
   $('#mxPick').addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePick()}else if(e.key==='Tab')trap(e,$('#mxPick .mxpd'))});
-  wireTimeline();
+  wireTimeline();wireStudio();
   new ResizeObserver(()=>{sizeCanvas();drawSoon()}).observe($('#mxTl'));
 }
 // buttons inside re-rendered markup (slot parts, key chips): keep the keyboard focus on the same control
@@ -847,7 +1186,7 @@ function refocusLater(b){
 const hasFiles=e=>e.dataTransfer&&[...e.dataTransfer.types].includes('Files');
 function trap(e,box){const f=[...box.querySelectorAll('button:not([disabled]),input,select')].filter(x=>x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];
   if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
-function changed(noRenderInput){M.lastO=null;renderMatch(noRenderInput);drawSoon();restart();save();renderExport()}
+function changed(noRenderInput){M.lastO=null;renderMatch(noRenderInput);drawSoon();restart();save();renderExport();if(E.ready){fxApply(0);fxApply(1)}}
 function nudge(k){
   const o=model();if(!o||!o.hasA||!o.hasB)return;
   mPush();if(M.align==null)M.align=o.align;
@@ -980,7 +1319,7 @@ function renderMatch(keepInput){
   const fl=[[0,t('mxFade0')],[1,t('mxFadeBeat')],[4,t('mxFadeBar')],[8,t('mxFadeBars',{n:2})],[16,t('mxFadeBars',{n:4})]];
   sel('#mxFi',fl,M.fadeIn);sel('#mxFo',fl,M.fadeOut);
   sel('#mxStartA',[['all',t('mxStartAll')],['pre',t('mxStartPre')],['vocal',t('mxStartVoc')]],M.startA);
-  ['#mxFi','#mxFo','#mxStartA'].forEach(q=>{$(q).disabled=!(A&&B)});
+  ['#mxFi','#mxFo','#mxStartA'].forEach(q=>{$(q).disabled=!(A&&B)});if(M.reg[0])$('#mxStartA').disabled=true;   /* studio: A is edited → its parts are fixed */
   $('#mxReset').disabled=!(A&&B);
   renderScore(o,ko,s);
 }
@@ -1038,7 +1377,8 @@ function timeText(){
 const PAID=new Set();
 const settleP=(p,n)=>{if(!p)return;if(CR.settleN)CR.settleN(p,n);else if(n>0&&p.id&&CR.refundN)CR.refundN(p,n)};   // points v2: refund n units + close the crash journal
 function mixSig(o,a,b,r0,r1){return JSON.stringify([a.name,b.name,Math.round(a.buffer.duration*1000),Math.round(b.buffer.duration*1000),+o.T.toFixed(3),o.semis,o.rA&&+o.rA.toFixed(5),o.rB&&+o.rB.toFixed(5),
-  o.vA,M.align,M.nudge,M.startA,M.fadeIn,M.fadeOut,M.vol,M.slots.map(s=>[s.use,s.gain]),+r0.toFixed(3),+r1.toFixed(3)])}
+  o.vA,M.align,M.nudge,M.startA,M.fadeIn,M.fadeOut,M.vol,M.slots.map(s=>[s.use,s.gain]),+r0.toFixed(3),+r1.toFixed(3),
+  M.fx,M.eq,M.reg,M.tr,M.duckOn&&M.duckAmt,M.width,M.solo,M.smute])}   /* studio */
 function curSig(){const o=model(),a=song(0),b=song(1);if(!o||!a||!b||!o.hasA||!o.hasB)return null;let r0=o.t0,r1=o.t1;const lt=loopT(o);if(M.onlyLoop&&lt){r0=Math.max(o.t0,lt.a);r1=Math.min(o.t1,lt.b)}return mixSig(o,a,b,r0,r1)}
 function renderExpPts(){const el=$('#mxExpPts');if(!el)return;let paid=false;try{const g=curSig();paid=!!(g&&PAID.has(g))}catch(e){}
   const c=CR.priceChip&&!paid?CR.priceChip('mashup',1):'';el.hidden=!c;el.textContent=c}
@@ -1054,7 +1394,230 @@ function renderExport(){
 function swapDis(){const b=$('#mxSwap');if(b)b.disabled=!(song(0)||song(1))||M.slots.some(s=>s.loading)}
 function renderAll(){
   if(!M.built)return;renderSlot(0);renderSlot(1);swapDis();
-  setMsg(M.msg,M.msgErr);renderMatch();renderTransport();renderExport();sizeCanvas();drawSoon();
+  setMsg(M.msg,M.msgErr);renderMatch();renderTransport();renderExport();renderStudio();sizeCanvas();drawSoon();
+}
+
+/* ---------- studio panels: vocal FX rack, EQ, editing ---------- */
+const FXD=[['rev','mxRev',[['size',0,1,0.01,'%'],['pre',0,150,1,'ms'],['mix',0,1,0.01,'%']]],
+  ['dly','mxDly',[['fb',0,0.85,0.01,'%'],['hc',1000,16000,'log','hz'],['mix',0,1,0.01,'%']]],
+  ['flt','mxFlt',[['lo',20,1500,'log','hz'],['hi',800,20000,'log','hz']]],
+  ['cmp','mxCmp',[['amt',0,1,0.01,'%']]],
+  ['cho','mxCho',[['depth',0,1,0.01,'%'],['width',0,1,0.01,'%'],['mix',0,1,0.01,'%']]],
+  ['sat','mxSat',[['drive',0,1,0.01,'%'],['mix',0,1,0.01,'%']]]];
+const PK={size:'mxPSize',pre:'mxPPre',mix:'mxPMix',fb:'mxPFb',hc:'mxPHc',lo:'mxPLo',hi:'mxPHi',amt:'mxPAmt',depth:'mxPDepth',width:'mxPWidth',drive:'mxPDrive'};
+const PRE=[['dry','mxPDry'],['radio','mxPRadio'],['club','mxPClub'],['lofi','mxPLofi'],['dreamy','mxPDreamy'],['phone','mxPPhone']];
+const EQPRE=[['flat','mxEqFlat'],['mud','mxEqMud'],['air','mxEqAir'],['warm','mxEqWarm'],['voc','mxEqVoc'],['bass','mxEqBass']];
+const RTN={room:'mxRoom',hall:'mxHall',plate:'mxPlate'},DNOTE={'1/4':'1/4','1/8':'1/8','d1/8':'1/8.','1/16':'1/16'};
+const FADEB=[0,0.25,0.5,1,2,4,8];
+const fmtHz=x=>x>=1000?(Math.round(x/100)/10)+' kHz':Math.round(x)+' Hz';
+const fmtV=(x,u)=>u==='%'?Math.round(x*100)+'%':u==='ms'?Math.round(x)+' ms':u==='hz'?fmtHz(x):String(x);
+const toSl=(x,lo,hi,st)=>st==='log'?Math.round(1000*Math.log(x/lo)/Math.log(hi/lo)):x;
+const fromSl=(v,lo,hi,st)=>st==='log'?Math.round(lo*Math.pow(hi/lo,v/1000)):+v;
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const fdb=g=>{const d=20*Math.log10(Math.max(1e-6,g));return (d>0.05?'+':d<-0.05?'−':'±')+Math.abs(d).toFixed(1)+' dB'};
+function renderStudio(){if(!M.built)return;renderRack(0);renderRack(1);renderEq();renderEdit();renderMix();renderSmart()}
+/* smart EQ / smart FX: local analysis of the audio actually used (stems in use, else the song), results as notes (data, so
+   they re-render in any language); each run is one undo step (sound snapshot) */
+function smartParts(i){const sl=M.slots[i],s=sl.song;if(!s)return [];return s.stems?IDS.map(id=>({id,buf:s.stems[id],g:gainOf(sl,id)})).filter(p=>p.g>0):[{id:'full',buf:s.buffer,g:1}]}
+function specOf(i){const s=song(i);if(!s)return null;const ps=smartParts(i),key=JSON.stringify([s.key,s.kind,ps.map(p=>p.id+p.g.toFixed(2))]);
+  if(s.spc&&s.spc.key===key)return s.spc.S;const S=MXFX.spectrum(ps);s.spc={key,S};return S}
+const NOTEK={low:'mxSnLow',mud:'mxSnMud',harsh:'mxSnHarsh',pres:'mxSnPres',air:'mxSnAir',carve:'mxSnCarve',delay:'mxSnDelay',busy:'mxSnBusy',sparse:'mxSnSparse',mid:'mxSnMid',wet:'mxSnWet',dry:'mxSnDry',cmp:'mxSnCmp',warm:'mxSnWarm',bright:'mxSnBright',duck:'mxSnDuck'};
+function notesText(ns){return (ns||[]).map(n=>t(NOTEK[n.k],{f:'\u2066'+fmtHz(n.f||0)+'\u2069',n:DNOTE[n.n]||'',bpm:n.bpm,p:n.p,db:n.db})).join(' · ')}
+function renderSmart(){if(!M.built)return;const o=model();
+  const en=$('#mxEqNote'),fn=$('#mxFxNote'),ne=M.eqNote[M.eqSlot];en.hidden=!ne;if(ne)en.innerHTML=`<b>${esc(t('mxSmDone'))}</b> ${esc(notesText(ne))}`;
+  fn.hidden=!M.fxNote;if(M.fxNote)fn.innerHTML=`<b>${esc(t('mxSmDone'))}</b> ${esc(notesText(M.fxNote))}`;
+  $('#mxSmEq').disabled=!laneOk(M.eqSlot,o);$('#mxSmFx').disabled=!laneOk(0,o)}
+function smartEqRun(){
+  const i=M.eqSlot,o=model();if(!laneOk(i,o))return;const S=specOf(i);if(!S)return;const V=i&&laneOk(0,o)?specOf(0):null;
+  const r=MXFX.smartEq(S,i?'beat':'vocal',V);mPush(mSnap(true));M.eq[i]=r.eq;M.eqNote=M.eqNote.slice();M.eqNote[i]=r.notes;
+  fxApply(i);save();renderExpPts();renderEq();renderSmart()}
+function smartFxRun(){
+  const o=model();if(!laneOk(0,o))return;const a=song(0),V=specOf(0),vs=a.stems&&M.slots[0].use.vocals?a.stems.vocals:a.buffer;
+  if(!a.venv||a.venvSrc!==vs){a.venv=MXFX.vocalEnv(vs);a.venvSrc=vs}
+  let B=null,benv=null;if(laneOk(1,o)){const b=song(1);B=specOf(1);if(!b.benv)b.benv=MXFX.vocalEnv(b.buffer);benv=b.benv}
+  const r=MXFX.smartFx({T:o.T,minor:!!(a.an.key&&a.an.key.mode),V,venv:a.venv,B,benv});
+  mPush(mSnap(true));M.fx[0]=r.fx;if(B){M.duckOn=true;M.duckAmt=r.duck}else r.notes=r.notes.filter(n=>n.k!=='duck');M.fxNote=r.notes;M._smart=r;
+  fxChanged(0,true);changed();renderEdit();renderSmart()}
+function renderPre(i){const el=$('#mxPre'+i);if(!el)return;el.setAttribute('aria-label',t('mxPresets'));
+  el.innerHTML=`<span class="snote">${esc(t('mxPresets'))}</span>`+PRE.map(([k,l])=>{const on=same(M.fx[i],MXFX.PRESETS[k]);return `<button type="button" class="mxchip mxpc${on?' on':''}" data-pre="${k}" data-s="${i}" aria-pressed="${on}">${esc(t(l))}</button>`}).join('')}
+function renderRack(i){
+  const el=$('#mxRack'+i);if(!el)return;const F=M.fx[i];renderPre(i);
+  el.innerHTML=FXD.map(([k,l,ps])=>{const x=F[k];
+    let extra='';
+    if(k==='rev')extra=`<div class="mxseg mxfxseg" role="radiogroup" aria-label="${esc(t(l))}">${MXFX.RTYPES.map(r=>`<button type="button" role="radio" data-rt="${r}" data-s="${i}" class="${x.type===r?'on':''}" aria-checked="${x.type===r}">${esc(t(RTN[r]))}</button>`).join('')}</div>`;
+    if(k==='dly')extra=`<div class="mxfxrow"><div class="mxseg mxfxseg" role="radiogroup" aria-label="${esc(t('mxNoteL'))}" dir="ltr">${Object.keys(DNOTE).map(n=>`<button type="button" role="radio" data-dn="${n}" data-s="${i}" class="${x.note===n?'on':''}" aria-checked="${x.note===n}">${DNOTE[n]}</button>`).join('')}</div>
+      <label class="mxchk"><input type="checkbox" data-pp="1" data-s="${i}"${x.pp?' checked':''}><span>${esc(t('mxPP'))}</span></label></div>`;
+    return `<div class="mxfx${x.on?' on':''}" data-fx="${k}">
+      <label class="mxsw"><input type="checkbox" data-fxon="${k}" data-s="${i}"${x.on?' checked':''} aria-label="${esc(t('mxOnOff',{s:t(l)}))}"><span class="mxswt" aria-hidden="true"></span><b>${esc(t(l))}</b></label>
+      ${extra}${ps.map(([p,lo,hi,st,u])=>`<label class="mxfx1"><span>${esc(t(PK[p]))}</span><input type="range" dir="ltr" data-fp="${k}.${p}" data-s="${i}" min="${st==='log'?0:lo}" max="${st==='log'?1000:hi}" step="${st==='log'?1:st}" value="${toSl(x[p],lo,hi,st)}"><output class="mono">${fmtV(x[p],u)}</output></label>`).join('')}</div>`}).join('');
+}
+function fxChanged(i,reRack){fxApply(i);save();renderExpPts();if(reRack)renderRack(i);else renderPre(i)}
+/* EQ panel */
+const EQF=(()=>{const n=240,f=new Float32Array(n);for(let j=0;j<n;j++)f[j]=20*Math.pow(1000,j/(n-1));return f})();
+function renderEq(){
+  if(!M.built)return;const e=M.eq[M.eqSlot],b=e.b[M.eqBand],shelf=M.eqBand===0||M.eqBand===4;
+  $('#mxEqSlot').querySelectorAll('[data-eqs]').forEach(x=>{const on=+x.dataset.eqs===M.eqSlot;x.classList.toggle('on',on);x.setAttribute('aria-checked',String(on))});
+  $('#mxEqSlot').setAttribute('aria-label',t('mxEqFor'));
+  $('#mxEqOn').checked=e.on;
+  $('#mxEqPre').innerHTML=EQPRE.map(([k,l])=>{const on=same(e,MXFX.EQ_PRESETS[k]);return `<button type="button" class="mxchip mxpc${on?' on':''}" data-eqp="${k}" aria-pressed="${on}">${esc(t(l))}</button>`}).join('');
+  $('#mxBands').setAttribute('aria-label',t('mxEqH'));
+  $('#mxBands').innerHTML=e.b.map((x,j)=>`<button type="button" role="radio" class="mxband${j===M.eqBand?' on':''}" data-band="${j}" aria-checked="${j===M.eqBand}" aria-label="${esc(t('mxBand',{n:j+1}))}">${j+1}</button>`).join('');
+  $('#mxEqF').value=toSl(b.f,20,20000,'log');$('#mxEqFo').textContent=fmtHz(b.f);
+  $('#mxEqG').value=b.g;$('#mxEqGo').textContent=(b.g>0?'+':'')+b.g.toFixed(1)+' dB';
+  $('#mxEqQ').value=toSl(b.q,0.2,10,'log');$('#mxEqQ').disabled=shelf;$('#mxEqQo').textContent=shelf?'—':b.q.toFixed(2);
+  $('#mxEqCv').setAttribute('aria-label',t('mxEqAria',{s:LET[M.eqSlot]})+' · '+e.b.map((x,j)=>`${j+1}: ${fmtHz(x.f)} ${(x.g>0?'+':'')+x.g.toFixed(1)} dB`).join(', '));
+  drawEq();
+}
+function eqSet(fn,reRender){const e=M.eq[M.eqSlot];fn(e.b[M.eqBand],e);fxApply(M.eqSlot);save();renderExpPts();if(reRender!==false)renderEq();else drawEq()}
+const eqSpec={};
+function drawEq(live){
+  const cv=$('#mxEqCv');if(!cv)return;const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;const d=window.devicePixelRatio||1;
+  if(cv.width!==Math.round(w*d)||cv.height!==Math.round(h*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d)}
+  const g=cv.getContext('2d'),col=colors(),e=M.eq[M.eqSlot],X=f=>Math.log(f/20)/Math.log(1000)*w,Y=db=>h/2-db/24*(h/2-10);
+  g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,w,h);g.fillStyle=col.lane;g.fillRect(0,0,w,h);
+  g.font='10px '+tok('--mono');g.textBaseline='top';
+  for(const f of [50,100,200,500,1000,2000,5000,10000]){const x=Math.round(X(f))+0.5;g.fillStyle=col.line;g.fillRect(x,0,1,h);g.fillStyle=col.text;g.fillText(f>=1000?f/1000+'k':String(f),x+3,h-13)}
+  for(const db of [-12,-6,0,6,12]){const y=Math.round(Y(db))+0.5;g.fillStyle=col.line;g.globalAlpha=db===0?1:0.6;g.fillRect(0,y,w,1);g.globalAlpha=1;g.fillStyle=col.text;g.fillText((db>0?'+':'')+db,3,y+2)}
+  // live spectrum of the channel (preview only): per 3 px column, fast rise / smooth falloff, peak hold (0.8 s, then falls)
+  const cols=Math.ceil(w/3)+1;if(!eqSpec.v||eqSpec.v.length!==cols){eqSpec.v=new Float32Array(cols);eqSpec.p=new Float32Array(cols);eqSpec.pt=new Float64Array(cols)}
+  const now=performance.now(),dt=Math.min(0.1,(now-(eqSpec.t||now))/1000);eqSpec.t=now;
+  if(live&&E.ready&&E.playing&&E.spec){if(!eqSpec.f||eqSpec.f.length!==E.spec.frequencyBinCount)eqSpec.f=new Float32Array(E.spec.frequencyBinCount);E.spec.getFloatFrequencyData(eqSpec.f);
+    const nyq=c.sampleRate/2,F=eqSpec.f,n=F.length;
+    for(let k=0;k<cols;k++){const f0=20*Math.pow(1000,k*3/w),f1=20*Math.pow(1000,(k+1)*3/w);let i0=Math.floor(f0/nyq*n),i1=Math.max(i0+1,Math.ceil(f1/nyq*n));let m=-200;for(let j=i0;j<Math.min(n,i1);j++)if(F[j]>m)m=F[j];
+      const v=clamp((m+95)/80,0,1),V=eqSpec.v;V[k]=v>V[k]?v:Math.max(v,V[k]-dt*0.9);
+      if(V[k]>=eqSpec.p[k]){eqSpec.p[k]=V[k];eqSpec.pt[k]=now}else if(now-eqSpec.pt[k]>800)eqSpec.p[k]=Math.max(V[k],eqSpec.p[k]-dt*0.5)}}
+  else{for(let k=0;k<cols;k++){eqSpec.v[k]=Math.max(0,eqSpec.v[k]-dt*1.5);eqSpec.p[k]=Math.max(0,eqSpec.p[k]-dt*1.5)}}
+  {const V=eqSpec.v,cc=M.eqSlot?col.b:col.a,gr=g.createLinearGradient(0,h,0,0);gr.addColorStop(0,cc);gr.addColorStop(1,'rgba(255,255,255,.85)');
+    g.beginPath();g.moveTo(0,h);for(let k=0;k<cols;k++)g.lineTo(k*3,h-V[k]*(h-6));g.lineTo(w,h);g.closePath();g.fillStyle=gr;g.globalAlpha=0.28;g.fill();g.globalAlpha=1;
+    g.fillStyle=cc;for(let k=0;k<cols;k++){const pv=eqSpec.p[k];if(pv>0.02)g.fillRect(k*3,h-pv*(h-6)-1,2,2)}}
+  const rk=JSON.stringify(e);if(eqSpec.rk!==rk){eqSpec.rk=rk;eqSpec.r=MXFX.eqResponse(e,EQF)}const r=eqSpec.r;   // the curve only changes with the settings (not per spectrum frame)
+  r.one.forEach((db,j)=>{if(!e.b[j].g)return;g.beginPath();for(let k=0;k<EQF.length;k++){const x=X(EQF[k]),y=Y(db[k]);k?g.lineTo(x,y):g.moveTo(x,y)}g.strokeStyle=col.text;g.globalAlpha=j===M.eqBand?0.7:0.35;g.lineWidth=1;g.stroke();g.globalAlpha=1});
+  g.beginPath();for(let k=0;k<EQF.length;k++){const x=X(EQF[k]),y=Y(r.tot[k]);k?g.lineTo(x,y):g.moveTo(x,y)}g.strokeStyle=e.on?(M.eqSlot?col.b:col.a):col.text;g.lineWidth=2.2;g.stroke();
+  e.b.forEach((b,j)=>{const x=X(b.f),y=Y(e.on?b.g:0),sel=j===M.eqBand;g.beginPath();g.arc(x,y,sel?9:7,0,7);g.fillStyle=sel?col.hi:'rgba(10,10,12,.85)';g.fill();g.lineWidth=2;g.strokeStyle=M.eqSlot?col.b:col.a;g.stroke();
+    g.fillStyle=sel?'#0A0A0C':col.hi;g.font='700 10px '+tok('--mono');g.textAlign='center';g.textBaseline='middle';g.fillText(String(j+1),x,y+0.5);g.textAlign='start'});
+}
+function wireEq(){
+  const cv=$('#mxEqCv');let dr=null;
+  const at=ev=>{const r=cv.getBoundingClientRect();return {x:ev.clientX-r.left,y:ev.clientY-r.top,w:r.width,h:r.height}};
+  const near=(p,rad)=>{const e=M.eq[M.eqSlot];let best=-1,bd=rad;e.b.forEach((b,j)=>{const x=Math.log(b.f/20)/Math.log(1000)*p.w,y=p.h/2-(e.on?b.g:0)/24*(p.h/2-10),dd=Math.hypot(x-p.x,y-p.y);if(dd<bd){bd=dd;best=j}});return best};
+  cv.addEventListener('pointerdown',ev=>{if(ev.button>0)return;const p=at(ev),j=near(p,22);if(j<0)return;ev.preventDefault();cv.setPointerCapture(ev.pointerId);M.eqBand=j;dr={j};renderEq()});
+  cv.addEventListener('pointermove',ev=>{if(!dr)return;const p=at(ev);eqSet(b=>{b.f=Math.round(clamp(20*Math.pow(1000,clamp(p.x/p.w,0,1)),20,20000));b.g=Math.round(clamp((p.h/2-p.y)/(p.h/2-10)*24,-18,18)*10)/10},false)});
+  const up=()=>{if(dr){dr=null;renderEq()}};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  cv.addEventListener('wheel',ev=>{const p=at(ev);let j=near(p,40);if(j<0)j=M.eqBand;if(j===0||j===4)return;ev.preventDefault();M.eqBand=j;eqSet(b=>{b.q=Math.round(clamp(b.q*Math.exp(-ev.deltaY*0.002),0.2,10)*100)/100})},{passive:false});
+  cv.addEventListener('dblclick',ev=>{const j=near(at(ev),22);if(j<0)return;M.eqBand=j;eqSet(b=>{const d=MXFX.BANDS[j];b.f=d.f;b.g=0;b.q=d.q})});
+  cv.addEventListener('keydown',ev=>{const k=ev.key;
+    if(/^[1-5]$/.test(k)){M.eqBand=+k-1;renderEq();ev.preventDefault();return}
+    const st=ev.shiftKey?5:1;
+    if(k==='ArrowLeft'||k==='ArrowRight'){ev.preventDefault();eqSet(b=>{b.f=Math.round(clamp(b.f*Math.pow(1.03,(k==='ArrowRight'?1:-1)*st),20,20000))})}
+    else if(k==='ArrowUp'||k==='ArrowDown'){ev.preventDefault();eqSet(b=>{b.g=Math.round(clamp(b.g+(k==='ArrowUp'?0.5:-0.5)*st,-18,18)*10)/10})}
+    else if((k==='PageUp'||k==='PageDown')&&M.eqBand%4){ev.preventDefault();eqSet(b=>{b.q=Math.round(clamp(b.q*(k==='PageUp'?1.15:1/1.15),0.2,10)*100)/100})}
+    else if(k==='0'){ev.preventDefault();const j=M.eqBand;eqSet(b=>{const d=MXFX.BANDS[j];b.f=d.f;b.g=0;b.q=d.q})}});
+  new ResizeObserver(()=>drawEq()).observe(cv);
+}
+/* editing panel */
+function renderEdit(){
+  const el=$('#mxEdBody');if(!el)return;const o=model(),g=selReg(),i=M.rsel?M.rsel.i:-1,tr=M.tsel!=null?M.tr[M.tsel]:null;
+  const ae=document.activeElement,keep=ae&&el.contains(ae)?(ae.id?'#'+ae.id:ae.dataset&&ae.dataset.ed?`[data-ed="${ae.dataset.ed}"]`:null):null;
+  const btn=(ed,ic,l,tt,dis,pr)=>`<button type="button" class="btn ghost mxedb${pr?' on':''}" data-ed="${ed}" title="${esc(t(tt||l))}"${pr!=null?` aria-pressed="${!!pr}"`:''}${dis?' disabled':''}>${ic||''}<span>${esc(t(l))}</span></button>`;
+  const btnL=(ed,ic,txt,dis)=>`<button type="button" class="btn ghost mxedb" data-ed="${ed}"${dis?' disabled':''}>${ic}<span>${esc(txt)}</span></button>`;
+  const fsel=(id,v,lab)=>`<label class="mxfl"><span>${esc(t(lab))}</span><select class="sel" id="${id}">${FADEB.map(b=>`<option value="${b}"${b===v?' selected':''}>${b?esc(t('mxBeats',{n:b})):esc(t('mxFade0'))}</option>`).join('')}</select></label>`;
+  let selH;
+  if(g&&o){const p=placed(i,o,g);p.x1=Math.min(p.x1,o.t1);selH=`<b class="mxedl">${esc(t('mxSelR',{s:LET[i],n:M.rsel.k+1,a:'⁦'+fmtT(p.x0),b:fmtT(p.x1)+'⁩'}))}</b>
+    <label class="mxfx1"><span>${esc(t('mxRGain'))}</span><input type="range" dir="ltr" id="mxRGain" min="-24" max="6" step="0.5" value="${Math.round(20*Math.log10(Math.max(1e-3,g.g))*2)/2}"><output class="mono">${fdb(g.g)}</output></label>
+    <div class="mxrow2">${fsel('mxRFi',g.fi,'mxRFi')}${fsel('mxRFo',g.fo,'mxRFo')}</div>
+    <label class="mxchk" title="${esc(t('mxThrowT'))}"><input type="checkbox" id="mxThrow"${g.th?' checked':''}><span>${esc(t('mxThrow'))}</span></label>`}
+  else selH=`<p class="snote">${esc(t('mxNoSel'))}</p>`;
+  const bOk=laneOk(1,o),aOk=laneOk(0,o);
+  el.innerHTML=`<div class="mxedtools">${btn('undo','<span aria-hidden="true">↶</span>','mxUndo','mxUndoT',!M.undo.length)}${btn('redo','<span aria-hidden="true">↷</span>','mxRedo','mxRedoT',!M.redo.length)}<span class="mxedsep"></span>${btn('cut',IC.cut,'mxCut','mxCutT',!o,M.cutOn)}${btn('split',IC.split,'mxSplit','mxSplitT',!o)}${btn('dup',IC.dup,'mxDup','mxDupT',!g)}${btn('mute',IC.mute,'mxMuteR','mxMuteRT',!g,g?g.m:false)}${btn('del',IC.del,'mxDel',i===1?'mxDelBT':'mxDelT',!g)}</div>
+  <div class="mxedsel">${selH}</div>
+  <div class="mxedgs">
+  <div class="mxedg"><h3>${esc(t('mxBBars'))}</h3><p class="snote">${esc(t('mxBBarsP'))}</p><div class="mxedrow"><select class="sel" id="mxBN" aria-label="${esc(t('mxBBars'))}"${bOk?'':' disabled'}>${[1,2,4,8,16].map(n=>`<option value="${n}"${n===M.bN?' selected':''}>${esc(t('mxLoopBars',{n}))}</option>`).join('')}</select>
+    ${btnL('rep',IC.dup,t('mxRepeat',{n:M.bN}),!bOk)}${btnL('rem',IC.del,t('mxRemove',{n:M.bN}),!bOk)}</div></div>
+  <div class="mxedg"><h3>${esc(t('mxTrans'))}</h3><div class="mxedrow">${['riser','down'].map(k=>`<button type="button" class="btn ghost mxedb" data-ed="${k}" title="${esc(t('mxTrAdd',{s:t(k==='riser'?'mxRiser':'mxDown')}))}"${o?'':' disabled'}><span class="mxtri ${k}" aria-hidden="true"></span><span>+ ${esc(t(k==='riser'?'mxRiser':'mxDown'))}</span></button>`).join('')}</div>
+    ${tr?`<b class="mxedl">${esc(t('mxTrSel',{s:t(tr.k==='riser'?'mxRiser':'mxDown'),n:tr.bar+1}))}</b><div class="mxrow2"><label class="mxfl"><span>${esc(t('mxTLen'))}</span><select class="sel" id="mxTLen">${TRL.map(n=>`<option value="${n}"${n===tr.len?' selected':''}>${esc(t('mxLoopBars',{n}))}</option>`).join('')}</select></label>
+      <label class="mxfx1"><span>${esc(t('mxTLv'))}</span><input type="range" dir="ltr" id="mxTLv" min="0" max="1.5" step="0.01" value="${tr.lv}"><output class="mono">${Math.round(tr.lv*100)}%</output></label></div>${btn('trdel',IC.del,'mxDel')}`:`<p class="snote">${esc(t('mxTrNone'))}</p>`}</div>
+  <div class="mxedg"><h3>${esc(t('mxDuck'))}</h3><label class="mxchk"><input type="checkbox" id="mxDuckOn"${M.duckOn?' checked':''}${aOk&&bOk?'':' disabled'}><span>${esc(t('mxDuckT'))}</span></label>
+    <label class="mxfx1"><span>${esc(t('mxDuckAmt'))}</span><input type="range" dir="ltr" id="mxDuckAmt" min="1" max="12" step="0.5" value="${M.duckAmt}"${M.duckOn?'':' disabled'}><output class="mono">−${M.duckAmt} dB</output></label></div>
+  </div>
+  <div class="mxedr">${[0,1].map(j=>`<button type="button" class="lnk" data-ed="reset${j}"${M.reg[j]?'':' disabled'}>${esc(t('mxResetEd',{s:LET[j]}))}</button>`).join('')}</div>
+  <p class="snote mxedh">${esc(t('mxEdHelp'))}</p>`;
+  if(keep){const n=el.querySelector(keep);if(n&&!n.disabled)n.focus()}
+  const cb=$('#mxCutB');if(cb){cb.classList.toggle('on',M.cutOn);cb.setAttribute('aria-pressed',String(M.cutOn));cb.disabled=!o;$('#mxSplitB').disabled=!o;$('#mxTl').classList.toggle('cut',M.cutOn)}
+  {const s=$('#mxStartA');if(s&&M.reg[0])s.disabled=true}
+}
+function renderMix(){
+  if(!M.built)return;const o=model();
+  $('#mxDeck').querySelectorAll('[data-sm]').forEach(b=>{const i=+b.dataset.s,on=b.dataset.sm==='solo'?M.solo[i]:M.smute[i];b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));
+    const l=t(b.dataset.sm==='solo'?'mxSoloT':'mxMuteS',{s:LET[i]});b.title=l;b.setAttribute('aria-label',l);b.disabled=!(o&&(i?o.hasB:o.hasA))});
+  $('#mxWidth').value=M.width;$('#mxWidtho').textContent=Math.round(M.width*100)+'%';$('#mxWidth').disabled=!o;
+  $('#mxMeter').setAttribute('aria-label',t('mxMeter'));
+}
+let edK=null;   // one undo step per slider burst
+function edPush(id){const n=performance.now();if(!edK||edK.id!==id||n-edK.t>900)mPush();edK={id,t:n}}
+function cutToggle(on){M.cutOn=on==null?!M.cutOn:on;if(M.cutOn){M.gridOn=false;M.freeOn=false}renderTransport();renderEdit();drawSoon()}
+function splitKey(exact){const o=model();if(!o)return;let i=M.rsel?M.rsel.i:M.lane;if(!laneOk(i,o))i=laneOk(0,o)?0:1;splitAt(i,heard(),exact,false)}
+function wireStudio(){
+  const st=$('#mxStudio');
+  st.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b||b.disabled)return;const d=b.dataset,i=d.s!=null?+d.s:-1;
+    if(d.pre){M.fx[i]=MXFX.clone(MXFX.PRESETS[d.pre]);fxChanged(i,true);const n=$(`#mxPre${i} [data-pre="${d.pre}"]`);if(n)n.focus();return}
+    if(d.rt){M.fx[i].rev.type=d.rt;fxChanged(i,true);const n=$(`#mxRack${i} [data-rt="${d.rt}"]`);if(n)n.focus();return}
+    if(d.dn){M.fx[i].dly.note=d.dn;fxChanged(i,true);const n=$(`#mxRack${i} [data-dn="${d.dn}"]`);if(n)n.focus();return}
+    if(d.eqs!=null){M.eqSlot=+d.eqs;specRoute();renderEq();renderSmart();return}
+    if(d.eqp){M.eq[M.eqSlot]=MXFX.clone(MXFX.EQ_PRESETS[d.eqp]);fxApply(M.eqSlot);save();renderExpPts();renderEq();const n=$(`#mxEqPre [data-eqp="${d.eqp}"]`);if(n)n.focus();return}
+    if(d.band!=null){M.eqBand=+d.band;renderEq();const n=$(`#mxBands [data-band="${d.band}"]`);if(n)n.focus();return}
+    const ed=d.ed;if(!ed)return;
+    if(ed==='undo'){mUndo();return}if(ed==='redo'){mRedo();return}
+    if(ed==='cut')cutToggle();else if(ed==='split')splitKey(false);else if(ed==='dup')dupSel();else if(ed==='mute')muteSel();else if(ed==='del')deleteSel();
+    else if(ed==='rep'||ed==='rem')bBars(M.bN,ed==='rem');else if(ed==='riser'||ed==='down')addTr(ed);
+    else if(ed==='trdel'){if(M.tsel!=null){mPush();M.tr.splice(M.tsel,1);M.tsel=null;edited()}}
+    else if(ed==='reset0'||ed==='reset1')resetLane(+ed.slice(5));
+  });
+  st.addEventListener('input',e=>{
+    const x=e.target,d=x.dataset,i=d.s!=null?+d.s:-1;
+    if(d.fp){const [k,p]=d.fp.split('.'),ps=FXD.find(f=>f[0]===k)[2].find(q=>q[0]===p),v=fromSl(x.value,ps[1],ps[2],ps[3]);M.fx[i][k][p]=v;const out=x.parentElement.querySelector('output');if(out)out.textContent=fmtV(v,ps[4]);
+      if(!(k==='rev'&&p==='size'))fxChanged(i);return}
+    if(x.id==='mxEqF'||x.id==='mxEqG'||x.id==='mxEqQ'){const v=+x.value;eqSet(b=>{if(x.id==='mxEqF')b.f=fromSl(v,20,20000,'log');else if(x.id==='mxEqG')b.g=v;else b.q=Math.round(0.2*Math.pow(50,v/1000)*100)/100},false);
+      $('#mxEqFo').textContent=fmtHz(M.eq[M.eqSlot].b[M.eqBand].f);const gg=M.eq[M.eqSlot].b[M.eqBand].g;$('#mxEqGo').textContent=(gg>0?'+':'')+gg.toFixed(1)+' dB';$('#mxEqQo').textContent=M.eqBand%4?M.eq[M.eqSlot].b[M.eqBand].q.toFixed(2):'—';return}
+    if(x.id==='mxRGain'){const g=selReg();if(!g)return;edPush('g');g.g=Math.round(Math.pow(10,+x.value/20)*1e4)/1e4;if(+x.value<=-24)g.g=0;x.nextElementSibling.textContent=fdb(g.g);changed();return}
+    if(x.id==='mxTLv'){const tr=M.tr[M.tsel];if(!tr)return;edPush('tl');tr.lv=+x.value;x.nextElementSibling.textContent=Math.round(tr.lv*100)+'%';changed();return}
+    if(x.id==='mxDuckAmt'){M.duckAmt=+x.value;x.nextElementSibling.textContent='−'+M.duckAmt+' dB';changed();return}
+  });
+  st.addEventListener('change',e=>{
+    const x=e.target,d=x.dataset,i=d.s!=null?+d.s:-1;
+    if(d.fxon){M.fx[i][d.fxon].on=x.checked;x.closest('.mxfx').classList.toggle('on',x.checked);fxChanged(i);return}
+    if(d.fp==='rev.size'){fxChanged(i);return}
+    if(d.pp){M.fx[i].dly.pp=x.checked;fxChanged(i);return}
+    if(x.id==='mxEqOn'){eqSet((b,e2)=>{e2.on=x.checked})}
+    else if(x.id==='mxRFi'||x.id==='mxRFo'){const g=selReg();if(!g)return;mPush();g[x.id==='mxRFi'?'fi':'fo']=+x.value;edited()}
+    else if(x.id==='mxThrow'){const g=selReg();if(!g)return;mPush();g.th=x.checked;edited()}
+    else if(x.id==='mxBN'){M.bN=+x.value;renderEdit()}
+    else if(x.id==='mxTLen'){const tr=M.tr[M.tsel];if(!tr)return;mPush();tr.len=+x.value;edited()}
+    else if(x.id==='mxDuckOn'){M.duckOn=x.checked;changed();renderEdit()}
+    else if(x.id==='mxRGain'||x.id==='mxTLv')renderEdit();
+  });
+  // A/B compare: held (pointer or Space/Enter on the focused button)
+  const cb=$('#mxCmpB');
+  cb.addEventListener('pointerdown',e=>{if(e.button>0)return;cb.setPointerCapture(e.pointerId);compare(true)});
+  for(const ev of ['pointerup','pointercancel','lostpointercapture'])cb.addEventListener(ev,()=>compare(false));
+  cb.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();compare(true)}});
+  cb.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();compare(false)}});
+  cb.addEventListener('blur',()=>compare(false));
+  $('#mxCutB').onclick=()=>cutToggle();$('#mxSplitB').onclick=()=>splitKey(false);
+  $('#mxDeck').addEventListener('click',e=>{const b=e.target.closest('[data-sm]');if(!b||b.disabled)return;const i=+b.dataset.s;if(b.dataset.sm==='solo')M.solo[i]=!M.solo[i];else M.smute[i]=!M.smute[i];lvlAll()});
+  $('#mxWidth').oninput=e=>{M.width=+e.target.value;$('#mxWidtho').textContent=Math.round(M.width*100)+'%';if(E.ready&&!M.cmp)E.wd.set(M.width);save();renderExpPts()};
+  wireEq();
+  $('#mxSmEq').onclick=smartEqRun;$('#mxSmFx').onclick=smartFxRun;
+}
+// output meter (peak + RMS, post-limiter), drawn from the frame loop at ≤ 30 fps
+let mtBuf=null,mtPk=0;
+function drawMeter(){
+  const cv=$('#mxMeter');if(!cv)return;const g=cv.getContext('2d'),w=cv.width,h=cv.height;let pk=0,rms=0;
+  if(E.ready&&E.playing){if(!mtBuf)mtBuf=new Float32Array(E.meter.fftSize);E.meter.getFloatTimeDomainData(mtBuf);let q=0;for(const x of mtBuf){const a=Math.abs(x);if(a>pk)pk=a;q+=x*x}rms=Math.sqrt(q/mtBuf.length)}
+  mtPk=Math.max(pk,mtPk*0.92);const X=a=>clamp((20*Math.log10(Math.max(a,1e-5))+48)/48,0,1)*w;
+  g.clearRect(0,0,w,h);g.fillStyle='rgba(255,255,255,.08)';g.fillRect(0,0,w,h);
+  const gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#2BD67B');gr.addColorStop(0.75,'#FFB020');gr.addColorStop(1,'#FF4D4D');
+  g.fillStyle=gr;g.fillRect(0,2,X(rms),h-4);g.globalAlpha=0.45;g.fillRect(0,2,X(pk),h-4);g.globalAlpha=1;g.fillStyle='#fff';g.fillRect(Math.max(0,X(mtPk)-1),0,2,h);
 }
 
 /* ---------- timeline ---------- */
@@ -1076,6 +1639,7 @@ function frame(){
   if(E.playing){const h=heard(),v=viewOf(o);if(M.zoom>1&&(h>v.v0+v.span*0.92||h<v.v0)){M.view0=h-v.span*0.08;TL.dirty=true}}
   if(TL.dirty){TL.dirty=false;drawStatic(o)}
   drawHead(o);timeText();beatTick(o);
+  {const n=performance.now();if(n-(TL.mt||0)>33||!E.playing){TL.mt=n;drawMeter();if($('#mxPEq').open&&(E.playing||eqSpec.v&&eqSpec.v.some(x=>x>0)))drawEq(true)}if(!E.playing&&eqSpec.v&&eqSpec.v.some(x=>x>0))kick()}   /* studio: meter + live spectrum ≤ 30 fps */
   if(E.playing||M.drag)kick();
 }
 function drawLane(g,o,v,i,y,hgt,col){
@@ -1084,13 +1648,14 @@ function drawLane(g,o,v,i,y,hgt,col){
   const w=s.wave;if(!w)return;const mid=y+hgt/2,px=v.span/TL.W;
   if(px*w.rate<1&&drawRaw(g,o,v,i,s,y,hgt,col,px))return;   /* freemove: deep zoom → the samples themselves */
   for(let x=0;x<TL.W;x++){
-    const ta=v.v0+x*px,tb=ta+px;
-    let fa=1;
-    if(i===0){if(tb<o.aStart||ta>o.aOut)continue;fa=Math.max(gA(o,ta),gA(o,tb),0.06)}else if(ta>o.t1)break;
-    const pa=srcPos(i,o,ta),pb=srcPos(i,o,tb);if(pb<0||pa>s.buffer.duration)continue;
+    const ta=v.v0+x*px,tb=ta+px,tm=ta+px/2;
+    if(i===0){if(tb<o.aStart||ta>o.aOut)continue}else if(ta>o.t1)break;
+    const q=srcAt(i,o,tm);if(!q)continue;   /* studio: the region heard there */
+    const fa=Math.max((i===0?Math.max(gA(o,ta),gA(o,tb)):1)*q.f,0.06);
+    const pa=q.s-(tm-ta)*q.sg.r,pb=q.s+(tb-tm)*q.sg.r;if(pb<0||pa>s.buffer.duration)continue;
     const i0=Math.max(0,Math.floor(pa*w.rate)),i1=Math.min(w.len,Math.max(i0+1,Math.ceil(pb*w.rate)));if(i0>=w.len)continue;
     const r=CR.sliceRange(w,i0,i1),a=r[0],bi=r[4];
-    const hh=Math.max(0.6,a*fa*(hgt/2-2));g.fillStyle=CR.wcol(w.col[bi*3],w.col[bi*3+1],w.col[bi*3+2]);g.fillRect(x,mid-hh,1,hh*2);
+    const hh=Math.max(0.6,a*fa*(hgt/2-2));g.globalAlpha=q.muted?0.4:1;g.fillStyle=CR.wcol(w.col[bi*3],w.col[bi*3+1],w.col[bi*3+2]);g.fillRect(x,mid-hh,1,hh*2);g.globalAlpha=1;
   }
 }
 // deep zoom: min/max of the parts in use, sample by sample (the wave summary has 150 points a second)
@@ -1100,9 +1665,10 @@ function drawRaw(g,o,v,i,s,y,hgt,col,px){
   const pk=typeof s.an.peak==='number'&&isFinite(s.an.peak)?Math.pow(10,s.an.peak/20):1,sc=(hgt/2-2)/Math.max(0.05,pk),mid=y+hgt/2,n=ch[0][0].length;
   g.fillStyle=i?col.b:col.a;
   for(let x=0;x<TL.W;x++){
-    const ta=v.v0+x*px,tb=ta+px;let fa=1;
-    if(i===0){if(tb<o.aStart||ta>o.aOut)continue;fa=Math.max(gA(o,ta),gA(o,tb),0.06)}else if(ta>o.t1)break;
-    let j0=Math.floor(srcPos(i,o,ta)*sr),j1=Math.ceil(srcPos(i,o,tb)*sr);if(j1<0||j0>=n)continue;j0=Math.max(0,j0);j1=Math.min(n,Math.max(j0+1,j1));
+    const ta=v.v0+x*px,tb=ta+px,tm=ta+px/2;
+    if(i===0){if(tb<o.aStart||ta>o.aOut)continue}else if(ta>o.t1)break;
+    const q=srcAt(i,o,tm);if(!q)continue;const fa=Math.max((i===0?Math.max(gA(o,ta),gA(o,tb)):1)*q.f,0.06);
+    let j0=Math.floor((q.s-(tm-ta)*q.sg.r)*sr),j1=Math.ceil((q.s+(tb-tm)*q.sg.r)*sr);if(j1<0||j0>=n)continue;j0=Math.max(0,j0);j1=Math.min(n,Math.max(j0+1,j1));
     let lo=Infinity,hi=-Infinity;for(let j=j0;j<j1;j++){let q=0;for(const [L,R,k] of ch)q+=(L[j]+R[j])*k;if(q<lo)lo=q;if(q>hi)hi=q}
     const a=clamp(mid-hi*fa*sc,y,y+hgt),b=clamp(mid-lo*fa*sc,y,y+hgt);g.fillRect(x,a,1,Math.max(1,b-a));
   }
@@ -1136,7 +1702,7 @@ function drawStatic(o){
   g.globalCompositeOperation='source-over';
   // griddrag: each song's own bar lines in its lane (A's that sit on one of B's bars = locked, brighter); grid drag preview
   for(const i of [0,1]){
-    const s=song(i);if(!s||!s.an||(i===0&&!o.hasA)||(i===1&&!o.hasB))continue;
+    const s=song(i);if(!s||!s.an||(i===0&&!o.hasA)||(i===1&&!o.hasB)||(M.reg[i]&&!M.gridOn))continue;
     const gd=M.drag&&M.drag.kind==='grid'&&M.drag.i===i&&M.drag.moved?M.drag:null,A=s.an,bs=240/A.bpm,fd=firstDown(A)+(gd?gd.dSrc:0);
     const sa=srcPos(i,o,v.v0),sz=srcPos(i,o,v.v0+v.span),k0=Math.floor((sa-fd)/bs)-1,k1=Math.ceil((sz-fd)/bs)+1,y=TL.top[i];
     if(k1-k0>TL.W/3)continue;
@@ -1164,6 +1730,32 @@ function drawStatic(o){
   // loop range
   const lt=loopT(o);if(lt){const x0=xOf(v,lt.a),x1=xOf(v,lt.b);g.fillStyle=M.loopOn?'rgba(255,176,32,.16)':'rgba(255,255,255,.06)';g.fillRect(x0,TL.ruler,x1-x0,TL.H-TL.ruler);
     g.fillStyle=M.loopOn?tok('--warn')||'#FFB020':col.text;g.fillRect(x0,0,Math.max(2,x1-x0),4)}
+  drawRegions(g,o,v,col);drawTrans(g,o,v,col);   /* studio */
+}
+// studio: region blocks on edited lanes (edges, fades, mute hatch, gain, echo throw), the selected one framed with fade handles
+function drawRegions(g,o,v,col){
+  for(const i of [0,1]){if(!M.reg[i])continue;const y=TL.top[i],H=TL.lane,cc=i?col.b:col.a;
+    for(const sg of o.seg[i]){const x0=xOf(v,sg.x0),x1=xOf(v,sg.x1);if(x1<0||x0>TL.W)continue;const w=Math.max(1,x1-x0),sel=M.rsel&&M.rsel.i===i&&M.rsel.k===sg.k;
+      g.fillStyle=cc;g.globalAlpha=sg.m?0.3:0.9;g.fillRect(x0,y,w,4);g.globalAlpha=0.06;g.fillRect(x0,y,w,H);g.globalAlpha=1;
+      g.fillStyle=col.hi;g.globalAlpha=0.6;g.fillRect(Math.round(x0),y,1,H);g.fillRect(Math.round(x1)-1,y,1,H);g.globalAlpha=1;
+      if(sg.m){g.save();g.beginPath();g.rect(x0,y,w,H);g.clip();g.fillStyle='rgba(0,0,0,.35)';g.fillRect(x0,y,w,H);g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=1;g.beginPath();for(let q=x0-H;q<x1;q+=8){g.moveTo(q,y+H);g.lineTo(q+H,y)}g.stroke();g.restore()}
+      g.strokeStyle=col.hi;g.lineWidth=1.2;g.globalAlpha=0.8;
+      if(sg.fi>0){g.beginPath();g.moveTo(x0,y+H);g.lineTo(xOf(v,sg.x0+sg.fi),y+4);g.stroke()}
+      if(sg.fo>0){g.beginPath();g.moveTo(xOf(v,sg.x1-sg.fo),y+4);g.lineTo(x1,y+H);g.stroke()}g.globalAlpha=1;
+      g.font='600 10px '+tok('--mono');g.textBaseline='top';let lx=x0+5;
+      if(Math.abs(sg.g-1)>1e-3&&w>44){g.fillStyle=col.hi;const s=fdb(sg.g).replace(' ',' ');g.fillText(s,lx,y+7);lx+=g.measureText(s).width+6}
+      if(sg.th&&w>24){g.fillStyle='#22D3D3';g.fillText('ECHO',Math.max(lx,x1-36),y+7)}
+      if(sel){g.strokeStyle='#fff';g.lineWidth=2;g.strokeRect(x0+1,y+1,w-2,H-2);
+        for(const hx of [xOf(v,sg.x0+sg.fi),xOf(v,sg.x1-sg.fo)]){g.beginPath();g.arc(clamp(hx,x0+5,x1-5),y+8,4.5,0,7);g.fillStyle='#fff';g.fill();g.strokeStyle=cc;g.lineWidth=1.5;g.stroke()}}
+    }}
+}
+// studio: transitions as wedges on the ruler (riser rises into its bar, downlifter falls from it) + a faint line on the bar
+function drawTrans(g,o,v,col){
+  const pc=tok('--acc-p')||'#B57BFF';
+  M.tr.forEach((tr,k)=>{const p=trPlace(o,tr),x0=xOf(v,p.x0),x1=xOf(v,p.x1),xb=tr.k==='riser'?x1:x0;if(x1<0||x0>TL.W)return;const sel=M.tsel===k;
+    g.fillStyle=pc;g.globalAlpha=sel?0.75:0.45;g.beginPath();if(tr.k==='riser'){g.moveTo(x0,TL.ruler);g.lineTo(x1,2);g.lineTo(x1,TL.ruler)}else{g.moveTo(x0,2);g.lineTo(x1,TL.ruler);g.lineTo(x0,TL.ruler)}g.closePath();g.fill();
+    g.globalAlpha=sel?0.6:0.3;g.fillRect(Math.round(xb),TL.ruler,1,TL.H-TL.ruler);g.globalAlpha=1;
+    if(sel){g.strokeStyle='#fff';g.lineWidth=1.5;g.stroke()}});
 }
 function drawHead(o){
   const cv=$('#mxOv');if(!cv||!TL.W)return;const g=cv.getContext('2d'),d=TL.dpr,v=viewOf(o);g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,TL.W,TL.H);
@@ -1174,11 +1766,21 @@ function drawHead(o){
       const cc=colors();g.fillStyle='rgba(10,10,12,.88)';g.fillRect(bx,by,w,32);g.fillStyle=d.i?cc.b:cc.a;g.fillRect(bx,by,2,32);g.fillStyle='#EDEDEF';g.textBaseline='middle';g.fillText(a,bx+7,by+9);g.fillStyle='#B8B8C0';g.fillText(b,bx+7,by+23);
 }
     if(!M.drag&&M.fdx&&performance.now()-M.fdx.t<1300)kick()}
+  if(M.cutOn&&M.hov&&!M.drag){const hx=Math.round(xOf(v,M.hov.t))+0.5,y=TL.top[M.hov.i];g.strokeStyle='#FFB020';g.lineWidth=1.5;g.setLineDash([4,3]);g.beginPath();g.moveTo(hx,y);g.lineTo(hx,y+TL.lane);g.stroke();g.setLineDash([])}   /* studio: where the cut lands */
   const x=Math.round(xOf(v,heard()))+0.5;if(x<0||x>TL.W)return;g.fillStyle='#fff';g.fillRect(x-0.5,0,2,TL.H);g.beginPath();g.moveTo(x-5,0);g.lineTo(x+6,0);g.lineTo(x+0.5,7);g.fill();
 }
 function beatTick(o){
   if(!E.playing){M.lastBeat=null;return}const h=heard(),b=Math.floor((h-o.bar0)/o.beat+1e-4);
   if(b!==M.lastBeat&&h>=o.t0){const first=M.lastBeat==null;M.lastBeat=b;if(!first){const bar=mod(b,4)===0;if(window.A11Y&&A11Y.beat)A11Y.beat(bar);if(window.BG)BG.pulse(bar?0.75:0.4)}}
+}
+// studio: hit tests in timeline seconds (p = {t, y?, v})
+function trHit(o,p){const tol=6/TL.W*p.v.span;for(let k=M.tr.length-1;k>=0;k--){const q=trPlace(o,M.tr[k]);if(p.t>=q.x0-tol&&p.t<=q.x1+tol)return k}return -1}
+function regHit(i,o,p){
+  const y=p.y-TL.top[i],v=p.v,px=xOf(v,p.t),segs=o.seg[i];
+  for(let j=segs.length-1;j>=0;j--){const sg=segs[j];if(!(M.rsel&&M.rsel.i===i&&M.rsel.k===sg.k)||y>18)continue;
+    const a=xOf(v,sg.x0+sg.fi),b=xOf(v,sg.x1-sg.fo);if(Math.abs(px-a)<=8)return {k:sg.k,part:'fi'};if(Math.abs(px-b)<=8)return {k:sg.k,part:'fo'}}
+  for(let j=segs.length-1;j>=0;j--){const sg=segs[j];if(p.t>=sg.x0&&p.t<=sg.x1)return {k:sg.k,part:'body'}}
+  return null;
 }
 function wireTimeline(){
   const cv=$('#mxOv'),box=$('#mxTl');
@@ -1187,7 +1789,16 @@ function wireTimeline(){
     const o=model();if(!o||e.button>0)return;const p=tAt(e);box.setPointerCapture(e.pointerId);e.preventDefault();
     const zone=p.y<TL.ruler?'ruler':p.y<TL.top[1]-TL.gap/2?'a':'b';
     const gi=zone==='a'?0:1;   /* griddrag: grid mode → the lane's song grid moves against its audio */
-    if(zone==='ruler'){const k=Math.floor((p.t-o.bar0)/o.bar);M.drag={kind:'loop',x:e.clientX,a:k,b:k+1,t:p.t}}
+    if(zone!=='ruler')M.lane=gi;
+    if(zone==='ruler'){const th=trHit(o,p);   /* studio: a transition on the ruler → move it */
+      if(th>=0){if(M.tsel!==th||M.rsel){M.tsel=th;M.rsel=null;renderEdit()}M.drag={kind:'tr',k:th,x:e.clientX,t:p.t,bar:M.tr[th].bar,sn:mSnap()};drawSoon()}
+      else{const k=Math.floor((p.t-o.bar0)/o.bar);M.drag={kind:'loop',x:e.clientX,a:k,b:k+1,t:p.t}}}
+    else if(M.cutOn&&laneOk(gi,o)){splitAt(gi,p.t,e.altKey||e.ctrlKey||e.metaKey,e.shiftKey);M.drag={kind:'none',x:e.clientX}}   /* studio: cut tool */
+    else if(M.reg[gi]&&!M.gridOn&&laneOk(gi,o)){const h=regHit(gi,o,p);   /* studio: edited lane → select / move / fade a region */
+      if(h){const g=M.reg[gi][h.k];if(!M.rsel||M.rsel.i!==gi||M.rsel.k!==h.k){M.rsel={i:gi,k:h.k};M.tsel=null;renderEdit()}
+        M.drag={kind:h.part==='body'?'rmove':'rfade',part:h.part,i:gi,k:h.k,x:e.clientX,t:p.t,sh:g.sh,sn:mSnap()}}
+      else{if(M.rsel||M.tsel!=null){M.rsel=null;M.tsel=null;renderEdit()}M.drag={kind:'seek',x:e.clientX,t:p.t}}
+      drawSoon()}
     else if(M.freeOn&&o.hasA&&o.hasB){   /* freemove: select the clip, drag = no snapping */
       if(M.sel!==gi){M.sel=gi;M.fk=null;renderTransport();drawSoon()}
       M.drag={kind:'free',i:gi,x:e.clientX,y:p.y,cx:e.clientX-box.getBoundingClientRect().left,nudge:M.nudge,align:M.align!=null?M.align:o.align,v0:M.view0,d:0,sn:mSnap(),o}}
@@ -1207,6 +1818,11 @@ function wireTimeline(){
       else{M.align=Math.round(rel/o.bar);M.nudge=0}
       M.lastO=null;TL.dirty=true;renderMatch();if(was!==M.align+'|'+M.nudge&&E.playing)restart();   // the preview follows
     }
+    else if(d.kind==='tr'){const tr=M.tr[d.k],nb=Math.max(-64,d.bar+Math.round((p.t-d.t)/o.bar));if(tr&&tr.bar!==nb){tr.bar=nb;TL.dirty=true;if(E.playing)restart()}}   /* studio */
+    else if(d.kind==='rmove'){const g=M.reg[d.i]&&M.reg[d.i][d.k];if(g){let db=(p.t-d.t)/o.beat;const free=M.freeOn||e.altKey||e.ctrlKey||e.metaKey;
+      db=free?db:e.shiftKey?Math.round(db):Math.round(db/4)*4;const ns=r6(d.sh+db);if(g.sh!==ns){g.sh=ns;M.lastO=null;TL.dirty=true;if(E.playing)restart()}}}
+    else if(d.kind==='rfade'){const g=M.reg[d.i]&&M.reg[d.i][d.k];if(g){const pl=placed(d.i,o,g),len=g.u1-g.u0;let b=(d.part==='fi'?p.t-pl.x0:pl.x1-p.t)/o.beat;
+      if(!(M.freeOn||e.altKey||e.ctrlKey||e.metaKey))b=Math.round(b*4)/4;b=r6(clamp(b,0,len/2));if(g[d.part]!==b){g[d.part]=b;M.lastO=null;TL.dirty=true;if(E.playing)restart()}}}
     else if(d.kind==='free'){   /* freemove: pixel → seconds at the current zoom, no snapping */
       const r=box.getBoundingClientRect(),dt=r6((e.clientX-d.x)/r.width*p.v.span);d.d=dt;d.cx=e.clientX-r.left;d.y=p.y;
       M.align=d.align;M.nudge=d.nudge;moveA(d.i?-dt:dt,d.o);if(d.i)M.view0=d.v0-dt;
@@ -1222,6 +1838,8 @@ function wireTimeline(){
   const end=e=>{
     const d=M.drag;if(!d)return;M.drag=null;const p=tAt(e),o=p.o;
     if(d.kind==='free'&&!d.moved){drawSoon();return}   /* freemove: a click only selects */
+    if(d.kind==='none'||d.kind==='tr'&&!d.moved){drawSoon();return}
+    if((d.kind==='rmove'||d.kind==='rfade'||d.kind==='tr')&&d.moved){if(JSON.stringify(d.sn.reg)!==JSON.stringify(M.reg)||JSON.stringify(d.sn.tr)!==JSON.stringify(M.tr))mPush(d.sn);edited();drawSoon();return}   /* studio */
     if(!d.moved||d.kind==='seek'){const x=clamp(p.t,o.t0,o.t1-0.02);if(E.playing)startAt(x,model());else{M.pos=x;renderTransport()}}
     else if(d.kind==='loop'){M.loop={a:d.a,b:d.b};M.loopOn=true;save();renderTransport();renderExport();if(E.playing){const lt=loopT(o),h=heard();if(h<lt.a||h>=lt.b)startAt(lt.a,o)}}
     else if(d.kind==='a'||d.kind==='free'){if(d.sn.align!==M.align||d.sn.nudge!==M.nudge)mPush(d.sn);changed()}
@@ -1236,7 +1854,12 @@ function wireTimeline(){
     if(e.shiftKey||Math.abs(dx)>Math.abs(dy)){const q=Math.abs(dx)>Math.abs(dy)?dx:dy;M.view0=clamp(M.view0+q/TL.W*v.span,o.t0,Math.max(o.t0,o.t1-v.span));drawSoon();return}
     zoomAt(Math.exp(-dy*(e.ctrlKey?0.01:0.002)),v.v0+fx*v.span,fx);
   },{passive:false});
-  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();box.style.cursor=!o?'default':y<TL.ruler?'col-resize':M.gridOn||M.freeOn&&o.hasA&&o.hasB?'ew-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
+  box.addEventListener('pointerleave',()=>{if(M.hov){M.hov=null;kick()}});
+  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();
+    if(M.cutOn&&o&&y>=TL.ruler){const i=y<TL.top[1]-TL.gap/2?0:1,v=viewOf(o),x=v.v0+(e.clientX-r.left)/r.width*v.span;M.hov={i,t:snapX(o,x,e.altKey||e.ctrlKey||e.metaKey,e.shiftKey)};kick()}else if(M.hov){M.hov=null;kick()}
+    if(o&&y<TL.ruler&&trHit(o,{t:viewOf(o).v0+(e.clientX-r.left)/r.width*viewOf(o).span,v:viewOf(o)})>=0){box.style.cursor='grab';return}
+    if(M.cutOn&&o&&y>=TL.ruler){box.style.cursor='crosshair';return}
+    box.style.cursor=!o?'default':y<TL.ruler?'col-resize':M.gridOn||M.freeOn&&o.hasA&&o.hasB?'ew-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
 }
 
 /* ---------- export ---------- */
@@ -1254,17 +1877,23 @@ async function exportMix(){
     const need=[0,1].map(i=>!E.noStretch&&(i?Math.abs(o.rB-1)>1e-4:Math.abs(o.rA-1)>1e-4||o.semis!==0));
     let nodes=[null,null],lat=0;
     if(need[0]||need[1]){try{await CR.loadScript(CR.SS_SRC)}catch(e){need[0]=need[1]=false}}
-    const oc=new OfflineAudioContext(2,n+sr,sr);
-    const master=oc.createGain();master.gain.value=0.9;master.connect(oc.destination);
-    const fade=[oc.createGain(),oc.createGain()],lvl=[0,1].map(i=>{const g=oc.createGain();g.gain.value=M.vol[i];g.connect(master);return g});
+    // studio: the same FX chains / width / transitions as the preview; reverb + echo tails ring on past the end (≤ 3 s, trimmed when silent)
+    const fl=await MXFX.latency(),tailOn=!(M.onlyLoop&&lt)&&[0,1].some(i=>M.fx[i].rev.on||M.fx[i].dly.on||o.seg[i].some(x=>x.th)),tail=tailOn?3*sr:0;
+    const oc=new OfflineAudioContext(2,n+tail+sr,sr);
+    const master=oc.createGain();master.gain.value=0.9;const wd=MXFX.width(oc);wd.set(M.width,true);master.connect(wd.input);wd.output.connect(oc.destination);
+    const trIn=oc.createGain();trIn.connect(master);
+    const fade=[oc.createGain(),oc.createGain()],chs=[0,1].map(()=>MXFX.chain(oc)),lvl=[0,1].map(i=>{const g=oc.createGain();g.gain.value=effLvl(i);g.connect(master);chs[i].output.connect(g);return g});
+    for(const i of [0,1])chs[i].set(M.fx[i],M.eq[i],o.beat,true);
     for(const i of [0,1])if(need[i]){nodes[i]=await window.SignalsmithStretch(oc);lat=+(await nodes[i].latency())||0}
-    for(const i of [0,1]){if(nodes[i]){fade[i].connect(nodes[i]);nodes[i].connect(lvl[i])}else{const dl=oc.createDelay(1);dl.delayTime.value=lat;fade[i].connect(dl).connect(lvl[i])}}
-    await Promise.all(schedule(oc,o,0,r0,fade,nodes,false).wait);
-    const tot=n/sr+lat;for(let x=1;x<tot;x+=1)oc.suspend(x).then(()=>{prog(x/tot*0.9);setExp(t('mxRendering',{p:Math.round(x/tot*90)}));oc.resume()}).catch(()=>{});
-    const out=await oc.startRendering(),o0=Math.round(lat*sr);
-    const L=out.getChannelData(0).slice(o0,o0+n),R=out.getChannelData(1).slice(o0,o0+n);
-    let pk=0;for(let j=0;j<n;j++){const x=Math.abs(L[j]),y=Math.abs(R[j]);if(x>pk)pk=x;if(y>pk)pk=y}
-    if(pk>0.98){const k=0.98/pk;for(let j=0;j<n;j++){L[j]*=k;R[j]*=k}}
+    for(const i of [0,1]){if(nodes[i]){fade[i].connect(nodes[i]);nodes[i].connect(chs[i].input)}else{const dl=oc.createDelay(1);dl.delayTime.value=lat;fade[i].connect(dl).connect(chs[i].input)}}
+    await Promise.all(schedule(oc,o,0,r0,{fade,out:nodes,ch:chs,trIn,pl:lat+fl},false).wait);
+    const tot=(n+tail)/sr+lat;for(let x=1;x<tot;x+=1)oc.suspend(x).then(()=>{prog(x/tot*0.9);setExp(t('mxRendering',{p:Math.round(x/tot*90)}));oc.resume()}).catch(()=>{});
+    const out=await oc.startRendering(),o0=Math.round((lat+fl)*sr);
+    let nn=n+tail;if(tail){const a0=out.getChannelData(0),a1=out.getChannelData(1);let z=o0+nn-1;while(z>o0+n&&Math.abs(a0[z])<1e-4&&Math.abs(a1[z])<1e-4)z--;nn=Math.min(nn,z-o0+1+Math.round(0.05*sr))}
+    const L=out.getChannelData(0).slice(o0,o0+nn),R=out.getChannelData(1).slice(o0,o0+nn);
+    if(nn>n){const f=Math.min(nn-n,Math.round(0.05*sr));for(let j=0;j<f;j++){const k=(f-j-1)/f;L[nn-f+j]*=k;R[nn-f+j]*=k}}   // the tail ends on a 50 ms fade
+    const N2=L.length;let pk=0;for(let j=0;j<N2;j++){const x=Math.abs(L[j]),y=Math.abs(R[j]);if(x>pk)pk=x;if(y>pk)pk=y}
+    if(pk>0.98){const k=0.98/pk;for(let j=0;j<N2;j++){L[j]*=k;R[j]*=k}}
     prog(0.92);
     const mp3=M.fmt==='mp3'&&window.MP3&&MP3.supported,ext=mp3?'mp3':'wav',bpm=CR.fmtBpm(Math.round(o.T*10)/10),kn=CR.keyName(b.an.key.pc,b.an.key.mode,true);
     const title=`${a.name} × ${b.name} (Mashup)`;
@@ -1274,7 +1903,7 @@ async function exportMix(){
     CR.saveBlob(blob,fname);prog(1);okSig=sig;PAID.add(sig);
     CR.log('mashup_export',`${a.name} × ${b.name} · ${bpm} BPM · ${kn} · ${ext}${M.onlyLoop&&lt?' · loop':''}`);
     setExp(t('mxDone',{f:fname,s:(blob.size/1048576).toFixed(1)}));
-    M.lastExport={name:fname,size:blob.size,sr,n,lat,r0,r1};
+    M.lastExport={name:fname,size:blob.size,sr,n,lat,fl,r0,r1,...(window.__MX_TEST?{L,R}:{})};
   }catch(e){console.error(e);setExp(e&&/MP3/.test(String(e.message))?t('mp3Fail'):t('mxExpFail'),true)}
   finally{M.exporting=false;renderExport();settleP(pay,okSig?0:1)}   // failed export → points back
 }
@@ -1285,6 +1914,7 @@ document.addEventListener('keydown',e=>{
   if(!M.visible||e.metaKey||e.ctrlKey||e.altKey)return;
   if(!$('#mxPick').hidden)return;
   if(e.target.closest('input,textarea,select,[contenteditable]'))return;
+  if(e.target.closest('#mxEqCv')&&e.key!==' ')return;   /* studio: the EQ canvas uses arrows / digits itself */
   if(document.querySelector('.rm-panel:not([hidden]),#authDlg:not([hidden])')&&e.target.closest('.rm-panel,#authDlg'))return;
   const o=model();if(!o)return;
   if(e.code==='Space'){if(e.target.closest('button,label,a'))return;e.preventDefault();toggle()}
@@ -1296,7 +1926,7 @@ document.addEventListener('keydown',e=>{
 /* freemove: ← → move the selected clip 1 ms (Shift 10 ms, Alt 0.1 ms) */
 document.addEventListener('keydown',e=>{
   if(!M.visible||!M.freeOn||M.sel==null||e.metaKey||e.ctrlKey||(e.key!=='ArrowRight'&&e.key!=='ArrowLeft'))return;
-  if(!$('#mxPick').hidden||e.target.closest('input,textarea,select,[contenteditable],.mxslot'))return;
+  if(!$('#mxPick').hidden||e.target.closest('input,textarea,select,[contenteditable],.mxslot,#mxEqCv'))return;
   e.preventDefault();freeKey((e.key==='ArrowRight'?1:-1)*(e.altKey?0.1:e.shiftKey?10:1));
 });
 
@@ -1307,15 +1937,31 @@ document.addEventListener('keydown',e=>{
   if((k==='y'||e.shiftKey)?mRedo():mUndo())e.preventDefault();
 });
 
+/* studio: S split · Shift+S split exactly at the playhead · C cut tool · Delete/Backspace delete · M mute · Ctrl/⌘+D duplicate · Esc */
+document.addEventListener('keydown',e=>{
+  if(!M.visible||!$('#mxPick').hidden||e.target.closest('input,textarea,select,[contenteditable]'))return;
+  if(document.querySelector('.rm-panel:not([hidden]),#authDlg:not([hidden])')&&e.target.closest('.rm-panel,#authDlg'))return;
+  if(e.target.closest('#mxEqCv'))return;
+  const k=(e.key||'').toLowerCase(),mod2=e.ctrlKey||e.metaKey;
+  if(mod2&&!e.altKey&&k==='d'){if(selReg()){e.preventDefault();dupSel()}return}
+  if(mod2||e.altKey||!model())return;
+  if(k==='s'){e.preventDefault();splitKey(e.shiftKey)}
+  else if(k==='c'){e.preventDefault();cutToggle()}
+  else if(k==='delete'||k==='backspace'){if(selReg()){e.preventDefault();deleteSel()}else if(M.tsel!=null&&M.tr[M.tsel]){e.preventDefault();mPush();M.tr.splice(M.tsel,1);M.tsel=null;edited()}}
+  else if(k==='m'){if(selReg()){e.preventDefault();muteSel()}}
+  else if(k==='escape'){if(M.rsel||M.tsel!=null||M.cutOn){M.rsel=null;M.tsel=null;M.cutOn=false;renderTransport();renderEdit();drawSoon()}}
+});
+
 /* ---------- public ---------- */
 document.addEventListener('cr-user',e=>setOwner(e.detail&&e.detail.uid));
 {const u=CR.user&&CR.user();if(u&&u.known)setOwner(u.uid)}
 window.MASHUP={
   show(){if(M.owner===undefined){const u=CR.user();setOwner(u&&u.uid)}if(!M.built)build();M.visible=true;CR.stopTool();renderAll();requestAnimationFrame(()=>{sizeCanvas();drawSoon()})},
-  hide(){if(!M.visible)return;M.visible=false;stop(true);closePick();if(!M.exporting)cacheTrim();if(M.built)$('#mashupView').querySelectorAll('.mxslot').forEach(x=>x.classList.remove('over'))},
+  hide(){if(!M.visible)return;M.visible=false;stop(true);compare(false);M.hov=null;closePick();if(!M.exporting)cacheTrim();if(M.built)$('#mashupView').querySelectorAll('.mxslot').forEach(x=>x.classList.remove('over'))},
   lang(){if(M.built)renderAll()},
   // for tests
-  _M:M,_E:E,model,heard,play,stop,loadInto,exportMix,vocalStart,keyOpts,CACHE,undo:mUndo,redo:mRedo
+  _M:M,_E:E,model,heard,play,stop,loadInto,exportMix,vocalStart,keyOpts,CACHE,undo:mUndo,redo:mRedo,
+  _studio:{smartEqRun,smartFxRun,specOf,splitAt,dupSel,deleteSel,muteSel,bBars,addTr,resetLane,runsOf,duckCurve,fxApply,compare,renderStudio,save,load,applyPair}
 };
 CR.applyLang();
 if($('#mashupView')&&!$('#mashupView').hidden)MASHUP.show();

@@ -104,6 +104,17 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (sources → stem gains → fade → Signalsmith Stretch, or a DelayNode of the same latency when a slot needs no change → level →
   limiter); export renders the same `schedule()` offline → WAV / MP3 320 "A × B (Mashup) BPM Key", logs `mashup_export`.
   Settings (not audio) per account in `chordroom.mashup.v1:<uid|guest>`. Verified: A downbeats on B downbeats ≤0.5 ms (export + preview).
+  Studio (owner request): `assets/mashup-fx.js` (`window.MXFX`, loaded before mashup.js in the 'mashup' module) builds ONE chain per slot for preview and
+  export alike — 5-band EQ → low/high-cut → compressor → 4× WaveShaper (mix inside the curve) → chorus → reverb (IR generated, seeded) + tempo-synced echo
+  (acyclic first repeats + quantum-compensated loop: repeats exact ±1 sample) + echo-throw send; every stage is always in series so A/B keep equal latency
+  (`MXFX.latency()` ≈ 10.3 ms, trimmed in export; preview limiter 6 ms in `heard()`); panels "אפקטים לשירה" (rack + presets, B rack collapsed), "EQ"
+  (canvas: drag/wheel/dblclick/keys, live spectrum with falloff + peak hold, presets) and "עריכה". Regions `M.reg[i]` (null = whole clip; {u0,u1,sh,g,fi,fo,m,th}
+  in tempo-independent beats from the slot's original origin, so align/nudge still move A) → `segsOf`/`runsOf` (contiguous = one source run; edits get 1 ms
+  in / 4 ms tail): S split, C cut tool, drag (bars/Shift beats/Free), fade handles, Delete (B = cut time in both lanes), M mute, Ctrl/⌘+D duplicate (B ripples
+  both lanes), B repeat/remove N bars, transitions `M.tr` (riser/downlifter buffers generated, drag on the ruler), auto-duck (100 Hz curve from A's vocal
+  envelope → pre-stretch gain on B), hold-to-compare, solo/mute, width, meter. Smart EQ / Smart FX (`MXFX.spectrum/smartEq/smartFx`, local FFT + envelope
+  analysis, notes shown as a chip) are undo steps with a sound snapshot (`mSnap(true)`); regions/transitions are in every undo snapshot and saved per pair
+  (+ fx/eq/duck/width per pair and as the default for new pairs). `__MX_TEST` keeps the export PCM in `M.lastExport` for tests.
   A's vocal entry with a vocals stem = the onset's beat; an entry on beat 2/3 of A's bar moves A's downbeat there (session only, never over a
   grid fix; beat 4 = pickup → next bar). Timeline: wheel/pinch zoom around the pointer down to 0.2 s per width (ruler bars → beats → 16ths →
   ms, samples drawn at deep zoom), Shift+wheel scrolls; "Free move" toggle (`#mxFreeB`): click selects A/B, drag/arrows (1 ms, Shift 10,
