@@ -236,6 +236,14 @@ html[dir="rtl"] .page .pg-ptsin{background:radial-gradient(60% 80% at 0% 0%,colo
 .page .pg-plan .pg-list li:last-child{border-bottom:0}
 .page .pg-pact{margin-top:auto}
 .page .pg-pact .pg-btn{width:100%;white-space:normal;text-align:center;line-height:1.2;min-height:48px;height:auto;padding-block:12px}
+.page .pg-pact{display:grid;gap:8px}
+/* PayPal button (PayPal's own gold + blue wordmark, same in light and dark) */
+.page .pg-btn.pg-pp{background:#FFC439;color:#111;border-color:#FFC439;gap:7px;font-weight:500}
+.page .pg-btn.pg-pp:hover:not([disabled]){background:#F2BA36;border-color:#F2BA36;box-shadow:0 12px 30px -12px rgba(255,196,57,.55)}
+.page .pg-btn.pg-pp:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.page .pg-ppw{font:italic 800 19px/1 Verdana,"DejaVu Sans",sans-serif;letter-spacing:-.04em;white-space:nowrap}
+.page .pg-ppw b{color:#003087;font-weight:800}.page .pg-ppw i{color:#009CDE;font-style:italic}
+:root.a11y-contrast .page .pg-btn.pg-pp{border-color:#111}
 .page .pg-flag{position:absolute;top:-12px;inset-inline-start:22px;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
 .page .pg-flag .pg-ic{width:14px;height:14px}
 .page .pg-flag.best{background:var(--pg-grad);color:#fff;box-shadow:0 6px 18px -6px rgba(140,91,255,.8)}
@@ -291,6 +299,7 @@ html[lang="ar"] .page .pg-h{line-height:1.2}
 @media (prefers-reduced-motion:no-preference){
   html:not(.a11y-noanim) .page .pg-anim .rv{opacity:0;transform:translateY(24px);transition:opacity .9s var(--pg-ease),transform .9s var(--pg-ease);transition-delay:calc(var(--i,0) * 90ms)}
   html:not(.a11y-noanim) .page .pg-anim .rv.in{opacity:1;transform:none}
+  html:not(.a11y-noanim) .page .pg-anim.pg-now .rv,html:not(.a11y-noanim) .page .pg-anim.pg-now .pg-steps::before{transition:none!important}
   html:not(.a11y-noanim) .page .pg-anim .pg-art.rv{transform:translateY(36px) scale(.97)}
   html:not(.a11y-noanim) .page .pg-anim .pg-art.rv.in{transform:none}
   html:not(.a11y-noanim) .page .pg-anim .pg-steps::before{transform:scaleX(0);transition:transform 1.4s var(--pg-ease) .2s}

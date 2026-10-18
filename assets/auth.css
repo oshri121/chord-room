@@ -154,12 +154,14 @@ html[dir="rtl"] .au-tlinks svg{transform:scaleX(-1)}
 .au-chk input:checked+.au-cb{background:var(--au-g);border-color:transparent}
 .au-chk input:checked+.au-cb::after{transform:translateY(-1px) rotate(-45deg) scale(1)}
 .au-chk input:focus-visible+.au-cb{box-shadow:0 0 0 2px var(--elev),0 0 0 4px var(--focus)}
-/* 6-digit code */
+/* code cells (6…10, built by wireOtp) */
 .au-otp{position:relative;height:64px}
 .au-otpin{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:2;font-size:16px;border:0;padding:0;cursor:text;caret-color:transparent;color:transparent;background:transparent}
-.au-cells{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;height:100%}
+.au-cells{display:grid;grid-template-columns:repeat(var(--n,6),1fr);gap:8px;height:100%}
+.au-cells.long{gap:5px}.au-cells.long i{font-size:22px}
 .au-cells i{font-style:normal;display:grid;place-items:center;border-radius:var(--au-r);border:1.5px solid var(--field-bd);background:var(--field);font:600 28px/1 var(--mono);color:var(--ink);position:relative;transition:border-color .15s,box-shadow .15s,transform .15s}
-.au-cells i:nth-child(3){margin-inline-end:8px}
+.au-cells i.g{margin-inline-end:8px}
+.au-cells.long i.g{margin-inline-end:5px}
 .au-cells i.f{border-color:color-mix(in srgb,var(--bd-hover) 60%,var(--line2))}
 .au-cells i.on{border-color:var(--bd-focus);box-shadow:0 0 0 4px color-mix(in srgb,var(--focus) 24%,transparent)}
 .au-cells i.on:empty::after{content:"";width:2px;height:26px;background:var(--ink);animation:auCaret 1s steps(1) infinite}
@@ -207,7 +209,7 @@ html[dir="rtl"] .au-tlinks svg{transform:scaleX(-1)}
   .au-x:hover{background:rgba(255,255,255,.14);border-color:#fff}
   .au-seg{margin-inline-end:0}
   .au-steps li span{font-size:12px}
-  .au-cells{gap:6px}.au-cells i{font-size:24px}.au-cells i:nth-child(3){margin-inline-end:4px}
+  .au-cells{gap:6px}.au-cells i{font-size:24px}.au-cells i.g{margin-inline-end:4px}.au-cells.long{gap:4px}.au-cells.long i{font-size:18px}.au-cells.long i.g{margin-inline-end:2px}
   .au-row{grid-template-columns:1fr 2fr}
   .au-glow i:nth-child(2),.au-glow i:nth-child(3){display:none}
 }

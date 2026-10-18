@@ -26,7 +26,8 @@ export async function withTimeout(ms, fn) {
 // OAuth access token (client credentials), cached per isolate until a minute before it expires
 let TOK = null;
 export async function ppToken(env) {
-  const id = env && env.PAYPAL_CLIENT_ID, secret = env && env.PAYPAL_CLIENT_SECRET;
+  // trimmed: a space or line break pasted with the key makes PayPal answer 401
+  const id = String((env && env.PAYPAL_CLIENT_ID) || '').trim(), secret = String((env && env.PAYPAL_CLIENT_SECRET) || '').trim();
   if (!id || !secret) throw new Error('not configured');
   const key = ppEnv(env) + ':' + id;
   if (TOK && TOK.key === key && TOK.exp > Date.now()) return TOK.token;

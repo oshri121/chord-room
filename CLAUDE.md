@@ -183,7 +183,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (auto-next at the end), stop, seek, volume/mute (saved in `chordroom.dvol`); hidden when leaving Discover.
 - Auth UX (`assets/auth.css`, app.js "auth dialog"): header "כניסה"/"הרשמה" (signed out), two-panel dialog; sign-up =
   details → terms (required consent checkboxes; `terms_version`/`terms_at` go in user metadata → `profiles.terms_*` via
-  `handle_new_user`) → 6-digit email code (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
+  `handle_new_user`) → email code (6–10 digits = Supabase "Email OTP Length"; `wireOtp` grows the cells, remembers the length that
+  worked in `chordroom.otplen`, auto-submits at that length or on paste/autofill; TOTP stays 6) (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
   (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
   owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
 - Sign-in methods (auth dialog, modes `in` / `otp`+`otpcode` / `sms`+`smscode`): password; a one-time code by email

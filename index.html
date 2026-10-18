@@ -35,8 +35,8 @@
 <script src="assets/early.js?v=2"></script>
 <link rel="stylesheet" href="assets/app.css?v=21">
 <link rel="stylesheet" href="assets/shell.css?v=10">
-<link rel="stylesheet" href="assets/pages.css?v=8">
-<link rel="stylesheet" href="assets/auth.css?v=3">
+<link rel="stylesheet" href="assets/pages.css?v=10">
+<link rel="stylesheet" href="assets/auth.css?v=4">
 <link rel="stylesheet" href="assets/a11y.css?v=5">
 <link rel="stylesheet" href="assets/assistant.css?v=2"><!-- perf: eager (3 KB gz): its script comes at idle; adding a stylesheet then re-styled the whole page -->
 <link rel="stylesheet" href="assets/growth.css?v=1"><!-- growth: consent banner (any page), home reviews, licenses + accessibility pages -->
@@ -312,7 +312,7 @@
         <p class="au-fe au-hint" id="auNeedAgree" data-i="auNeedAgree"></p>
       </form>
       <form id="fCode" class="au-form" novalidate hidden>
-        <div class="au-fld"><label for="auCode" class="au-vh" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="auCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="auCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="auCodeE"></p></div>
+        <div class="au-fld"><label for="auCode" class="au-vh" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="auCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="auCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="auCodeE"></p></div>
         <p class="au-fe au-hint" data-i="auCodeHint"></p>
         <button class="au-cta" type="submit"><span data-i="auVerify"></span><i class="au-spin" aria-hidden="true"></i></button>
         <div class="au-row2"><button type="button" class="au-lnk" id="auResend" data-cool="code"></button><button type="button" class="au-lnk" id="auChangeEmail" data-i="auChangeEmail"></button></div>
@@ -333,7 +333,7 @@
         <p class="au-alt"><button type="button" class="au-lnk" id="toPw" data-i="auPwLink"></button></p>
       </form>
       <form id="fOtpCode" class="au-form" novalidate hidden>
-        <div class="au-fld"><label for="otCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="otCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="otCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="otCodeE"></p></div>
+        <div class="au-fld"><label for="otCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="otCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="otCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="otCodeE"></p></div>
         <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
         <div class="au-row2"><button type="button" class="au-lnk" id="otResend" data-cool="login"></button><button type="button" class="au-lnk" id="toPw2" data-i="auPwLink"></button></div>
       </form>
@@ -343,12 +343,12 @@
         <p class="au-alt"><button type="button" class="au-lnk" id="toPw3" data-i="auPwLink"></button></p>
       </form>
       <form id="fSmsCode" class="au-form" novalidate hidden>
-        <div class="au-fld"><label for="smCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="smCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="smCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="smCodeE"></p></div>
+        <div class="au-fld"><label for="smCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="smCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" dir="ltr" spellcheck="false" required data-auto="1" aria-describedby="smCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="smCodeE"></p></div>
         <button class="au-cta" type="submit"><span data-i="signIn"></span><i class="au-spin" aria-hidden="true"></i></button>
         <div class="au-row2"><button type="button" class="au-lnk" id="smResend" data-cool="sms"></button><button type="button" class="au-lnk" id="toPw4" data-i="auPwLink"></button></div>
       </form>
       <form id="fRecover" class="au-form" novalidate hidden>
-        <div class="au-fld"><label for="rcCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="rcCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false" required aria-describedby="rcCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="rcCodeE"></p></div>
+        <div class="au-fld"><label for="rcCode" data-i="auCodeL"></label><div class="au-otp"><input type="text" id="rcCode" class="au-otpin" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" dir="ltr" spellcheck="false" required aria-describedby="rcCodeE"><div class="au-cells" aria-hidden="true" dir="ltr"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p class="au-fe" id="rcCodeE"></p></div>
         <div class="au-fld"><label for="rcPass" data-i="newPass"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rcPass" required minlength="8" autocomplete="new-password" aria-describedby="rcPassCaps rcPassS"><button type="button" class="au-eye" data-eye="rcPass" aria-controls="rcPass" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rcPassCaps" hidden><span data-i="auCaps"></span></p><div class="au-meter" id="rcPassM" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="au-fe au-pws" id="rcPassS" aria-live="polite"></p></div>
         <div class="au-fld"><label for="rcPass2" data-i="password2"></label><div class="au-in au-pw"><svg class="au-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><input type="password" id="rcPass2" required minlength="8" autocomplete="new-password" aria-describedby="rcPass2Caps rcPass2E"><button type="button" class="au-eye" data-eye="rcPass2" aria-controls="rcPass2" aria-pressed="false"><svg class="i-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.9 0 3.5-.6 4.9-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div><p class="au-caps" id="rcPass2Caps" hidden><span data-i="auCaps"></span></p><p class="au-fe" id="rcPass2E" aria-live="polite"></p></div>
         <button class="au-cta" type="submit"><span data-i="auSavePass"></span><i class="au-spin" aria-hidden="true"></i></button>
@@ -441,10 +441,10 @@
 <script src="config.js?v=1" defer></script>
 <script src="vendor/supabase.js" defer></script>
 <script src="assets/backend.js?v=16" defer></script>
-<script src="assets/app.js?v=40" defer></script>
+<script src="assets/app.js?v=43" defer></script>
 <script src="assets/dj-i18n.js?v=4" defer></script>
-<script src="assets/pages.js?v=14" defer></script>
-<script src="assets/shell.js?v=7" defer></script>
+<script src="assets/pages.js?v=17" defer></script>
+<script src="assets/shell.js?v=8" defer></script>
 <script src="assets/bg.js?v=3" defer></script>
 <script src="assets/a11y.js?v=4" defer></script>
 <!-- growth (core: every page): cookie consent + analytics (GA4 / Clarity only after consent; the banner can show on any page),
@@ -476,7 +476,7 @@
 <script src="assets/voice.js?v=1" data-mod="tool"></script>
 <!-- acct (accounts v4: 2FA, delete account, Turnstile, idle sign-out, word filter): app.js loads it for a saved session at boot,
      on sign-in, when the auth dialog opens and on a 2FA challenge; growth: info = the licenses / accessibility pages -->
-<script src="assets/acct.js?v=2" data-mod="acct"></script>
+<script src="assets/acct.js?v=3" data-mod="acct"></script>
 <script src="assets/info.js?v=1" data-mod="info"></script>
 </template>
 </body>

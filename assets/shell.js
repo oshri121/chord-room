@@ -51,11 +51,24 @@
   function overflows(){
     return (drawer&&drawer.scrollWidth>drawer.clientWidth+1)||topIn.scrollWidth>topIn.clientWidth+1||(mark&&mark.scrollWidth>mark.clientWidth+1);
   }
+  /* After a reload the bar fills up in steps (session → points chip, avatar…), so the first fit found room for the long tab
+     names and a second later the short ones replaced them ("גלה שירים" → "גלה"). The level that fit last time at this width
+     and language is kept as a minimum for the first seconds, so the bar starts in its final state. */
+  var FIT_KEY='chordroom.navfit.v1',settleUntil=Date.now()+5000,saved=null;
+  try{saved=JSON.parse(localStorage.getItem(FIT_KEY)||'null')}catch(e){saved=null}
+  function minLevel(){
+    if(!saved||Date.now()>settleUntil||saved.w!==window.innerWidth||saved.lang!==root.lang)return 0;
+    return Math.max(0,Math.min(LEVELS.length,saved.n|0));
+  }
+  function remember(n){
+    if(Date.now()<=settleUntil&&saved&&saved.w===window.innerWidth&&saved.lang===root.lang&&n<(saved.n|0))return;   /* still settling */
+    saved={w:window.innerWidth,lang:root.lang,n:n};try{localStorage.setItem(FIT_KEY,JSON.stringify(saved))}catch(e){}
+  }
   function fit(){
     var wasDrawer=isDrawer(),cl=top.classList;
     LEVELS.forEach(function(c){cl.remove(c)});cl.remove('m','m2','m3');
     var m=mq.matches;
-    if(!m){for(var i=0;i<LEVELS.length&&overflows();i++)cl.add(LEVELS[i]);if(overflows())m=true}
+    if(!m){var i=0,lo=minLevel();for(;i<lo;i++)cl.add(LEVELS[i]);for(;i<LEVELS.length&&overflows();i++)cl.add(LEVELS[i]);if(overflows())m=true;else remember(i)}
     if(m){LEVELS.forEach(function(c){cl.remove(c)});cl.add('m');if(overflows())cl.add('m2');if(overflows())cl.add('m3')}
     if(wasDrawer&&!m)close(false);
     if(m!==wasDrawer){cl.remove('anim');setInert();if(m)requestAnimationFrame(function(){requestAnimationFrame(function(){if(isDrawer())cl.add('anim')})})}
@@ -150,6 +163,7 @@
   window.addEventListener('pageshow',schedule);
   document.addEventListener('visibilitychange',function(){if(!document.hidden){if(ind)ind.classList.remove('ready');schedule()}});
 
-  /* first pass synchronously, before the first paint */
+  /* first pass synchronously, before the first paint; once the settling window ends, fit again with no minimum */
   applyLabels();fit();place();setInert();
+  setTimeout(schedule,5100);
 })();

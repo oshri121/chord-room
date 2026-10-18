@@ -6,6 +6,8 @@ import { ppBase, ppToken, sbUrl, sbKey, json, withTimeout } from './paypal-lib.j
 
 const PLAN_RE = /^P-[A-Z0-9]{10,40}$/;
 const LIVE = ['active', 'on_trial', 'past_due', 'paused'];
+// upstream failures answer 424, not 502: Cloudflare swaps a 502 for its own HTML page and the browser loses the error code
+const FAIL = 424;
 
 export async function onRequest({ request, env }) {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: { allow: 'POST' } });
@@ -22,19 +24,19 @@ export async function onRequest({ request, env }) {
   try {
     const r = await sb('/auth/v1/user');
     if (r.status === 401 || r.status === 403) return json({ error: 'auth' }, 401);
-    if (!r.ok) return json({ error: 'auth_unavailable' }, 502);
+    if (!r.ok) return json({ error: 'auth_unavailable' }, FAIL);
     user = await r.json();
     if (!user || typeof user.id !== 'string' || !user.id) return json({ error: 'auth' }, 401);
     const [rc, rp] = await Promise.all([
       sb('/rest/v1/site_config?id=eq.1&select=billing'),
       sb(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=pay_status,pay_provider,blocked`)
     ]);
-    if (!rc.ok || !rp.ok) return json({ error: 'db_unavailable' }, 502);
+    if (!rc.ok || !rp.ok) return json({ error: 'db_unavailable' }, FAIL);
     const cfg = (await rc.json())[0];
     prof = (await rp.json())[0] || {};
     const plans = cfg && cfg.billing && Array.isArray(cfg.billing.plans) ? cfg.billing.plans : [];
     plan = plans.find(p => p && p.id === planId);
-  } catch (e) { return json({ error: 'db_unavailable' }, 502); }
+  } catch (e) { return json({ error: 'db_unavailable' }, FAIL); }
   if (!plan || !PLAN_RE.test(String(plan.variant || ''))) return json({ error: 'bad_plan' }, 400);
   if (prof.blocked) return json({ error: 'blocked' }, 403);
   if (LIVE.includes(prof.pay_status)) return json({ error: 'have_sub' }, 409);
@@ -49,20 +51,22 @@ export async function onRequest({ request, env }) {
     }
   };
   if (typeof user.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email) && user.email.length <= 254) body.subscriber = { email_address: user.email };
+  let tok;
+  try { tok = await ppToken(env); }
+  catch (e) { console.log('paypal subscribe: auth', String(e && e.message || e).slice(0, 80)); return json({ error: 'paypal_auth' }, FAIL); }
   try {
-    const tok = await ppToken(env);
     const r = await withTimeout(15000, signal => fetch(`${ppBase(env)}/v1/billing/subscriptions`, {
       method: 'POST', signal,
       headers: { authorization: `Bearer ${tok}`, 'content-type': 'application/json', accept: 'application/json', prefer: 'return=minimal' },
       body: JSON.stringify(body)
     }));
     const o = await r.json().catch(() => null);
-    if (!r.ok || !o) { console.log('paypal subscribe: create failed', r.status, String(o && (o.name || o.message) || '').slice(0, 80)); return json({ error: 'paypal' }, 502); }
+    if (!r.ok || !o) { console.log('paypal subscribe: create failed', r.status, String(o && (o.name || o.message) || '').slice(0, 80)); return json({ error: 'paypal' }, FAIL); }
     const link = (o.links || []).find(l => l && l.rel === 'approve');
-    if (!link || !/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(link.href || '')) return json({ error: 'paypal' }, 502);
+    if (!link || !/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(link.href || '')) return json({ error: 'paypal' }, FAIL);
     return json({ url: link.href }, 200);
   } catch (e) {
     console.log('paypal subscribe: unreachable', String(e && e.message || e).slice(0, 80));
-    return json({ error: 'paypal' }, 502);
+    return json({ error: 'paypal' }, FAIL);
   }
 }

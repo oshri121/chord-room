@@ -20,7 +20,7 @@ const t = (k, v) => CR.t(k, v);
 /* ---------- strings ---------- */
 const S = {
 he: {
-  acPhH: 'מספר טלפון', acPhNone: 'אין מספר בחשבון. אחרי שתוסיפו ותאמתו מספר, אפשר יהיה להיכנס גם עם קוד ב-SMS.', acPhCur: 'המספר המאומת: {p}. אפשר להיכנס איתו עם קוד ב-SMS.', acPhL: 'מספר טלפון', acPhSend: 'שליחת קוד', acPhGo: 'אימות המספר', acPhSent: 'שלחנו SMS עם קוד אל {p}.', acPhDone: 'המספר אומת ונשמר.', acPhBad: 'מספר הטלפון לא נראה תקין. למשל 050-123-4567 או +972501234567.', acPhTaken: 'המספר הזה כבר משויך לחשבון אחר.', acPhOff: 'שליחת SMS עדיין לא זמינה באתר.', acPhoneLogin: 'כניסה עם קוד SMS (צריך ספק SMS ב-Supabase ← Authentication ← Sign In / Providers ← Phone)',
+  acPhH: 'מספר טלפון', acPhNone: 'אין מספר בחשבון. אחרי שתוסיפו ותאמתו מספר, אפשר יהיה להיכנס גם עם קוד ב-SMS.', acPhCur: 'המספר המאומת: {p}. אפשר להיכנס איתו עם קוד ב-SMS.', acPhL: 'מספר טלפון', acPhSend: 'שליחת קוד', acPhGo: 'אימות המספר', acPhCodeL: 'הקוד מה-SMS', acPhSent: 'שלחנו SMS עם קוד אל {p}.', acPhDone: 'המספר אומת ונשמר.', acPhBad: 'מספר הטלפון לא נראה תקין. למשל 050-123-4567 או +972501234567.', acPhTaken: 'המספר הזה כבר משויך לחשבון אחר.', acPhOff: 'שליחת SMS עדיין לא זמינה באתר.', acPhoneLogin: 'כניסה עם קוד SMS (צריך ספק SMS ב-Supabase ← Authentication ← Sign In / Providers ← Phone)',
   ac2faH: 'אימות דו־שלבי (2FA)', ac2faOff: 'כבוי. אפשר להוסיף קוד מאפליקציית אימות (Google Authenticator,‏ Microsoft Authenticator,‏ 1Password,‏ Authy…) לכל כניסה.',
   ac2faOn: 'פעיל — בכל כניסה נבקש קוד בן 6 ספרות מאפליקציית האימות.', ac2faEnable: 'הפעלת אימות דו־שלבי', ac2faRemove: 'הסרה', ac2faRemoveSure: 'לחצו שוב כדי להסיר',
   ac2faAdded: 'נוסף {d}', ac2faApp: 'אפליקציית אימות', ac2faHeld: 'הרשאות הניהול שלכם מושהות עד שתפעילו אימות דו־שלבי.', ac2faErr: 'לא הצלחנו לטעון את מצב האימות הדו־שלבי.',
@@ -34,7 +34,7 @@ he: {
   acDelKeep: 'רשומות תשלום (סכום, תאריך, מסלול) נשמרות 7 שנים כפי שדורש דין המס — בלי שם ובלי אימייל. ניתוחי שירים שהוספתם לקטלוג המשותף של ״גלה שירים״ נשארים, בלי קשר אליכם.',
   acDelOwner: 'זה החשבון של בעל האתר. העבירו את הבעלות לחשבון אחר לפני המחיקה.', acDelSub: 'יש לכם מנוי פעיל. בטלו אותו קודם בפורטל המנוי, ואז מחקו את החשבון.', acDelPortal: 'לפורטל המנוי',
   acDelConfL: 'לאישור, הקלידו את שם המשתמש ({u}) או את המילה {w}', acDelWord: 'מחק', acDelPwL: 'הסיסמה הנוכחית', acDelNoPw: 'שכחתם את הסיסמה? קבלו קוד במייל במקום',
-  acDelSend: 'שליחת קוד למייל', acDelSent: 'שלחנו קוד בן 6 ספרות אל {e}.', acDelCodeL: 'הקוד מהמייל', acDelTotpL: 'הקוד מאפליקציית האימות', acDelGo: 'מחיקת החשבון לצמיתות',
+  acDelSend: 'שליחת קוד למייל', acDelSent: 'שלחנו קוד אל {e}.', acDelCodeL: 'הקוד מהמייל', acDelTotpL: 'הקוד מאפליקציית האימות', acDelGo: 'מחיקת החשבון לצמיתות',
   acDelConfBad: 'האישור לא תואם.', acDelPwBad: 'הסיסמה שגויה.', acDelReauth: 'הקלידו שוב את הסיסמה (או קוד מהמייל).', acDelMfa: 'הקלידו את הקוד מאפליקציית האימות.',
   acDelFiles: 'חלק מהקבצים עוד לא נמחקו. נסו שוב.', acDelRunFiles: 'מוחקים את הקבצים שלכם…', acDelRunAcc: 'מוחקים את החשבון…', acDelDoneH: 'החשבון נמחק',
   acDelDoneP: 'תודה שהייתם איתנו. כל מה שפורט נמחק, והדפדפן הזה התנתק.', acDelErr: 'לא הצלחנו למחוק את החשבון ({m}). נסו שוב.', acOk: 'אישור', acCancel: 'ביטול',
@@ -57,7 +57,7 @@ he: {
   acMfaBannerGo: 'הפעלת אימות דו־שלבי', acAge: 'אני בן/בת {n} ומעלה', acSaved: 'נשמר', acSaveFail: 'השמירה נכשלה'
 },
 en: {
-  acPhH: 'Phone number', acPhNone: 'No number on the account. Once you add and verify one, you can also sign in with an SMS code.', acPhCur: 'Verified number: {p}. You can sign in with an SMS code to it.', acPhL: 'Phone number', acPhSend: 'Send code', acPhGo: 'Verify number', acPhSent: 'We texted a code to {p}.', acPhDone: 'Number verified and saved.', acPhBad: "That phone number doesn't look right. Use the international format, e.g. +972501234567.", acPhTaken: 'This number already belongs to another account.', acPhOff: "Text messages aren't available on the site yet.", acPhoneLogin: 'Sign-in with an SMS code (needs an SMS provider in Supabase → Authentication → Sign In / Providers → Phone)',
+  acPhH: 'Phone number', acPhNone: 'No number on the account. Once you add and verify one, you can also sign in with an SMS code.', acPhCur: 'Verified number: {p}. You can sign in with an SMS code to it.', acPhL: 'Phone number', acPhSend: 'Send code', acPhGo: 'Verify number', acPhCodeL: 'Code from the text message', acPhSent: 'We texted a code to {p}.', acPhDone: 'Number verified and saved.', acPhBad: "That phone number doesn't look right. Use the international format, e.g. +972501234567.", acPhTaken: 'This number already belongs to another account.', acPhOff: "Text messages aren't available on the site yet.", acPhoneLogin: 'Sign-in with an SMS code (needs an SMS provider in Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Two-step verification (2FA)', ac2faOff: 'Off. Add a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Authy…) to every sign-in.',
   ac2faOn: 'On — every sign-in asks for a 6-digit code from your authenticator app.', ac2faEnable: 'Turn on 2FA', ac2faRemove: 'Remove', ac2faRemoveSure: 'Click again to remove',
   ac2faAdded: 'Added {d}', ac2faApp: 'Authenticator app', ac2faHeld: 'Your management permissions are paused until you turn on two-step verification.', ac2faErr: 'Couldn’t load the two-step verification status.',
@@ -71,7 +71,7 @@ en: {
   acDelKeep: 'We keep payment records (amount, date, plan) for 7 years as tax law requires — without your name or email. Song analyses you added to the shared Discover catalog stay, without any link to you.',
   acDelOwner: 'This is the site owner’s account. Hand ownership to another account before deleting it.', acDelSub: 'You have an active subscription. Cancel it in the subscription portal first, then delete the account.', acDelPortal: 'Open the subscription portal',
   acDelConfL: 'To confirm, type your username ({u}) or the word {w}', acDelWord: 'DELETE', acDelPwL: 'Current password', acDelNoPw: 'Forgot your password? Get a code by email instead',
-  acDelSend: 'Email me a code', acDelSent: 'We sent a 6-digit code to {e}.', acDelCodeL: 'Code from the email', acDelTotpL: 'Code from your authenticator app', acDelGo: 'Delete my account permanently',
+  acDelSend: 'Email me a code', acDelSent: 'We sent a code to {e}.', acDelCodeL: 'Code from the email', acDelTotpL: 'Code from your authenticator app', acDelGo: 'Delete my account permanently',
   acDelConfBad: 'The confirmation doesn’t match.', acDelPwBad: 'Wrong password.', acDelReauth: 'Please enter your password (or an email code) again.', acDelMfa: 'Enter the code from your authenticator app.',
   acDelFiles: 'Some files could not be removed yet. Try again.', acDelRunFiles: 'Removing your files…', acDelRunAcc: 'Deleting the account…', acDelDoneH: 'Your account was deleted',
   acDelDoneP: 'Thanks for having been with us. Everything listed was removed, and this browser is signed out.', acDelErr: 'Couldn’t delete the account ({m}). Please try again.', acOk: 'OK', acCancel: 'Cancel',
@@ -94,7 +94,7 @@ en: {
   acMfaBannerGo: 'Turn on 2FA', acAge: 'I am {n} or older', acSaved: 'Saved', acSaveFail: 'Couldn’t save'
 },
 ar: {
-  acPhH: 'رقم الهاتف', acPhNone: 'لا يوجد رقم في الحساب. بعد إضافة رقم وتوثيقه يمكنك الدخول أيضًا برمز SMS.', acPhCur: 'الرقم الموثّق: {p}. يمكنك الدخول برمز SMS إليه.', acPhL: 'رقم الهاتف', acPhSend: 'إرسال الرمز', acPhGo: 'توثيق الرقم', acPhSent: 'أرسلنا رمزًا برسالة SMS إلى {p}.', acPhDone: 'تم توثيق الرقم وحفظه.', acPhBad: 'رقم الهاتف لا يبدو صحيحًا. استخدم الصيغة الدولية، مثل \u200e+972501234567.', acPhTaken: 'هذا الرقم مرتبط بحساب آخر.', acPhOff: 'إرسال الرسائل النصية غير متاح في الموقع بعد.', acPhoneLogin: 'الدخول برمز SMS (يتطلب مزوّد SMS في Supabase ← Authentication ← Sign In / Providers ← Phone)',
+  acPhH: 'رقم الهاتف', acPhNone: 'لا يوجد رقم في الحساب. بعد إضافة رقم وتوثيقه يمكنك الدخول أيضًا برمز SMS.', acPhCur: 'الرقم الموثّق: {p}. يمكنك الدخول برمز SMS إليه.', acPhL: 'رقم الهاتف', acPhSend: 'إرسال الرمز', acPhGo: 'توثيق الرقم', acPhCodeL: 'الرمز من رسالة SMS', acPhSent: 'أرسلنا رمزًا برسالة SMS إلى {p}.', acPhDone: 'تم توثيق الرقم وحفظه.', acPhBad: 'رقم الهاتف لا يبدو صحيحًا. استخدم الصيغة الدولية، مثل \u200e+972501234567.', acPhTaken: 'هذا الرقم مرتبط بحساب آخر.', acPhOff: 'إرسال الرسائل النصية غير متاح في الموقع بعد.', acPhoneLogin: 'الدخول برمز SMS (يتطلب مزوّد SMS في Supabase ← Authentication ← Sign In / Providers ← Phone)',
   ac2faH: 'التحقق بخطوتين (2FA)', ac2faOff: 'متوقف. أضف رمزًا من تطبيق مصادقة (Google Authenticator أو Microsoft Authenticator أو 1Password أو Authy…) إلى كل تسجيل دخول.',
   ac2faOn: 'مفعّل — نطلب في كل تسجيل دخول رمزًا من 6 أرقام من تطبيق المصادقة.', ac2faEnable: 'تفعيل التحقق بخطوتين', ac2faRemove: 'إزالة', ac2faRemoveSure: 'انقر مرة أخرى للإزالة',
   ac2faAdded: 'أُضيف {d}', ac2faApp: 'تطبيق مصادقة', ac2faHeld: 'صلاحيات الإدارة لديك معلّقة حتى تفعّل التحقق بخطوتين.', ac2faErr: 'تعذّر تحميل حالة التحقق بخطوتين.',
@@ -108,7 +108,7 @@ ar: {
   acDelKeep: 'نحتفظ بسجلات الدفع (المبلغ والتاريخ والخطة) لمدة 7 سنوات كما يقتضي قانون الضرائب — بدون اسمك أو بريدك. تبقى تحليلات الأغاني التي أضفتها إلى كتالوج «اكتشف» المشترك، دون أي صلة بك.',
   acDelOwner: 'هذا حساب مالك الموقع. انقل الملكية إلى حساب آخر قبل حذفه.', acDelSub: 'لديك اشتراك فعّال. ألغِه أولًا من بوابة الاشتراك، ثم احذف الحساب.', acDelPortal: 'فتح بوابة الاشتراك',
   acDelConfL: 'للتأكيد، اكتب اسم المستخدم ({u}) أو الكلمة {w}', acDelWord: 'حذف', acDelPwL: 'كلمة المرور الحالية', acDelNoPw: 'نسيت كلمة المرور؟ احصل على رمز بالبريد بدلًا منها',
-  acDelSend: 'أرسل لي رمزًا', acDelSent: 'أرسلنا رمزًا من 6 أرقام إلى {e}.', acDelCodeL: 'الرمز من البريد', acDelTotpL: 'الرمز من تطبيق المصادقة', acDelGo: 'حذف حسابي نهائيًا',
+  acDelSend: 'أرسل لي رمزًا', acDelSent: 'أرسلنا رمزًا إلى {e}.', acDelCodeL: 'الرمز من البريد', acDelTotpL: 'الرمز من تطبيق المصادقة', acDelGo: 'حذف حسابي نهائيًا',
   acDelConfBad: 'التأكيد غير مطابق.', acDelPwBad: 'كلمة المرور خاطئة.', acDelReauth: 'أدخل كلمة المرور (أو رمز البريد) مرة أخرى.', acDelMfa: 'أدخل الرمز من تطبيق المصادقة.',
   acDelFiles: 'لم تُحذف بعض الملفات بعد. حاول مرة أخرى.', acDelRunFiles: 'جارٍ حذف ملفاتك…', acDelRunAcc: 'جارٍ حذف الحساب…', acDelDoneH: 'تم حذف حسابك',
   acDelDoneP: 'شكرًا لأنك كنت معنا. حُذف كل ما ذُكر، وخرج هذا المتصفح من الحساب.', acDelErr: 'تعذّر حذف الحساب ({m}). حاول مرة أخرى.', acOk: 'حسنًا', acCancel: 'إلغاء',
@@ -131,7 +131,7 @@ ar: {
   acMfaBannerGo: 'تفعيل التحقق بخطوتين', acAge: 'عمري {n} عامًا أو أكثر', acSaved: 'تم الحفظ', acSaveFail: 'تعذّر الحفظ'
 },
 ru: {
-  acPhH: 'Номер телефона', acPhNone: 'В аккаунте нет номера. Добавьте и подтвердите номер, чтобы входить и по коду из SMS.', acPhCur: 'Подтверждённый номер: {p}. На него можно получить код для входа.', acPhL: 'Номер телефона', acPhSend: 'Отправить код', acPhGo: 'Подтвердить номер', acPhSent: 'Мы отправили SMS с кодом на {p}.', acPhDone: 'Номер подтверждён и сохранён.', acPhBad: 'Номер выглядит неверно. Используйте международный формат, например +972501234567.', acPhTaken: 'Этот номер уже привязан к другому аккаунту.', acPhOff: 'Отправка SMS на сайте пока недоступна.', acPhoneLogin: 'Вход по коду из SMS (нужен SMS-провайдер в Supabase → Authentication → Sign In / Providers → Phone)',
+  acPhH: 'Номер телефона', acPhNone: 'В аккаунте нет номера. Добавьте и подтвердите номер, чтобы входить и по коду из SMS.', acPhCur: 'Подтверждённый номер: {p}. На него можно получить код для входа.', acPhL: 'Номер телефона', acPhSend: 'Отправить код', acPhGo: 'Подтвердить номер', acPhCodeL: 'Код из SMS', acPhSent: 'Мы отправили SMS с кодом на {p}.', acPhDone: 'Номер подтверждён и сохранён.', acPhBad: 'Номер выглядит неверно. Используйте международный формат, например +972501234567.', acPhTaken: 'Этот номер уже привязан к другому аккаунту.', acPhOff: 'Отправка SMS на сайте пока недоступна.', acPhoneLogin: 'Вход по коду из SMS (нужен SMS-провайдер в Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Двухэтапная проверка (2FA)', ac2faOff: 'Выключена. Добавьте к каждому входу код из приложения-аутентификатора (Google Authenticator, Microsoft Authenticator, 1Password, Authy…).',
   ac2faOn: 'Включена — при каждом входе мы спросим 6-значный код из приложения-аутентификатора.', ac2faEnable: 'Включить 2FA', ac2faRemove: 'Удалить', ac2faRemoveSure: 'Нажмите ещё раз для удаления',
   ac2faAdded: 'Добавлено {d}', ac2faApp: 'Приложение-аутентификатор', ac2faHeld: 'Ваши права администратора приостановлены, пока вы не включите двухэтапную проверку.', ac2faErr: 'Не удалось загрузить состояние двухэтапной проверки.',
@@ -145,7 +145,7 @@ ru: {
   acDelKeep: 'Записи о платежах (сумма, дата, тариф) хранятся 7 лет, как требует налоговое право, — без вашего имени и почты. Анализы песен, добавленные вами в общий каталог «Поиск», остаются без связи с вами.',
   acDelOwner: 'Это аккаунт владельца сайта. Передайте владение другому аккаунту перед удалением.', acDelSub: 'У вас активная подписка. Сначала отмените её на портале подписки, затем удалите аккаунт.', acDelPortal: 'Открыть портал подписки',
   acDelConfL: 'Для подтверждения введите имя пользователя ({u}) или слово {w}', acDelWord: 'УДАЛИТЬ', acDelPwL: 'Текущий пароль', acDelNoPw: 'Забыли пароль? Получите код по почте',
-  acDelSend: 'Прислать код', acDelSent: 'Мы отправили 6-значный код на {e}.', acDelCodeL: 'Код из письма', acDelTotpL: 'Код из приложения-аутентификатора', acDelGo: 'Удалить аккаунт навсегда',
+  acDelSend: 'Прислать код', acDelSent: 'Мы отправили код на {e}.', acDelCodeL: 'Код из письма', acDelTotpL: 'Код из приложения-аутентификатора', acDelGo: 'Удалить аккаунт навсегда',
   acDelConfBad: 'Подтверждение не совпадает.', acDelPwBad: 'Неверный пароль.', acDelReauth: 'Введите пароль (или код из письма) ещё раз.', acDelMfa: 'Введите код из приложения-аутентификатора.',
   acDelFiles: 'Часть файлов ещё не удалена. Попробуйте снова.', acDelRunFiles: 'Удаляем ваши файлы…', acDelRunAcc: 'Удаляем аккаунт…', acDelDoneH: 'Аккаунт удалён',
   acDelDoneP: 'Спасибо, что были с нами. Всё перечисленное удалено, этот браузер вышел из аккаунта.', acDelErr: 'Не удалось удалить аккаунт ({m}). Попробуйте снова.', acOk: 'OK', acCancel: 'Отмена',
@@ -168,7 +168,7 @@ ru: {
   acMfaBannerGo: 'Включить 2FA', acAge: 'Мне {n} лет или больше', acSaved: 'Сохранено', acSaveFail: 'Не удалось сохранить'
 },
 es: {
-  acPhH: 'Número de teléfono', acPhNone: 'La cuenta no tiene número. Cuando añadas y verifiques uno, también podrás entrar con un código por SMS.', acPhCur: 'Número verificado: {p}. Puedes entrar con un código por SMS a este número.', acPhL: 'Número de teléfono', acPhSend: 'Enviar código', acPhGo: 'Verificar número', acPhSent: 'Enviamos un SMS con un código a {p}.', acPhDone: 'Número verificado y guardado.', acPhBad: 'Ese número no parece correcto. Usa el formato internacional, p. ej. +972501234567.', acPhTaken: 'Este número ya pertenece a otra cuenta.', acPhOff: 'Los SMS aún no están disponibles en el sitio.', acPhoneLogin: 'Entrar con un código por SMS (requiere un proveedor de SMS en Supabase → Authentication → Sign In / Providers → Phone)',
+  acPhH: 'Número de teléfono', acPhNone: 'La cuenta no tiene número. Cuando añadas y verifiques uno, también podrás entrar con un código por SMS.', acPhCur: 'Número verificado: {p}. Puedes entrar con un código por SMS a este número.', acPhL: 'Número de teléfono', acPhSend: 'Enviar código', acPhGo: 'Verificar número', acPhCodeL: 'Código del SMS', acPhSent: 'Enviamos un SMS con un código a {p}.', acPhDone: 'Número verificado y guardado.', acPhBad: 'Ese número no parece correcto. Usa el formato internacional, p. ej. +972501234567.', acPhTaken: 'Este número ya pertenece a otra cuenta.', acPhOff: 'Los SMS aún no están disponibles en el sitio.', acPhoneLogin: 'Entrar con un código por SMS (requiere un proveedor de SMS en Supabase → Authentication → Sign In / Providers → Phone)',
   ac2faH: 'Verificación en dos pasos (2FA)', ac2faOff: 'Desactivada. Añade a cada inicio de sesión un código de una app de autenticación (Google Authenticator, Microsoft Authenticator, 1Password, Authy…).',
   ac2faOn: 'Activada: en cada inicio de sesión pediremos un código de 6 dígitos de tu app de autenticación.', ac2faEnable: 'Activar 2FA', ac2faRemove: 'Quitar', ac2faRemoveSure: 'Pulsa otra vez para quitar',
   ac2faAdded: 'Añadida el {d}', ac2faApp: 'App de autenticación', ac2faHeld: 'Tus permisos de gestión están en pausa hasta que actives la verificación en dos pasos.', ac2faErr: 'No se pudo cargar el estado de la verificación en dos pasos.',
@@ -182,7 +182,7 @@ es: {
   acDelKeep: 'Guardamos los registros de pago (importe, fecha, plan) 7 años, como exige la ley fiscal, sin tu nombre ni tu correo. Los análisis de canciones que añadiste al catálogo compartido de Descubrir se quedan, sin ningún vínculo contigo.',
   acDelOwner: 'Esta es la cuenta del propietario del sitio. Transfiere la propiedad a otra cuenta antes de eliminarla.', acDelSub: 'Tienes una suscripción activa. Cancélala primero en el portal de suscripción y luego elimina la cuenta.', acDelPortal: 'Abrir el portal de suscripción',
   acDelConfL: 'Para confirmar, escribe tu nombre de usuario ({u}) o la palabra {w}', acDelWord: 'ELIMINAR', acDelPwL: 'Contraseña actual', acDelNoPw: '¿Olvidaste la contraseña? Recibe un código por correo',
-  acDelSend: 'Enviarme un código', acDelSent: 'Enviamos un código de 6 dígitos a {e}.', acDelCodeL: 'Código del correo', acDelTotpL: 'Código de tu app de autenticación', acDelGo: 'Eliminar mi cuenta para siempre',
+  acDelSend: 'Enviarme un código', acDelSent: 'Enviamos un código a {e}.', acDelCodeL: 'Código del correo', acDelTotpL: 'Código de tu app de autenticación', acDelGo: 'Eliminar mi cuenta para siempre',
   acDelConfBad: 'La confirmación no coincide.', acDelPwBad: 'Contraseña incorrecta.', acDelReauth: 'Escribe de nuevo tu contraseña (o un código del correo).', acDelMfa: 'Escribe el código de tu app de autenticación.',
   acDelFiles: 'Algunos archivos aún no se han borrado. Inténtalo de nuevo.', acDelRunFiles: 'Borrando tus archivos…', acDelRunAcc: 'Eliminando la cuenta…', acDelDoneH: 'Tu cuenta se ha eliminado',
   acDelDoneP: 'Gracias por haber estado con nosotros. Se borró todo lo indicado y este navegador cerró la sesión.', acDelErr: 'No se pudo eliminar la cuenta ({m}). Inténtalo de nuevo.', acOk: 'Aceptar', acCancel: 'Cancelar',
@@ -322,8 +322,9 @@ function modal(o) {
     if (f) { if (f.classList.contains('dlg')) f.tabIndex = -1; f.focus({ preventScroll: true }); } }, 30);
   return { w, close, q: s => w.querySelector(s), qa: s => [...w.querySelectorAll(s)], get closed() { return closed; } };
 }
-const otpField = (id, label) => `<div class="fld"><label for="${id}">${esc(label)}</label><input type="text" id="${id}" class="acotp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr" spellcheck="false"></div>`;
-const digits = el => String(el && el.value || '').replace(/\D/g, '').slice(0, 6);
+// TOTP = 6 digits; email/SMS codes = 6…10 (Supabase "OTP Length") → max 10
+const otpField = (id, label, max = 6) => `<div class="fld"><label for="${id}">${esc(label)}</label><input type="text" id="${id}" class="acotp" inputmode="numeric" autocomplete="one-time-code" maxlength="${max}" pattern="[0-9]{6,${max}}" dir="ltr" spellcheck="false"></div>`;
+const digits = el => String(el && el.value || '').replace(/\D/g, '').slice(0, el && el.maxLength > 0 ? el.maxLength : 6);
 function wireDigits(el) { if (el) el.addEventListener('input', () => { const v = digits(el); if (v !== el.value) el.value = v; }); }
 
 /* ---------- CAP: Cloudflare Turnstile for Supabase Auth (only with billing.turnstile_site_key) ---------- */
@@ -426,12 +427,12 @@ function accSections() {
     const sec = document.createElement('div'); sec.id = 'acPhWrap';
     sec.innerHTML = `<div class="sech" id="acPhH"></div><section class="acbox" id="acPh" aria-labelledby="acPhH"><p class="snote" id="acPhSt"></p>
       <div class="fld"><label for="acPhIn" id="acPhL"></label><div class="row2"><input type="tel" id="acPhIn" dir="ltr" autocomplete="tel" inputmode="tel" spellcheck="false" placeholder="050-123-4567"><button type="button" class="btn ghost" id="acPhSend"></button></div></div>
-      <div id="acPhStep" hidden>${otpField('acPhCode', t('acCodeL'))}<div class="row2"><button type="button" class="btn solid" id="acPhGo"></button></div></div>
+      <div id="acPhStep" hidden>${otpField('acPhCode', t('acPhCodeL'), 10)}<div class="row2"><button type="button" class="btn solid" id="acPhGo"></button></div></div>
       <p class="acmsg" id="acPhMsg" role="alert" hidden></p></section>`;
     bd.insertBefore(sec, $('#acMfaWrap'));
     wireDigits($('#acPhCode'));
     $('#acPhSend').onclick = phSend; $('#acPhGo').onclick = phVerify;
-    $('#acPhCode').addEventListener('input', () => { if (digits($('#acPhCode')).length === 6) phVerify(); });
+    $('#acPhCode').addEventListener('input', e => { if (digits($('#acPhCode')).length >= 6 && e.inputType !== 'insertText') phVerify(); });
   }
   if (!$('#acOutAll')) {
     const so = $('#signOutBtn'), row = document.createElement('div'); row.className = 'row2 acout'; so.replaceWith(row); row.append(so);
@@ -467,7 +468,7 @@ async function phSend() {
 }
 async function phVerify() {
   const b = $('#acPhGo'), m = $('#acPhMsg'), code = digits($('#acPhCode'));
-  if (!PH.phone || code.length !== 6 || b.disabled) return;
+  if (!PH.phone || code.length < 6 || b.disabled) return;
   busy(b, true);
   try { await B().verifyPhoneChange(PH.phone, code); PH.phone = ''; $('#acPhStep').hidden = true; $('#acPhIn').value = ''; msg(m, t('acPhDone'), 'ok'); phPaint(); }
   catch (e) { msg(m, phErr(e), 'err'); $('#acPhCode').value = ''; $('#acPhCode').focus(); }
@@ -579,7 +580,7 @@ async function openDelete() {
       <div class="fld"><label for="acDelConf" id="acDelConfL"></label><input type="text" id="acDelConf" autocomplete="off" spellcheck="false" dir="auto" data-af></div>
       <div class="fld" id="acDelPwF"><label for="acDelPw">${esc(t('acDelPwL'))}</label><input type="password" id="acDelPw" autocomplete="current-password"></div>
       <p class="acalt"><button type="button" class="lnk" id="acDelNoPw">${esc(t('acDelNoPw'))}</button></p>
-      <div id="acDelOtpF" hidden><div class="row2"><button type="button" class="btn ghost" id="acDelSend">${esc(t('acDelSend'))}</button></div>${otpField('acDelCode', t('acDelCodeL'))}</div>
+      <div id="acDelOtpF" hidden><div class="row2"><button type="button" class="btn ghost" id="acDelSend">${esc(t('acDelSend'))}</button></div>${otpField('acDelCode', t('acDelCodeL'), 10)}</div>
       ${need2fa ? otpField('acDelTotp', t('acDelTotpL')) : ''}
       <div class="accap" hidden></div>
       <p class="acmsg" id="acDelMsg" role="alert" hidden></p>
@@ -608,7 +609,7 @@ async function openDelete() {
     if (!conf()) { msg(out, t('acDelConfBad'), 'err'); m.q('#acDelConf').focus(); return; }
     const pw = m.q('#acDelPw').value, code = digits(m.q('#acDelCode')), totp = digits(m.q('#acDelTotp'));
     if (!st.reauthed && !st.otp && !pw) { msg(out, t('acDelReauth'), 'err'); m.q('#acDelPw').focus(); return; }
-    if (!st.reauthed && st.otp && code.length !== 6) { msg(out, t('acDelReauth'), 'err'); m.q('#acDelCode').focus(); return; }
+    if (!st.reauthed && st.otp && code.length < 6) { msg(out, t('acDelReauth'), 'err'); m.q('#acDelCode').focus(); return; }
     if (need2fa && totp.length !== 6) { msg(out, t('acDelMfa'), 'err'); m.q('#acDelTotp').focus(); return; }
     busy(go, true); msg(out, '');
     try {

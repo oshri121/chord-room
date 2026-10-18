@@ -473,10 +473,10 @@ auUserChecking:'בודק אם השם פנוי…',auUserFree:'השם פנוי',a
 auPwLen:'לפחות 8 תווים',auPwLvl:['חלשה מדי','חלשה','סבירה','חזקה','חזקה מאוד'],auPwStrength:'חוזק הסיסמה: {s}',auPwTip:'אפשר משפט קצר, או שילוב של אותיות, ספרות וסימנים.',auPwMatch:'הסיסמאות תואמות',auPwCommon:'הסיסמה הזאת נפוצה מדי. בחרו סיסמה אחרת.',
 auTermsH:'תנאי שימוש ופרטיות',auTermsP:'לפני יצירת החשבון, הנה עיקרי הדברים. הנוסח המלא הוא המחייב.',auTermsBox:'עיקרי התנאים',auTermsLink:'תנאי השימוש המלאים',auPrivLink:'מדיניות הפרטיות המלאה',auNewTab:'(נפתח בכרטיסייה חדשה)',
 auAgree:'קראתי ואני מסכים/ה לתנאי השימוש ולמדיניות הפרטיות',auAge:'אני בן/בת 16 ומעלה',auCreate:'יצירת החשבון',auNeedAgree:'כדי להמשיך צריך לסמן את שני האישורים.',
-auCodeH:'אימות האימייל',auCodeP:'שלחנו קוד בן 6 ספרות אל {e}',auCodeL:'קוד האימות',auCodeHint:'לא הגיע? חכו דקה ובדקו גם בספאם או בקידומי מכירות.',auVerify:'אימות וכניסה',
-auResend:'שליחת קוד חדש',auResendIn:'קוד חדש בעוד {s}',auResent:'שלחנו קוד חדש.',auChangeEmail:'שינוי האימייל',auCodeBad:'הקוד שגוי או שפג תוקפו. נסו שוב או בקשו קוד חדש.',auCodeShort:'הקוד צריך להכיל 6 ספרות.',
+auCodeH:'אימות האימייל',auCodeP:'שלחנו קוד אימות אל {e}',auCodeL:'קוד האימות',auCodeHint:'לא הגיע? חכו דקה ובדקו גם בספאם או בקידומי מכירות.',auVerify:'אימות וכניסה',
+auResend:'שליחת קוד חדש',auResendIn:'קוד חדש בעוד {s}',auResent:'שלחנו קוד חדש.',auChangeEmail:'שינוי האימייל',auCodeBad:'הקוד שגוי או שפג תוקפו. נסו שוב או בקשו קוד חדש.',auCodeShort:'הקוד קצר מדי — הקלידו את כל הספרות מהמייל.',
 auConfirmFirst:'צריך לאמת את האימייל לפני הכניסה. שלחנו אליכם קוד.',
-auForgotH:'שחזור סיסמה',auForgotP:'נשלח אליכם קוד בן 6 ספרות לאיפוס הסיסמה.',auSendCode:'שליחת קוד',auRecH:'בחירת סיסמה חדשה',auRecP:'הקלידו את הקוד שנשלח אל {e} ובחרו סיסמה חדשה.',auSavePass:'שמירה וכניסה',auBackIn:'חזרה לכניסה',
+auForgotH:'שחזור סיסמה',auForgotP:'נשלח אליכם קוד לאיפוס הסיסמה.',auSendCode:'שליחת קוד',auRecH:'בחירת סיסמה חדשה',auRecP:'הקלידו את הקוד שנשלח אל {e} ובחרו סיסמה חדשה.',auSavePass:'שמירה וכניסה',auBackIn:'חזרה לכניסה',
 auLinkH:'בחירת סיסמה חדשה',auLinkP:'הגעתם מקישור האיפוס. בחרו סיסמה חדשה לחשבון.',
 auDoneH:'ברוכים הבאים, {u}!',auDoneP:'החשבון מוכן ואתם מחוברים.',auDoneGift:'{n} נקודות מתנה כבר מחכות בחשבון.',auDoneGo:'בואו נתחיל',auPassDoneH:'הסיסמה עודכנה',auPassDoneP:'אתם מחוברים עם הסיסמה החדשה.',
 auErrRate:'יותר מדי ניסיונות. נסו שוב בעוד {s} שניות.',auErrRate0:'יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.',auErrExists:'כבר יש חשבון עם האימייל הזה. אפשר להיכנס או לשחזר סיסמה.',auErrWeak:'הסיסמה חלשה מדי או שנחשפה בדליפת מידע. בחרו סיסמה אחרת.',auErrSame:'הסיסמה החדשה צריכה להיות שונה מהקודמת.',auErrNet:'אין חיבור לשרת. בדקו את החיבור לאינטרנט ונסו שוב.',
@@ -490,10 +490,10 @@ auUserChecking:'Checking availability…',auUserFree:'Available',auUserTaken:'Th
 auPwLen:'At least 8 characters',auPwLvl:['Too weak','Weak','Fair','Strong','Very strong'],auPwStrength:'Password strength: {s}',auPwTip:'Try a short sentence, or mix letters, numbers and symbols.',auPwMatch:'Passwords match',auPwCommon:'That password is too common. Please pick another.',
 auTermsH:'Terms and privacy',auTermsP:'Before we create your account, here are the key points. The full text is what counts.',auTermsBox:'Key points',auTermsLink:'Full Terms of Use',auPrivLink:'Full Privacy Policy',auNewTab:'(opens in a new tab)',
 auAgree:'I have read and agree to the Terms of Use and the Privacy Policy',auAge:'I am 16 or older',auCreate:'Create account',auNeedAgree:'Please tick both boxes to continue.',
-auCodeH:'Verify your email',auCodeP:'We sent a 6-digit code to {e}',auCodeL:'Verification code',auCodeHint:'Nothing yet? Give it a minute and check spam or promotions.',auVerify:'Verify and sign in',
-auResend:'Send a new code',auResendIn:'New code in {s}',auResent:'We sent a new code.',auChangeEmail:'Change email',auCodeBad:'That code is wrong or has expired. Try again or ask for a new one.',auCodeShort:'The code has 6 digits.',
+auCodeH:'Verify your email',auCodeP:'We sent a verification code to {e}',auCodeL:'Verification code',auCodeHint:'Nothing yet? Give it a minute and check spam or promotions.',auVerify:'Verify and sign in',
+auResend:'Send a new code',auResendIn:'New code in {s}',auResent:'We sent a new code.',auChangeEmail:'Change email',auCodeBad:'That code is wrong or has expired. Try again or ask for a new one.',auCodeShort:'That code is too short — enter all the digits from the message.',
 auConfirmFirst:'Please verify your email before signing in. We sent you a code.',
-auForgotH:'Reset your password',auForgotP:'We’ll email you a 6-digit code to reset your password.',auSendCode:'Send code',auRecH:'Choose a new password',auRecP:'Enter the code we sent to {e} and choose a new password.',auSavePass:'Save and sign in',auBackIn:'Back to sign in',
+auForgotH:'Reset your password',auForgotP:'We’ll email you a code to reset your password.',auSendCode:'Send code',auRecH:'Choose a new password',auRecP:'Enter the code we sent to {e} and choose a new password.',auSavePass:'Save and sign in',auBackIn:'Back to sign in',
 auLinkH:'Choose a new password',auLinkP:'You came from the reset link. Choose a new password for your account.',
 auDoneH:'Welcome, {u}!',auDoneP:'Your account is ready and you’re signed in.',auDoneGift:'{n} free points are waiting in your account.',auDoneGo:'Let’s go',auPassDoneH:'Password updated',auPassDoneP:'You’re signed in with your new password.',
 auErrRate:'Too many attempts. Try again in {s} seconds.',auErrRate0:'Too many attempts. Try again in a few minutes.',auErrExists:'An account with this email already exists. Sign in or reset your password.',auErrWeak:'That password is too weak or appeared in a data breach. Please pick another.',auErrSame:'The new password must be different from the old one.',auErrNet:'Can’t reach the server. Check your connection and try again.',
@@ -507,10 +507,10 @@ auUserChecking:'جارٍ التحقق من التوفر…',auUserFree:'الاس
 auPwLen:'8 أحرف على الأقل',auPwLvl:['ضعيفة جدًا','ضعيفة','مقبولة','قوية','قوية جدًا'],auPwStrength:'قوة كلمة المرور: {s}',auPwTip:'جرّب جملة قصيرة، أو امزج الأحرف والأرقام والرموز.',auPwMatch:'كلمتا المرور متطابقتان',auPwCommon:'كلمة المرور هذه شائعة جدًا. اختر غيرها.',
 auTermsH:'الشروط والخصوصية',auTermsP:'قبل إنشاء الحساب، إليك أهم النقاط. النص الكامل هو المعتمد.',auTermsBox:'أهم النقاط',auTermsLink:'شروط الاستخدام الكاملة',auPrivLink:'سياسة الخصوصية الكاملة',auNewTab:'(تُفتح في علامة تبويب جديدة)',
 auAgree:'قرأت شروط الاستخدام وسياسة الخصوصية وأوافق عليهما',auAge:'عمري 16 عامًا أو أكثر',auCreate:'إنشاء الحساب',auNeedAgree:'للمتابعة يجب تحديد المربعين.',
-auCodeH:'تأكيد البريد الإلكتروني',auCodeP:'أرسلنا رمزًا من 6 أرقام إلى {e}',auCodeL:'رمز التحقق',auCodeHint:'لم يصل؟ انتظر دقيقة وتحقق من البريد العشوائي أو العروض.',auVerify:'تحقق وادخل',
-auResend:'إرسال رمز جديد',auResendIn:'رمز جديد بعد {s}',auResent:'أرسلنا رمزًا جديدًا.',auChangeEmail:'تغيير البريد',auCodeBad:'الرمز غير صحيح أو انتهت صلاحيته. حاول مجددًا أو اطلب رمزًا جديدًا.',auCodeShort:'الرمز مكوّن من 6 أرقام.',
+auCodeH:'تأكيد البريد الإلكتروني',auCodeP:'أرسلنا رمز تحقق إلى {e}',auCodeL:'رمز التحقق',auCodeHint:'لم يصل؟ انتظر دقيقة وتحقق من البريد العشوائي أو العروض.',auVerify:'تحقق وادخل',
+auResend:'إرسال رمز جديد',auResendIn:'رمز جديد بعد {s}',auResent:'أرسلنا رمزًا جديدًا.',auChangeEmail:'تغيير البريد',auCodeBad:'الرمز غير صحيح أو انتهت صلاحيته. حاول مجددًا أو اطلب رمزًا جديدًا.',auCodeShort:'الرمز قصير جدًا — أدخل كل الأرقام من الرسالة.',
 auConfirmFirst:'يجب تأكيد بريدك الإلكتروني قبل الدخول. أرسلنا إليك رمزًا.',
-auForgotH:'استعادة كلمة المرور',auForgotP:'سنرسل إليك رمزًا من 6 أرقام لإعادة تعيين كلمة المرور.',auSendCode:'إرسال الرمز',auRecH:'اختر كلمة مرور جديدة',auRecP:'أدخل الرمز الذي أرسلناه إلى {e} واختر كلمة مرور جديدة.',auSavePass:'حفظ والدخول',auBackIn:'العودة إلى الدخول',
+auForgotH:'استعادة كلمة المرور',auForgotP:'سنرسل إليك رمزًا لإعادة تعيين كلمة المرور.',auSendCode:'إرسال الرمز',auRecH:'اختر كلمة مرور جديدة',auRecP:'أدخل الرمز الذي أرسلناه إلى {e} واختر كلمة مرور جديدة.',auSavePass:'حفظ والدخول',auBackIn:'العودة إلى الدخول',
 auLinkH:'اختر كلمة مرور جديدة',auLinkP:'وصلت من رابط إعادة التعيين. اختر كلمة مرور جديدة لحسابك.',
 auDoneH:'أهلًا بك، {u}!',auDoneP:'حسابك جاهز وقد سجّلت الدخول.',auDoneGift:'{n} نقطة هدية بانتظارك في حسابك.',auDoneGo:'لنبدأ',auPassDoneH:'تم تحديث كلمة المرور',auPassDoneP:'أنت مسجّل الدخول بكلمة المرور الجديدة.',
 auErrRate:'محاولات كثيرة. حاول مجددًا بعد {s} ثانية.',auErrRate0:'محاولات كثيرة. حاول مجددًا بعد بضع دقائق.',auErrExists:'يوجد حساب بهذا البريد الإلكتروني. ادخل أو استعد كلمة المرور.',auErrWeak:'كلمة المرور ضعيفة جدًا أو ظهرت في تسريب بيانات. اختر غيرها.',auErrSame:'يجب أن تختلف كلمة المرور الجديدة عن القديمة.',auErrNet:'تعذّر الوصول إلى الخادم. تحقق من اتصالك وحاول مجددًا.',
@@ -524,10 +524,10 @@ auUserChecking:'Проверяем, свободно ли имя…',auUserFree:
 auPwLen:'Не меньше 8 символов',auPwLvl:['Слишком слабый','Слабый','Средний','Надёжный','Очень надёжный'],auPwStrength:'Надёжность пароля: {s}',auPwTip:'Подойдёт короткая фраза или сочетание букв, цифр и символов.',auPwMatch:'Пароли совпадают',auPwCommon:'Этот пароль слишком распространён. Выберите другой.',
 auTermsH:'Условия и конфиденциальность',auTermsP:'Перед созданием аккаунта — главное. Обязательным является полный текст.',auTermsBox:'Главное',auTermsLink:'Полные условия использования',auPrivLink:'Полная политика конфиденциальности',auNewTab:'(откроется в новой вкладке)',
 auAgree:'Я прочитал(а) и принимаю Условия использования и Политику конфиденциальности',auAge:'Мне 16 лет или больше',auCreate:'Создать аккаунт',auNeedAgree:'Чтобы продолжить, отметьте оба пункта.',
-auCodeH:'Подтвердите email',auCodeP:'Мы отправили 6-значный код на {e}',auCodeL:'Код подтверждения',auCodeHint:'Не пришло? Подождите минуту и проверьте спам или «Промоакции».',auVerify:'Подтвердить и войти',
-auResend:'Отправить новый код',auResendIn:'Новый код через {s}',auResent:'Мы отправили новый код.',auChangeEmail:'Изменить email',auCodeBad:'Код неверный или устарел. Попробуйте ещё раз или запросите новый.',auCodeShort:'В коде 6 цифр.',
+auCodeH:'Подтвердите email',auCodeP:'Мы отправили код подтверждения на {e}',auCodeL:'Код подтверждения',auCodeHint:'Не пришло? Подождите минуту и проверьте спам или «Промоакции».',auVerify:'Подтвердить и войти',
+auResend:'Отправить новый код',auResendIn:'Новый код через {s}',auResent:'Мы отправили новый код.',auChangeEmail:'Изменить email',auCodeBad:'Код неверный или устарел. Попробуйте ещё раз или запросите новый.',auCodeShort:'Код слишком короткий — введите все цифры из письма.',
 auConfirmFirst:'Перед входом нужно подтвердить email. Мы отправили вам код.',
-auForgotH:'Восстановление пароля',auForgotP:'Мы пришлём 6-значный код для сброса пароля.',auSendCode:'Отправить код',auRecH:'Новый пароль',auRecP:'Введите код, отправленный на {e}, и выберите новый пароль.',auSavePass:'Сохранить и войти',auBackIn:'Назад ко входу',
+auForgotH:'Восстановление пароля',auForgotP:'Мы пришлём код для сброса пароля.',auSendCode:'Отправить код',auRecH:'Новый пароль',auRecP:'Введите код, отправленный на {e}, и выберите новый пароль.',auSavePass:'Сохранить и войти',auBackIn:'Назад ко входу',
 auLinkH:'Новый пароль',auLinkP:'Вы перешли по ссылке для сброса. Выберите новый пароль для аккаунта.',
 auDoneH:'Добро пожаловать, {u}!',auDoneP:'Аккаунт готов, вы вошли.',auDoneGift:'В аккаунте вас уже ждут {n} подарочных баллов.',auDoneGo:'Начнём',auPassDoneH:'Пароль обновлён',auPassDoneP:'Вы вошли с новым паролем.',
 auErrRate:'Слишком много попыток. Повторите через {s} с.',auErrRate0:'Слишком много попыток. Повторите через несколько минут.',auErrExists:'Аккаунт с этим email уже есть. Войдите или восстановите пароль.',auErrWeak:'Пароль слишком слабый или встречался в утечках данных. Выберите другой.',auErrSame:'Новый пароль должен отличаться от старого.',auErrNet:'Нет связи с сервером. Проверьте подключение и попробуйте снова.',
@@ -541,10 +541,10 @@ auUserChecking:'Comprobando disponibilidad…',auUserFree:'Disponible',auUserTak
 auPwLen:'Al menos 8 caracteres',auPwLvl:['Demasiado débil','Débil','Aceptable','Fuerte','Muy fuerte'],auPwStrength:'Seguridad de la contraseña: {s}',auPwTip:'Prueba con una frase corta, o mezcla letras, números y símbolos.',auPwMatch:'Las contraseñas coinciden',auPwCommon:'Esa contraseña es demasiado común. Elige otra.',
 auTermsH:'Términos y privacidad',auTermsP:'Antes de crear tu cuenta, estos son los puntos clave. Lo que vale es el texto completo.',auTermsBox:'Puntos clave',auTermsLink:'Términos de uso completos',auPrivLink:'Política de privacidad completa',auNewTab:'(se abre en una pestaña nueva)',
 auAgree:'He leído y acepto los Términos de uso y la Política de privacidad',auAge:'Tengo 16 años o más',auCreate:'Crear la cuenta',auNeedAgree:'Marca las dos casillas para continuar.',
-auCodeH:'Verifica tu email',auCodeP:'Enviamos un código de 6 dígitos a {e}',auCodeL:'Código de verificación',auCodeHint:'¿No llega? Espera un minuto y revisa spam o promociones.',auVerify:'Verificar y entrar',
-auResend:'Enviar un código nuevo',auResendIn:'Código nuevo en {s}',auResent:'Te enviamos un código nuevo.',auChangeEmail:'Cambiar email',auCodeBad:'El código es incorrecto o ha caducado. Inténtalo de nuevo o pide uno nuevo.',auCodeShort:'El código tiene 6 dígitos.',
+auCodeH:'Verifica tu email',auCodeP:'Enviamos un código de verificación a {e}',auCodeL:'Código de verificación',auCodeHint:'¿No llega? Espera un minuto y revisa spam o promociones.',auVerify:'Verificar y entrar',
+auResend:'Enviar un código nuevo',auResendIn:'Código nuevo en {s}',auResent:'Te enviamos un código nuevo.',auChangeEmail:'Cambiar email',auCodeBad:'El código es incorrecto o ha caducado. Inténtalo de nuevo o pide uno nuevo.',auCodeShort:'El código es demasiado corto: escribe todos los dígitos del mensaje.',
 auConfirmFirst:'Verifica tu email antes de entrar. Te enviamos un código.',
-auForgotH:'Restablecer contraseña',auForgotP:'Te enviaremos un código de 6 dígitos para restablecer la contraseña.',auSendCode:'Enviar código',auRecH:'Elige una contraseña nueva',auRecP:'Escribe el código que enviamos a {e} y elige una contraseña nueva.',auSavePass:'Guardar y entrar',auBackIn:'Volver a entrar',
+auForgotH:'Restablecer contraseña',auForgotP:'Te enviaremos un código para restablecer la contraseña.',auSendCode:'Enviar código',auRecH:'Elige una contraseña nueva',auRecP:'Escribe el código que enviamos a {e} y elige una contraseña nueva.',auSavePass:'Guardar y entrar',auBackIn:'Volver a entrar',
 auLinkH:'Elige una contraseña nueva',auLinkP:'Llegaste desde el enlace de restablecimiento. Elige una contraseña nueva para tu cuenta.',
 auDoneH:'¡Te damos la bienvenida, {u}!',auDoneP:'Tu cuenta está lista y has iniciado sesión.',auDoneGift:'{n} puntos de regalo ya te esperan en tu cuenta.',auDoneGo:'Empecemos',auPassDoneH:'Contraseña actualizada',auPassDoneP:'Has iniciado sesión con tu nueva contraseña.',
 auErrRate:'Demasiados intentos. Vuelve a intentarlo en {s} segundos.',auErrRate0:'Demasiados intentos. Vuelve a intentarlo en unos minutos.',auErrExists:'Ya existe una cuenta con este email. Entra o restablece la contraseña.',auErrWeak:'Esa contraseña es demasiado débil o apareció en una filtración. Elige otra.',auErrSame:'La contraseña nueva debe ser distinta de la anterior.',auErrNet:'No se puede conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.',
@@ -2239,16 +2239,28 @@ function userCheck(now){
   return new Promise(ok=>{AU.uTimer=setTimeout(async()=>{let f=true;try{f=await Backend.usernameFree(u)}catch(e){f=true}
     if(seq!==AU.uSeq)return ok(null);AU.uFree=!!f;userState(f?'ok':'err',f?`@${u} · ${t('auUserFree')}`:t('auUserTaken'));ok(!!f)},now?0:450)});
 }
-/* ---- 6-digit code boxes: one real input (one-time-code autofill + paste) painted into six cells ---- */
+/* ---- code boxes: one real input (one-time-code autofill + paste) painted into cells. Supabase sends 6–10 digits
+   ("Email OTP Length"); the length that last worked is remembered (chordroom.otplen): typing auto-submits only at that
+   length, a paste/autofill of a whole code always ---- */
+const OTP_MIN=6,OTP_MAX=10;
+const otpLen=()=>{try{const n=+localStorage.getItem('chordroom.otplen');return n>=OTP_MIN&&n<=OTP_MAX?n:0}catch(e){return 0}};
+const otpOk=v=>{try{localStorage.setItem('chordroom.otplen',String(v.length))}catch(e){}};
+const otpBad=v=>v.length<OTP_MIN||v.length>OTP_MAX;
 function wireOtp(inp){
-  const cells=[...inp.parentElement.querySelectorAll('.au-cells i')];
-  const paint=()=>{const v=inp.value,f=document.activeElement===inp;cells.forEach((c,i)=>{c.textContent=v[i]||'';c.classList.toggle('f',!!v[i]);c.classList.toggle('on',f&&i===Math.min(v.length,5)&&!(v.length===6&&i<5))})};
+  const box=inp.parentElement.querySelector('.au-cells');let cells=[],prev=0;
+  inp.maxLength=OTP_MAX;inp.pattern=`[0-9]{${OTP_MIN},${OTP_MAX}}`;
+  const paint=()=>{const v=inp.value,f=document.activeElement===inp,n=Math.min(OTP_MAX,Math.max(otpLen()||OTP_MIN,v.length));
+    if(cells.length!==n){box.innerHTML='<i></i>'.repeat(n);cells=[...box.children];box.style.setProperty('--n',n);box.classList.toggle('long',n>6);
+      cells[Math.ceil(n/2)-1].classList.add('g')}
+    cells.forEach((c,i)=>{c.textContent=v[i]||'';c.classList.toggle('f',!!v[i]);c.classList.toggle('on',f&&i===Math.min(v.length,n-1)&&!(v.length===n&&i<n-1))})};
   const end=()=>{try{const n=inp.value.length;inp.setSelectionRange(n,n)}catch(e){}};
-  inp.addEventListener('input',()=>{const v=inp.value.replace(/\D/g,'').slice(0,6);if(v!==inp.value)inp.value=v;auFe(inp,'');paint();end();
-    if(v.length===6&&inp.dataset.auto&&!inp.form.querySelector('.au-cta.ld'))inp.form.requestSubmit()});
+  inp.addEventListener('input',e=>{const v=inp.value.replace(/\D/g,'').slice(0,OTP_MAX);if(v!==inp.value)inp.value=v;auFe(inp,'');paint();end();
+    // whole code at once = paste / drop / autofill (autofill fires an input event without inputType)
+    const whole=v.length-prev>=OTP_MIN||!e.inputType||/^insert(FromPaste|FromDrop|ReplacementText)$/.test(e.inputType),L=otpLen();prev=v.length;
+    if(v.length>=OTP_MIN&&(L?v.length===L||whole:whole)&&inp.dataset.auto&&!inp.form.querySelector('.au-cta.ld'))inp.form.requestSubmit()});
   inp.addEventListener('focus',()=>{paint();setTimeout(end)});inp.addEventListener('blur',paint);inp.addEventListener('click',end);
   inp.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='Home')e.preventDefault()});
-  inp.__paint=paint;
+  inp.__paint=()=>{prev=inp.value.length;paint()};paint();
 }
 wireOtp($('#auCode'));wireOtp($('#rcCode'));wireOtp($('#otCode'));wireOtp($('#smCode'));
 const otpSet=(inp,v)=>{inp.value=v;inp.__paint&&inp.__paint()};
@@ -2309,9 +2321,9 @@ $('#fOtp').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   })});
 $('#fOtpCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const c=$('#otCode'),v=c.value.replace(/\D/g,'');
-  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  if(otpBad(v))return auBad(c,t('auCodeShort'));
   auRun($('#fOtpCode .au-cta'),async()=>{
-    try{await Backend.verifyLogin(AU.otpEmail,v);AU.otpEmail='';closeDlg()}
+    try{await Backend.verifyLogin(AU.otpEmail,v);otpOk(v);AU.otpEmail='';closeDlg()}
     catch(err){if(err&&err.code==='mfa'){closeDlg();return}auFe(c,authErr(err));otpSet(c,'');c.focus()}
   })});
 $('#otResend').onclick=()=>{if(!AU.otpEmail)return;const b=$('#otResend');
@@ -2334,9 +2346,9 @@ $('#fSms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   })});
 $('#fSmsCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const c=$('#smCode'),v=c.value.replace(/\D/g,'');
-  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  if(otpBad(v))return auBad(c,t('auCodeShort'));
   auRun($('#fSmsCode .au-cta'),async()=>{
-    try{await Backend.verifyPhone(AU.smsPhone,v);AU.smsPhone='';closeDlg()}
+    try{await Backend.verifyPhone(AU.smsPhone,v);otpOk(v);AU.smsPhone='';closeDlg()}
     catch(err){if(err&&err.code==='mfa'){closeDlg();return}auFe(c,authErr(err));otpSet(c,'');c.focus()}
   })});
 $('#smResend').onclick=()=>{if(!AU.smsPhone)return;const b=$('#smResend');
@@ -2389,13 +2401,13 @@ $('#fTerms').addEventListener('submit',e=>{e.preventDefault();auMsg('');
       auMsg(authErr(err),'err');
     }
   })});
-/* ---- step 3: the 6-digit code from the email ---- */
+/* ---- step 3: the code from the email ---- */
 $('#fCode').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const c=$('#auCode'),v=c.value.replace(/\D/g,'');
-  if(v.length!==6)return auBad(c,t('auCodeShort'));
+  if(otpBad(v))return auBad(c,t('auCodeShort'));
   if(!Backend.verifySignup)return;
   auRun($('#fCode .au-cta'),async()=>{
-    try{await Backend.verifySignup(AU.email,v);AU.done='new';AU.pendingAt=0;auShow('done')}
+    try{await Backend.verifySignup(AU.email,v);otpOk(v);AU.done='new';AU.pendingAt=0;auShow('done')}
     catch(err){auFe(c,authErr(err));otpSet(c,'');c.focus()}
   })});
 $('#auResend').onclick=()=>{if(!Backend.resendSignup||!AU.email)return;const b=$('#auResend');
@@ -2423,12 +2435,12 @@ $('#rcPass').addEventListener('input',()=>{pwPaint('rcPass',[AU.recEmail.split('
 $('#rcPass2').addEventListener('input',()=>pwMatch('rcPass','rcPass2'));
 $('#fRecover').addEventListener('submit',e=>{e.preventDefault();auMsg('');
   const c=$('#rcCode'),v=c.value.replace(/\D/g,''),p1=$('#rcPass'),p2=$('#rcPass2');
-  if(!AU.recOk&&v.length!==6)return auBad(c,t('auCodeShort'));
+  if(!AU.recOk&&otpBad(v))return auBad(c,t('auCodeShort'));
   if(!pwCheck('rcPass',[AU.recEmail.split('@')[0]]))return;
   if(p1.value!==p2.value)return auBad(p2,t('errMismatch'));
   auRun($('#fRecover .au-cta'),async()=>{
     try{
-      if(!AU.recOk){AU.recovering=true;try{await Backend.verifyRecovery(AU.recEmail,v)}finally{setTimeout(()=>{AU.recovering=false},1500)}AU.recOk=true}
+      if(!AU.recOk){AU.recovering=true;try{await Backend.verifyRecovery(AU.recEmail,v);otpOk(v)}finally{setTimeout(()=>{AU.recovering=false},1500)}AU.recOk=true}
       await Backend.setPassword(p1.value);p1.value=p2.value='';AU.recOk=false;AU.done='pass';auShow('done');
     }catch(err){const k=err&&err.code;
       if(k==='otp'){auFe(c,authErr(err));otpSet(c,'');c.focus();return}
@@ -3078,8 +3090,12 @@ function renderPayLine(c){
 // back from checkout (?paid=1): wait for the webhook to activate the plan
 async function recentPayment(){try{const r=(await Backend.ledger(1))||[];return !!(r[0]&&r[0].reason==='payment'&&r[0].delta>0&&Date.now()-Date.parse(r[0].created_at)<15*60000)}catch(e){return false}}
 function payReturn(){
-  if(PAY.polling||!ACC.user||!ACC.cred||!/[?&]paid=1(&|$)/.test(location.search))return;
-  const u=new URL(location.href);u.searchParams.delete('paid');history.replaceState(history.state,'',u.pathname+u.search+u.hash);
+  // PayPal may replace our return query with its own (?subscription_id=I-…&ba_token=…) and drop #pricing → accept both
+  const pp=/[?&]subscription_id=I-[A-Z0-9]{6,40}(&|$)/.test(location.search);
+  if(PAY.polling||!ACC.user||!ACC.cred||!(pp||/[?&]paid=1(&|$)/.test(location.search)))return;
+  const u=new URL(location.href);for(const k of ['paid','subscription_id','ba_token','token'])u.searchParams.delete(k);
+  if(pp&&!u.hash)u.hash='#pricing';history.replaceState(history.state,'',u.pathname+u.search+u.hash);
+  if(pp)try{showView('pricing')}catch(e){}
   PAY.polling=true;const c0={...ACC.cred},t0=Date.now();
   toast(t('payWait'));
   const done=()=>{PAY.polling=false;const c=ACC.cred||{};toast(t('payDone',{p:planName(c.plan||'free'),n:(c.credits||0).toLocaleString('en-US')}));

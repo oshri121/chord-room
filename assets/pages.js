@@ -72,7 +72,7 @@ he: {
   incFree: ['BPM, סולם ועוצמה', 'אקורדים, דף אקורדים ודיאגרמות', 'גלה שירים ומיקס חי', 'ייצוא MIDI לפסנתר'],
   incAll: 'כל מה שבמסלול החינמי', incPts: '{pts} נוספות בכל חודש',
   best: 'מומלץ', current: 'המסלול שלכם',
-  btnSignup: 'הרשמה בחינם', btnSubSignup: 'הרשמה והצטרפות', btnSub: 'הצטרפות למסלול', btnYour: 'המסלול שלכם', btnIncl: 'כלול במסלול שלכם', btnSoon: 'בקרוב', btnContact: 'כתבו לנו', usdNote: 'המחירים בשקלים; הדולר משוער',
+  btnSignup: 'הרשמה בחינם', btnPP: 'הצטרפות עם', btnSubSignup: 'הרשמה והצטרפות', btnSub: 'הצטרפות למסלול', btnYour: 'המסלול שלכם', btnIncl: 'כלול במסלול שלכם', btnSoon: 'בקרוב', btnContact: 'כתבו לנו', usdNote: 'המחירים בשקלים; הדולר משוער',
   offH: 'כרגע הכל בחינם', offP: 'אין צורך בנקודות כרגע — כל הכלים, כולל הפרדת ערוצים ב־AI והורדת ערוצים, פתוחים לשימוש בחינם.',
   tblEyebrow: 'מחירון', tblH: 'על מה משלמים בנקודות', tblA: 'פעולה', tblC: 'עלות',
   rowSep: 'הפרדת ערוצים ב־AI (שירה, תופים, בס, שאר הכלים)', rowDl: 'הורדת ערוצים (WAV / MP3)',
@@ -148,7 +148,7 @@ en: {
   incFree: ['BPM, key, Camelot and loudness', 'Chords, chord sheet and diagrams', 'Discover and DJ Mix', 'Piano MIDI export'],
   incAll: 'Everything in Free', incPts: '{pts} added every month',
   best: 'Recommended', current: 'Your plan',
-  btnSignup: 'Sign up free', btnSubSignup: 'Sign up to subscribe', btnSub: 'Subscribe', btnYour: 'Your plan', btnIncl: 'Included in your plan', btnSoon: 'Coming soon', btnContact: 'Contact us', usdNote: 'Dollar price converted from the shekel price; the checkout shows the exact amount',
+  btnSignup: 'Sign up free', btnPP: 'Subscribe with', btnSubSignup: 'Sign up to subscribe', btnSub: 'Subscribe', btnYour: 'Your plan', btnIncl: 'Included in your plan', btnSoon: 'Coming soon', btnContact: 'Contact us', usdNote: 'Dollar price converted from the shekel price; the checkout shows the exact amount',
   offH: 'Everything is free right now', offP: 'No points needed at the moment — every feature, including AI stem separation and stem downloads, is free to use.',
   tblEyebrow: 'Price list', tblH: 'What costs points', tblA: 'Action', tblC: 'Cost',
   rowSep: 'AI stem separation (vocals, drums, bass, other)', rowDl: 'Stems download (WAV / MP3)',
@@ -224,7 +224,7 @@ ar: {
   incFree: ['BPM والمقام وكاميلوت والشدة', 'الكوردات وورقة الكوردات والمخططات', 'اكتشف ومزج DJ', 'تصدير MIDI للبيانو'],
   incAll: 'كل ما في الباقة المجانية', incPts: '{pts} تُضاف كل شهر',
   best: 'موصى بها', current: 'باقتك',
-  btnSignup: 'سجّل مجانًا', btnSubSignup: 'سجّل للاشتراك', btnSub: 'اشترك', btnYour: 'باقتك', btnIncl: 'مشمول في باقتك', btnSoon: 'قريبًا', btnContact: 'راسلونا', usdNote: 'السعر بالدولار محوَّل من سعر الشيكل؛ صفحة الدفع تعرض المبلغ الدقيق',
+  btnSignup: 'سجّل مجانًا', btnPP: 'اشترك عبر', btnSubSignup: 'سجّل للاشتراك', btnSub: 'اشترك', btnYour: 'باقتك', btnIncl: 'مشمول في باقتك', btnSoon: 'قريبًا', btnContact: 'راسلونا', usdNote: 'السعر بالدولار محوَّل من سعر الشيكل؛ صفحة الدفع تعرض المبلغ الدقيق',
   offH: 'كل شيء مجاني حاليًا', offP: 'لا حاجة إلى نقاط في الوقت الحالي — كل الميزات، بما فيها فصل المسارات بالذكاء الاصطناعي وتنزيلها، مجانية الاستخدام.',
   tblEyebrow: 'قائمة الأسعار', tblH: 'ما الذي يكلّف نقاطًا', tblA: 'الإجراء', tblC: 'التكلفة',
   rowSep: 'فصل المسارات بالذكاء الاصطناعي (الغناء، الطبول، الباص، باقي الآلات)', rowDl: 'تنزيل المسارات (WAV / MP3)',
@@ -300,7 +300,7 @@ ru: {
   incFree: ['BPM, тональность и громкость', 'Аккорды, лист аккордов и аппликатуры', 'Обзор и DJ-микс', 'Экспорт фортепианного MIDI'],
   incAll: 'Всё из бесплатного тарифа', incPts: '+{pts} каждый месяц',
   best: 'Рекомендуем', current: 'Ваш тариф',
-  btnSignup: 'Бесплатная регистрация', btnSubSignup: 'Зарегистрироваться и подписаться', btnSub: 'Подписаться', btnYour: 'Ваш тариф', btnIncl: 'Входит в ваш тариф', btnSoon: 'Скоро', btnContact: 'Напишите нам', usdNote: 'Цена в долларах пересчитана из цены в шекелях; точная сумма — на странице оплаты',
+  btnSignup: 'Бесплатная регистрация', btnPP: 'Подписаться через', btnSubSignup: 'Зарегистрироваться и подписаться', btnSub: 'Подписаться', btnYour: 'Ваш тариф', btnIncl: 'Входит в ваш тариф', btnSoon: 'Скоро', btnContact: 'Напишите нам', usdNote: 'Цена в долларах пересчитана из цены в шекелях; точная сумма — на странице оплаты',
   offH: 'Сейчас всё бесплатно', offP: 'Баллы сейчас не нужны — все функции, включая разделение на стемы с AI и скачивание стемов, доступны бесплатно.',
   tblEyebrow: 'Прайс', tblH: 'За что списываются баллы', tblA: 'Действие', tblC: 'Стоимость',
   rowSep: 'Разделение на стемы с AI (вокал, барабаны, бас, остальное)', rowDl: 'Скачивание стемов (WAV / MP3)',
@@ -376,7 +376,7 @@ es: {
   incFree: ['BPM, tonalidad, Camelot y sonoridad', 'Acordes, hoja de acordes y diagramas', 'Descubrir y Mezcla DJ', 'Exportación MIDI de piano'],
   incAll: 'Todo lo del plan Gratis', incPts: '+{pts} cada mes',
   best: 'Recomendado', current: 'Tu plan',
-  btnSignup: 'Regístrate gratis', btnSubSignup: 'Regístrate para suscribirte', btnSub: 'Suscribirse', btnYour: 'Tu plan', btnIncl: 'Incluido en tu plan', btnSoon: 'Próximamente', btnContact: 'Escríbenos', usdNote: 'Precio en dólares convertido del precio en shékels; el pago muestra el importe exacto',
+  btnSignup: 'Regístrate gratis', btnPP: 'Suscríbete con', btnSubSignup: 'Regístrate para suscribirte', btnSub: 'Suscribirse', btnYour: 'Tu plan', btnIncl: 'Incluido en tu plan', btnSoon: 'Próximamente', btnContact: 'Escríbenos', usdNote: 'Precio en dólares convertido del precio en shékels; el pago muestra el importe exacto',
   offH: 'Ahora mismo todo es gratis', offP: 'No necesitas puntos por ahora: todas las funciones, incluida la separación de pistas con IA y su descarga, son gratis.',
   tblEyebrow: 'Tarifas', tblH: 'Qué cuesta puntos', tblA: 'Acción', tblC: 'Coste',
   rowSep: 'Separación de pistas con IA (voz, batería, bajo, resto)', rowDl: 'Descarga de pistas (WAV / MP3)',
@@ -1097,8 +1097,7 @@ function renderAbout(el, billing) {
 
   const foot = '<footer class="pg-foot">' + contactLine(t('contactL'), billing) + '<p class="pg-cred">' + t('credits') + '</p>' + legalLinks(true) + '</footer>';
 
-  el.innerHTML = '<div class="pg pg-about">' + hero + featHtml + how + pts + prv + faq + a11y + foot + '</div>';
-  wire(el);
+  if (!put(el, '<div class="pg pg-about">' + hero + featHtml + how + pts + prv + faq + a11y + foot + '</div>')) return;
   try { if (PAGES.afterAbout) PAGES.afterAbout(el); } catch (e) {}   /* growth: reviews section (assets/reviews.js) */
 }
 
@@ -1142,8 +1141,11 @@ function renderPricing(el, billing, state) {
       if (isMail || isUrl) return '<a class="pg-btn line pg-soon" href="' + esc(isMail ? 'mailto:' + c : c) + '"' + (isUrl ? ' target="_blank" rel="noopener"' : '') + '>' + ic('mail') + '<span>' + t('btnContact') + '</span></a>';
       return '<button type="button" class="pg-btn line pg-soon" disabled aria-disabled="true"><span>' + t('btnSoon') + '</span></button>';
     }
-    if (kind === 'subsignup') return '<button type="button" class="pg-btn ' + (id.best ? 'grad' : 'ink') + '" data-signup="1"><span>' + t('btnSubSignup') + '</span>' + ic('arrow', 'pg-arr') + '</button>';
-    return '<button type="button" class="pg-btn ' + (id.best ? 'grad' : 'ink') + '" data-sub="' + esc(id.id) + '"><span>' + t('btnSub') + '</span>' + ic('arrow', 'pg-arr') + '</button>';
+    // PayPal plan → an extra PayPal-styled button under the main one (same action; signed out = sign up first)
+    const act = kind === 'subsignup' ? 'data-signup="1"' : 'data-sub="' + esc(id.id) + '"';
+    const pp = /^P-[A-Z0-9]{10,40}$/.test(id.variant || '') ? '<button type="button" class="pg-btn pg-pp" ' + act + ' aria-label="' + esc(t('btnPP') + ' PayPal') + '"><span>' + t('btnPP') + '</span>' +
+      '<span class="pg-ppw" dir="ltr" aria-hidden="true"><b>Pay</b><i>Pal</i></span></button>' : '';
+    return '<button type="button" class="pg-btn ' + (id.best ? 'grad' : 'ink') + '" ' + act + '><span>' + t(kind === 'subsignup' ? 'btnSubSignup' : 'btnSub') + '</span>' + ic('arrow', 'pg-arr') + '</button>' + pp;
   }
   function buys(p) {
     const out = [];
@@ -1212,11 +1214,22 @@ function renderPricing(el, billing, state) {
   const faq = '<section class="pg-sec pg-faq" aria-labelledby="pgPFaqH"><div class="pg-faqh">' + sh(t('faqEyebrow'), t('prFaqH')).replace('<h2 class="pg-h">', '<h2 class="pg-h" id="pgPFaqH">') + '</div>' + faqList(fq, fv) + '</section>';
   const foot = '<footer class="pg-foot">' + contactLine(t('prContact'), billing) + legalLinks(false) + '</footer>';
 
-  el.innerHTML = '<div class="pg pg-pricing">' + head + cards + table + faq + foot + '</div>';
-  wire(el);
+  put(el, '<div class="pg pg-pricing">' + head + cards + table + faq + foot + '</div>');
 }
 
 /* ---------- behaviour: clicks, reveal, count-up ---------- */
+/* A page is rendered again whenever the settings, the session, the points or the language arrive (several times right after
+   a reload). Same markup → nothing is touched; new markup → what was already revealed stays revealed (no fade/count-up replay,
+   which looked like the page breaking for a moment). Returns false when nothing changed. */
+function put(el, html) {
+  if (el.__pgHtml === html && el.firstElementChild) return false;
+  const was = el.__pgHtml ? Array.from(el.querySelectorAll('.pg .rv')).map(x => x.classList.contains('in')) : null;
+  el.__pgHtml = html;
+  el.innerHTML = html;
+  wire(el, was);
+  return true;
+}
+
 const last = { about: null, pricing: null };
 let io = null, liveIO = null;
 function countUp(n) {
@@ -1231,7 +1244,7 @@ function show(x) {
   x.querySelectorAll('[data-count]').forEach(countUp);
   if (x.matches('[data-count]')) countUp(x);
 }
-function wire(el) {
+function wire(el, was) {
   const root = el.querySelector('.pg');
   if (!el.__pgWired) {
     el.__pgWired = true;
@@ -1253,8 +1266,13 @@ function wire(el) {
     el.__pgLive = Array.from(root.querySelectorAll('.pg-hero,.pg-sec,.pg-phead'));
     el.__pgLive.forEach(x => { x.classList.add('pg-rest'); liveIO.observe(x); });
   }
-  const items = root.querySelectorAll('.rv');
+  let items = Array.from(root.querySelectorAll('.rv'));
   if (!('IntersectionObserver' in window) || reduced()) { items.forEach(x => x.classList.add('in')); return; }
+  if (was) {   /* re-render: already-revealed blocks appear at once, the rest still reveal on scroll */
+    root.classList.add('pg-now');
+    items = items.filter((x, i) => { if (was[i]) { x.classList.add('in'); return false; } return true; });
+    void root.offsetWidth; setTimeout(() => root.classList.remove('pg-now'), 50);   /* styles applied without transition first */
+  }
   if (!io) io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
   items.forEach(x => io.observe(x));
 }
