@@ -1,4 +1,4 @@
-"""Security v5 (server audit 2026-10, round 5): the [security-v5] block = the LAST block of supabase/schema.sql
+"""Security v5 (server audit 2026-10, round 5): the [security-v5] block of supabase/schema.sql (only [referral-v6] follows it)
 (= supabase/security_v5.sql, checked verbatim, applied twice on a full install and on an install from before v5),
 each rule attacked the way the audit found it.
 
@@ -75,18 +75,21 @@ def set_billing(**kw):
     b = json.loads(json.dumps(b0)); b.update(kw)
     sql(f"update public.site_config set billing=$j${json.dumps(b)}$j$ where id=1")
 
-D.section('supabase/security_v5.sql = the last block of schema.sql, verbatim')
+D.section('supabase/security_v5.sql = a block of schema.sql (only [referral-v6] after it), verbatim')
 src = open(pg.SCHEMA, encoding='utf-8').read()
 v5 = open(V5, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v5 .*?-- \[security-v5:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v5] block', 'found' if m else 'missing', 'found')
-check('the block is the LAST thing in schema.sql', 'yes' if m and src.endswith(m.group(1)) else 'no', 'yes')
+# only the later [referral-v6] block may follow it
+later = re.sub(r'(?s)-- =+\n-- Referral v6 .*?-- \[referral-v6:end\]\n-- =+\n', '', src[m.end():]) if m else src
+check('the block is the last thing in schema.sql (only [referral-v6] after it)', 'yes' if m and later.strip() == '' else 'no', 'yes')
 check('…after [paypal]', 'yes' if m and src.index('[paypal:end]') < m.start() else 'no', 'yes')
 check('security_v5.sql = header comment + the block', 'yes' if m and v5.endswith(m.group(1)) and all(l.startswith('--') or not l.strip() for l in v5[:v5.index(m.group(1))].splitlines()) else 'no', 'yes')
 blk = m.group(1) if m else ''
 check('no dynamic SQL built from input (every execute starts with constant text)',
       'ok' if all(re.search(r"\bexecute\s+('|\$f\$)", l) for l in blk.splitlines() if re.search(r'\bexecute\s+(?!function\b|on\b)', l) and not l.strip().startswith('--')) else 'bad', 'ok')
 check('security_v5.sql run 3 on the full install (idempotent)', str(pg.errs(D.file(V5))), '[]')
+check('…and referral_v6.sql after it again (the owner re-runs v6 after v5)', str(pg.errs(D.file(pg.REFERRAL_V6))), '[]')
 
 D.section('[V5-3] 2FA: definer RPCs refuse an aal1 session of a 2FA account')
 sql(f"insert into auth.mfa_factors(user_id,status) values ('{U3}','verified')")
@@ -246,7 +249,9 @@ D.user(J4, 'fan@x.com', 'fanagain')
 check('delete the account and sign up again with the same address → already', as_(J4, f"select public.claim_referral('{code}')->>'why'"), 'already')
 sql("update private.referral_claims set at = now() - interval '366 days' where email_key = private.email_key('fan@x.com')")
 check('…a claim older than 365 days no longer counts', as_(J4, f"select public.claim_referral('{code}')->>'ok'"), 'true')
-check('the inviter was paid for J2, J5, J4 only', sql(f"select count(*) from public.credit_ledger where user_id='{I1}' and reason='referral'"), '3')
+# [referral-v6]: a claim gives no points to anyone; the inviter is paid only on the friend's first payment (test_referral_v6)
+check('no referral points at sign-up (inviter or friends)', sql(f"select count(*) from public.credit_ledger where reason='referral' and user_id in ('{I1}','{J2}','{J4}','{J5}')"), '0')
+check('pending invites recorded for J5, J4 only (J2 left with its account)', sql(f"select string_agg(friend::text, ',' order by friend) from private.referrals where inviter='{I1}'"), f'{J5},{J4}' if J5 < J4 else f'{J4},{J5}')
 
 D.section('[V5-8] catalog: analyzed_by / full_by hidden from the API roles')
 hidden = lambda role: sql(f"select string_agg(column_name, ',' order by column_name) from information_schema.columns where table_schema='public' and table_name='catalog' and not has_column_privilege('{role}', 'public.catalog', column_name, 'select')")
@@ -272,8 +277,8 @@ check('anon-callable definer fns = allow-list (unchanged)',
       lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,pay_webhook_paypal,reviews_public,username_available')
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
-check('private.refund_calls / referral_claims: no privileges for API roles',
-      sql("select count(*) from information_schema.role_table_grants where table_schema='private' and table_name in ('refund_calls','referral_claims') and grantee in ('anon','authenticated','PUBLIC')"), '0')
+check('private.refund_calls / referral_claims / referrals / referral_ips: no privileges for API roles',
+      sql("select count(*) from information_schema.role_table_grants where table_schema='private' and table_name in ('refund_calls','referral_claims','referrals','referral_ips') and grantee in ('anon','authenticated','PUBLIC')"), '0')
 check('no table in public without RLS', sql("select coalesce(string_agg(c.relname, ','), 'none') from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity"), 'none')
 check('refund_calls cascades with the account (nothing blocks deleting a user)',
       sql("select confdeltype from pg_constraint where conrelid='private.refund_calls'::regclass and contype='f'"), 'c')

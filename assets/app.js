@@ -361,25 +361,25 @@ es:{payWait:'Pago recibido, activando tu plan…',payDone:'¡Tu plan {p} está a
   lr_payment:'Pago',payRefundL:'Dinero reembolsado',payUpgradeL:'mejora'}};
 for(const k in IPAY)Object.assign(I[k],IPAY[k]);
 const IREF={
-he:{refTitle:'הזמינו חברים, קבלו נקודות',refText:'כל חבר שנרשם דרך הקישור שלך מקבל {n} נקודות מתנה, ו־{n} נקודות נכנסות גם לך.',refCopy:'העתקה',refCopied:'הועתק ✓',refShare:'שיתוף',
-  refStats:'הצטרפו דרכך {k} · הרווחת {p} נקודות',refMsg:'נסו את Chord Room: BPM, סולם, אקורדים וערוצי AI מכל שיר. נרשמים דרך הקישור ומקבלים {n} נקודות מתנה (גם אני מקבל/ת נקודות על ההזמנה):',refDisc:'גילוי נאות: זו תוכנית הזמנת חברים של Chord Room. על כל חבר שנרשם דרך הקישור שלך שניכם מקבלים נקודות (לא כסף). כשמשתפים את הקישור בפומבי, כדאי לציין שמקבלים עליו נקודות.',
-  refGot:'הצטרפת דרך הזמנה של חבר: קיבלת {n} נקודות מתנה.',lr_referral:'הזמנת חבר',refJoinedL:'הצטרפות בהזמנה',refInviterL:'חבר הצטרף',
+he:{refTitle:'הזמינו חברים, קבלו נקודות',refText:'כשחבר שהזמנת מצטרף למסלול בתשלום, נכנסות לך {n} נקודות. החבר מקבל את מתנת ההרשמה הרגילה.',refCopy:'העתקה',refCopied:'הועתק ✓',refShare:'שיתוף',
+  refStats:'הצטרפו דרכך {k} · הצטרפו למסלול בתשלום {q} · הרווחת {p} נקודות',refMsg:'נסו את Chord Room: BPM, סולם, אקורדים וערוצי AI מכל שיר. נרשמים דרך הקישור ומקבלים את נקודות המתנה של ההרשמה (ואם תצטרפו למסלול בתשלום, גם אני מקבל/ת נקודות על ההזמנה):',refDisc:'גילוי נאות: זו תוכנית הזמנת חברים של Chord Room. כשחבר שנרשם דרך הקישור שלך מצטרף למסלול בתשלום, את/ה מקבל/ת נקודות (לא כסף); החבר מקבל רק את מתנת ההרשמה הרגילה. כשמשתפים את הקישור בפומבי, כדאי לציין שמקבלים עליו נקודות.',
+  refGot:'הצטרפת דרך הזמנה של חבר: קיבלת {n} נקודות מתנה.',lr_referral:'הזמנת חבר',refJoinedL:'הצטרפות בהזמנה',refInviterL:'תגמול על הזמנת חבר',refDevice:'כבר נכנסו מהמכשיר הזה דרך הקישור של המשתמש הזה, אז ההזמנה לא נספרת שוב.',refBackL:'תגמול ההזמנה בוטל (החזר כספי של החבר)',
   billRef:'נקודות על כל הזמנה (לכל צד)',billRefMax:'תגמולים למזמין ב־30 יום (מקסימום)'},
-en:{refTitle:'Invite friends, get points',refText:'Every friend who signs up through your link gets {n} free points, and you get {n} too.',refCopy:'Copy',refCopied:'Copied ✓',refShare:'Share',
-  refStats:'{k} joined through you · you earned {p} points',refMsg:'Try Chord Room: BPM, key, chords and AI stems from any song. Sign up through this link and get {n} free points (I get points for the invite too):',refDisc:'Disclosure: this is Chord Room’s invite program. For every friend who signs up through your link, you both get points (not money). When you share the link publicly, please mention that you get points for it.',
-  refGot:'You joined through a friend\'s invite: {n} free points added.',lr_referral:'Friend invite',refJoinedL:'joined by invite',refInviterL:'a friend joined',
+en:{refTitle:'Invite friends, get points',refText:'When a friend you invited joins a paid plan, you get {n} points. Your friend gets the normal welcome gift.',refCopy:'Copy',refCopied:'Copied ✓',refShare:'Share',
+  refStats:'{k} joined through you · {q} joined a paid plan · you earned {p} points',refMsg:'Try Chord Room: BPM, key, chords and AI stems from any song. Sign up through this link and get the welcome points (and if you join a paid plan, I get points for the invite):',refDisc:'Disclosure: this is Chord Room’s invite program. When a friend who signed up through your link joins a paid plan, you get points (not money); your friend gets only the normal welcome gift. When you share the link publicly, please mention that you get points for it.',
+  refGot:'You joined through a friend\'s invite: {n} free points added.',lr_referral:'Friend invite',refJoinedL:'joined by invite',refInviterL:'invite reward',refDevice:'This device already joined through this member’s link, so the invite doesn’t count again.',refBackL:'invite reward taken back (friend refunded)',
   billRef:'Points per invite (each side)',billRefMax:'Max rewards per inviter in 30 days'},
-ar:{refTitle:'ادعُ أصدقاءك واحصل على نقاط',refText:'كل صديق يسجّل عبر رابطك يحصل على {n} نقاط مجانية، وتحصل أنت أيضًا على {n}.',refCopy:'نسخ',refCopied:'تم النسخ ✓',refShare:'مشاركة',
-  refStats:'انضم عبرك {k} · ربحت {p} نقطة',refMsg:'جرّب Chord Room: الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية. سجّل عبر هذا الرابط واحصل على {n} نقاط مجانية (وأنا أيضًا أحصل على نقاط مقابل الدعوة):',refDisc:'إفصاح: هذا برنامج دعوة الأصدقاء في Chord Room. عن كل صديق يسجّل عبر رابطك تحصلان كلاكما على نقاط (وليس مالًا). عند مشاركة الرابط علنًا، يُرجى ذكر أنك تحصل على نقاط مقابله.',
-  refGot:'انضممت عبر دعوة صديق: أُضيفت {n} نقاط مجانية.',lr_referral:'دعوة صديق',refJoinedL:'انضمام بدعوة',refInviterL:'انضم صديق',
+ar:{refTitle:'ادعُ أصدقاءك واحصل على نقاط',refText:'عندما ينضم صديق دعوته إلى خطة مدفوعة، تحصل على {n} نقاط. ويحصل صديقك على هدية التسجيل المعتادة.',refCopy:'نسخ',refCopied:'تم النسخ ✓',refShare:'مشاركة',
+  refStats:'انضم عبرك {k} · اشترك في خطة مدفوعة {q} · ربحت {p} نقطة',refMsg:'جرّب Chord Room: الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية. سجّل عبر هذا الرابط واحصل على نقاط هدية التسجيل (وإن اشتركت في خطة مدفوعة أحصل أنا على نقاط مقابل الدعوة):',refDisc:'إفصاح: هذا برنامج دعوة الأصدقاء في Chord Room. عندما يشترك صديق سجّل عبر رابطك في خطة مدفوعة، تحصل على نقاط (وليس مالًا)؛ ويحصل صديقك على هدية التسجيل المعتادة فقط. عند مشاركة الرابط علنًا، يُرجى ذكر أنك تحصل على نقاط مقابله.',
+  refGot:'انضممت عبر دعوة صديق: أُضيفت {n} نقاط مجانية.',lr_referral:'دعوة صديق',refJoinedL:'انضمام بدعوة',refInviterL:'مكافأة دعوة',refDevice:'سبق أن انضم هذا الجهاز عبر رابط هذا المستخدم، لذلك لا تُحتسب الدعوة مرة أخرى.',refBackL:'أُلغيت مكافأة الدعوة (استرداد الصديق)',
   billRef:'نقاط لكل دعوة (لكل طرف)',billRefMax:'الحد الأقصى للمكافآت لكل داعٍ خلال 30 يومًا'},
-ru:{refTitle:'Пригласите друзей и получите баллы',refText:'Каждый друг, который зарегистрируется по вашей ссылке, получит {n} бесплатных баллов, и вы тоже получите {n}.',refCopy:'Копировать',refCopied:'Скопировано ✓',refShare:'Поделиться',
-  refStats:'По вашей ссылке пришли: {k} · вы заработали {p} баллов',refMsg:'Попробуйте Chord Room: темп, тональность, аккорды и AI-разделение любой песни. Регистрируйтесь по ссылке и получите {n} бесплатных баллов (я тоже получаю баллы за приглашение):',refDisc:'Раскрытие информации: это программа приглашений Chord Room. За каждого друга, который зарегистрируется по вашей ссылке, вы оба получаете баллы (не деньги). Делясь ссылкой публично, пожалуйста, упоминайте, что получаете за неё баллы.',
-  refGot:'Вы пришли по приглашению друга: начислено {n} бесплатных баллов.',lr_referral:'Приглашение друга',refJoinedL:'регистрация по приглашению',refInviterL:'друг зарегистрировался',
+ru:{refTitle:'Пригласите друзей и получите баллы',refText:'Когда приглашённый вами друг оформит платный тариф, вы получите {n} баллов. Друг получает обычный подарок за регистрацию.',refCopy:'Копировать',refCopied:'Скопировано ✓',refShare:'Поделиться',
+  refStats:'По вашей ссылке пришли: {k} · оформили платный тариф: {q} · вы заработали {p} баллов',refMsg:'Попробуйте Chord Room: темп, тональность, аккорды и AI-разделение любой песни. Регистрируйтесь по ссылке и получите подарочные баллы за регистрацию (а если оформите платный тариф, я получу баллы за приглашение):',refDisc:'Раскрытие информации: это программа приглашений Chord Room. Когда друг, зарегистрировавшийся по вашей ссылке, оформляет платный тариф, вы получаете баллы (не деньги); друг получает только обычный подарок за регистрацию. Делясь ссылкой публично, пожалуйста, упоминайте, что получаете за неё баллы.',
+  refGot:'Вы пришли по приглашению друга: начислено {n} бесплатных баллов.',lr_referral:'Приглашение друга',refJoinedL:'регистрация по приглашению',refInviterL:'награда за приглашение',refDevice:'С этого устройства уже регистрировались по ссылке этого пользователя, поэтому приглашение не засчитывается повторно.',refBackL:'награда за приглашение отменена (возврат денег другу)',
   billRef:'Баллы за приглашение (каждой стороне)',billRefMax:'Макс. наград одному пригласившему за 30 дней'},
-es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cada amigo que se registre con tu enlace recibe {n} puntos gratis, y tú también recibes {n}.',refCopy:'Copiar',refCopied:'Copiado ✓',refShare:'Compartir',
-  refStats:'{k} se unieron gracias a ti · ganaste {p} puntos',refMsg:'Prueba Chord Room: BPM, tonalidad, acordes y pistas separadas con IA de cualquier canción. Regístrate con este enlace y recibe {n} puntos gratis (yo también recibo puntos por la invitación):',refDisc:'Aviso: este es el programa de invitaciones de Chord Room. Por cada amigo que se registre con tu enlace, ambos reciben puntos (no dinero). Si compartes el enlace públicamente, menciona que recibes puntos por él.',
-  refGot:'Te uniste con la invitación de un amigo: se añadieron {n} puntos gratis.',lr_referral:'Invitación de amigo',refJoinedL:'registro por invitación',refInviterL:'se unió un amigo',
+es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cuando un amigo que invitaste se suscribe a un plan de pago, recibes {n} puntos. Tu amigo recibe el regalo de bienvenida habitual.',refCopy:'Copiar',refCopied:'Copiado ✓',refShare:'Compartir',
+  refStats:'{k} se unieron gracias a ti · {q} con plan de pago · ganaste {p} puntos',refMsg:'Prueba Chord Room: BPM, tonalidad, acordes y pistas separadas con IA de cualquier canción. Regístrate con este enlace y recibe los puntos de bienvenida (y si te suscribes a un plan de pago, yo recibo puntos por la invitación):',refDisc:'Aviso: este es el programa de invitaciones de Chord Room. Cuando un amigo que se registró con tu enlace se suscribe a un plan de pago, recibes puntos (no dinero); tu amigo recibe solo el regalo de bienvenida habitual. Si compartes el enlace públicamente, menciona que recibes puntos por él.',
+  refGot:'Te uniste con la invitación de un amigo: se añadieron {n} puntos gratis.',lr_referral:'Invitación de amigo',refJoinedL:'registro por invitación',refInviterL:'recompensa por invitación',refDevice:'Este dispositivo ya se unió con el enlace de este usuario, así que la invitación no vuelve a contar.',refBackL:'recompensa por invitación retirada (reembolso al amigo)',
   billRef:'Puntos por invitación (cada lado)',billRefMax:'Máx. recompensas por invitador en 30 días'}};
 for(const k in IREF)Object.assign(I[k],IREF[k]);
 /* growth: admin tabs (assets/reviews.js, assets/ab.js) + footer links (accessibility statement, licenses, cookie settings) */
@@ -2787,6 +2787,12 @@ const REF_K='chordroom.ref';
   if(/^[a-z0-9]{6,12}$/.test(c))localStorage.setItem(REF_K,JSON.stringify({c,t:Date.now()}));
   u.searchParams.delete('ref');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}catch(e){}})();
 const REF={me:null,for:null};
+// invite codes this browser already joined through (any account): chordroom.refdone.v1 = ["code", …]
+const REFDONE_K='chordroom.refdone.v1';
+function refDone(add){let a=[];try{a=JSON.parse(localStorage.getItem(REFDONE_K)||'[]');if(!Array.isArray(a))a=[]}catch(e){}
+  a=a.filter(c=>typeof c==='string'&&/^[a-z0-9]{6,12}$/.test(c));
+  if(add&&!a.includes(add)){a.push(add);a=a.slice(-50);try{localStorage.setItem(REFDONE_K,JSON.stringify(a))}catch(e){}}
+  return a}
 const refPts=()=>{const n=parseInt(BILL().referral,10);return isFinite(n)&&n>=0?n:10};
 const refLink=code=>`${location.origin}${location.pathname.replace(/index\.html$/,'')}?ref=${code}`;
 async function claimRef(){
@@ -2795,7 +2801,11 @@ async function claimRef(){
   if(!s||!s.c)return;
   const drop=()=>{try{localStorage.removeItem(REF_K)}catch(e){}};
   if(Date.now()-(+s.t||0)>14*864e5){drop();return}
+  // this browser already joined through this inviter's link (another account) → don't claim again
+  if(refDone().includes(s.c)){drop();toast(t('refDevice'));return}
   try{const r=await Backend.claimReferral(s.c);drop();
+    if(r&&(r.ok||r.why==='device'))refDone(s.c);
+    if(r&&r.why==='device')toast(t('refDevice'));
     if(r&&r.ok){if(ACC.cred&&r.balance!=null)ACC.cred.credits=r.balance;renderCredits();if(r.points>0)toast(t('refGot',{n:r.points}))}}
   catch(e){console.warn(e)}   // keep the code: the SQL may not be installed yet, try again on the next sign-in
 }
@@ -2819,7 +2829,7 @@ function fillRef(el){
     if(ok){cp.textContent=t('refCopied');clearTimeout(cp._t);cp._t=setTimeout(()=>{cp.textContent=t('refCopy')},2000)}};
   el.querySelector('.refwa').href='https://wa.me/?text='+encodeURIComponent(msg+' '+url);
   const sh=el.querySelector('.refsh');sh.hidden=!navigator.share;sh.textContent=t('refShare');sh.onclick=()=>navigator.share({title:'Chord Room',text:msg,url}).catch(()=>{});
-  el.querySelector('.refst').textContent=me.invited?t('refStats',{k:me.invited,p:me.earned||0}):'';
+  el.querySelector('.refst').textContent=me.invited?t('refStats',{k:me.invited,q:me.paid||0,p:me.earned||0}):'';
   /* growth: referral disclosure */let dc=el.querySelector('.refdisc');if(!dc){dc=document.createElement('p');dc.className='snote refdisc';el.append(dc)}dc.textContent=t('refDisc');
 }
 function renderRef(){
@@ -3048,7 +3058,7 @@ function ledgerRef(r){
     return m?(m[1]?t('payRefundL'):planName(m[3])+(m[4]?` · ${t('payUpgradeL')}`:''))+test:r.ref}
   if(r.reason==='refill')return planName(r.ref);
   if(r.reason==='plan'){const p=/^(\S+) x(\d+)$/.exec(r.ref);if(p)return planName(p[1])+(+p[2]>1?` ×${p[2]}`:'')}
-  if(r.reason==='referral')return /^ref:inviter:/.test(r.ref)?t('refInviterL'):t('refJoinedL');
+  if(r.reason==='referral')return /^ref:inviter:\S+ refund/.test(r.ref)?t('refBackL'):/^ref:inviter:/.test(r.ref)?t('refInviterL'):t('refJoinedL');
   const m=/^(sep|stems):\s*(.*)$/.exec(r.ref);if(m)return t('lk_'+m[1])+(m[2]?` · ${m[2]}`:'');
   const v=/^([a-z][a-z_]{1,23}) ×(\d+)(?: (.*))?$/.exec(r.ref);   // points v2: "<kind> ×<qty> <ref>"
   if(v){const lb=I.en['lk_'+v[1]]?t('lk_'+v[1]):v[1];return lb+(+v[2]>1?` ×${v[2]}`:'')+(v[3]?` · ${v[3]}`:'')}

@@ -200,8 +200,8 @@ v3 = open(os.path.join(pg.REPO, 'supabase', 'security_v3.sql'), encoding='utf-8'
 asql = open(pg.ASSISTANT, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v3 .*?-- \[security-v3:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v3] block', 'found' if m else 'missing', 'found')
-# only later blocks ([accounts-v4], [growth-v4], [paypal], [security-v5]) may follow it
-later = re.sub(r'(?s)-- =+\n-- (?:Accounts v4|Growth v4|Security v5) .*?-- \[(?:accounts-v4|growth-v4|security-v5):end\]\n-- =+\n', '', src[m.end():]) if m else src
+# only later blocks ([accounts-v4], [growth-v4], [paypal], [security-v5], [referral-v6]) may follow it
+later = re.sub(r'(?s)-- =+\n-- (?:Accounts v4|Growth v4|Security v5|Referral v6) .*?-- \[(?:accounts-v4|growth-v4|security-v5|referral-v6):end\]\n-- =+\n', '', src[m.end():]) if m else src
 later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', later)
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('security_v3.sql contains the block verbatim', 'yes' if m and m.group(1) in v3 else 'no', 'yes')

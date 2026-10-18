@@ -213,9 +213,9 @@ g4 = open(os.path.join(pg.REPO, 'supabase', 'growth_v4.sql'), encoding='utf-8').
 m = re.search(r'(-- =+\n-- Growth v4[^\n]*\n-- \[growth-v4:begin\].*?-- \[growth-v4:end\]\n-- =+\n)', schema, re.S)
 check('block found in schema.sql', 'yes' if m else 'no', 'yes')
 check('growth_v4.sql ends with the block verbatim', 'yes' if m and g4.endswith(m.group(1)) else 'no', 'yes')
-# only later blocks ([paypal], [security-v5]) may follow it
+# only later blocks ([paypal], [security-v5], [referral-v6]) may follow it
 later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', schema[m.end():]) if m else schema
-later = re.sub(r'(?s)-- =+\n-- Security v5 .*?-- \[security-v5:end\]\n-- =+\n', '', later)
+later = re.sub(r'(?s)-- =+\n-- (?:Security v5|Referral v6) .*?-- \[(?:security-v5|referral-v6):end\]\n-- =+\n', '', later)
 check('the block is the last thing in schema.sql (only later blocks after it)', 'yes' if m and later.strip() == '' else 'no', 'yes')
 old = schema[:m.start()] if m else schema
 tmp = tempfile.NamedTemporaryFile('w', suffix='.sql', delete=False, encoding='utf-8'); tmp.write(old); tmp.close()

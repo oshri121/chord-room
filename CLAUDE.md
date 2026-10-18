@@ -77,8 +77,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   from `site_config`, refuses a live sub with 409 `have_sub`, creates the subscription with `custom_id` = uid, returns the approve link,
   return URL `?paid=1#pricing` → `payReturn`). Webhook `/api/pay/paypal` (`functions/api/pay/paypal.js`, own per-IP limit 300/min, cheap header/body checks first): verifies
   with PayPal's verify-webhook-signature (raw body spliced in), then HMAC-SHA256 of `env\nbody` with `PAYPAL_RELAY_SECRET` → SQL
-  `pay_webhook_paypal(p_body,p_env,p_sig)` (secret `private.settings.paypal_relay_secret`; block `[paypal:begin…end]` = last block of
-  schema.sql = `supabase/paypal.sql`). Once per PayPal event id in `pay_events` (`pp:<id>`); user = custom_id → `pay_sub_id` → unique
+  `pay_webhook_paypal(p_body,p_env,p_sig)` (secret `private.settings.paypal_relay_secret`; block `[paypal:begin…end]` of
+  schema.sql = `supabase/paypal.sql`; its newest `pay_webhook_paypal` body now lives in `[referral-v6]`, edit it there). Once per PayPal event id in `pay_events` (`pp:<id>`); user = custom_id → `pay_sub_id` → unique
   confirmed email; SUBSCRIPTION.* sets `pay_*` (provider 'paypal', portal = paypal.com/myaccount/autopay) and the plan until next
   billing + 3 days; points only from `PAYMENT.SALE.COMPLETED` (ledger ref `ls:pp:sale:<id>`, sales that arrived before ACTIVATED
   are granted on ACTIVATED), full REFUNDED/REVERSED takes them back; sandbox counts only for admins. Env (Cloudflare): `PAYPAL_ENV`,
@@ -104,6 +104,10 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   (sources → stem gains → fade → Signalsmith Stretch, or a DelayNode of the same latency when a slot needs no change → level →
   limiter); export renders the same `schedule()` offline → WAV / MP3 320 "A × B (Mashup) BPM Key", logs `mashup_export`.
   Settings (not audio) per account in `chordroom.mashup.v1:<uid|guest>`. Verified: A downbeats on B downbeats ≤0.5 ms (export + preview).
+  A's vocal entry with a vocals stem = the onset's beat; an entry on beat 2/3 of A's bar moves A's downbeat there (session only, never over a
+  grid fix; beat 4 = pickup → next bar). Timeline: wheel/pinch zoom around the pointer down to 0.2 s per width (ruler bars → beats → 16ths →
+  ms, samples drawn at deep zoom), Shift+wheel scrolls; "Free move" toggle (`#mxFreeB`): click selects A/B, drag/arrows (1 ms, Shift 10,
+  Alt 0.1) move it with no snapping via `nudge` (B by d = A by −d, the view follows B), live ms readout, undo + saved per pair.
 - Converter (`#convertView`, hash `#convert`, nav "המרה", gated): `assets/convert.js/css` (strings inside), talks only through
   `window.CR` (`CR.loudness` = `measureLoudness`, `CR.analyzeTrack`, `CR.zip`, `CR.saveBlob`, `CR.log`). Batch audio/video → MP3
   (lamejs via `window.MP3`), WAV 16/24-bit (own writer, LIST INFO + `id3 ` chunk), FLAC / OGG-Vorbis / M4A-AAC (ffmpeg.wasm).
@@ -202,8 +206,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
   FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]` and `[paypal]` (the last block;
-  owner runs `accounts_v4.sql` before `growth_v4.sql`) (server audit
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]`, `[paypal]`, `[security-v5]` and `[referral-v6]` (the last block;
+  owner runs `accounts_v4.sql` before `growth_v4.sql`, and `referral_v6.sql` after `security_v5.sql` — re-run v6 whenever v5 is re-run) (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
   adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
   plans[].link/variant only owner/full admin (+ INSERT policy so a 'settings' role can save via upsert), no sign-up gift
@@ -263,8 +267,13 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Drums → MIDI: export option `xDrumsM` = kick/snare/hat onsets from the drums stem (band filters + flux peaks, bleed filtered,
   quantised to 1/16), GM channel 10 (36/38/42). Tested on synthetic drums (`drumHits`, `drumsMidi`).
 - Invite a friend: `?ref=<code>` is stored in localStorage `chordroom.ref`; after sign-in `claim_referral(code)` (once, within 3 days
-  of signup; both sides get `billing.referral` points, inviter capped by `billing.referral_max` per 30 days). `my_referral()` gives the
-  code + stats; the invite box sits in the points box and under the plans on the pricing page (`renderRef`).
+  of signup) only records a pending invite (`private.referrals`) — the friend gets NO bonus, just the normal `billing.signup` gift; the
+  inviter gets `billing.referral` points (capped by `billing.referral_max` per 30 days) only on the friend's FIRST real PayPal payment
+  (`pay_webhook_paypal`, also late sales granted on ACTIVATED; once per friend ever; a full refund/reversal of that sale takes it back,
+  ref `ref:inviter:<friend> refund`). One claim per (inviter, network) + 3 per network in 30 days (salted IP hash in
+  `private.referral_ips`) → `why:'device'`; the browser also remembers used codes (`chordroom.refdone.v1`) and shows `refDevice`.
+  SQL block `[referral-v6:begin…end]` = last block of schema.sql = `supabase/referral_v6.sql` (test `sql/test_referral_v6.py`).
+  `my_referral()` → {code, invited/joined, paid, pending, earned}; the invite box sits in the points box and under the plans on the pricing page (`renderRef`).
 - Discover "Israeli": Top Israel chart + an Israeli-hits playlist, filtered to Israeli artists (`israeliFilter`: Hebrew text,
   artists learned from Hebrew tracks, `IL_ARTISTS` list).
 - Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from

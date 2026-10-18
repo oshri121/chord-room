@@ -10,6 +10,9 @@
  *   B       pB(out) = out·rB. Timeline bars: bar0 = B's first downbeat / rB, one bar = 240 / T s
  *   A       its vocal start vA (source seconds, on one of A's own bars) sits on bar `align` of B (+ nudge seconds):
  *           anchor = bar0 + align·bar + nudge,  pA(out) = vA + (out − anchor)·rA
+ *           vA from the vocals stem = the onset's beat; an entry on beat 2/3 of A's bar moves A's downbeat there (see vocalStart)
+ *   free    "Free move" mode: dragging / arrow keys change nudge with no snapping (0.01 ms steps); moving B by d = A by −d
+ *   zoom    wheel / pinch around the pointer, down to 0.2 s across the timeline (ruler: bars → beats → 16ths → ms)
  *   key     A is moved by `semis` (auto: the smallest shift that makes A the same Camelot key as B or its relative,
  *           i.e. B's key or its relative major/minor); B keeps its key. Pitch sent to the stretcher = semis − 12·log2(r).
  * Audio graph per slot: stem sources (playbackRate r) → stem gain → fade gain → Signalsmith Stretch (or a delay of the
@@ -195,6 +198,25 @@ es:{mxGrid:'Rejilla',mxGridT:'Rejilla: arrastra sobre una canción para mover su
   mxLockOn:'Fijado: el compás de A cae justo en el compás {n} de B',mxLockOff:'A está {ms} fuera del compás {n} de B'}
 });
 
+/* freemove: free / ms move mode, wheel zoom (he / en / ar / ru / es) */
+CR.addStrings({
+he:{mxFree:'הזזה חופשית',mxFreeT:'הזזה חופשית (מילישניות): לוחצים על A או על B כדי לבחור ומזיזים בגרירה, בלי הצמדה',
+  mxFreeHelp:'הזזה חופשית: לוחצים על שיר כדי לבחור אותו וגוררים, בלי הצמדה (הדיוק עולה ככל שמגדילים) · ← → מילישנייה (Shift עשר, Alt עשירית) · גרירה של B מזיזה את B מול A · Ctrl+Z ביטול',
+  mxWheelH:'גלגלת על ציר הזמן: זום · Shift+גלגלת: גלילה',mxSelA:'נבחר: A',mxSelB:'נבחר: B'},
+en:{mxFree:'Free move',mxFreeT:'Free move (ms): click A or B to select it and drag it, no snapping',
+  mxFreeHelp:'Free move: click a song to select it and drag it, no snapping (finer the more you zoom in) · ← → 1 ms (Shift 10 ms, Alt 0.1 ms) · dragging B moves B against A · Ctrl+Z undo',
+  mxWheelH:'Wheel on the timeline: zoom · Shift+wheel: scroll',mxSelA:'Selected: A',mxSelB:'Selected: B'},
+ar:{mxFree:'تحريك حر',mxFreeT:'تحريك حر (بالمللي ثانية): انقر A أو B لتحديده واسحبه بلا التصاق',
+  mxFreeHelp:'تحريك حر: انقر أغنية لتحديدها واسحبها بلا التصاق (أدق كلما كبّرت) · ← → ‏1 ms ‏(Shift ‏10 ms، Alt ‏0.1 ms) · سحب B يحرّك B مقابل A · Ctrl+Z تراجع',
+  mxWheelH:'العجلة على الخط الزمني: تكبير · Shift+العجلة: تمرير',mxSelA:'المحدد: A',mxSelB:'المحدد: B'},
+ru:{mxFree:'Свободно',mxFreeT:'Свободный сдвиг (мс): кликните по A или B, чтобы выбрать, и тяните без привязки',
+  mxFreeHelp:'Свободный сдвиг: кликните по песне, чтобы выбрать её, и тяните без привязки (чем крупнее масштаб, тем точнее) · ← → 1 мс (Shift — 10 мс, Alt — 0,1 мс) · B сдвигается относительно A · Ctrl+Z отмена',
+  mxWheelH:'Колесо на шкале: масштаб · Shift+колесо: прокрутка',mxSelA:'Выбрано: A',mxSelB:'Выбрано: B'},
+es:{mxFree:'Mover libre',mxFreeT:'Mover libre (ms): haz clic en A o B para seleccionarla y arrástrala sin ajuste',
+  mxFreeHelp:'Mover libre: haz clic en una canción para seleccionarla y arrástrala sin ajuste (más fino cuanto más acercas) · ← → 1 ms (Shift 10 ms, Alt 0,1 ms) · arrastrar B mueve B respecto a A · Ctrl+Z deshacer',
+  mxWheelH:'Rueda en la línea de tiempo: zoom · Shift+rueda: desplazar',mxSelA:'Seleccionada: A',mxSelB:'Seleccionada: B'}
+});
+
 /* ---------- constants & state ---------- */
 const IDS=['vocals','drums','bass','other'];
 const LET=['A','B'];
@@ -211,7 +233,8 @@ const newSlot=i=>({i,use:{...DEF_USE[i]},gain:{vocals:1,drums:1,bass:1,other:1},
 const M={built:false,visible:false,slots:[newSlot(0),newSlot(1)],tempo:'B',custom:0,semis:null,align:null,nudge:0,fadeIn:4,fadeOut:4,startA:'pre',
   vol:[1,1],fmt:'wav',onlyLoop:false,loop:null,loopOn:false,loopBars:8,zoom:1,view0:0,pos:0,owner:undefined,exporting:false,exp:null,
   msg:'',msgErr:false,pair:null,lastO:null,pickFor:0,pickFrom:null,drag:null,hover:null,lastBeat:null,
-  gridOn:false,gLane:0,undo:[],redo:[],gk:null};   /* griddrag: grid mode, the lane the arrows move, undo/redo of alignment + grid edits */
+  gridOn:false,gLane:0,undo:[],redo:[],gk:null,
+  freeOn:false,sel:null,fk:null};   /* freemove: free move mode, the selected clip (0 = A, 1 = B), the arrow-key burst */   /* griddrag: grid mode, the lane the arrows move, undo/redo of alignment + grid edits */
 const CACHE=new Map();                    // song key → {an, cues, stems, kind}: analysis + separated stems for this session
 const songKey=(name,buf)=>name+'|'+Math.round(buf.duration*1000)+'|'+buf.length;
 // memory cap: stems are 4 stereo float32 buffers per song (≈340 MB for 4 min), so keep the stems of the two slots' songs
@@ -249,14 +272,41 @@ function keyOpts(){
   return {best,nb,orig:all.find(o=>o.s===0),auto,all};
 }
 function semis(){if(M.semis!=null)return M.semis;const k=keyOpts();return k?k.auto.s:0}
-// A's vocal entry (source seconds, on one of A's bars): vocals stem energy → 'vocal' cue → 'intro' cue → first bar with sound
+// A's vocal entry (source seconds, on one of A's bars): vocals stem energy → 'vocal' cue → 'intro' cue → first bar with sound.
+// With a vocals stem the entry is refined to its onset (5.8 ms frames) and checked against A's downbeat: songs often get
+// their downbeat 1–2 beats off, and then the vocal landed mid-bar on B. Phrase onsets vote for a beat phase (an onset in the
+// last ⅔ beat before a beat counts for that beat); when the first entry sits on beat 2 or 3 of A's bar and the votes agree
+// (or there are none), A's downbeat is moved onto that beat (s.an.down, in this session; never over a user grid fix). An
+// entry on beat 4 is a pickup → the next downbeat. Result: vA is always on one of A's (drawn) bar lines.
+function vocalOnset(s,A,fd,k){
+  const b=s.stems.vocals,sr=b.sampleRate,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L,H=256,beat=60/A.bpm;
+  const nf=Math.floor(L.length/H)-1,env=new Float32Array(Math.max(0,nf));
+  for(let f=0;f<nf;f++){let q=0;for(let j=f*H,z=j+2*H;j<z;j+=2){const x=L[j]+R[j];q+=x*x}env[f]=Math.sqrt(q/H)}
+  const ft=f=>(f*H+H)/sr,fo=t=>Math.round((t*sr-H)/H);
+  const srt=Float32Array.from(env).sort(),p90=srt[Math.floor(srt.length*0.9)]||0;if(p90<1e-4)return null;
+  const hi=0.3*p90,lo=0.12*p90,quiet=Math.round(0.75*beat*sr/H);
+  // the first entry: first frame above `hi` from one beat before the first vocal bar
+  let f0=-1;for(let f=Math.max(0,fo(fd+k*240/A.bpm-beat));f<nf;f++)if(env[f]>hi){f0=f;break}
+  if(f0<0)return null;
+  while(f0>0&&env[f0-1]>lo&&env[f0-1]<env[f0])f0--;                     // back to the foot of the rise
+  const ph=t=>{const q=Math.floor((t-fd)/beat+2/3);return {b:q,p:mod(q,4)}};      // beat index from A's first downbeat
+  const votes=[0,0,0,0];let run=0;
+  for(let f=f0+1;f<nf;f++){if(env[f]<lo){run++;continue}if(env[f]>hi&&run>=quiet){votes[ph(ft(f)).p]++}if(env[f]>=lo)run=0}
+  return {t:ft(f0),...ph(ft(f0)),votes};
+}
 function vocalStart(s){
   if(s.vStart)return s.vStart;
-  const A=s.an,bar=240/A.bpm,fd=firstDown(A),dur=s.buffer.duration,k0=-Math.floor(fd/bar),n=Math.floor((dur-fd)/bar);
+  let A=s.an,bar=240/A.bpm,fd=firstDown(A);const dur=s.buffer.duration,k0=-Math.floor(fd/bar),n=Math.floor((dur-fd)/bar);
   const at=k=>fd+k*bar;let res=null;
   const perBar=(get,len,sr)=>{const e=[];for(let k=k0;k<n;k++){const a=Math.max(0,Math.floor(at(k)*sr)),z=Math.min(len,Math.floor(at(k+1)*sr));let q=0,c=0;for(let j=a;j<z;j+=8){const x=get(j);q+=x*x;c++}e.push({k,v:c?Math.sqrt(q/c):0})}return e};
   const firstOn=(e,f)=>{const v=e.map(x=>x.v).sort((x,y)=>x-y),p90=v[Math.floor(v.length*0.9)]||0;if(p90<1e-4)return null;for(let i=0;i+1<e.length;i++)if(e[i].v>f*p90&&e[i+1].v>f*p90)return e[i].k;return null};
-  if(s.stems&&s.stems.vocals){const b=s.stems.vocals,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;const k=firstOn(perBar(j=>L[j]+R[j],L.length,b.sampleRate),0.25);if(k!=null)res={t:Math.max(0,at(k)),src:'stem'}}
+  if(s.stems&&s.stems.vocals){const b=s.stems.vocals,L=b.getChannelData(0),R=b.numberOfChannels>1?b.getChannelData(1):L;const k=firstOn(perBar(j=>L[j]+R[j],L.length,b.sampleRate),0.25);
+    if(k!=null){res={t:Math.max(0,at(k)),src:'stem'};
+      const on=vocalOnset(s,A,fd,k);
+      if(on){const beat=60/A.bpm,tb=fd+on.b*beat;res.on=on.t;res.t=tb;
+        if((on.p===1||on.p===2)&&!s.gfix&&on.votes[on.p]>=on.votes[0]){s.an=A={...A,down:mod((A.down||0)+on.p,4)};fd=firstDown(A);res.rephase=on.p}   // A's downbeat is off: onto the vocal's beat
+        else res.t=tb+(on.p===1?-1:on.p===2?2:on.p===3?1:0)*beat;    // beat 2 = just after the downbeat, beat 3/4 = a pickup
+        res.t=Math.max(0,res.t)}}}
   if(!res){const c=(s.cues||[]).find(x=>x.k==='vocal')||(s.cues||[]).find(x=>x.k==='intro');if(c)res={t:c.t,src:c.k}}
   if(!res&&A.wave){const w=A.wave;const k=firstOn(perBar(j=>w.amp[j]||0,w.len,w.rate),0.12);if(k!=null)res={t:Math.max(0,at(k)),src:'wave'}}
   if(!res)res={t:Math.max(0,fd),src:'grid'};
@@ -324,7 +374,7 @@ function gridShift(i,d,b,o){
   if(i===1&&o&&o.rB){const w=Math.round((raw-fdN)/(o.bar*o.rB));if(w){if(M.align!=null)M.align+=w;if(M.loop)M.loop={a:M.loop.a+w,b:M.loop.b+w}}}
 }
 function mSnap(){return {align:M.align,nudge:M.nudge,loop:M.loop,g:[gridBase(0),gridBase(1)]}}
-function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null}
+function mPush(sn){M.undo.push(sn||mSnap());if(M.undo.length>60)M.undo.shift();M.redo=[];M.gk=null;M.fk=null}
 function mRestore(sn){M.align=sn.align;M.nudge=sn.nudge;M.loop=sn.loop;
   sn.g.forEach((x,i)=>{const s=song(i);if(x&&s&&s.key===x.key){s.an=x.an;s.vStart=x.vStart;s.cues=x.cues;cachePut(s.key,{an:s.an,cues:s.cues})}});
   const f=document.activeElement,fs=f&&f.closest&&f.closest('[id^="mxSlot"]'),fa=fs&&f.dataset.a;
@@ -340,6 +390,29 @@ function gridKey(ms){
   const k=M.gk;k.t=tn;k.acc=Math.round((k.acc+ms/1000)*1e6)/1e6;
   const al=M.undo[M.undo.length-1];M.align=al.align;M.loop=al.loop;     // renumbering is computed from the burst's start
   gridShift(i,k.acc,k.b,k.o);changed();
+}
+
+/* ---------- freemove: free / ms move of a clip ----------
+   A moves its own anchor (nudge, whole bars folded into `align`). B always starts at timeline 0 on its own grid, so moving
+   B by d = moving A by −d (the relative alignment is what changes); the view follows B so B is what moves on screen. */
+const LOCK=5e-5;                                     // |nudge| below 0.05 ms = locked on the bar
+const r6=x=>Math.round(x*1e6)/1e6;
+const fmtMs=x=>{const v=Math.round(Math.abs(x)*1e4)/10;return (x>=5e-5?'+':x<=-5e-5?'−':'±')+(v%1?v.toFixed(1):String(v))+'\u00a0ms'};
+function moveA(d,o){
+  if(M.align==null)M.align=o.align;M.nudge=r6(M.nudge+d);
+  const w=Math.round(M.nudge/o.bar);if(w){M.align+=w;M.nudge=r6(M.nudge-w*o.bar)}
+}
+// arrow keys on the selected clip: ±1 ms (Shift 10, Alt 0.1), one undo step per burst
+function freeKey(ms){
+  const o=model();if(!o||!o.hasA||!o.hasB||M.sel==null)return;
+  const tn=performance.now();if(!M.fk||M.fk.i!==M.sel||tn-M.fk.t>900){mPush();M.fk={i:M.sel,acc:0}}
+  const k=M.fk;k.t=tn;k.acc=r6(k.acc+ms/1000);const d=ms/1000*(M.sel?-1:1);moveA(d,o);if(M.sel)M.view0+=d;
+  M.fdx={i:M.sel,d:k.acc,t:tn};changed();
+}
+function renderOff(o){
+  const A=an(0),B=an(1),lk=$('#mxLock'),on=!!(A&&B)&&Math.abs(M.nudge)<LOCK;
+  if(lk){lk.textContent=A&&B?(on?t('mxLockOn',{n:o.align+1}):t('mxLockOff',{n:o.align+1,ms:'\u2066'+fmtMs(M.nudge)+'\u2069'})):'';lk.classList.toggle('on',on)}   /* griddrag */
+  const of=$('#mxOff');of.textContent=fmtMs(M.nudge);of.title=t('mxOffset',{ms:Math.round(M.nudge*1e4)/10});
 }
 
 /* ---------- audio engine ---------- */
@@ -622,6 +695,7 @@ const IC={
   ai:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>',
   bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
   grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v16M15 4v16M3 12h3M18 12h3M5 10l-2 2 2 2M19 10l2 2-2 2"/></svg>',
+  free:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M2 12h3M19 12h3M4 10l-2 2 2 2M20 10l2 2-2 2"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>'
 };
 function build(){
@@ -676,6 +750,7 @@ function build(){
       <span class="mxtime mono" id="mxTime" dir="ltr"></span><span class="mxbb mono" id="mxBB" dir="ltr"></span>
       <span class="mxsp"></span>
       <button type="button" class="mxib mxgridb" id="mxGrid" aria-pressed="false" data-it="mxGridT">${IC.grid}<span data-i="mxGrid"></span></button>
+      <button type="button" class="mxib mxgridb mxfreeb" id="mxFreeB" aria-pressed="false" data-it="mxFreeT">${IC.free}<span data-i="mxFree"></span></button>
       <button type="button" class="mxib mxloop" id="mxLoop" aria-pressed="false">${IC.loop}<span data-i="mxLoop"></span></button>
       <select class="mxsel" id="mxLoopN"></select>
       <button type="button" class="mxib" id="mxZo" data-it="mxZoomOut">${IC.zout}</button><button type="button" class="mxib" id="mxZi" data-it="mxZoomIn">${IC.zin}</button>
@@ -684,8 +759,9 @@ function build(){
     <div class="mxmix">
       <label class="mxvol"><span class="mxlet a" dir="ltr">A</span><span class="vh" data-i="mxVolA"></span><input type="range" id="mxVolA" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolAo"></output></label>
       <label class="mxvol"><span class="mxlet b" dir="ltr">B</span><span class="vh" data-i="mxVolB"></span><input type="range" id="mxVolB" min="0" max="1.5" step="0.01" dir="ltr"><output class="mono" id="mxVolBo"></output></label>
-      <p class="mxhelp"><span data-i="mxTlHelp"></span> · <span data-i="mxKeysH"></span></p>
+      <p class="mxhelp"><span data-i="mxTlHelp"></span> · <span data-i="mxKeysH"></span> · <span data-i="mxWheelH"></span></p>
       <p class="mxghelp" id="mxGHelp" data-i="mxGridHelp" hidden></p>
+      <p class="mxghelp mxfhelp" id="mxFHelp" hidden><span data-i="mxFreeHelp"></span> <b class="mono" id="mxSelL"></b></p>
     </div>
   </section>
   <section class="mxexp" aria-labelledby="mxExpH">
@@ -736,7 +812,8 @@ function wire(){
   $('#mxFi').onchange=e=>{M.fadeIn=+e.target.value;changed()};
   $('#mxFo').onchange=e=>{M.fadeOut=+e.target.value;changed()};
   $('#mxReset').onclick=()=>{mPush();M.align=null;M.nudge=0;M.semis=null;changed()};
-  $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;renderTransport();drawSoon()};   /* griddrag */
+  $('#mxGrid').onclick=()=>{M.gridOn=!M.gridOn;if(M.gridOn)M.freeOn=false;renderTransport();drawSoon()};   /* griddrag */
+  $('#mxFreeB').onclick=()=>{M.freeOn=!M.freeOn;if(M.freeOn){M.gridOn=false;if(M.sel==null)M.sel=0}renderTransport();drawSoon()};   /* freemove */
   $('#mxPlay').onclick=toggle;$('#mxStop').onclick=()=>stop();
   $('#mxLoop').onclick=loopToggle;
   $('#mxLoopN').onchange=e=>{M.loopBars=+e.target.value;if(M.loop){M.loop={a:M.loop.a,b:M.loop.a+M.loopBars};if(M.loopOn)restart()}save();drawSoon();renderTransport();renderExport()};
@@ -775,9 +852,9 @@ function nudge(k){
   const o=model();if(!o||!o.hasA||!o.hasB)return;
   mPush();if(M.align==null)M.align=o.align;
   if(k==='bar'||k==='-bar')M.align+=k[0]==='-'?-1:1;
-  else{M.nudge+=(k[0]==='-'?-1:1)*(k.endsWith('beat')?o.beat:0.01);M.nudge=Math.round(M.nudge*10000)/10000;
+  else{M.nudge=r6(M.nudge+(k[0]==='-'?-1:1)*(k.endsWith('beat')?o.beat:0.01));
     // whole bars go into `align`, the rest stays a nudge within ±½ bar
-    const w=Math.round(M.nudge/o.bar);if(w){M.align+=w;M.nudge=Math.round((M.nudge-w*o.bar)*10000)/10000}}
+    const w=Math.round(M.nudge/o.bar);if(w){M.align+=w;M.nudge=r6(M.nudge-w*o.bar)}}
   changed();
 }
 function loopToggle(){
@@ -788,8 +865,14 @@ function loopToggle(){
   if(E.playing&&M.loopOn){const lt=loopT(o),h=heard();if(h<lt.a||h>=lt.b)startAt(lt.a,E.o)}
 }
 function zoom(f){
-  const o=model();if(!o)return;const span=(o.t1-o.t0)/M.zoom,mid=E.playing?heard():M.view0+span/2;
-  M.zoom=clamp(M.zoom*f,1,32);const ns=(o.t1-o.t0)/M.zoom;M.view0=clamp(mid-ns/2,o.t0,o.t1-ns);renderTransport();drawSoon();
+  const o=model();if(!o)return;const span=(o.t1-o.t0)/M.zoom,mid=E.playing?heard():M.view0+span/2;zoomAt(f,mid,0.5);
+}
+// freemove: the deepest zoom shows 0.2 s across the timeline (≈ 5 px per ms on a 1000 px timeline)
+const zMax=o=>Math.max(1,(o.t1-o.t0)/0.2);
+// zoom by f keeping timeline time `at` under the same fraction `fx` of the width
+function zoomAt(f,at,fx){
+  const o=model();if(!o)return;const z=clamp(M.zoom*f,1,zMax(o));if(z===M.zoom)return;
+  M.zoom=z;const ns=(o.t1-o.t0)/z;M.view0=clamp(at-fx*ns,o.t0,Math.max(o.t0,o.t1-ns));renderTransport();drawSoon();
 }
 
 /* ---------- library picker ---------- */
@@ -828,7 +911,7 @@ function renderSlot(i){
   }
   const a=s.an,info=CR.sepInfo(),busy=!!s.sep;
   const kindL=s.kind==='ai'?t('mxAiStems'):s.kind==='quick'?t('mxQuickStems'):s.kind==='tool'?t('mxToolStems'):t('mxFull');
-  const o=model(),v=i===0&&o&&o.hasA?vocalStart(s):null,vb=v?Math.round((v.t-firstDown(a))/(240/a.bpm))+1:null;
+  const o=model(),v=i===0&&o&&o.hasA?vocalStart(s):null,vb=v?Math.round((v.t-firstDown(s.an))/(240/s.an.bpm))+1:null;
   el.innerHTML=head+`
   <div class="mxname" dir="auto" title="${esc(s.name)}">${esc(s.name)}</div>
   <div class="mxinfo"><span class="kbw"></span><span class="mono" dir="ltr">${esc(CR.fmtBpm(Math.round(a.bpm*10)/10))} BPM</span>
@@ -891,8 +974,7 @@ function renderMatch(keepInput){
     if(al.options.length!==o.nBars||al.dataset.sig!==cs.map(x=>x.k+x.bar).join()+o.alignAuto+LANG()){al.innerHTML=opts.join('');al.dataset.sig=cs.map(x=>x.k+x.bar).join()+o.alignAuto+LANG()}
     al.value=String(clamp(o.align,0,o.nBars-1));
   }else al.innerHTML='';
-  {const lk=$('#mxLock');if(lk){lk.textContent=A&&B?(Math.abs(M.nudge)<5e-4?t('mxLockOn',{n:o.align+1}):t('mxLockOff',{n:o.align+1,ms:'\u2066'+(M.nudge>0?'+':'−')+Math.abs(Math.round(M.nudge*1000))+' ms\u2069'})):'';lk.classList.toggle('on',!!(A&&B)&&Math.abs(M.nudge)<5e-4)}}   /* griddrag */
-  $('#mxOff').textContent=`${M.nudge>=0?'+':'−'}${Math.abs(Math.round(M.nudge*1000))} ms`;$('#mxOff').title=t('mxOffset',{ms:Math.round(M.nudge*1000)});
+  renderOff(o);   /* griddrag + freemove: lock line and offset (0.1 ms) */
   $('#mxNudge').querySelectorAll('button').forEach(b=>{b.disabled=!(A&&B);const k=b.dataset.nd,u=t(k.endsWith('bar')?'mxUBar':k.endsWith('beat')?'mxUBeat':'mxUMs'),lab=t(k[0]==='-'?'mxEarlier':'mxLater',{x:u});b.title=lab;b.setAttribute('aria-label',lab)});
   const sel=(id,list,val)=>{const e=$(id);e.innerHTML=list.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join('');e.value=String(val)};
   const fl=[[0,t('mxFade0')],[1,t('mxFadeBeat')],[4,t('mxFadeBar')],[8,t('mxFadeBars',{n:2})],[16,t('mxFadeBars',{n:4})]];
@@ -935,8 +1017,10 @@ function renderTransport(){
   $('#mxStop').disabled=!o;
   const lb=$('#mxLoop');lb.classList.toggle('on',M.loopOn);lb.setAttribute('aria-pressed',String(M.loopOn));lb.title=t('mxLoopT',{n:M.loopBars});lb.disabled=!o;
   const ln=$('#mxLoopN');const ls=[4,8,16].map(n=>`<option value="${n}">${esc(t('mxLoopBars',{n}))}</option>`).join('');if(ln.dataset.l!==LANG()){ln.innerHTML=ls;ln.dataset.l=LANG()}ln.value=String(M.loopBars);ln.setAttribute('aria-label',t('mxLoop'));
-  $('#mxZi').disabled=!o||M.zoom>=32;$('#mxZo').disabled=!o||M.zoom<=1;
+  $('#mxZi').disabled=!o||M.zoom>=zMax(o)-1e-6;$('#mxZo').disabled=!o||M.zoom<=1;
   {const gb=$('#mxGrid');if(!o)M.gridOn=false;gb.disabled=!o;gb.classList.toggle('on',M.gridOn);gb.setAttribute('aria-pressed',String(M.gridOn));$('#mxGHelp').hidden=!M.gridOn;$('#mxTl').classList.toggle('grid',M.gridOn)}   /* griddrag */
+  {const both=!!(o&&o.hasA&&o.hasB),fb=$('#mxFreeB');if(!both)M.freeOn=false;fb.disabled=!both;fb.classList.toggle('on',M.freeOn);fb.setAttribute('aria-pressed',String(M.freeOn));
+    $('#mxFHelp').hidden=!M.freeOn;$('#mxSelL').textContent=M.freeOn&&M.sel!=null?t(M.sel?'mxSelB':'mxSelA'):'';$('#mxTl').classList.toggle('free',M.freeOn)}   /* freemove */
   $('#mxVolA').value=M.vol[0];$('#mxVolAo').textContent=Math.round(M.vol[0]*100)+'%';$('#mxVolB').value=M.vol[1];$('#mxVolBo').textContent=Math.round(M.vol[1]*100)+'%';
   $('#mxVolA').disabled=!(o&&o.hasA);$('#mxVolB').disabled=!(o&&o.hasB);
   const a=song(0),b=song(1);
@@ -980,7 +1064,7 @@ function sizeCanvas(){
   TL.dpr=d;TL.W=w;TL.H=h;TL.lane=Math.floor((h-TL.ruler-TL.gap*2)/2);TL.top=[TL.ruler+TL.gap,TL.ruler+TL.gap*2+TL.lane];
   for(const id of ['#mxCv','#mxOv']){const cv=$(id);cv.width=Math.round(w*d);cv.height=Math.round(h*d)}
 }
-function viewOf(o){const span=(o.t1-o.t0)/M.zoom;M.view0=clamp(M.view0,o.t0,Math.max(o.t0,o.t1-span));return {v0:M.view0,span}}
+function viewOf(o){if(M.zoom>zMax(o))M.zoom=zMax(o);const span=(o.t1-o.t0)/M.zoom;M.view0=clamp(M.view0,o.t0,Math.max(o.t0,o.t1-span));return {v0:M.view0,span}}
 const xOf=(v,x)=>(x-v.v0)/v.span*TL.W;
 function tok(n){return getComputedStyle($('#mashupView')).getPropertyValue(n).trim()}
 function colors(){let a=tok('--acc-a')||'#2F8CFF',b=tok('--acc-b')||'#FF7A1A';if(window.A11Y&&A11Y.activePalette){const p=A11Y.activePalette();if(p){a=p.a;b=p.b}}return {a,b,line:tok('--deckline')||'#2A2A31',lane:tok('--deck2')||'#141418',text:tok('--deckmuted')||'#8B8B93',hi:tok('--decktext')||'#EDEDEF'}}
@@ -998,6 +1082,7 @@ function drawLane(g,o,v,i,y,hgt,col){
   const s=song(i);g.fillStyle=col.lane;g.fillRect(0,y,TL.W,hgt);
   if(!s){g.fillStyle=col.text;g.font='12px '+tok('--sans');g.textAlign='center';g.fillText(t('mxEmptyLane'),TL.W/2,y+hgt/2+4);g.textAlign='start';return}
   const w=s.wave;if(!w)return;const mid=y+hgt/2,px=v.span/TL.W;
+  if(px*w.rate<1&&drawRaw(g,o,v,i,s,y,hgt,col,px))return;   /* freemove: deep zoom → the samples themselves */
   for(let x=0;x<TL.W;x++){
     const ta=v.v0+x*px,tb=ta+px;
     let fa=1;
@@ -1007,6 +1092,21 @@ function drawLane(g,o,v,i,y,hgt,col){
     const r=CR.sliceRange(w,i0,i1),a=r[0],bi=r[4];
     const hh=Math.max(0.6,a*fa*(hgt/2-2));g.fillStyle=CR.wcol(w.col[bi*3],w.col[bi*3+1],w.col[bi*3+2]);g.fillRect(x,mid-hh,1,hh*2);
   }
+}
+// deep zoom: min/max of the parts in use, sample by sample (the wave summary has 150 points a second)
+function drawRaw(g,o,v,i,s,y,hgt,col,px){
+  const sl=M.slots[i],bufs=s.stems?IDS.filter(id=>gainOf(sl,id)>0).map(id=>[s.stems[id],gainOf(sl,id)]):[[s.buffer,1]];if(!bufs.length)return true;
+  const sr=bufs[0][0].sampleRate,ch=bufs.map(([b,k])=>[b.getChannelData(0),b.numberOfChannels>1?b.getChannelData(1):b.getChannelData(0),k*0.5]);
+  const pk=typeof s.an.peak==='number'&&isFinite(s.an.peak)?Math.pow(10,s.an.peak/20):1,sc=(hgt/2-2)/Math.max(0.05,pk),mid=y+hgt/2,n=ch[0][0].length;
+  g.fillStyle=i?col.b:col.a;
+  for(let x=0;x<TL.W;x++){
+    const ta=v.v0+x*px,tb=ta+px;let fa=1;
+    if(i===0){if(tb<o.aStart||ta>o.aOut)continue;fa=Math.max(gA(o,ta),gA(o,tb),0.06)}else if(ta>o.t1)break;
+    let j0=Math.floor(srcPos(i,o,ta)*sr),j1=Math.ceil(srcPos(i,o,tb)*sr);if(j1<0||j0>=n)continue;j0=Math.max(0,j0);j1=Math.min(n,Math.max(j0+1,j1));
+    let lo=Infinity,hi=-Infinity;for(let j=j0;j<j1;j++){let q=0;for(const [L,R,k] of ch)q+=(L[j]+R[j])*k;if(q<lo)lo=q;if(q>hi)hi=q}
+    const a=clamp(mid-hi*fa*sc,y,y+hgt),b=clamp(mid-lo*fa*sc,y,y+hgt);g.fillRect(x,a,1,Math.max(1,b-a));
+  }
+  return true;
 }
 function drawStatic(o){
   const cv=$('#mxCv');if(!cv||!TL.W)return;const g=cv.getContext('2d'),d=TL.dpr,col=colors(),v=viewOf(o);
@@ -1019,6 +1119,17 @@ function drawStatic(o){
     const strong=mod(k,4)===0;g.fillStyle=strong?col.line:col.line;g.globalAlpha=strong?1:0.5;
     if(barPx>3||strong){g.fillRect(x,TL.ruler,1,TL.H-TL.ruler)}
     g.globalAlpha=1;if(mod(k,every)===0&&k>=0){g.fillStyle=col.text;g.fillRect(x,TL.ruler-6,1,6);g.fillText(String(k+1),x+3,TL.ruler/2)}}
+  /* freemove: deeper zoom → beats (bar.beat), then 16ths, then ms ticks counted from the beat on their left */
+  const beatPx=barPx/4,pxMs=TL.W/v.span/1000;
+  if(beatPx>=36){const j0=Math.floor((v.v0-o.bar0)/o.beat),j1=Math.ceil((v.v0+v.span-o.bar0)/o.beat),sub=beatPx>=120&&pxMs<2;
+    for(let j=j0;j<=j1;j++){const tb=o.bar0+j*o.beat,x=Math.round(xOf(v,tb))+0.5;
+      if(mod(j,4)){if(x>=-1&&x<=TL.W+1){g.fillStyle=col.line;g.globalAlpha=0.45;g.fillRect(x,TL.ruler,1,TL.H-TL.ruler);g.globalAlpha=1;g.fillStyle=col.text;g.fillRect(x,TL.ruler-4,1,4);if(beatPx>=60&&j>=0)g.fillText(`${Math.floor(j/4)+1}.${mod(j,4)+1}`,x+3,TL.ruler/2)}}
+      if(sub)for(let q=1;q<4;q++){const xs=Math.round(xOf(v,tb+q*o.beat/4))+0.5;if(xs>=0&&xs<=TL.W){g.fillStyle=col.text;g.globalAlpha=0.6;g.fillRect(xs,TL.ruler-3,1,3);g.globalAlpha=1}}
+      if(pxMs>=0.25){const st=[1,2,5,10,20,50,100,200].find(m=>m*pxMs>=56)||200,mi=st/(st>=10&&String(st)[0]==='2'?4:5),bms=o.beat*1000;
+        for(let m=mi;m<bms-mi/2;m+=mi){const xm=Math.round(xOf(v,tb+m/1000))+0.5;if(xm<-40||xm>TL.W)continue;const lab=Math.abs(m/st-Math.round(m/st))<1e-6;
+          g.fillStyle=col.text;g.globalAlpha=lab?0.9:0.5;g.fillRect(xm,TL.ruler-(lab?6:3),1,lab?6:3);g.globalAlpha=1;
+          if(lab&&m*pxMs>=40&&(bms-m)*pxMs>=40)g.fillText('+'+(Math.round(m*10)/10)+'ms',xm+3,TL.ruler/2)}}
+    }}
   // lanes
   g.globalCompositeOperation='lighter';
   drawLane(g,o,v,0,TL.top[0],TL.lane,col);drawLane(g,o,v,1,TL.top[1],TL.lane,col);
@@ -1030,7 +1141,7 @@ function drawStatic(o){
     const sa=srcPos(i,o,v.v0),sz=srcPos(i,o,v.v0+v.span),k0=Math.floor((sa-fd)/bs)-1,k1=Math.ceil((sz-fd)/bs)+1,y=TL.top[i];
     if(k1-k0>TL.W/3)continue;
     for(let k=k0;k<=k1;k++){const src=fd+k*bs;if(src<0||src>s.buffer.duration)continue;const tl=tlOf(i,o,src),x=Math.round(xOf(v,tl))+0.5;if(x<0||x>TL.W)continue;
-      const lock=i===0&&o.hasB&&!gd&&Math.abs(mod(tl-o.bar0+o.bar/2,o.bar)-o.bar/2)<0.001;
+      const lock=i===0&&o.hasB&&!gd&&Math.abs(mod(tl-o.bar0+o.bar/2,o.bar)-o.bar/2)<1e-4;
       g.fillStyle=gd?'#22D3D3':lock?col.hi:i?col.b:col.a;g.globalAlpha=gd?0.95:lock?0.85:0.6;g.fillRect(x-0.5,y,gd||lock?2:1,TL.lane);
       g.globalAlpha=1;g.fillRect(x-(gd?3:2),y,gd?6:4,3)}
     if(gd&&gd.snap!=null){const x=xOf(v,tlOf(i,o,gd.snap)),yy=y+6;g.strokeStyle='#22D3D3';g.lineWidth=2.5;g.beginPath();g.moveTo(x-4,yy);g.lineTo(x-4,yy+5);g.arc(x,yy+5,4,Math.PI,0,true);g.lineTo(x+4,yy);g.stroke();
@@ -1039,13 +1150,15 @@ function drawStatic(o){
   if(M.gridOn){g.fillStyle='#22D3D3';g.fillRect(0,TL.ruler,TL.W,2)}
   // lane labels
   for(const i of [0,1]){const y=TL.top[i];g.fillStyle=i?col.b:col.a;g.fillRect(0,y,3,TL.lane);g.font='600 11px '+tok('--mono');g.fillText(LET[i],8,y+11)}
+  if(M.freeOn&&M.sel!=null&&o.hasA&&o.hasB){const i=M.sel,y=TL.top[i],x0=i?Math.max(0,xOf(v,0)):Math.max(0,xOf(v,o.aStart)),x1=Math.min(TL.W,xOf(v,i?o.t1:o.aOut));   /* freemove: the selected clip */
+    if(x1>x0){g.strokeStyle=i?col.b:col.a;g.lineWidth=2;g.strokeRect(x0+1,y+1,x1-x0-2,TL.lane-2);g.globalAlpha=0.08;g.fillStyle=i?col.b:col.a;g.fillRect(x0,y,x1-x0,TL.lane);g.globalAlpha=1}}
   // B's structure cues
   const b=song(1);
   if(b&&o.hasB&&window.CUES)for(const cu of b.cues||[]){const x=xOf(v,cu.t/o.rB);if(x<-40||x>TL.W)continue;const cc=CUES.COL[cu.k]||[200,200,200],cs=`rgb(${cc[0]},${cc[1]},${cc[2]})`;
     g.fillStyle=cs;g.fillRect(Math.round(x),TL.top[1],2,TL.lane);g.beginPath();g.moveTo(x,TL.top[1]);g.lineTo(x+14,TL.top[1]);g.lineTo(x+14,TL.top[1]+12);g.lineTo(x,TL.top[1]+12);g.fill();
     g.fillStyle='#0A0A0C';g.font='700 9px '+tok('--mono');g.fillText((CUES.NAME[cu.k]||cu.k)[0],x+4,TL.top[1]+6.5)}
   // A's vocal entry = the anchor, shown on both lanes
-  if(o.hasA&&o.hasB){const x=Math.round(xOf(v,o.anchor))+0.5,lock=Math.abs(M.nudge)<5e-4;if(x>=0&&x<=TL.W){g.strokeStyle=lock?col.hi:col.a;g.lineWidth=lock?2:1.5;if(!lock)g.setLineDash([4,3]);g.beginPath();g.moveTo(x,TL.top[0]);g.lineTo(x,TL.top[1]+TL.lane);g.stroke();g.setLineDash([]);
+  if(o.hasA&&o.hasB){const x=Math.round(xOf(v,o.anchor))+0.5,lock=Math.abs(M.nudge)<LOCK;if(x>=0&&x<=TL.W){g.strokeStyle=lock?col.hi:col.a;g.lineWidth=lock?2:1.5;if(!lock)g.setLineDash([4,3]);g.beginPath();g.moveTo(x,TL.top[0]);g.lineTo(x,TL.top[1]+TL.lane);g.stroke();g.setLineDash([]);
     g.fillStyle=col.a;g.beginPath();g.moveTo(x-5,TL.top[0]);g.lineTo(x+5,TL.top[0]);g.lineTo(x,TL.top[0]+7);g.fill();
     if(lock){const ly=TL.top[1]-TL.gap-1;g.fillStyle=col.hi;g.fillRect(x+4,ly-6,8,6);g.strokeStyle=col.hi;g.lineWidth=1.5;g.beginPath();g.arc(x+8,ly-6,2.6,Math.PI,0);g.stroke()}}}   /* griddrag: downbeat lock */
   // loop range
@@ -1055,6 +1168,12 @@ function drawStatic(o){
 function drawHead(o){
   const cv=$('#mxOv');if(!cv||!TL.W)return;const g=cv.getContext('2d'),d=TL.dpr,v=viewOf(o);g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,TL.W,TL.H);
   if(M.drag&&M.drag.kind==='loop'&&M.drag.moved){const a=Math.min(M.drag.a,M.drag.b),b=Math.max(M.drag.a,M.drag.b),x0=xOf(v,o.bar0+a*o.bar),x1=xOf(v,o.bar0+b*o.bar);g.fillStyle='rgba(255,176,32,.22)';g.fillRect(x0,0,x1-x0,TL.H)}
+  {const d=M.drag&&M.drag.kind==='free'&&M.drag.moved?{i:M.drag.i,d:M.drag.d,x:M.drag.cx,y:M.drag.y}:M.fdx&&performance.now()-M.fdx.t<1200?{i:M.fdx.i,d:M.fdx.d,x:xOf(v,o.anchor),y:TL.top[M.fdx.i]+TL.lane/2}:null;   /* freemove: live offset */
+    if(d){const a=LET[d.i]+' '+fmtMs(d.d).replace('\u00a0',' '),b='A→B '+fmtMs(M.nudge).replace('\u00a0',' ');g.font='600 11px '+tok('--mono');
+      const w=Math.max(g.measureText(a).width,g.measureText(b).width)+12,bx=clamp(d.x+12,2,TL.W-w-2),by=clamp(d.y-34,TL.ruler+2,TL.H-34);
+      const cc=colors();g.fillStyle='rgba(10,10,12,.88)';g.fillRect(bx,by,w,32);g.fillStyle=d.i?cc.b:cc.a;g.fillRect(bx,by,2,32);g.fillStyle='#EDEDEF';g.textBaseline='middle';g.fillText(a,bx+7,by+9);g.fillStyle='#B8B8C0';g.fillText(b,bx+7,by+23);
+}
+    if(!M.drag&&M.fdx&&performance.now()-M.fdx.t<1300)kick()}
   const x=Math.round(xOf(v,heard()))+0.5;if(x<0||x>TL.W)return;g.fillStyle='#fff';g.fillRect(x-0.5,0,2,TL.H);g.beginPath();g.moveTo(x-5,0);g.lineTo(x+6,0);g.lineTo(x+0.5,7);g.fill();
 }
 function beatTick(o){
@@ -1069,6 +1188,9 @@ function wireTimeline(){
     const zone=p.y<TL.ruler?'ruler':p.y<TL.top[1]-TL.gap/2?'a':'b';
     const gi=zone==='a'?0:1;   /* griddrag: grid mode → the lane's song grid moves against its audio */
     if(zone==='ruler'){const k=Math.floor((p.t-o.bar0)/o.bar);M.drag={kind:'loop',x:e.clientX,a:k,b:k+1,t:p.t}}
+    else if(M.freeOn&&o.hasA&&o.hasB){   /* freemove: select the clip, drag = no snapping */
+      if(M.sel!==gi){M.sel=gi;M.fk=null;renderTransport();drawSoon()}
+      M.drag={kind:'free',i:gi,x:e.clientX,y:p.y,cx:e.clientX-box.getBoundingClientRect().left,nudge:M.nudge,align:M.align!=null?M.align:o.align,v0:M.view0,d:0,sn:mSnap(),o}}
     else if(M.gridOn&&zone!=='ruler'&&song(gi)&&song(gi).an&&(gi?o.hasB:o.hasA)){const s=song(gi),bs=240/s.an.bpm,fd=firstDown(s.an),ps=srcPos(gi,o,p.t);
       M.drag={kind:'grid',i:gi,x:e.clientX,t:p.t,r:gi?o.rB:o.rA,g:fd+Math.round((ps-fd)/bs)*bs,dSrc:0,snap:null,base:gridBase(gi),sn:mSnap(),o};M.gLane=gi}
     else if(zone==='a'&&o.hasA&&o.hasB)M.drag={kind:'a',x:e.clientX,anchor:o.anchor,t:p.t,sn:mSnap()};
@@ -1085,6 +1207,11 @@ function wireTimeline(){
       else{M.align=Math.round(rel/o.bar);M.nudge=0}
       M.lastO=null;TL.dirty=true;renderMatch();if(was!==M.align+'|'+M.nudge&&E.playing)restart();   // the preview follows
     }
+    else if(d.kind==='free'){   /* freemove: pixel → seconds at the current zoom, no snapping */
+      const r=box.getBoundingClientRect(),dt=r6((e.clientX-d.x)/r.width*p.v.span);d.d=dt;d.cx=e.clientX-r.left;d.y=p.y;
+      M.align=d.align;M.nudge=d.nudge;moveA(d.i?-dt:dt,d.o);if(d.i)M.view0=d.v0-dt;
+      M.lastO=null;TL.dirty=true;renderOff(model());if(E.playing)restart();
+    }
     else if(d.kind==='grid'){   /* griddrag: preview only; applied when the drag ends */
       let ds=(p.t-d.t)*d.r;d.snap=null;
       if(!(e.ctrlKey||e.metaKey)&&CR.onsetNear){const q=CR.onsetNear(song(d.i).buffer,d.g+ds,0.02);if(q!=null){d.snap=q;ds=q-d.g}}
@@ -1094,15 +1221,22 @@ function wireTimeline(){
   });
   const end=e=>{
     const d=M.drag;if(!d)return;M.drag=null;const p=tAt(e),o=p.o;
+    if(d.kind==='free'&&!d.moved){drawSoon();return}   /* freemove: a click only selects */
     if(!d.moved||d.kind==='seek'){const x=clamp(p.t,o.t0,o.t1-0.02);if(E.playing)startAt(x,model());else{M.pos=x;renderTransport()}}
     else if(d.kind==='loop'){M.loop={a:d.a,b:d.b};M.loopOn=true;save();renderTransport();renderExport();if(E.playing){const lt=loopT(o),h=heard();if(h<lt.a||h>=lt.b)startAt(lt.a,o)}}
-    else if(d.kind==='a'){if(d.sn.align!==M.align||d.sn.nudge!==M.nudge)mPush(d.sn);changed()}
+    else if(d.kind==='a'||d.kind==='free'){if(d.sn.align!==M.align||d.sn.nudge!==M.nudge)mPush(d.sn);changed()}
     else if(d.kind==='grid'){if(Math.abs(d.dSrc)>1e-6){mPush(d.sn);gridShift(d.i,d.dSrc,d.base,d.o);changed()}}   /* griddrag */
     drawSoon();
   };
-  box.addEventListener('pointerup',end);box.addEventListener('pointercancel',()=>{M.drag=null;drawSoon()});
-  box.addEventListener('wheel',e=>{const o=model();if(!o||M.zoom<=1)return;e.preventDefault();const v=viewOf(o);M.view0=clamp(M.view0+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)/600*v.span,o.t0,o.t1-v.span);drawSoon()},{passive:false});
-  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();box.style.cursor=!o?'default':y<TL.ruler?'col-resize':M.gridOn?'ew-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
+  box.addEventListener('pointerup',end);box.addEventListener('pointercancel',()=>{const d=M.drag;M.drag=null;if(d&&d.kind==='free'){M.align=d.sn.align;M.nudge=d.sn.nudge;M.view0=d.v0;changed()}drawSoon()});
+  /* freemove: wheel / pinch (ctrl+wheel) = zoom around the pointer, Shift+wheel or a sideways swipe = scroll */
+  box.addEventListener('wheel',e=>{
+    const o=model();if(!o)return;e.preventDefault();
+    const u=e.deltaMode===1?16:e.deltaMode===2?TL.W:1,dx=e.deltaX*u,dy=e.deltaY*u,r=box.getBoundingClientRect(),fx=clamp((e.clientX-r.left)/r.width,0,1),v=viewOf(o);
+    if(e.shiftKey||Math.abs(dx)>Math.abs(dy)){const q=Math.abs(dx)>Math.abs(dy)?dx:dy;M.view0=clamp(M.view0+q/TL.W*v.span,o.t0,Math.max(o.t0,o.t1-v.span));drawSoon();return}
+    zoomAt(Math.exp(-dy*(e.ctrlKey?0.01:0.002)),v.v0+fx*v.span,fx);
+  },{passive:false});
+  box.addEventListener('pointermove',e=>{if(M.drag)return;const r=box.getBoundingClientRect(),y=e.clientY-r.top;const o=model();box.style.cursor=!o?'default':y<TL.ruler?'col-resize':M.gridOn||M.freeOn&&o.hasA&&o.hasB?'ew-resize':y<TL.top[1]-TL.gap/2&&o.hasA&&o.hasB?'grab':'pointer'});
 }
 
 /* ---------- export ---------- */
@@ -1154,9 +1288,16 @@ document.addEventListener('keydown',e=>{
   if(document.querySelector('.rm-panel:not([hidden]),#authDlg:not([hidden])')&&e.target.closest('.rm-panel,#authDlg'))return;
   const o=model();if(!o)return;
   if(e.code==='Space'){if(e.target.closest('button,label,a'))return;e.preventDefault();toggle()}
-  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(e.target.closest('.mxslot'))return;e.preventDefault();
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){if(e.target.closest('.mxslot')||M.freeOn)return;e.preventDefault();
     if(M.gridOn||document.activeElement===$('#mxGrid')){gridKey((e.key==='ArrowRight'?1:-1)*(e.shiftKey?10:1));return}   /* griddrag */const x=clamp(heard()+(e.key==='ArrowRight'?1:-1)*o.bar,o.t0,o.t1-0.05);if(E.playing)startAt(x,o);else{M.pos=x;renderTransport();kick()}}
   else if(e.key==='l'||e.key==='L')loopToggle();
+});
+
+/* freemove: ← → move the selected clip 1 ms (Shift 10 ms, Alt 0.1 ms) */
+document.addEventListener('keydown',e=>{
+  if(!M.visible||!M.freeOn||M.sel==null||e.metaKey||e.ctrlKey||(e.key!=='ArrowRight'&&e.key!=='ArrowLeft'))return;
+  if(!$('#mxPick').hidden||e.target.closest('input,textarea,select,[contenteditable],.mxslot'))return;
+  e.preventDefault();freeKey((e.key==='ArrowRight'?1:-1)*(e.altKey?0.1:e.shiftKey?10:1));
 });
 
 /* griddrag: Ctrl+Z / Ctrl+Shift+Z (Ctrl+Y) undo / redo alignment and grid edits */

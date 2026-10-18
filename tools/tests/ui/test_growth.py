@@ -21,7 +21,7 @@
   paths & SEO     /pricing /terms /privacy /tool /accessibility /licenses → their view, canonical + og:url per page, the
                   path kept until the user navigates (then /#view), unknown path → home + notice; crawler UAs
                   (facebookexternalhit/1.1, WhatsApp/2.23) get 200 HTML with the OG tags directly, og.png served
-  referral        disclosure in the invite card + the shared message says the inviter gets points
+  referral        disclosure in the invite card + the shared message says the inviter gets points (on the friend's paid plan)
 """
 import os, sys, re, json, time, urllib.request, urllib.parse
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
@@ -354,6 +354,7 @@ def test(t, srv, b):
     disc = pg.evaluate("(document.querySelector('#refCard .refdisc')||{}).textContent||''")
     t.check('invite card carries the disclosure', 'גילוי נאות' in disc, disc)
     wa = pg.evaluate("(document.querySelector('#refCard .refwa')||{}).href||''")
-    t.check('the shared WhatsApp message says the inviter gets points', 'מקבל' in urllib.parse.unquote(wa), wa[:120])
+    t.check('the shared WhatsApp message says the inviter gets points (when the friend joins a paid plan)', 'מקבל' in urllib.parse.unquote(wa) and 'מסלול בתשלום' in urllib.parse.unquote(wa), wa[:120])
+    t.check('the disclosure names the paid-plan rule', 'מסלול בתשלום' in disc, disc)
     ctx.close()
 

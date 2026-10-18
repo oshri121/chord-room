@@ -100,7 +100,7 @@
       if (charged.has(k)) return { balance: p.credits, id: null, charged: 0, qty: 1, already: true, free: true };
       const r = await B.spendN('song', 1, ref || key); charged.add(k); return { ...r, already: false }; },
     async chargedSongs(keys) { return (keys || []).filter(k => charged.has(cur.id + '|' + k)); },
-    async myReferral() { return { code: 'abc12345', invited: 0, earned: 0 }; }, async claimReferral() { return { ok: false }; },
+    async myReferral() { return { code: 'abc12345', invited: 0, joined: 0, paid: 0, pending: 0, earned: 0 }; }, async claimReferral() { return { ok: false }; },
     async logActivity(a, d) { (window.__log = window.__log || []).push({ user_id: B.user && B.user.id, action: a, detail: d, created_at: now() }); },
     async adminActivity(uid) { return (window.__log || []).filter(x => !uid || x.user_id === uid).slice().reverse(); },
     async adminPayEvents() { return []; },

@@ -77,6 +77,9 @@ sql(f"insert into private.catalog_play_log(cid,who,slot) values ('dz:99','{U1}',
 sql(f"insert into storage.objects(bucket_id,name,metadata) values ('uploads','{U1}/s1.mp3','{{\"size\":\"10\"}}'),('avatars','{U1}/avatar.jpg','{{\"size\":\"10\"}}')")
 code = as_(U1, "select public.my_referral()->>'code'")
 check('fixture: U2 joins with U1 code', as_(U2, f"select public.claim_referral('{code}')->>'ok'"), 'true')
+# [referral-v6]: a claim gives no points any more → a ledger row from the old rule ("both get points") carries U1's id
+sql(f"insert into public.credit_ledger(user_id,delta,balance,reason,ref) values ('{U2}',10,30,'referral','ref:joined:{U1}')")
+check('fixture: the pending invite U2 → U1 is recorded', sql(f"select count(*) from private.referrals where friend='{U2}' and inviter='{U1}'"), '1')
 sql(f"insert into public.activity(user_id,action,detail) values ('{U2}','adm_credits','by {U1}: grant 5')")
 check('fixture: U1 has 2 payment-or-other ledger kinds', sql(f"select count(distinct reason) >= 3 from public.credit_ledger where user_id='{U1}'"), 't')
 
@@ -105,6 +108,7 @@ check('catalog row kept, analyzed_by/full_by null', sql("select (analyzed_by is 
 check('play log rows of U1 deleted', sql(f"select count(*) from private.catalog_play_log where who='{U1}'"), '0')
 check("U2's referral ref no longer holds U1's id", sql(f"select count(*) from public.credit_ledger where ref like '%{U1}%'"), '0')
 check("…but is still recognisable as a referral", sql(f"select count(*) from public.credit_ledger where user_id='{U2}' and ref like 'ref:joined:x%'"), '1')
+check("the pending invite with U1 as inviter is gone (U2's relation, U1's network rows)", sql(f"select count(*) from private.referrals where inviter='{U1}'") + ' ' + sql(f"select count(*) from private.referral_ips where inviter='{U1}'"), '0 0')
 check("admin audit details no longer hold U1's id", sql(f"select count(*) from public.activity where detail like '%{U1}%'"), '0')
 check('U2 untouched', sql(f"select count(*) from public.profiles where id='{U2}'"), '1')
 check('account_deletions: one row, self, had_payments, no actor', sql(f"select how||' '||had_payments||' '||coalesce(actor::text,'-') from public.account_deletions where subject_hash='{h}'"), 'self true -')
@@ -280,8 +284,8 @@ src = open(pg.SCHEMA, encoding='utf-8').read()
 v4 = open(os.path.join(pg.REPO, 'supabase', 'accounts_v4.sql'), encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Accounts v4 .*?-- \[accounts-v4:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [accounts-v4] block', 'found' if m else 'missing', 'found')
-# only later blocks ([growth-v4], [paypal], [security-v5]) may follow it
-later = re.sub(r'(?s)-- =+\n-- (?:Growth v4|Security v5) .*?-- \[(?:growth-v4|security-v5):end\]\n-- =+\n', '', src[m.end():]) if m else src
+# only later blocks ([growth-v4], [paypal], [security-v5], [referral-v6]) may follow it
+later = re.sub(r'(?s)-- =+\n-- (?:Growth v4|Security v5|Referral v6) .*?-- \[(?:growth-v4|security-v5|referral-v6):end\]\n-- =+\n', '', src[m.end():]) if m else src
 later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', later)
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('…after [security-v3]', 'yes' if m and src.index('[security-v3:end]') < m.start() else 'no', 'yes')
