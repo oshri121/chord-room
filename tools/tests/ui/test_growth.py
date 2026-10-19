@@ -56,11 +56,11 @@ def test(t, srv, b):
     for sec in ['lic-fonts', 'lic-icons', 'lic-libs', 'lic-models', 'lic-data', 'lic-source', 'lic-tm', 'lic-texts']:
         t.check(f'section #{sec}', pg.query_selector('#infoView #' + sec) is not None)
     txt = pg.inner_text('#infoView')
-    for w in ['IBM Plex', 'Atkinson Hyperlegible', 'SIL OFL 1.1', 'supabase-js', 'Signalsmith Stretch', 'ONNX Runtime Web', 'demucs-js',
-              'lamejs', 'LGPL-3.0', 'ffmpeg.wasm', 'GPL-2.0-or-later', 'HTDemucs', 'Deezer', 'Google Analytics 4', 'Microsoft Clarity', '1.2.7', '0.12.10', '2.117.2']:
+    for w in ['IBM Plex', 'Atkinson Hyperlegible', 'SIL OFL 1.1', 'supabase-js', 'Signalsmith Stretch', 'ONNX Runtime Web', 'Spleeter',
+              'lamejs', 'LGPL-3.0', 'ffmpeg.wasm', 'GPL-2.0-or-later', 'JOSS 2020', 'Deezer', 'Google Analytics 4', 'Microsoft Clarity', '1.2.7', '0.12.10', '2.117.2']:
         t.check(f'lists {w}', w in txt)
-    t.check('model weights: honest "not MIT / research" note', 'מחקרי' in txt and 'MIT' in txt)
-    t.check('local license files linked (lamejs, ffmpeg)', pg.query_selector('#infoView a[href="vendor/lamejs-1.2.7.LICENSE.txt"]') is not None and pg.query_selector('#infoView a[href="vendor/ffmpeg/LICENSE.txt"]') is not None)
+    t.check('separation model: Spleeter (Deezer, MIT), no Demucs left', 'Spleeter' in txt and 'Deezer SA' in txt and 'MIT' in txt and 'Demucs' not in txt)
+    t.check('local license files linked (lamejs, ffmpeg)', pg.query_selector('#infoView a[href="vendor/lamejs-1.2.7.LICENSE.txt"]') is not None and pg.query_selector('#infoView a[href^="vendor/ffmpeg/LICENSE.txt"]') is not None)
     t.check('source links for the copyleft parts', pg.query_selector('#infoView a[href*="shijinyu/lamejs/tree/"]') is not None and pg.query_selector('#infoView a[href*="@ffmpeg/core/v/0.12.10"]') is not None)
     t.check('written offer for the source', 'שלוש שנים' in txt)
     t.check('every external link: target _blank + rel noopener', pg.evaluate("[...document.querySelectorAll('#infoView a[href^=\"http\"]')].every(a=>a.target==='_blank'&&/noopener/.test(a.rel))"))

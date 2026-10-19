@@ -93,7 +93,7 @@
 # AI model: the weight/graph/runtime chunks are fixed for this model; the manifest and the worker can change.
 /ai/model/*.bin
   Cache-Control: public, max-age=31536000, immutable
-/ai/model/wman.json
+/ai/model/spman.json
   Cache-Control: public, max-age=3600
 /ai/worker.js
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400

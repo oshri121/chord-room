@@ -155,7 +155,7 @@ const chk=sig=>{if(sig&&sig.aborted)throw new Aborted()};
 /* ---------- ffmpeg.wasm (lazy) ---------- */
 const FF={w:null,ready:null,gz:null,jobs:{},seq:0,fail:null};
 const here=document.currentScript&&document.currentScript.src||document.baseURI;
-const WORKER_URL=new URL('assets/ffmpeg-worker.js?v=1',document.baseURI).href;
+const WORKER_URL=new URL('assets/ffmpeg-worker.js?v=2',document.baseURI).href;
 const CORE_URL=new URL('vendor/ffmpeg/ffmpeg-core-0.12.10.js',document.baseURI).href;
 const BIN_URL=new URL('vendor/ffmpeg/ffmpeg-core-0.12.10.wasm.bin',document.baseURI).href;
 async function fetchProgress(url,prog){

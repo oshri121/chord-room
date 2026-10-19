@@ -1,7 +1,7 @@
 # Chord Room — guide for Claude
 
 Static web app (no build step) for musicians/producers: BPM/key/chord detection, RGB DJ waveform,
-AI stem separation (Demucs v4 via ONNX Runtime Web), WAV/MIDI export for any DAW (FL Studio, Ableton, Cubase…; copy never says FL-only), accounts + admin
+AI stem separation (Deezer's Spleeter 4-stem, MIT code + models, via ONNX Runtime Web), WAV/MIDI export for any DAW (FL Studio, Ableton, Cubase…; copy never says FL-only), accounts + admin
 on Supabase. Hosted on Cloudflare Pages from the `main` branch: every push deploys.
 
 The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
@@ -97,7 +97,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Mashup Studio (`#mashupView`, hash `#mashup`, nav "מאשאפ", gated): `assets/mashup.js/css` (strings inside), talks only through
   `window.CR`. Slot A = vocals, B = instrumental (⇄ swap), loaded from a file / My Songs / `CR.toolSong()` (tool stems reused),
   analysed with `CR.analyzeTrack` + `CUES.detect`. Stems: `CR.separateBuffer(buffer,{onProgress,signal,ref})` (app.js bridge: same
-  Demucs worker via `aiInit`/`aiRun`, payFor → charge 'sep' → refund on failure/abort; one separation at a time, `AI.ext`) or the
+  Spleeter worker via `aiInit`/`aiRun`, payFor → charge 'sep' → refund on failure/abort; one separation at a time, `AI.ext`) or the
   free quick DSP split `assets/quicksep-worker.js`; cached in memory per song for the session. Model (see the file header):
   target T (B's/A's/typed), ½×/2× fit, rate r = T/(bpm·k), A shifted by `semis` (auto = same/relative Camelot key, or a neighbour
   when much closer), A's vocal entry (vocals-stem energy → 'vocal' cue → intro) on bar `align` of B + `nudge`. Preview = live graph
@@ -309,9 +309,14 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   together with bpm/key/genre/duration columns; owner or admin can read. Reopening from the library downloads it
   via a signed URL. Exports are logged in `downloads`. Admin panel: users tab (per-user "details" view with their
   songs + downloads, ZIP of all their files) and an all-songs tab.
-- `ai/worker.js` – built bundle (do not hand-edit). Source: `tools/ai-worker/worker.js` + `tools/ai-worker/lib/`
-  (demucs-js apply/dsp with our fixes: correct istft length, faster FFT). Rebuild: see `tools/README.md`.
-- `ai/model/` – runtime wasm (gz), graph (gz) and fp16 weights (byte-shuffled, gz, split <25 MB for Cloudflare's per-file limit).
+- `ai/worker.js` – built bundle (do not hand-edit; `?v=` in `aiInit`). Source: `tools/ai-worker/worker.js` (ORT session, model download,
+  cache `chordroom-ai-v2`, deletes the old Demucs cache v1) + `tools/ai-worker/spleeter.js` (our own real FFT, Spleeter STFT 4096/1024
+  periodic Hann, ratio masks exponent 2 with F = 1536 bins (16.5 kHz) + each stem's top-band mean above, iSTFT, 512-frame segments
+  cross-faded over `overlap`, streamed blocks; "other" = mix − vocals − drums − bass). Rebuild: see `tools/README.md`.
+- `ai/model/` – Spleeter 4stems (official Deezer checkpoint v1.4.0, MIT) rebuilt as one ONNX graph by `tools/pack_model.py`
+  (`--check` = equal to the TensorFlow original, 1e-5): `sp4-g0.bin` graph (gz), `sp4-w*.bin` fp16 weights (byte-shuffled, gz, split
+  <25 MB for Cloudflare's per-file limit), `rt0.bin` ORT wasm (gz), `spman.json` (segments + file list + bytes; the app reads the files
+  from it). Never use community/UVR/MDX/Open-Unmix weights (licences). Test: `slow/test_separation.py`.
 
 - First visit: `assets/welcome.js/css` shows a 5-language picker (suggested from `navigator.languages`) when no
   `chordroom.lang` is saved; skipped under `navigator.webdriver` (tests). Uses `CR.setLang(lang, true)`.
@@ -338,8 +343,8 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
 - Dark theme: semantic tokens (surfaces, inputs, button fill/hover, border strengths, primary, selected, toast) in app.css,
   defined for forced dark AND the system-dark media query; the Discover player bar is always dark like the deck.
 
-- Growth (launch checklist; `LICENSES-AUDIT.md` = the owner's license/risk report in Hebrew — Demucs weights and the Deezer API
-  are NOT cleared for commercial use, read it before charging for separation). App hooks are marked `/* growth */`; app.js only
+- Growth (launch checklist; `LICENSES-AUDIT.md` = the owner's license/risk report in Hebrew — the separation model is now Spleeter
+  (MIT; the old Demucs weights were removed), the Deezer API is NOT cleared for commercial use). App hooks are marked `/* growth */`; app.js only
   dispatches events: `cr-view` {v} (end of `showView`), `cr-act` {action} (top of `logAct`, the name only), `cr-config` (end of
   `applyConfig`), `cr-signup` (sign-up done step), `cr-admin` {view} (admin tabs with `.asec[data-ext]`).
   · Paths: `/pricing /terms /privacy /accessibility /licenses /tool /about` → `_redirects` 200 rewrites to `/`; router: no hash →

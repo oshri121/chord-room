@@ -42,7 +42,7 @@ chordscore.py     chord benchmark scoring (MIREX majmin per beat, 20 ms frames, 
 mock/             mockb.js (mock backend) · auth_ext.js (e-mail codes, recovery) · evil.js (every field is an XSS payload)
                   · audiotap.js (init script: records what reaches AudioContext.destination + what the tool shows each frame)
 ui/test_*.py      Playwright tests (Python, sync API)
-slow/test_*.py    same style, opt-in with --slow (real Demucs model in the browser)
+slow/test_*.py    same style, opt-in with --slow (real Spleeter model in the browser)
 sql/              setup_pg.sh (private Postgres cluster) · pg.py (stub Supabase + load schema) · test_*.py
 node/             *.test.mjs — Cloudflare Pages Functions run in Node with a stubbed fetch
 ```

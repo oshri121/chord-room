@@ -1,8 +1,9 @@
 """Stem separation end to end (SLOW, CPU/wasm: several minutes — the `slow` group only runs with `--slow`).
-1. Worker protocol: `ai/worker.js?v=2` initialised with the real model (served locally), run on 12 s of the real
+1. Worker protocol: `ai/worker.js?v=3` initialised with the real Spleeter 4-stem model (served locally; file list from
+   ai/model/spman.json), run on 12 s of the real
    preview fixtures/p0.mp3 with the streaming API (`{type:'run', LR, n, overlap}`) → 'p' progress, 'blk' blocks that cover exactly
-   [0, n) without gaps, 'done'. The 8 returned channels (drums/bass/other/vocals × L/R) are finite, the stems sum
-   back to the mix (Demucs is additive: relative error < 15 %), and the demo's drums/bass mostly land in the right
+   [0, n) without gaps, 'done'. The 8 returned channels (vocals/drums/bass/other × L/R, the app's order) are finite,
+   the stems sum back to the mix (ratio masks sum to 1: relative error < 1e-3), and the energy is spread over the
    stems (no stem holds > 70 % of the energy, drums/bass/other are not silent).
 2. In the app (mock backend, signed in): the AI button charges 'sep' BEFORE running, the stems view appears with
    the four faders, cancelling a second run refunds the charge.
@@ -14,11 +15,11 @@ import lib
 SECONDS = 12
 JS = r'''
 async(sec)=>{
-  const man=await (await fetch('ai/model/wman.json')).json();const abs=f=>new URL(f,location.href).href;
-  const w=new Worker('ai/worker.js?v=2');const log=[];
+  const man=await (await fetch('ai/model/spman.json?v=1')).json();const abs=f=>new URL(f,location.href).href;
+  const w=new Worker('ai/worker.js?v=3');const log=[];
   await new Promise((ok,fail)=>{w.onmessage=e=>{const d=e.data;log.push(d.type);if(d.type==='ready')ok();if(d.type==='error')fail(new Error(d.message))};
     w.onerror=e=>fail(new Error(e.message||'worker'));
-    w.postMessage({type:'init',man,bytes:78767446,base:abs('ai/'),gpu:false,files:{ort:[abs('ai/model/rt0.bin')],graph:[abs('ai/model/g0.bin')],w:[0,1,2,3,4,5].map(i=>abs(`ai/model/w${i}.bin`))}})});
+    w.postMessage({type:'init',man,bytes:man.bytes,base:abs('ai/'),gpu:false,files:{ort:man.files.ort.map(abs),graph:man.files.graph.map(abs),w:man.files.w.map(abs)}})});
   const ab=await (await fetch('tools/tests/fixtures/p0.mp3')).arrayBuffer();const buf=await CR.ac().decodeAudioData(ab);const n=Math.min(buf.length,Math.round(buf.sampleRate*sec));
   const L=new Float32Array(n),R=new Float32Array(n);buf.copyFromChannel(L,0);buf.copyFromChannel(R,Math.min(1,buf.numberOfChannels-1));
   const mixL=Float32Array.from(L),mixR=Float32Array.from(R);
@@ -35,7 +36,7 @@ async(sec)=>{
   const en=a=>{let s=0;for(let k=0;k<a.length;k++)s+=a[k]*a[k];return s};
   let finite=true;for(const a of out)for(let k=0;k<a.length;k+=97)if(!isFinite(a[k]))finite=false;
   let e=0,ea=0;for(let k=0;k<n;k++){const sl=out[0][k]+out[2][k]+out[4][k]+out[6][k]-mixL[k],sr=out[1][k]+out[3][k]+out[5][k]+out[7][k]-mixR[k];e+=sl*sl+sr*sr;ea+=mixL[k]*mixL[k]+mixR[k]*mixR[k]}
-  const stems=['drums','bass','other','vocals'].map((k,i)=>[k,en(out[i*2])+en(out[i*2+1])]);const tot=stems.reduce((s,x)=>s+x[1],0)||1;
+  const stems=['vocals','drums','bass','other'].map((k,i)=>[k,en(out[i*2])+en(out[i*2+1])]);const tot=stems.reduce((s,x)=>s+x[1],0)||1;
   return {secs:+secs.toFixed(1),blocks,prog,mono,gaps,finite,sumRelErr:+Math.sqrt(e/ea).toFixed(4),share:Object.fromEntries(stems.map(([k,v])=>[k,+(v/tot).toFixed(3)])),log:[...new Set(log)]}}
 '''
 
@@ -52,7 +53,7 @@ def test(t, srv, b):
     t.check('progress messages, monotonic', r['prog'] >= r['blocks'] and r['mono'], (r['prog'], r['mono']))
     t.eq('blocks cover the whole input (no gaps)', r['gaps'], 0)
     t.check('all stem samples finite', r['finite'])
-    t.check('stems sum back to the mix (rel. error < 0.15)', r['sumRelErr'] < 0.15, r['sumRelErr'])
+    t.check('stems sum back to the mix (rel. error < 1e-3)', r['sumRelErr'] < 1e-3, r['sumRelErr'])
     sh = r['share']
     t.check('energy spread over stems (none > 70 %, drums/bass/other not silent)', max(sh.values()) < 0.7 and all(sh[k] > 0.02 for k in ('drums', 'bass', 'other')), sh)
     ctx.close()

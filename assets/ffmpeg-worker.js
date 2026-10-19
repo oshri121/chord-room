@@ -6,7 +6,17 @@
    out: {id, ok:true}                                   (load)
         {type:'prog', p:0..1, time}                     (progress during a run, from FFmpeg's -progress hooks)
         {id, ok:true, ret, outs:{name:Uint8Array}, log} (run; ret = FFmpeg exit code, log = last stderr lines)
-        {id, error}                                     (any failure) */
+        {id, error}                                     (any failure)
+
+   SPDX-License-Identifier: GPL-2.0-or-later
+   Copyright (C) 2026 Chord Room
+   This file is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any
+   later version. It is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+   FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details: the full text is in
+   vendor/ffmpeg/LICENSE.txt and at https://www.gnu.org/licenses/old-licenses/gpl-2.0.html.
+   (It runs in the same worker as the GPL ffmpeg.wasm glue, so it is licensed like it. The rest of the site only
+   exchanges messages with this worker and is not covered by this notice.) */
 'use strict';
 var core = null, log = [];
 

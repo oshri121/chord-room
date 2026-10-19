@@ -9,7 +9,7 @@
 (function () {
 'use strict';
 const CR = window.CR; if (!CR) return;
-const UPDATED = '2026-10-06';
+const UPDATED = '2026-10-18';
 
 const T = {
 he: { docs: 'מסמכים', licT: 'רישיונות וקרדיטים', licIntro: 'Chord Room בנוי גם על עבודה של אחרים. כאן מפורטים כל הגופנים, הספריות, המודלים ומקורות הנתונים של צד שלישי שבאתר, הרישיון של כל אחד, ואיפה נמצא קוד המקור. תודה לכל היוצרים.',
@@ -23,10 +23,10 @@ he: { docs: 'מסמכים', licT: 'רישיונות וקרדיטים', licIntro:
   licL: 'רישיון', byL: 'זכויות יוצרים', linksL: 'קישורים', project: 'הפרויקט', source: 'קוד המקור של הגרסה', licenseL: 'הרישיון', terms: 'תנאי השימוש', unmod: 'נטען כמו שהוא, בלי שינוי, כקובץ נפרד.', modified: 'שינינו את הקוד: אורך istft מדויק ו־FFT מהיר יותר (המקור שלנו נמצא ב־tools/ai-worker).',
   bundled: 'ארוז בקובץ ai/worker.js.', consent: 'נטען רק אחרי הסכמה לסטטיסטיקה בחלון העוגיות.',
   w_plex: 'הגופן של האתר בעברית, בערבית ובאנגלית (מאוחסן באתר עצמו).', w_atk: 'הגופן הקריא בתפריט הנגישות (מאוחסן באתר עצמו).',
-  w_supa: 'חשבונות, מסד הנתונים ואחסון הקבצים.', w_stretch: 'שינוי קצב וסולם בזמן אמת ובייצוא.', w_ort: 'מריץ את מודל הפרדת הערוצים בדפדפן.', w_djs: 'עיבוד מקדים ומאוחר של Demucs ב־JavaScript.',
-  w_demucs: 'הארכיטקטורה והקוד המקורי של מודל הפרדת הערוצים.', w_lame: 'ייצוא MP3.', w_ffmpeg: 'פורמטים נוספים בממיר (FLAC,‏ OGG,‏ M4A, וידאו ועוד). רץ ב־Web Worker נפרד.',
-  w_model: 'המשקלות המאומנים של מודל הפרדת הערוצים (שירה, תופים, בס ושאר הכלים), בהמרה ל־ONNX מתוך החבילה demucs-js.',
-  modelLic: 'המשקלות אינם חלק מרישיון MIT של הקוד. Meta מפרסמת אותם לשימוש מחקרי, ובחבילת demucs-js הם מסומנים ״לשימוש אישי ומחקרי בלבד״.', modelNote: 'הבהרת המפתחים',
+  w_supa: 'חשבונות, מסד הנתונים ואחסון הקבצים.', w_stretch: 'שינוי קצב וסולם בזמן אמת ובייצוא.', w_ort: 'מריץ את מודל הפרדת הערוצים בדפדפן.',
+  w_lame: 'ייצוא MP3.', w_ffmpeg: 'פורמטים נוספים בממיר (FLAC,‏ OGG,‏ M4A, וידאו ועוד). רץ ב־Web Worker נפרד.',
+  w_model: 'המודל המאומן Spleeter 4stems (שירה, תופים, בס ושאר הכלים), בהמרה שלנו ל־ONNX מנקודת השמירה הרשמית של Deezer. ה־STFT, המסכות וה־STFT ההפוך כתובים מחדש ב־JavaScript בקובץ ai/worker.js.',
+  modelLic: 'לפי המאמר הרשמי של Deezer, גם הקוד וגם המודלים המאומנים מופצים ברישיון MIT.', modelNote: 'המאמר (JOSS 2020)',
   w_deezer: 'מצעדים, פרטי שירים, עטיפות, קטעי האזנה של 30 שניות והנגן הרשמי. התוכן שייך לבעלי הזכויות ומסופק על ידי Deezer.',
   w_ga: 'סטטיסטיקת שימוש מצטברת.', w_clarity: 'מפות חום והקלטות גלישה עם הסתרת טקסט.', w_ts: 'בדיקת בוטים קצרה בטופסי ההרשמה, הכניסה ואיפוס הסיסמה — רק כשבעל האתר מפעיל אותה.', back: 'חזרה לאתר', top: 'לראש העמוד',
   a11yUpd: 'עודכן: {d}' },
@@ -41,10 +41,10 @@ en: { docs: 'Legal', licT: 'Licenses & credits', licIntro: 'Chord Room is built 
   licL: 'License', byL: 'Copyright', linksL: 'Links', project: 'Project', source: 'Source of this version', licenseL: 'License', terms: 'Terms of use', unmod: 'Loaded as is, unmodified, as a separate file.', modified: 'We changed the code: exact istft length and a faster FFT (our source is in tools/ai-worker).',
   bundled: 'Bundled in ai/worker.js.', consent: 'Loaded only after you allow analytics in the cookie banner.',
   w_plex: 'The site’s typeface in Hebrew, Arabic and Latin (hosted on this site).', w_atk: 'The readable typeface in the accessibility menu (hosted on this site).',
-  w_supa: 'Accounts, the database and file storage.', w_stretch: 'Changing tempo and key, live and in exports.', w_ort: 'Runs the stem-separation model in the browser.', w_djs: 'Demucs pre- and post-processing in JavaScript.',
-  w_demucs: 'The architecture and original code of the stem-separation model.', w_lame: 'MP3 export.', w_ffmpeg: 'Extra formats in the Converter (FLAC, OGG, M4A, video and more). Runs in its own Web Worker.',
-  w_model: 'The trained weights of the stem-separation model (vocals, drums, bass and other), converted to ONNX by the demucs-js package.',
-  modelLic: 'The weights are not covered by the code’s MIT license. Meta releases them for research use, and the demucs-js package marks them “for personal and research use only”.', modelNote: 'Maintainers’ clarification',
+  w_supa: 'Accounts, the database and file storage.', w_stretch: 'Changing tempo and key, live and in exports.', w_ort: 'Runs the stem-separation model in the browser.',
+  w_lame: 'MP3 export.', w_ffmpeg: 'Extra formats in the Converter (FLAC, OGG, M4A, video and more). Runs in its own Web Worker.',
+  w_model: 'The trained Spleeter 4-stem model (vocals, drums, bass and other), converted by us to ONNX from Deezer’s official checkpoint. The STFT, masks and inverse STFT are re-implemented in JavaScript in ai/worker.js.',
+  modelLic: 'According to Deezer’s official paper, both the code and the trained models are released under the MIT license.', modelNote: 'Paper (JOSS 2020)',
   w_deezer: 'Charts, track details, cover art, 30-second previews and the official player. The content belongs to its rights holders and is provided by Deezer.',
   w_ga: 'Aggregated usage statistics.', w_clarity: 'Heatmaps and session recordings with text masked.', w_ts: 'A short bot check on the sign-up, sign-in and password-reset forms — only when the site owner turns it on.', back: 'Back to the site', top: 'Back to top',
   a11yUpd: 'Updated {d}' },
@@ -59,10 +59,10 @@ ar: { docs: 'مستندات', licT: 'التراخيص والشكر', licIntro: '
   licL: 'الترخيص', byL: 'حقوق النشر', linksL: 'روابط', project: 'المشروع', source: 'مصدر هذا الإصدار', licenseL: 'الترخيص', terms: 'شروط الاستخدام', unmod: 'يُحمَّل كما هو، دون تعديل، كملف منفصل.', modified: 'عدّلنا الشيفرة: طول istft دقيق وFFT أسرع (مصدرنا في tools/ai-worker).',
   bundled: 'مضمَّن في ai/worker.js.', consent: 'يُحمَّل فقط بعد السماح بالإحصاءات في نافذة ملفات تعريف الارتباط.',
   w_plex: 'خط الموقع بالعبرية والعربية واللاتينية (مستضاف على الموقع نفسه).', w_atk: 'الخط المقروء في قائمة إمكانية الوصول (مستضاف على الموقع نفسه).',
-  w_supa: 'الحسابات وقاعدة البيانات وتخزين الملفات.', w_stretch: 'تغيير الإيقاع والمقام مباشرةً وفي التصدير.', w_ort: 'تشغيل نموذج فصل المسارات في المتصفح.', w_djs: 'المعالجة القبلية والبعدية لـDemucs بلغة JavaScript.',
-  w_demucs: 'البنية والشيفرة الأصلية لنموذج فصل المسارات.', w_lame: 'تصدير MP3.', w_ffmpeg: 'صيغ إضافية في المحوّل (FLAC وOGG وM4A والفيديو وغيرها). يعمل في Web Worker منفصل.',
-  w_model: 'الأوزان المدرَّبة لنموذج فصل المسارات (الغناء والطبول والباص وبقية الآلات)، محوَّلة إلى ONNX عبر حزمة demucs-js.',
-  modelLic: 'لا تشمل رخصة MIT للشيفرة هذه الأوزان. تنشرها Meta للاستخدام البحثي، وتصفها حزمة demucs-js بأنها «للاستخدام الشخصي والبحثي فقط».', modelNote: 'توضيح المطوّرين',
+  w_supa: 'الحسابات وقاعدة البيانات وتخزين الملفات.', w_stretch: 'تغيير الإيقاع والمقام مباشرةً وفي التصدير.', w_ort: 'تشغيل نموذج فصل المسارات في المتصفح.',
+  w_lame: 'تصدير MP3.', w_ffmpeg: 'صيغ إضافية في المحوّل (FLAC وOGG وM4A والفيديو وغيرها). يعمل في Web Worker منفصل.',
+  w_model: 'النموذج المدرَّب Spleeter رباعي المسارات (الغناء والطبول والباص وبقية الآلات)، حوَّلناه إلى ONNX من نقطة الحفظ الرسمية من Deezer. أُعيدت كتابة STFT والأقنعة وSTFT العكسي بلغة JavaScript في ai/worker.js.',
+  modelLic: 'وفقًا للورقة الرسمية من Deezer، تُنشر الشيفرة والنماذج المدرَّبة كلاهما برخصة MIT.', modelNote: 'الورقة العلمية (JOSS 2020)',
   w_deezer: 'القوائم وتفاصيل الأغاني والأغلفة ومقاطع 30 ثانية والمشغّل الرسمي. المحتوى ملك لأصحاب الحقوق وتوفّره Deezer.',
   w_ga: 'إحصاءات استخدام مجمَّعة.', w_clarity: 'خرائط حرارية وتسجيلات تصفّح مع إخفاء النص.', w_ts: 'فحص قصير للروبوتات في نماذج التسجيل والدخول وإعادة تعيين كلمة المرور — فقط عندما يفعّله مالك الموقع.', back: 'العودة إلى الموقع', top: 'إلى أعلى الصفحة',
   a11yUpd: 'آخر تحديث: {d}' },
@@ -77,10 +77,10 @@ ru: { docs: 'Документы', licT: 'Лицензии и благодарн�
   licL: 'Лицензия', byL: 'Авторские права', linksL: 'Ссылки', project: 'Проект', source: 'Исходный код этой версии', licenseL: 'Лицензия', terms: 'Условия использования', unmod: 'Загружается как есть, без изменений, отдельным файлом.', modified: 'Мы изменили код: точная длина istft и более быстрое БПФ (наш исходный код — в tools/ai-worker).',
   bundled: 'Встроен в ai/worker.js.', consent: 'Загружается только после разрешения аналитики в окне cookie.',
   w_plex: 'Шрифт сайта для иврита, арабского и латиницы (размещён на самом сайте).', w_atk: 'Удобочитаемый шрифт в меню доступности (размещён на самом сайте).',
-  w_supa: 'Аккаунты, база данных и хранение файлов.', w_stretch: 'Изменение темпа и тональности вживую и при экспорте.', w_ort: 'Запускает модель разделения на стемы в браузере.', w_djs: 'Пред- и постобработка Demucs на JavaScript.',
-  w_demucs: 'Архитектура и исходный код модели разделения на стемы.', w_lame: 'Экспорт MP3.', w_ffmpeg: 'Дополнительные форматы в конвертере (FLAC, OGG, M4A, видео и др.). Работает в отдельном Web Worker.',
-  w_model: 'Обученные веса модели разделения (вокал, ударные, бас и остальное), сконвертированные в ONNX пакетом demucs-js.',
-  modelLic: 'Веса не подпадают под лицензию MIT кода. Meta публикует их для исследовательского использования, а пакет demucs-js помечает их «только для личного и исследовательского использования».', modelNote: 'Разъяснение разработчиков',
+  w_supa: 'Аккаунты, база данных и хранение файлов.', w_stretch: 'Изменение темпа и тональности вживую и при экспорте.', w_ort: 'Запускает модель разделения на стемы в браузере.',
+  w_lame: 'Экспорт MP3.', w_ffmpeg: 'Дополнительные форматы в конвертере (FLAC, OGG, M4A, видео и др.). Работает в отдельном Web Worker.',
+  w_model: 'Обученная модель Spleeter на 4 стема (вокал, ударные, бас и остальное), сконвертированная нами в ONNX из официального чекпойнта Deezer. STFT, маски и обратное STFT переписаны на JavaScript в ai/worker.js.',
+  modelLic: 'Согласно официальной статье Deezer, и код, и обученные модели распространяются под лицензией MIT.', modelNote: 'Статья (JOSS 2020)',
   w_deezer: 'Чарты, данные о треках, обложки, 30-секундные фрагменты и официальный плеер. Контент принадлежит правообладателям и предоставляется Deezer.',
   w_ga: 'Сводная статистика использования.', w_clarity: 'Тепловые карты и записи сеансов со скрытым текстом.', w_ts: 'Короткая проверка на ботов в формах регистрации, входа и сброса пароля — только если владелец сайта её включил.', back: 'Вернуться на сайт', top: 'Наверх',
   a11yUpd: 'Обновлено: {d}' },
@@ -95,14 +95,43 @@ es: { docs: 'Documentos', licT: 'Licencias y créditos', licIntro: 'Chord Room s
   licL: 'Licencia', byL: 'Copyright', linksL: 'Enlaces', project: 'Proyecto', source: 'Código de esta versión', licenseL: 'Licencia', terms: 'Condiciones de uso', unmod: 'Se carga tal cual, sin modificar, como archivo separado.', modified: 'Cambiamos el código: longitud exacta de istft y una FFT más rápida (nuestro código está en tools/ai-worker).',
   bundled: 'Incluido en ai/worker.js.', consent: 'Se carga solo después de permitir la analítica en el aviso de cookies.',
   w_plex: 'La tipografía del sitio en hebreo, árabe y latín (alojada en el propio sitio).', w_atk: 'La tipografía legible del menú de accesibilidad (alojada en el propio sitio).',
-  w_supa: 'Cuentas, base de datos y almacenamiento de archivos.', w_stretch: 'Cambiar tempo y tonalidad, en vivo y al exportar.', w_ort: 'Ejecuta el modelo de separación de pistas en el navegador.', w_djs: 'Pre y posprocesado de Demucs en JavaScript.',
-  w_demucs: 'La arquitectura y el código original del modelo de separación.', w_lame: 'Exportación MP3.', w_ffmpeg: 'Formatos extra en el Conversor (FLAC, OGG, M4A, vídeo y más). Funciona en su propio Web Worker.',
-  w_model: 'Los pesos entrenados del modelo de separación (voz, batería, bajo y resto), convertidos a ONNX por el paquete demucs-js.',
-  modelLic: 'Los pesos no están cubiertos por la licencia MIT del código. Meta los publica para uso de investigación, y el paquete demucs-js los marca «solo para uso personal y de investigación».', modelNote: 'Aclaración de los mantenedores',
+  w_supa: 'Cuentas, base de datos y almacenamiento de archivos.', w_stretch: 'Cambiar tempo y tonalidad, en vivo y al exportar.', w_ort: 'Ejecuta el modelo de separación de pistas en el navegador.',
+  w_lame: 'Exportación MP3.', w_ffmpeg: 'Formatos extra en el Conversor (FLAC, OGG, M4A, vídeo y más). Funciona en su propio Web Worker.',
+  w_model: 'El modelo entrenado Spleeter de 4 pistas (voz, batería, bajo y resto), convertido por nosotros a ONNX desde el checkpoint oficial de Deezer. La STFT, las máscaras y la STFT inversa están reimplementadas en JavaScript en ai/worker.js.',
+  modelLic: 'Según el artículo oficial de Deezer, tanto el código como los modelos entrenados se publican con licencia MIT.', modelNote: 'Artículo (JOSS 2020)',
   w_deezer: 'Listas, datos de canciones, portadas, fragmentos de 30 segundos y el reproductor oficial. El contenido pertenece a sus titulares y lo proporciona Deezer.',
   w_ga: 'Estadísticas de uso agregadas.', w_clarity: 'Mapas de calor y grabaciones de sesión con el texto oculto.', w_ts: 'Una breve comprobación anti-bots en los formularios de registro, inicio de sesión y restablecimiento de contraseña, solo si el propietario del sitio la activa.', back: 'Volver al sitio', top: 'Volver arriba',
   a11yUpd: 'Actualizado: {d}' }
 };
+/* licenses sweep 2026-10-18: Emscripten, Meta Pixel, PayPal, Anthropic, Cloudflare + our GPL worker (merged into T) */
+const T2 = {
+he: { w_emcc: 'ערכת הכלים שבה נבנו קובצי ה־WebAssembly של ffmpeg.wasm ו־Signalsmith Stretch. קוד ההרצה שלה כלול בתוך הקבצים האלה.',
+  w_meta: 'מדידת פרסום (Meta Pixel).', consentM: 'נטען רק אחרי הסכמה נפרדת למדידת פרסום בחלון העוגיות.',
+  w_pp: 'תשלומים ומנויים. פרטי הכרטיס מוקלדים רק אצל PayPal.', w_anth: 'מודל הבינה המלאכותית (Claude) שמאחורי העוזר רומי. מקבל הודעות רק כשכותבים לרומי.',
+  w_cf: 'אחסון האתר, הפצת התוכן וספירת ביקורים מצטברת בלי עוגיות (Web Analytics).',
+  srcOwn: 'גם הקובץ שלנו assets/ffmpeg-worker.js, שמפעיל את ffmpeg.wasm, מופץ ברישיון GPL-2.0-or-later. אנחנו שומרים ארכיון של קוד המקור המדויק של הגרסה שבאתר, כולל FFmpeg וכל הספריות שנבנו איתו.' },
+en: { w_emcc: 'The toolchain the WebAssembly files of ffmpeg.wasm and Signalsmith Stretch were built with. Its runtime code is included inside those files.',
+  w_meta: 'Ad measurement (Meta Pixel).', consentM: 'Loaded only after you separately allow ad measurement in the cookie banner.',
+  w_pp: 'Payments and subscriptions. Card details are typed only at PayPal.', w_anth: 'The AI model (Claude) behind the Roomy assistant. It receives messages only when you write to Roomy.',
+  w_cf: 'Hosting, content delivery and cookie-free aggregate visit counts (Web Analytics).',
+  srcOwn: 'Our own file assets/ffmpeg-worker.js, which drives ffmpeg.wasm, is also released under GPL-2.0-or-later. We keep an archive of the exact source code of the version on the site, including FFmpeg and every library it was built with.' },
+ar: { w_emcc: 'مجموعة الأدوات التي بُنيت بها ملفات WebAssembly الخاصة بـffmpeg.wasm وSignalsmith Stretch. شيفرة التشغيل الخاصة بها مضمَّنة داخل هذه الملفات.',
+  w_meta: 'قياس الإعلانات (Meta Pixel).', consentM: 'يُحمَّل فقط بعد موافقة منفصلة على قياس الإعلانات في نافذة ملفات تعريف الارتباط.',
+  w_pp: 'المدفوعات والاشتراكات. تُكتب بيانات البطاقة لدى PayPal فقط.', w_anth: 'نموذج الذكاء الاصطناعي (Claude) الذي يشغّل المساعد رومي. يتلقى الرسائل فقط عندما تكتب لرومي.',
+  w_cf: 'استضافة الموقع وتوزيع المحتوى وعدّ الزيارات بشكل مجمَّع دون ملفات تعريف ارتباط (Web Analytics).',
+  srcOwn: 'ملفنا assets/ffmpeg-worker.js، الذي يشغّل ffmpeg.wasm، منشور أيضًا بترخيص GPL-2.0-or-later. نحتفظ بأرشيف للشيفرة المصدرية الدقيقة للإصدار الموجود في الموقع، بما في ذلك FFmpeg وكل المكتبات التي بُني معها.' },
+ru: { w_emcc: 'Набор инструментов, которым собраны WebAssembly-файлы ffmpeg.wasm и Signalsmith Stretch. Его код среды выполнения входит в эти файлы.',
+  w_meta: 'Измерение рекламы (Meta Pixel).', consentM: 'Загружается только после отдельного согласия на измерение рекламы в окне cookie.',
+  w_pp: 'Платежи и подписки. Данные карты вводятся только на стороне PayPal.', w_anth: 'ИИ-модель (Claude), на которой работает ассистент Руми. Получает сообщения, только когда вы пишете Руми.',
+  w_cf: 'Хостинг сайта, доставка контента и сводный подсчёт посещений без cookie (Web Analytics).',
+  srcOwn: 'Наш собственный файл assets/ffmpeg-worker.js, который управляет ffmpeg.wasm, тоже распространяется под лицензией GPL-2.0-or-later. Мы храним архив точного исходного кода версии на сайте, включая FFmpeg и все библиотеки, с которыми он собран.' },
+es: { w_emcc: 'El conjunto de herramientas con el que se compilaron los archivos WebAssembly de ffmpeg.wasm y Signalsmith Stretch. Su código de ejecución va incluido dentro de esos archivos.',
+  w_meta: 'Medición publicitaria (Meta Pixel).', consentM: 'Se carga solo después de permitir por separado la medición publicitaria en el aviso de cookies.',
+  w_pp: 'Pagos y suscripciones. Los datos de la tarjeta se escriben solo en PayPal.', w_anth: 'El modelo de IA (Claude) detrás del asistente Roomy. Recibe mensajes solo cuando le escribes a Roomy.',
+  w_cf: 'Alojamiento del sitio, distribución del contenido y recuento agregado de visitas sin cookies (Web Analytics).',
+  srcOwn: 'Nuestro propio archivo assets/ffmpeg-worker.js, que controla ffmpeg.wasm, también se publica con la licencia GPL-2.0-or-later. Guardamos un archivo del código fuente exacto de la versión del sitio, incluidos FFmpeg y todas las bibliotecas con las que se compiló.' }
+};
+for (const l in T2) Object.assign(T[l], T2[l]);
 const L = () => { const l = (document.documentElement.lang || 'he').slice(0, 2).toLowerCase(); return T[l] ? l : 'en'; };
 const t = (k, v) => { let s = T[L()][k] != null ? T[L()][k] : T.en[k]; if (v) s = String(s).replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? v[x] : m)); return s; };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -116,23 +145,27 @@ const FONTS = [
   { n: 'Atkinson Hyperlegible', lic: 'SIL OFL 1.1', lu: LIC.OFL, by: '© Braille Institute of America, Inc.', w: 'w_atk', links: [['project', 'https://www.brailleinstitute.org/freefont/']] }
 ];
 const LIBS = [
-  { n: 'supabase-js', v: '2.117.2', lic: 'MIT', lu: LIC.MIT, by: '© Supabase', w: 'w_supa', links: [['project', 'https://github.com/supabase/supabase-js']] },
-  { n: 'Signalsmith Stretch', v: '1.3.2', lic: 'MIT', lu: LIC.MIT, by: '© Signalsmith Audio Ltd (Geraint Luff)', w: 'w_stretch', links: [['project', 'https://signalsmith-audio.co.uk/code/stretch/']] },
-  { n: 'ONNX Runtime Web', v: '1.23.0', lic: 'MIT', lu: LIC.MIT, by: '© Microsoft Corporation', w: 'w_ort', extra: 'bundled', links: [['project', 'https://github.com/microsoft/onnxruntime']] },
-  { n: 'demucs-js', v: '1.0.0', lic: 'MIT', lu: LIC.MIT, by: '© Kevin Gibbons and contributors', w: 'w_djs', extra: 'modified', links: [['project', 'https://github.com/bakkot/demucs-js']] },
-  { n: 'Demucs', v: 'v4 (HTDemucs)', lic: 'MIT', lu: 'https://github.com/facebookresearch/demucs/blob/main/LICENSE', by: '© Meta Platforms, Inc. and affiliates', w: 'w_demucs', links: [['project', 'https://github.com/facebookresearch/demucs']] },
+  { n: 'supabase-js', v: '2.117.2', lic: 'MIT', lu: LIC.MIT, by: '© Supabase', w: 'w_supa', extra: 'unmod', local: 'vendor/supabase.LICENSE.txt', links: [['project', 'https://github.com/supabase/supabase-js'], ['source', 'https://www.npmjs.com/package/@supabase/supabase-js/v/2.117.2']] },
+  { n: 'Signalsmith Stretch', v: '1.3.2', lic: 'MIT', lu: LIC.MIT, by: '© 2022 Geraint Luff / Signalsmith Audio Ltd.', w: 'w_stretch', extra: 'unmod', local: 'vendor/signalsmith-stretch-1.3.2.LICENSE.txt', links: [['project', 'https://signalsmith-audio.co.uk/code/stretch/'], ['source', 'https://www.npmjs.com/package/signalsmith-stretch/v/1.3.2']] },
+  { n: 'ONNX Runtime Web', v: '1.23.0', lic: 'MIT', lu: LIC.MIT, by: '© Microsoft Corporation', w: 'w_ort', extra: 'bundled', local: 'vendor/onnxruntime-web-1.23.0.LICENSE.txt', links: [['project', 'https://github.com/microsoft/onnxruntime'], ['source', 'https://github.com/microsoft/onnxruntime/tree/v1.23.0']] },
   { n: 'lamejs', v: '1.2.7', lic: 'LGPL-3.0', lu: LIC.LGPL3, by: '© the LAME project; JavaScript port by zhuker and contributors', w: 'w_lame', extra: 'unmod', local: 'vendor/lamejs-1.2.7.LICENSE.txt',
     links: [['project', 'https://github.com/zhuker/lamejs'], ['source', 'https://github.com/shijinyu/lamejs/tree/1fb0ef5fa177413107e2e107d054a9b994e3f79c'], ['source', 'https://registry.npmjs.org/@breezystack/lamejs/-/lamejs-1.2.7.tgz']] },
-  { n: 'ffmpeg.wasm core (FFmpeg)', v: '0.12.10', lic: 'GPL-2.0-or-later', lu: LIC.GPL2, by: '© the FFmpeg developers; ffmpeg.wasm © Jerome Wu and contributors', w: 'w_ffmpeg', extra: 'unmod', local: 'vendor/ffmpeg/LICENSE.txt',
-    links: [['project', 'https://github.com/ffmpegwasm/ffmpeg.wasm'], ['source', 'https://www.npmjs.com/package/@ffmpeg/core/v/0.12.10'], ['source', 'https://ffmpeg.org/download.html']] }
+  { n: 'ffmpeg.wasm core (FFmpeg)', v: '0.12.10', lic: 'GPL-2.0-or-later', lu: LIC.GPL2, by: '© the FFmpeg developers; ffmpeg.wasm © Jerome Wu and contributors', w: 'w_ffmpeg', extra: 'unmod', local: 'vendor/ffmpeg/LICENSE.txt?v=2',
+    links: [['project', 'https://github.com/ffmpegwasm/ffmpeg.wasm'], ['source', 'https://github.com/ffmpegwasm/ffmpeg.wasm/tree/71aa99d37c02a7b4c435275ca9ef50e612f6efa1'], ['source', 'https://ffmpeg.org/releases/ffmpeg-5.1.4.tar.xz'], ['source', 'https://www.npmjs.com/package/@ffmpeg/core/v/0.12.10']] },
+  { n: 'Emscripten', lic: 'MIT / NCSA', lu: 'https://github.com/emscripten-core/emscripten/blob/3.1.40/LICENSE', by: '© 2010–2014 Emscripten authors', w: 'w_emcc', links: [['project', 'https://emscripten.org/']] }
 ];
-const MODELS = [{ n: 'HTDemucs — trained weights (ONNX)', v: 'htdemucs', lic: '—', by: '© Meta Platforms, Inc.', w: 'w_model', model: true,
-  links: [['project', 'https://github.com/facebookresearch/demucs'], ['source', 'https://www.npmjs.com/package/demucs/v/1.0.0'], ['modelNote', 'https://github.com/facebookresearch/demucs/issues/327']] }];
+const MODELS = [{ n: 'Spleeter — 4stems model (our ONNX conversion)', v: 'v1.4.0', lic: 'MIT', lu: 'https://github.com/deezer/spleeter/blob/master/LICENSE', by: '© 2019-present, Deezer SA', w: 'w_model', extra: 'modelLic',
+  links: [['project', 'https://github.com/deezer/spleeter'], ['source', 'https://github.com/deezer/spleeter/releases/tag/v1.4.0'], ['modelNote', 'https://joss.theoj.org/papers/10.21105/joss.02154']] }];
 const DATA = [
   { n: 'Deezer API & widget', lic: 'Deezer', lu: 'https://developers.deezer.com/termsofuse', lt: 'terms', by: '© Deezer SA and the rights holders', w: 'w_deezer', links: [['project', 'https://developers.deezer.com/']] },
   { n: 'Google Analytics 4', lic: 'Google', lu: 'https://marketingplatform.google.com/about/analytics/terms/us/', lt: 'terms', by: 'Google LLC', w: 'w_ga', extra: 'consent', links: [['project', 'https://marketingplatform.google.com/about/analytics/']] },
   { n: 'Microsoft Clarity', lic: 'Microsoft', lu: 'https://clarity.microsoft.com/terms', lt: 'terms', by: 'Microsoft Corporation', w: 'w_clarity', extra: 'consent', links: [['project', 'https://clarity.microsoft.com/']] },
-  { n: 'Cloudflare Turnstile', lic: 'Cloudflare', lu: 'https://www.cloudflare.com/turnstile-terms-of-service/', lt: 'terms', by: 'Cloudflare, Inc.', w: 'w_ts', links: [['project', 'https://www.cloudflare.com/products/turnstile/']] }   /* acct (accounts v4) */
+  { n: 'Cloudflare Turnstile', lic: 'Cloudflare', lu: 'https://www.cloudflare.com/turnstile-terms-of-service/', lt: 'terms', by: 'Cloudflare, Inc.', w: 'w_ts', links: [['project', 'https://www.cloudflare.com/products/turnstile/']] },   /* acct (accounts v4) */
+  /* licenses sweep 2026-10-18: the other services the page loads or sends data to (same list as the privacy policy) */
+  { n: 'Meta Pixel', lic: 'Meta', lu: 'https://www.facebook.com/legal/terms/businesstools', lt: 'terms', by: 'Meta Platforms, Inc.', w: 'w_meta', extra: 'consentM', links: [['project', 'https://www.facebook.com/business/tools/meta-pixel']] },
+  { n: 'Cloudflare Pages & Web Analytics', lic: 'Cloudflare', lu: 'https://www.cloudflare.com/terms/', lt: 'terms', by: 'Cloudflare, Inc.', w: 'w_cf', links: [['project', 'https://www.cloudflare.com/web-analytics/']] },
+  { n: 'PayPal', lic: 'PayPal', lu: 'https://www.paypal.com/us/legalhub/useragreement-full', lt: 'terms', by: 'PayPal, Inc.', w: 'w_pp', links: [['project', 'https://www.paypal.com/']] },
+  { n: 'Anthropic API (Claude)', lic: 'Anthropic', lu: 'https://www.anthropic.com/legal/commercial-terms', lt: 'terms', by: 'Anthropic PBC', w: 'w_anth', links: [['project', 'https://www.anthropic.com/']] }
 ];
 const MIT_TEXT = 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.';
 
@@ -168,7 +201,7 @@ function licensesHTML() {
     sec('lic-libs', t('libsH'), '<ul class="lics">' + LIBS.map(card).join('') + '</ul>') +
     sec('lic-models', t('modelsH'), '<ul class="lics">' + MODELS.map(card).join('') + '</ul>') +
     sec('lic-data', t('dataH'), '<ul class="lics">' + DATA.map(card).join('') + '</ul>') +
-    sec('lic-source', t('srcH'), '<p>' + esc(t('src')) + '</p><p><b>' + esc(t('srcAsk')) + '</b> ' + contactLink() + '</p>') +
+    sec('lic-source', t('srcH'), '<p>' + esc(t('src')) + '</p><p>' + esc(t('srcOwn')) + '</p><p><b>' + esc(t('srcAsk')) + '</b> ' + contactLink() + '</p>') +
     sec('lic-tm', t('tmH'), '<p>' + esc(t('tm')) + '</p>') +
     sec('lic-texts', t('textsH'),
       '<details class="lic-txt"><summary>' + esc(t('mitT')) + '</summary><pre dir="ltr" lang="en">MIT License\n\nCopyright (c) — see each component above\n\n' + esc(MIT_TEXT) + '</pre></details>' +

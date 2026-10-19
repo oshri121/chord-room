@@ -25,7 +25,7 @@ INIT = r"""window.__rej=[];addEventListener('unhandledrejection',e=>{try{window.
 
 # lowercase English words that may legitimately stay English in every language (hardware labels, formats, brands…)
 ENG_WORDS = ('bpm|lufs|wav|mp3|midi|flac|ogg|m4a|aac|zip|csv|xml|nml|m3u8?|rekordbox|serato|traktor|virtualdj|'
-             'pioneer|deezer|chord|room|demucs|onnx|signalsmith|stretch|lame|lamejs|ffmpeg|wasm|fl|studio|ableton|logic|pro|'
+             'pioneer|deezer|chord|room|demucs|spleeter|onnx|signalsmith|stretch|lame|lamejs|ffmpeg|wasm|fl|studio|ableton|logic|pro|'
              'sync|cue|cues|play|loop|key|lock|fx|beat|echo|reverb|flanger|gate|roll|brake|rec|trim|hi|mid|low|filter|'
              'master|booth|vocals|drums|bass|other|instrumental|extended|mix|mashup|radio|edit|club|dj|intro|outro|drop|break|'
              'build|verse|chorus|bridge|pre|groove|phrase|song|artist|album|title|camelot|db|dbfs|khz|kbps|hz|ms|vs|feat|ft|'

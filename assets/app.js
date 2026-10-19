@@ -8,70 +8,70 @@ const mod=(a,n)=>((a%n)+n)%n;
 const I={
 he:{tagline:'קצב, סולם, אקורדים וערוצי AI מכל שיר',library:'השירים שלי',upload:'העלאת שיר',loaded:'טעון עכשיו',demo:'דוגמה',key:'סולם',length:'משך',loudness:'עוצמה',loop:'לופ',click:'קליק',wave:'גל',zoom:'זום',grid:'גריד',
 now:'עכשיו',next:'הבא',inBeats:'בעוד {n} פעמות',end:'סוף',playAlong:'נגינה',transpose:'טרנספוזיציה',transposeH:'הזזת כל האקורדים בחצאי טונים',capo:'קאפו',capo0:'בלי קאפו',capoN:'צורות לנגינה עם קאפו בשריג {n}',diagrams:'דיאגרמות',guitar:'גיטרה',piano:'פסנתר',names:'שמות תווים',auto:'אוטו',harmonic:'מיקס הרמוני',harmonicH:'סולמות שמתחברים לשיר הזה',
-stems:'ערוצים',stemsH:'שירה, תופים, בס ושאר הכלים. ההפרדה נעשית במודל הבינה המלאכותית Demucs v4, ישירות בדפדפן שלך.',aiSep:'הפרדה ב־AI',quickSep:'הפרדה מהירה',cancel:'ביטול',engGpu:'מנוע: GPU',engCpu:'מנוע: CPU (איטי יותר)',
-aiFirst:'בפעם הראשונה המודל יורד (כ־100MB), ואחר כך נשמר בדפדפן. ב־GPU שיר של 4 דקות לוקח בערך 1–3 דקות, ב־CPU יותר.',aiCrash:'ההפרדה נעצרה באמצע: הדפדפן נגמר לו הזיכרון והעמוד נטען מחדש (קורה בעיקר בטלפונים עם שירים ארוכים). הנקודות הוחזרו. נסו שיר קצר יותר, סגרו לשוניות אחרות, או הפרידו במחשב.',aiDl:'מוריד את מודל ה־AI… {p}%',aiPrep:'מכין את המודל…',aiRun:'מפריד… {p}%',aiEta:' · עוד כ־{t}',aiDone:'הערוצים מוכנים. הנגן מנגן מהם עכשיו.',aiErr:'מודל ה־AI לא נטען במכשיר הזה ({m}). אפשר להשתמש בהפרדה המהירה.',
+stems:'ערוצים',stemsH:'שירה, תופים, בס ושאר הכלים. ההפרדה נעשית במודל הבינה המלאכותית Spleeter של Deezer, ישירות בדפדפן שלך.',aiSep:'הפרדה ב־AI',quickSep:'הפרדה מהירה',cancel:'ביטול',engGpu:'מנוע: GPU',engCpu:'מנוע: CPU (איטי יותר)',
+aiFirst:'בפעם הראשונה המודל יורד (כ־75MB), ואחר כך נשמר בדפדפן. במחשב שיר של 4 דקות לוקח בדרך כלל פחות מדקה, בטלפון יותר.',aiCrash:'ההפרדה נעצרה באמצע: הדפדפן נגמר לו הזיכרון והעמוד נטען מחדש (קורה בעיקר בטלפונים עם שירים ארוכים). הנקודות הוחזרו. נסו שיר קצר יותר, סגרו לשוניות אחרות, או הפרידו במחשב.',aiDl:'מוריד את מודל ה־AI… {p}%',aiPrep:'מכין את המודל…',aiRun:'מפריד… {p}%',aiEta:' · עוד כ־{t}',aiDone:'הערוצים מוכנים. הנגן מנגן מהם עכשיו.',aiErr:'מודל ה־AI לא נטען במכשיר הזה ({m}). אפשר להשתמש בהפרדה המהירה.',
 quickDone:'הפרדה מהירה מוכנה. האיכות נמוכה מההפרדה ב־AI.',quickRun:'מפריד (מהיר)… {p}%',needAudio:'צריך קובץ שמע טעון כדי להפריד ערוצים.',canceled:'ההפרדה בוטלה.',mono:'השיר מוקלט במונו.',
 vocals:'שירה',drums:'תופים',bass:'בס',other:'שאר הכלים',karaoke:'קריוקי',
 export:'ייצוא לתוכנת הפקה',exportH:'הכול נארז ב־ZIP: קובץ WAV לכל ערוץ, קובצי MIDI לפסנתר, וקובץ מידע עם BPM וסולם. מניחים הכול בתחילת תיבה 1 והכול מסונכרן.',
 xInst:'אינסטרומנטלי',xOrig:'המקור',xChords:'אקורדים',xDrumsM:'תופים (קיק, סנר, היי־האט)',xBassM:'קו בס',xMel:'מלודיה משירה',download:'הורדה כ־ZIP',packing:'אורז…',transcribing:'מתמלל תווים… {p}%',dlConfirm:'מאשרים את ההורדה בחלון שנפתח…',dlDone:'ההורדה נשלחה ({s} MB).',dlDeclined:'ההורדה בוטלה.',dlBusy:'כבר פתוח חלון הורדה.',dlFail:'ההורדה לא הצליחה. נסה שוב או בחר פחות קבצים.',dlNone:'סמן לפחות קובץ אחד.',dlUnavail:'ההורדה עובדת כשהעמוד פתוח ב־claude.ai.',needStems:'דורש הפרדה',
 chordsIn:'האקורדים בשיר',sheet:'גיליון אקורדים',sheetHint:'לחיצה על משבצת קופצת לשם',edit:'עריכת אקורדים',editing:'סיום עריכה',editHint:'לחיצה על משבצת משנה את האקורד',thisBeat:'רק הפעמה',block:'כל הקטע',noChord:'בלי',maj:'מז׳ור',min:'מינור',
-about:'על הכלי',aboutT:'הניתוח רץ כולו בדפדפן, והשיר לא נשלח לשום מקום. הזיהוי אוטומטי: אפשר לתקן גריד ואקורדים ידנית.',credits:'הפרדת ערוצים: Demucs v4 של Meta (משקלות לשימוש אישי ולא מסחרי), מורץ עם ONNX Runtime Web.',keys:'קיצורי מקלדת',
+about:'על הכלי',aboutT:'הניתוח רץ כולו בדפדפן, והשיר לא נשלח לשום מקום. הזיהוי אוטומטי: אפשר לתקן גריד ואקורדים ידנית.',credits:'הפרדת ערוצים: Spleeter של Deezer (קוד ומודלים ברישיון MIT), מורץ עם ONNX Runtime Web.',keys:'קיצורי מקלדת',
 kPlay:'נגן / עצור',kBar:'תיבה אחורה / קדימה',kCue:'קיו חם: שמירה / קפיצה (Shift מוחק)',kLoop:'לופ',kClick:'קליק מטרונום',kZoom:'זום',
 libH:'נשמרים בדפדפן הזה בלבד: קצב, סולם, אקורדים וקיואים. כדי לנגן צריך להעלות את הקובץ שוב.',libEmpty:'עוד אין כאן שירים.',del:'מחיקה',sure:'בטוח?',close:'סגירה',fromLib:'נפתח מהשירים שלי. כדי לנגן ולראות גל קול, העלה שוב את קובץ השמע.',drop:'שחרר כאן את השיר',
 readErr:'לא הצלחנו לקרוא את הקובץ. נסה MP3, WAV או M4A.',bReading:'קורא את הקובץ…',bPrep:'מכין את השמע…',bWave:'מצייר גל קול…',bBeats:'מאתר פעמות…',bChords:'מזהה אקורדים…',bTempo:'מחשב קצב וסולם…',bDemo:'יוצר שיר דוגמה…',
 major:'מז׳ור',minor:'מינור',same:'אותו',rel:'מקביל',up:'+1',down:'−1',sol:['דו','דו♯','רה','מי♭','מי','פה','פה♯','סול','לה♭','לה','סי♭','סי'],min_:'דק׳',sec_:'שנ׳'},
 en:{tagline:'Tempo, key, chords and AI stems from any song',library:'My songs',upload:'Upload song',loaded:'Loaded',demo:'Demo',key:'Key',length:'Length',loudness:'Loudness',loop:'Loop',click:'Click',wave:'Wave',zoom:'Zoom',grid:'Grid',
 now:'Now',next:'Next',inBeats:'in {n} beats',end:'End',playAlong:'Play along',transpose:'Transpose',transposeH:'Shift every chord by semitones',capo:'Capo',capo0:'No capo',capoN:'Shapes for capo on fret {n}',diagrams:'Diagrams',guitar:'Guitar',piano:'Piano',names:'Note names',auto:'Auto',harmonic:'Harmonic mixing',harmonicH:'Keys that mix smoothly with this track',
-stems:'Stems',stemsH:'Vocals, drums, bass and everything else, separated by the Demucs v4 AI model right in your browser.',aiSep:'Separate with AI',quickSep:'Quick separation',cancel:'Cancel',engGpu:'Engine: GPU',engCpu:'Engine: CPU (slower)',
-aiFirst:'The first run downloads the model (about 100 MB); after that it stays in your browser. On a GPU a 4-minute song takes about 1–3 minutes; on CPU longer.',aiCrash:'Separation stopped half-way: the browser ran out of memory and reloaded the page (mostly on phones with long songs). Your points were refunded. Try a shorter song, close other tabs, or separate on a computer.',aiDl:'Downloading the AI model… {p}%',aiPrep:'Preparing the model…',aiRun:'Separating… {p}%',aiEta:' · about {t} left',aiDone:'Stems are ready. The player now plays from them.',aiErr:'The AI model could not start on this device ({m}). Quick separation still works.',
+stems:'Stems',stemsH:'Vocals, drums, bass and everything else, separated by Deezer’s Spleeter AI model right in your browser.',aiSep:'Separate with AI',quickSep:'Quick separation',cancel:'Cancel',engGpu:'Engine: GPU',engCpu:'Engine: CPU (slower)',
+aiFirst:'The first run downloads the model (about 75 MB); after that it stays in your browser. On a computer a 4-minute song usually takes under a minute; on a phone longer.',aiCrash:'Separation stopped half-way: the browser ran out of memory and reloaded the page (mostly on phones with long songs). Your points were refunded. Try a shorter song, close other tabs, or separate on a computer.',aiDl:'Downloading the AI model… {p}%',aiPrep:'Preparing the model…',aiRun:'Separating… {p}%',aiEta:' · about {t} left',aiDone:'Stems are ready. The player now plays from them.',aiErr:'The AI model could not start on this device ({m}). Quick separation still works.',
 quickDone:'Quick separation ready. Quality is lower than the AI separation.',quickRun:'Separating (quick)… {p}%',needAudio:'Load an audio file to separate stems.',canceled:'Separation canceled.',mono:'This song is mono.',
 vocals:'Vocals',drums:'Drums',bass:'Bass',other:'Other',karaoke:'Karaoke',
 export:'Export for any DAW',exportH:'Everything is packed in a ZIP: a WAV per stem, piano MIDI files and an info file with BPM and key. Drop it all at bar 1 and it lines up.',
 xInst:'Instrumental',xOrig:'Original',xChords:'Chords',xDrumsM:'Drums (kick, snare, hi-hat)',xBassM:'Bass line',xMel:'Vocal melody',download:'Download ZIP',packing:'Packing…',transcribing:'Transcribing notes… {p}%',dlConfirm:'Confirm the download in the dialog…',dlDone:'Download sent ({s} MB).',dlDeclined:'Download canceled.',dlBusy:'A download dialog is already open.',dlFail:'The download failed. Try again or pick fewer files.',dlNone:'Select at least one file.',dlUnavail:'Downloads work when the page is open in claude.ai.',needStems:'needs stems',
 chordsIn:'Chords in this song',sheet:'Chord sheet',sheetHint:'Click a cell to jump there',edit:'Edit chords',editing:'Done editing',editHint:'Click a cell to change its chord',thisBeat:'This beat',block:'Whole block',noChord:'None',maj:'Major',min:'Minor',
-about:'About',aboutT:'All analysis runs in your browser and the song never leaves your device. Detection is automatic; you can correct the grid and chords by hand.',credits:'Stem separation: Demucs v4 by Meta (weights for personal, non-commercial use), run with ONNX Runtime Web.',keys:'Keyboard',
+about:'About',aboutT:'All analysis runs in your browser and the song never leaves your device. Detection is automatic; you can correct the grid and chords by hand.',credits:'Stem separation: Spleeter by Deezer (code and models under the MIT license), run with ONNX Runtime Web.',keys:'Keyboard',
 kPlay:'Play / pause',kBar:'Bar back / forward',kCue:'Hot cue: set / jump (Shift clears)',kLoop:'Loop',kClick:'Metronome click',kZoom:'Zoom',
 libH:'Saved in this browser only: tempo, key, chords and cues. Upload the file again to play it.',libEmpty:'No songs yet.',del:'Delete',sure:'Sure?',close:'Close',fromLib:'Opened from My songs. Upload the audio file again to play it and see the waveform.',drop:'Drop the song here',
 readErr:'Could not read the file. Try MP3, WAV or M4A.',bReading:'Reading the file…',bPrep:'Preparing audio…',bWave:'Drawing the waveform…',bBeats:'Finding beats…',bChords:'Detecting chords…',bTempo:'Tempo and key…',bDemo:'Creating a demo song…',
 major:'major',minor:'minor',same:'Same',rel:'Relative',up:'+1',down:'−1',sol:null,min_:'min',sec_:'s'},
 ar:{tagline:'الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي',library:'أغانيّ',upload:'رفع أغنية',loaded:'المحمّلة الآن',demo:'تجريبي',key:'المقام',length:'المدة',loudness:'الشدة',loop:'تكرار',click:'نقرة',wave:'الموجة',zoom:'تكبير',grid:'الشبكة',
 now:'الآن',next:'التالي',inBeats:'بعد {n} نبضات',end:'النهاية',playAlong:'العزف',transpose:'تحويل',transposeH:'نقل كل الكوردات بأنصاف الدرجات',capo:'كابو',capo0:'بدون كابو',capoN:'أشكال للعزف مع كابو على الدستان {n}',diagrams:'المخططات',guitar:'غيتار',piano:'بيانو',names:'أسماء النوتات',auto:'تلقائي',harmonic:'مزج متناغم',harmonicH:'مقامات تمتزج بسلاسة مع هذه الأغنية',
-stems:'المسارات',stemsH:'الغناء والطبول والباص وباقي الآلات، يفصلها نموذج الذكاء الاصطناعي Demucs v4 داخل متصفحك.',aiSep:'فصل بالذكاء الاصطناعي',quickSep:'فصل سريع',cancel:'إلغاء',engGpu:'المحرك: GPU',engCpu:'المحرك: CPU (أبطأ)',
-aiFirst:'في المرة الأولى يُحمَّل النموذج (نحو 100MB) ثم يبقى في المتصفح. على GPU تستغرق أغنية من 4 دقائق نحو 1–3 دقائق، وعلى CPU أكثر.',aiCrash:'توقّف الفصل في المنتصف: نفدت ذاكرة المتصفح وأُعيد تحميل الصفحة (يحدث غالبًا على الهواتف مع الأغاني الطويلة). أُعيدت نقاطك. جرّب أغنية أقصر، أو أغلق التبويبات الأخرى، أو افصل على الحاسوب.',aiDl:'تحميل نموذج الذكاء الاصطناعي… {p}%',aiPrep:'تجهيز النموذج…',aiRun:'جارٍ الفصل… {p}%',aiEta:' · متبقٍّ نحو {t}',aiDone:'المسارات جاهزة، والمشغّل يعزف منها الآن.',aiErr:'تعذّر تشغيل النموذج على هذا الجهاز ({m}). الفصل السريع ما زال متاحًا.',
+stems:'المسارات',stemsH:'الغناء والطبول والباص وباقي الآلات، يفصلها نموذج الذكاء الاصطناعي Spleeter من Deezer داخل متصفحك.',aiSep:'فصل بالذكاء الاصطناعي',quickSep:'فصل سريع',cancel:'إلغاء',engGpu:'المحرك: GPU',engCpu:'المحرك: CPU (أبطأ)',
+aiFirst:'في المرة الأولى يُحمَّل النموذج (نحو 75MB) ثم يبقى في المتصفح. على الحاسوب تستغرق أغنية من 4 دقائق عادةً أقل من دقيقة، وعلى الهاتف أكثر.',aiCrash:'توقّف الفصل في المنتصف: نفدت ذاكرة المتصفح وأُعيد تحميل الصفحة (يحدث غالبًا على الهواتف مع الأغاني الطويلة). أُعيدت نقاطك. جرّب أغنية أقصر، أو أغلق التبويبات الأخرى، أو افصل على الحاسوب.',aiDl:'تحميل نموذج الذكاء الاصطناعي… {p}%',aiPrep:'تجهيز النموذج…',aiRun:'جارٍ الفصل… {p}%',aiEta:' · متبقٍّ نحو {t}',aiDone:'المسارات جاهزة، والمشغّل يعزف منها الآن.',aiErr:'تعذّر تشغيل النموذج على هذا الجهاز ({m}). الفصل السريع ما زال متاحًا.',
 quickDone:'الفصل السريع جاهز، وجودته أقل من الفصل بالذكاء الاصطناعي.',quickRun:'جارٍ الفصل السريع… {p}%',needAudio:'حمّل ملفًا صوتيًا لفصل المسارات.',canceled:'أُلغي الفصل.',mono:'هذه الأغنية أحادية القناة.',
 vocals:'الغناء',drums:'الطبول',bass:'الباص',other:'باقي الآلات',karaoke:'كاريوكي',
 export:'تصدير لأي برنامج إنتاج',exportH:'كل شيء في ملف ZIP: ملف WAV لكل مسار، وملفات MIDI للبيانو، وملف معلومات بالإيقاع والمقام. ضعها كلها عند المازورة 1 فتتزامن.',
 xInst:'موسيقى بلا غناء',xOrig:'الأصلي',xChords:'الكوردات',xDrumsM:'الطبول (كيك، سنير، هاي هات)',xBassM:'خط الباص',xMel:'لحن الغناء',download:'تنزيل ZIP',packing:'جارٍ التجميع…',transcribing:'تدوين النوتات… {p}%',dlConfirm:'أكّد التنزيل في النافذة…',dlDone:'أُرسل التنزيل ({s} MB).',dlDeclined:'أُلغي التنزيل.',dlBusy:'نافذة تنزيل مفتوحة بالفعل.',dlFail:'فشل التنزيل. حاول مجددًا أو اختر ملفات أقل.',dlNone:'اختر ملفًا واحدًا على الأقل.',dlUnavail:'التنزيل يعمل عند فتح الصفحة في claude.ai.',needStems:'يتطلب الفصل',
 chordsIn:'كوردات الأغنية',sheet:'ورقة الكوردات',sheetHint:'انقر على خانة للانتقال إليها',edit:'تعديل الكوردات',editing:'إنهاء التعديل',editHint:'انقر على خانة لتغيير الكورد',thisBeat:'هذه النبضة',block:'المقطع كله',noChord:'بلا',maj:'ماجور',min:'مينور',
-about:'عن الأداة',aboutT:'يجري التحليل كله داخل متصفحك ولا تغادر الأغنية جهازك. الاكتشاف تلقائي ويمكنك تصحيح الشبكة والكوردات يدويًا.',credits:'فصل المسارات: Demucs v4 من Meta (أوزان للاستخدام الشخصي غير التجاري)، يعمل عبر ONNX Runtime Web.',keys:'لوحة المفاتيح',
+about:'عن الأداة',aboutT:'يجري التحليل كله داخل متصفحك ولا تغادر الأغنية جهازك. الاكتشاف تلقائي ويمكنك تصحيح الشبكة والكوردات يدويًا.',credits:'فصل المسارات: Spleeter من Deezer (الشيفرة والنماذج برخصة MIT)، يعمل عبر ONNX Runtime Web.',keys:'لوحة المفاتيح',
 kPlay:'تشغيل / إيقاف',kBar:'مازورة للخلف / للأمام',kCue:'نقطة سريعة: حفظ / انتقال (Shift للحذف)',kLoop:'تكرار',kClick:'نقرة المترونوم',kZoom:'تكبير',
 libH:'تُحفظ في هذا المتصفح فقط: الإيقاع والمقام والكوردات والنقاط. ارفع الملف مجددًا للتشغيل.',libEmpty:'لا توجد أغانٍ بعد.',del:'حذف',sure:'متأكد؟',close:'إغلاق',fromLib:'فُتحت من أغانيّ. ارفع الملف الصوتي مجددًا للتشغيل ورؤية الموجة.',drop:'أفلت الأغنية هنا',
 readErr:'تعذّرت قراءة الملف. جرّب MP3 أو WAV أو M4A.',bReading:'قراءة الملف…',bPrep:'تجهيز الصوت…',bWave:'رسم الموجة…',bBeats:'البحث عن النبضات…',bChords:'اكتشاف الكوردات…',bTempo:'الإيقاع والمقام…',bDemo:'إنشاء أغنية تجريبية…',
 major:'ماجور',minor:'مينور',same:'نفسه',rel:'المقابل',up:'+1',down:'−1',sol:['دو','دو♯','ري','مي♭','مي','فا','فا♯','صول','لا♭','لا','سي♭','سي'],min_:'د',sec_:'ث'},
 ru:{tagline:'Темп, тональность, аккорды и AI-разделение любой песни',library:'Мои песни',upload:'Загрузить песню',loaded:'Загружено',demo:'Демо',key:'Тональность',length:'Длина',loudness:'Громкость',loop:'Луп',click:'Клик',wave:'Волна',zoom:'Зум',grid:'Сетка',
 now:'Сейчас',next:'Далее',inBeats:'через {n} долей',end:'Конец',playAlong:'Игра',transpose:'Транспонирование',transposeH:'Сдвиг всех аккордов на полутоны',capo:'Каподастр',capo0:'Без каподастра',capoN:'Аппликатуры с каподастром на {n} ладу',diagrams:'Схемы',guitar:'Гитара',piano:'Фортепиано',names:'Названия нот',auto:'Авто',harmonic:'Гармоничное сведение',harmonicH:'Тональности, которые хорошо сводятся с этим треком',
-stems:'Стемы',stemsH:'Вокал, барабаны, бас и остальное — разделяет нейросеть Demucs v4 прямо в браузере.',aiSep:'Разделить с AI',quickSep:'Быстрое разделение',cancel:'Отмена',engGpu:'Движок: GPU',engCpu:'Движок: CPU (медленнее)',
-aiFirst:'При первом запуске модель загружается (около 100 МБ), потом хранится в браузере. На GPU 4-минутная песня занимает 1–3 минуты, на CPU дольше.',aiCrash:'Разделение прервалось: браузеру не хватило памяти и страница перезагрузилась (чаще на телефонах с длинными песнями). Баллы возвращены. Попробуйте песню короче, закройте другие вкладки или разделяйте на компьютере.',aiDl:'Загрузка AI-модели… {p}%',aiPrep:'Подготовка модели…',aiRun:'Разделение… {p}%',aiEta:' · осталось около {t}',aiDone:'Стемы готовы, плеер играет из них.',aiErr:'AI-модель не запустилась на этом устройстве ({m}). Быстрое разделение доступно.',
+stems:'Стемы',stemsH:'Вокал, барабаны, бас и остальное — разделяет нейросеть Spleeter от Deezer прямо в браузере.',aiSep:'Разделить с AI',quickSep:'Быстрое разделение',cancel:'Отмена',engGpu:'Движок: GPU',engCpu:'Движок: CPU (медленнее)',
+aiFirst:'При первом запуске модель загружается (около 75 МБ), потом хранится в браузере. На компьютере 4-минутная песня обычно занимает меньше минуты, на телефоне дольше.',aiCrash:'Разделение прервалось: браузеру не хватило памяти и страница перезагрузилась (чаще на телефонах с длинными песнями). Баллы возвращены. Попробуйте песню короче, закройте другие вкладки или разделяйте на компьютере.',aiDl:'Загрузка AI-модели… {p}%',aiPrep:'Подготовка модели…',aiRun:'Разделение… {p}%',aiEta:' · осталось около {t}',aiDone:'Стемы готовы, плеер играет из них.',aiErr:'AI-модель не запустилась на этом устройстве ({m}). Быстрое разделение доступно.',
 quickDone:'Быстрое разделение готово. Качество ниже, чем у AI.',quickRun:'Быстрое разделение… {p}%',needAudio:'Загрузите аудиофайл, чтобы разделить стемы.',canceled:'Разделение отменено.',mono:'Песня записана в моно.',
 vocals:'Вокал',drums:'Барабаны',bass:'Бас',other:'Остальное',karaoke:'Караоке',
 export:'Экспорт в любую DAW',exportH:'Всё в ZIP: WAV для каждого стема, MIDI-файлы для фортепиано и файл с BPM и тональностью. Поставьте всё на такт 1 — и всё совпадёт.',
 xInst:'Минус',xOrig:'Оригинал',xChords:'Аккорды',xDrumsM:'Ударные (бочка, малый, хай-хэт)',xBassM:'Басовая линия',xMel:'Мелодия вокала',download:'Скачать ZIP',packing:'Упаковка…',transcribing:'Распознавание нот… {p}%',dlConfirm:'Подтвердите загрузку в окне…',dlDone:'Загрузка отправлена ({s} МБ).',dlDeclined:'Загрузка отменена.',dlBusy:'Окно загрузки уже открыто.',dlFail:'Не удалось скачать. Повторите или выберите меньше файлов.',dlNone:'Выберите хотя бы один файл.',dlUnavail:'Скачивание работает, когда страница открыта в claude.ai.',needStems:'нужны стемы',
 chordsIn:'Аккорды песни',sheet:'Аккордовая сетка',sheetHint:'Нажмите на клетку, чтобы перейти туда',edit:'Править аккорды',editing:'Готово',editHint:'Нажмите на клетку, чтобы сменить аккорд',thisBeat:'Эта доля',block:'Весь блок',noChord:'Нет',maj:'Мажор',min:'Минор',
-about:'О сервисе',aboutT:'Анализ идёт в браузере, песня не покидает устройство. Распознавание автоматическое, сетку и аккорды можно поправить вручную.',credits:'Разделение: Demucs v4 от Meta (веса для личного некоммерческого использования), через ONNX Runtime Web.',keys:'Клавиши',
+about:'О сервисе',aboutT:'Анализ идёт в браузере, песня не покидает устройство. Распознавание автоматическое, сетку и аккорды можно поправить вручную.',credits:'Разделение: Spleeter от Deezer (код и модели под лицензией MIT), через ONNX Runtime Web.',keys:'Клавиши',
 kPlay:'Пуск / пауза',kBar:'Такт назад / вперёд',kCue:'Хот-кью: задать / перейти (Shift удаляет)',kLoop:'Луп',kClick:'Метроном',kZoom:'Зум',
 libH:'Хранится только в этом браузере: темп, тональность, аккорды и метки. Для воспроизведения загрузите файл снова.',libEmpty:'Песен пока нет.',del:'Удалить',sure:'Точно?',close:'Закрыть',fromLib:'Открыто из «Мои песни». Загрузите аудиофайл снова, чтобы играть и видеть волну.',drop:'Перетащите песню сюда',
 readErr:'Не удалось прочитать файл. Попробуйте MP3, WAV или M4A.',bReading:'Чтение файла…',bPrep:'Подготовка аудио…',bWave:'Рисую волну…',bBeats:'Поиск долей…',bChords:'Распознавание аккордов…',bTempo:'Темп и тональность…',bDemo:'Создаю демо…',
 major:'мажор',minor:'минор',same:'Та же',rel:'Параллельная',up:'+1',down:'−1',sol:['До','До♯','Ре','Ми♭','Ми','Фа','Фа♯','Соль','Ля♭','Ля','Си♭','Си'],min_:'мин',sec_:'с'},
 es:{tagline:'Tempo, tonalidad, acordes y pistas separadas con IA de cualquier canción',library:'Mis canciones',upload:'Subir canción',loaded:'Cargada',demo:'Demo',key:'Tonalidad',length:'Duración',loudness:'Sonoridad',loop:'Bucle',click:'Clic',wave:'Onda',zoom:'Zoom',grid:'Rejilla',
 now:'Ahora',next:'Siguiente',inBeats:'en {n} tiempos',end:'Fin',playAlong:'Tocar',transpose:'Transponer',transposeH:'Mueve todos los acordes por semitonos',capo:'Cejilla',capo0:'Sin cejilla',capoN:'Posiciones con cejilla en el traste {n}',diagrams:'Diagramas',guitar:'Guitarra',piano:'Piano',names:'Nombres de notas',auto:'Auto',harmonic:'Mezcla armónica',harmonicH:'Tonalidades que mezclan bien con esta pista',
-stems:'Pistas',stemsH:'Voz, batería, bajo y el resto, separados por el modelo de IA Demucs v4 en tu navegador.',aiSep:'Separar con IA',quickSep:'Separación rápida',cancel:'Cancelar',engGpu:'Motor: GPU',engCpu:'Motor: CPU (más lento)',
-aiFirst:'La primera vez se descarga el modelo (unos 100 MB) y luego queda en el navegador. Con GPU una canción de 4 minutos tarda 1–3 minutos; con CPU, más.',aiCrash:'La separación se detuvo a mitad: el navegador se quedó sin memoria y recargó la página (sobre todo en teléfonos con canciones largas). Tus puntos fueron devueltos. Prueba una canción más corta, cierra otras pestañas o sepárala en un ordenador.',aiDl:'Descargando el modelo de IA… {p}%',aiPrep:'Preparando el modelo…',aiRun:'Separando… {p}%',aiEta:' · faltan unos {t}',aiDone:'Pistas listas. El reproductor ya suena desde ellas.',aiErr:'El modelo de IA no pudo iniciar en este equipo ({m}). La separación rápida sigue disponible.',
+stems:'Pistas',stemsH:'Voz, batería, bajo y el resto, separados por el modelo de IA Spleeter de Deezer en tu navegador.',aiSep:'Separar con IA',quickSep:'Separación rápida',cancel:'Cancelar',engGpu:'Motor: GPU',engCpu:'Motor: CPU (más lento)',
+aiFirst:'La primera vez se descarga el modelo (unos 75 MB) y luego queda en el navegador. En un ordenador una canción de 4 minutos suele tardar menos de un minuto; en un teléfono, más.',aiCrash:'La separación se detuvo a mitad: el navegador se quedó sin memoria y recargó la página (sobre todo en teléfonos con canciones largas). Tus puntos fueron devueltos. Prueba una canción más corta, cierra otras pestañas o sepárala en un ordenador.',aiDl:'Descargando el modelo de IA… {p}%',aiPrep:'Preparando el modelo…',aiRun:'Separando… {p}%',aiEta:' · faltan unos {t}',aiDone:'Pistas listas. El reproductor ya suena desde ellas.',aiErr:'El modelo de IA no pudo iniciar en este equipo ({m}). La separación rápida sigue disponible.',
 quickDone:'Separación rápida lista. La calidad es menor que con IA.',quickRun:'Separando (rápido)… {p}%',needAudio:'Carga un archivo de audio para separar pistas.',canceled:'Separación cancelada.',mono:'La canción está en mono.',
 vocals:'Voz',drums:'Batería',bass:'Bajo',other:'Resto',karaoke:'Karaoke',
 export:'Exportar a cualquier DAW',exportH:'Todo va en un ZIP: un WAV por pista, archivos MIDI de piano y un archivo con BPM y tonalidad. Colócalo todo en el compás 1 y queda sincronizado.',
 xInst:'Instrumental',xOrig:'Original',xChords:'Acordes',xDrumsM:'Batería (bombo, caja, hi-hat)',xBassM:'Línea de bajo',xMel:'Melodía vocal',download:'Descargar ZIP',packing:'Empaquetando…',transcribing:'Transcribiendo notas… {p}%',dlConfirm:'Confirma la descarga en el cuadro…',dlDone:'Descarga enviada ({s} MB).',dlDeclined:'Descarga cancelada.',dlBusy:'Ya hay un cuadro de descarga abierto.',dlFail:'La descarga falló. Inténtalo de nuevo o elige menos archivos.',dlNone:'Elige al menos un archivo.',dlUnavail:'Las descargas funcionan con la página abierta en claude.ai.',needStems:'requiere pistas',
 chordsIn:'Acordes de la canción',sheet:'Hoja de acordes',sheetHint:'Haz clic en una celda para saltar allí',edit:'Editar acordes',editing:'Terminar',editHint:'Haz clic en una celda para cambiar el acorde',thisBeat:'Este tiempo',block:'Todo el bloque',noChord:'Ninguno',maj:'Mayor',min:'Menor',
-about:'Acerca de',aboutT:'Todo el análisis ocurre en tu navegador y la canción no sale de tu equipo. La detección es automática; puedes corregir la rejilla y los acordes a mano.',credits:'Separación de pistas: Demucs v4 de Meta (pesos para uso personal no comercial), con ONNX Runtime Web.',keys:'Teclado',
+about:'Acerca de',aboutT:'Todo el análisis ocurre en tu navegador y la canción no sale de tu equipo. La detección es automática; puedes corregir la rejilla y los acordes a mano.',credits:'Separación de pistas: Spleeter de Deezer (código y modelos con licencia MIT), con ONNX Runtime Web.',keys:'Teclado',
 kPlay:'Reproducir / pausar',kBar:'Compás atrás / adelante',kCue:'Hot cue: fijar / saltar (Shift borra)',kLoop:'Bucle',kClick:'Clic de metrónomo',kZoom:'Zoom',
 libH:'Se guarda solo en este navegador: tempo, tonalidad, acordes y cues. Sube el archivo otra vez para reproducirlo.',libEmpty:'Aún no hay canciones.',del:'Borrar',sure:'¿Seguro?',close:'Cerrar',fromLib:'Abierta desde Mis canciones. Sube el audio otra vez para reproducir y ver la onda.',drop:'Suelta la canción aquí',
 readErr:'No se pudo leer el archivo. Prueba MP3, WAV o M4A.',bReading:'Leyendo el archivo…',bPrep:'Preparando el audio…',bWave:'Dibujando la onda…',bBeats:'Buscando tiempos…',bChords:'Detectando acordes…',bTempo:'Tempo y tonalidad…',bDemo:'Creando una canción demo…',
@@ -148,35 +148,35 @@ const IX={
 he:{loudness:'עוצמה · LUFS',tagline:'קצב, סולם, אקורדים והפרדת ערוצים ב־AI לכל שיר',loaded:'בכלי עכשיו',bpmL:'קצב',camelot:'קאמלוט',peakL:'שיא',noAudio:'— אין קובץ שמע —',
 click:'מטרונום',wave:'תצוגה',wm3:'3 תדרים',wmMono:'מונו',wmStems:'ערוצים',muteT:'השתקה',soloT:'סולו',karaoke:'קריוקי: בלי שירה',
 stems:'הפרדת ערוצים',engGpu:'מאיץ גרפי',engCpu:'מעבד (איטי יותר)',aiSep:'הפרדה ב־AI',quickSep:'הפרדה מהירה',
-aiFirst:'בשימוש הראשון יורד מודל של כ־80MB ונשמר בדפדפן. במחשב עם מאיץ גרפי, שיר של 4 דקות מופרד בערך בדקה.',
+aiFirst:'בשימוש הראשון יורד מודל של כ־75MB ונשמר בדפדפן. במחשב, שיר של 4 דקות מופרד בדרך כלל בפחות מדקה.',
 aiDone:'הערוצים מוכנים. הזיזו את הפיידרים, והגל למעלה ישתנה בהתאם.',quickDone:'ההפרדה המהירה מוכנה. האיכות נמוכה יותר מהפרדה ב־AI.',needAudio:'טענו שיר כדי להפריד אותו לערוצים.',
 dlDone:'הקובץ ירד ({s} MB).',bpmMin:'מ־',bpmMax:'עד',demoName:'שיר דוגמה · Am F C G · 120',
 gIsrael:'ישראלי',gPop:'פופ',gHiphop:'היפ־הופ',gDance:'דאנס',gElectro:'אלקטרוני',gLatin:'לטיני',gRnb:'R&B',gRock:'רוק',dAll:'הכול'},
 en:{loudness:'Loudness · LUFS',tagline:'Tempo, key, chords and AI stem separation for any song',loaded:'Now in the tool',bpmL:'BPM',camelot:'Camelot',peakL:'peak',noAudio:'— no audio file —',
 click:'Metronome',wave:'View',wm3:'3-band',wmMono:'Mono',wmStems:'Stems',muteT:'Mute',soloT:'Solo',karaoke:'Karaoke: no vocals',
 stems:'Stem separation',engGpu:'GPU',engCpu:'CPU (slower)',aiSep:'Separate with AI',quickSep:'Quick separation',
-aiFirst:'The first run downloads an 80 MB model and keeps it in your browser. With a GPU, a 4-minute song takes about a minute.',
+aiFirst:'The first run downloads a 75 MB model and keeps it in your browser. On a computer, a 4-minute song usually takes under a minute.',
 aiDone:'Stems are ready. Move the faders and the waveform above follows.',quickDone:'Quick separation is ready. Quality is lower than AI separation.',needAudio:'Load a song to split it into stems.',
 dlDone:'Downloaded ({s} MB).',bpmMin:'from',bpmMax:'to',demoName:'Demo song · Am F C G · 120',
 gIsrael:'Israeli',gPop:'Pop',gHiphop:'Hip-Hop',gDance:'Dance',gElectro:'Electronic',gLatin:'Latin',gRnb:'R&B',gRock:'Rock',dAll:'All'},
 ar:{loudness:'الشدة · LUFS',tagline:'الإيقاع والمقام والكوردات وفصل المسارات بالذكاء الاصطناعي لأي أغنية',loaded:'في الأداة الآن',bpmL:'الإيقاع',camelot:'كاميلوت',peakL:'الذروة',noAudio:'— لا يوجد ملف صوتي —',
 click:'مترونوم',wave:'العرض',wm3:'3 نطاقات',wmMono:'أحادي',wmStems:'المسارات',muteT:'كتم',soloT:'منفرد',karaoke:'كاريوكي: بلا غناء',
 stems:'فصل المسارات',engGpu:'معالج رسومي',engCpu:'معالج مركزي (أبطأ)',aiSep:'فصل بالذكاء الاصطناعي',quickSep:'فصل سريع',
-aiFirst:'في أول استخدام يُحمَّل نموذج بحجم 80MB ويُحفظ في المتصفح. مع معالج رسومي تُفصل أغنية من 4 دقائق في نحو دقيقة.',
+aiFirst:'في أول استخدام يُحمَّل نموذج بحجم 75MB ويُحفظ في المتصفح. على الحاسوب تُفصل أغنية من 4 دقائق عادةً في أقل من دقيقة.',
 aiDone:'المسارات جاهزة. حرّك المنزلقات وستتغير الموجة في الأعلى.',quickDone:'الفصل السريع جاهز، وجودته أقل من الفصل بالذكاء الاصطناعي.',needAudio:'حمّل أغنية لفصلها إلى مسارات.',
 dlDone:'تم التنزيل ({s} MB).',bpmMin:'من',bpmMax:'إلى',demoName:'أغنية تجريبية · Am F C G · 120',
 gIsrael:'إسرائيلي',gPop:'بوب',gHiphop:'هيب هوب',gDance:'دانس',gElectro:'إلكتروني',gLatin:'لاتيني',gRnb:'R&B',gRock:'روك',dAll:'الكل'},
 ru:{loudness:'Громкость · LUFS',tagline:'Темп, тональность, аккорды и AI-разделение на стемы для любой песни',loaded:'Сейчас в инструменте',bpmL:'Темп',camelot:'Camelot',peakL:'пик',noAudio:'— нет аудиофайла —',
 click:'Метроном',wave:'Вид',wm3:'3 полосы',wmMono:'Моно',wmStems:'Стемы',muteT:'Заглушить',soloT:'Соло',karaoke:'Караоке: без вокала',
 stems:'Разделение на стемы',engGpu:'Видеокарта',engCpu:'Процессор (медленнее)',aiSep:'Разделить с AI',quickSep:'Быстрое разделение',
-aiFirst:'При первом запуске загружается модель на 80 МБ и сохраняется в браузере. С видеокартой 4-минутная песня делится примерно за минуту.',
+aiFirst:'При первом запуске загружается модель на 75 МБ и сохраняется в браузере. На компьютере 4-минутная песня обычно делится меньше чем за минуту.',
 aiDone:'Стемы готовы. Двигайте фейдеры — волна выше изменится.',quickDone:'Быстрое разделение готово. Качество ниже, чем у AI.',needAudio:'Загрузите песню, чтобы разделить её на стемы.',
 dlDone:'Скачано ({s} МБ).',bpmMin:'от',bpmMax:'до',demoName:'Демо · Am F C G · 120',
 gIsrael:'Израиль',gPop:'Поп',gHiphop:'Хип-хоп',gDance:'Дэнс',gElectro:'Электроника',gLatin:'Латина',gRnb:'R&B',gRock:'Рок',dAll:'Все'},
 es:{loudness:'Sonoridad · LUFS',tagline:'Tempo, tonalidad, acordes y separación de pistas con IA para cualquier canción',loaded:'Ahora en la herramienta',bpmL:'BPM',camelot:'Camelot',peakL:'pico',noAudio:'— sin archivo de audio —',
 click:'Metrónomo',wave:'Vista',wm3:'3 bandas',wmMono:'Mono',wmStems:'Pistas',muteT:'Silenciar',soloT:'Solo',karaoke:'Karaoke: sin voz',
 stems:'Separación de pistas',engGpu:'GPU',engCpu:'CPU (más lento)',aiSep:'Separar con IA',quickSep:'Separación rápida',
-aiFirst:'La primera vez se descarga un modelo de 80 MB que queda en tu navegador. Con GPU, una canción de 4 minutos tarda cerca de un minuto.',
+aiFirst:'La primera vez se descarga un modelo de 75 MB que queda en tu navegador. En un ordenador, una canción de 4 minutos suele tardar menos de un minuto.',
 aiDone:'Las pistas están listas. Mueve los faders y la onda de arriba cambia.',quickDone:'La separación rápida está lista. La calidad es menor que con IA.',needAudio:'Carga una canción para separarla en pistas.',
 dlDone:'Descargado ({s} MB).',bpmMin:'de',bpmMax:'a',demoName:'Canción demo · Am F C G · 120',
 gIsrael:'Israelí',gPop:'Pop',gHiphop:'Hip-hop',gDance:'Dance',gElectro:'Electrónica',gLatin:'Latina',gRnb:'R&B',gRock:'Rock',dAll:'Todo'}
@@ -1624,15 +1624,16 @@ function stemEnvelopes(){
   return {env,ref};
 }
 const fmtEta=s=>s>=90?Math.round(s/60)+' '+t('min_'):Math.max(5,Math.round(s/5)*5)+' '+t('sec_');
-// the Demucs worker: download/initialise once (aiInit), then separate one planar [L…,R…] 44.1 kHz track into 4 stereo
+// the AI worker (Spleeter 4-stem by Deezer, MIT; ai/worker.js, built from tools/ai-worker): download/initialise once (aiInit),
+// then separate one planar [L…,R…] 44.1 kHz track into 4 stereo
 // AudioBuffers filled block by block as the worker streams them (aiRun). Shared by the tool (aiSeparate, uses S) and
 // Mashup Studio (separateBuffer, any buffer). prog(p, message).
 function aiInit(job,prog){
   if(AI.ready)return Promise.resolve();
   prog(0,t('aiDl',{p:0}));
-  if(!AI.w)AI.w=new Worker('ai/worker.js?v=2');
+  if(!AI.w)AI.w=new Worker('ai/worker.js?v=3');
   return (async()=>{
-    const man=await (await fetch('ai/model/wman.json')).json();
+    const man=await (await fetch('ai/model/spman.json?v=1')).json();   // file list + size come from the manifest (tools/pack_model.py)
     const abs=f=>new URL(f,location.href).href;
     await new Promise((ok,fail)=>{
       AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
@@ -1641,8 +1642,8 @@ function aiInit(job,prog){
         else if(d.type==='ready'){AI.ready=true;AI.ep=d.ep;ok()}
         else if(d.type==='error')fail(new Error(d.message))};
       AI.w.onerror=e=>fail(new Error(e.message||'worker'));
-      AI.w.postMessage({type:'init',man,bytes:AI_BYTES,base:abs('ai/'),gpu:!/cpu/.test(location.hash),
-        files:{ort:['ai/model/rt0.bin'].map(abs),graph:['ai/model/g0.bin'].map(abs),w:[0,1,2,3,4,5].map(i=>abs(`ai/model/w${i}.bin`))}});
+      AI.w.postMessage({type:'init',man,bytes:man.bytes||AI_BYTES,base:abs('ai/'),gpu:!/cpu/.test(location.hash),
+        files:{ort:man.files.ort.map(abs),graph:man.files.graph.map(abs),w:man.files.w.map(abs)}});
     });
   })();
 }
@@ -1650,7 +1651,7 @@ function aiRun(LR,len,job,prog){
   const c=ac(),bufs=STEMS.map(()=>c.createBuffer(2,len,44100));
   return new Promise((ok,fail)=>{
     AI.w.onmessage=e=>{const d=e.data;if(job!==AI.job)return;
-      if(d.type==='p'){const p=d.tot?d.i/d.tot:0;let m=t('aiRun',{p:Math.round(p*100)});if(d.i>0)m+=t('aiEta',{t:fmtEta(d.el/d.i*(d.tot-d.i))});prog(p,m)}
+      if(d.type==='p'){const p=d.tot?d.i/d.tot:0;let m=t('aiRun',{p:Math.round(p*100)});if(d.i>0&&d.i<d.tot)m+=t('aiEta',{t:fmtEta(d.el/d.i*(d.tot-d.i))});prog(p,m)}
       else if(d.type==='blk'){for(let i=0;i<4;i++){bufs[i].copyToChannel(d.res[i*2],0,d.off);bufs[i].copyToChannel(d.res[i*2+1],1,d.off)}}
       else if(d.type==='done')ok(bufs);else if(d.type==='error')fail(new Error(d.message))};
     AI.w.onerror=e=>fail(new Error(e.message||'worker'));
@@ -1662,7 +1663,7 @@ function aiRun(LR,len,job,prog){
 const SEP_OK='chordroom.sepok';
 /* sec: "don't ask again" consents are kept per account (another account on the same browser is asked again) */
 const okKey=k=>{let u='guest';try{u=AUTH.uid||'guest'}catch(e){}return k+':'+u};
-function sepEstimate(){const d=S.dur||240,gpu=AI.ready?AI.ep==='webgpu':!!navigator.gpu,per=gpu?0.3:1.6,a=Math.max(1,Math.round(d*per/60)),b=Math.max(a+1,Math.round(d*per*2/60));return t('sepEst',{a,b})}
+function sepEstimate(){const d=S.dur||240,gpu=AI.ready?AI.ep==='webgpu':!!navigator.gpu,per=gpu?0.1:0.4,a=Math.max(1,Math.round(d*per/60)),b=Math.max(a+1,Math.round(d*per*2/60));return t('sepEst',{a,b})}
 function sepConfirm(n,b){
   return new Promise(ok=>{
     const w=document.createElement('div');w.className='dlgwrap sepc';w.id='sepDlg';
@@ -1716,7 +1717,7 @@ async function aiSeparate(){
     sepEnd(t('aiErr',{m:String(e.message||e).slice(0,80)}),true);
   }
 }
-const AI_BYTES=78767446;
+const AI_BYTES=73722031;   // fallback; the real size is spman.json bytes
 function cancelSep(silent){
   if(!AI.busy)return;AI.job++;sepUnmark();{const sd=$('#sepDlg');if(sd)sd.querySelector('.no').click()} /* qw */if(AI.pay){refund(AI.pay);AI.pay=null}
   if(AI.w&&!AI.ready){AI.w.terminate();AI.w=null}
@@ -1938,7 +1939,7 @@ function zip(files){
 function infoText(){
   const pc=S.key?mod(S.key.pc+S.transpose,12):0;
   const L=[`Song: ${S.name}`,`BPM: ${fmtBpm(Math.round(ebpm()*100)/100)}`+(S.rate!==1?` (original ${fmtBpm(S.bpm)}, tempo ${S.rate>1?'+':''}${((S.rate-1)*100).toFixed(1)}%)`:''),S.key?`Key: ${keyName(pc,S.key.mode,true)} (${camelot(pc,S.key.mode)})`:'',S.lufs!=null?`Loudness: ${S.lufs.toFixed(1)} LUFS, peak ${S.peak.toFixed(1)} dBFS`:'',
-    `First beat at: ${S.beats[0]?(S.beats[0]/S.rate).toFixed(3):0} s`,`Transpose: ${S.transpose>0?'+':''}${S.transpose} semitones`+(S.transpose&&S.key?` (original key ${keyName(S.key.pc,S.key.mode,true)})`:''),fxOn()?'Audio files are rendered at this tempo and key.':'',S.stemKind?`Stems: ${S.stemKind==='ai'?'Demucs v4 (AI)':'quick DSP'}`:'','',
+    `First beat at: ${S.beats[0]?(S.beats[0]/S.rate).toFixed(3):0} s`,`Transpose: ${S.transpose>0?'+':''}${S.transpose} semitones`+(S.transpose&&S.key?` (original key ${keyName(S.key.pc,S.key.mode,true)})`:''),fxOn()?'Audio files are rendered at this tempo and key.':'',S.stemKind?`Stems: ${S.stemKind==='ai'?'Spleeter 4-stem (AI)':'quick DSP'}`:'','',
     'Any DAW (FL Studio, Ableton Live, Cubase, Logic Pro, Pro Tools, Studio One, Reaper…): set the project tempo to the BPM above and drop every WAV and MIDI file at bar 1 (time 0). They line up.','','Chords by bar:'];
   let row=[];for(let b=0;b<S.beats.length;b++){if(mod(b-S.down,4)===0&&row.length){L.push(row.join(' '));row=[]}row.push(chordName(sounding(S.chords[b]),true).padEnd(4))}
   if(row.length)L.push(row.join(' '));
