@@ -2132,6 +2132,12 @@ function avatarFor(p){
   g.fillStyle='#0B0B0C';g.fillRect(0,0,96,96);g.fillStyle='#fff';g.font='600 44px IBM Plex Sans, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(initials(n),48,52);return c.toDataURL();
 }
 
+// supabase tells EVERY open tab about a sign-in (SIGNED_IN) → only the tab the user signed in from (visible) logs it, once a minute per account
+function signInFirst(uid){
+  if(document.visibilityState==='hidden')return false;
+  try{const k='chordroom.signinlog',v=JSON.parse(localStorage.getItem(k)||'{}');if(v.u===uid&&Date.now()-v.t<60000)return false;
+    localStorage.setItem(k,JSON.stringify({u:uid,t:Date.now()}))}catch(e){}
+  return true}
 async function initAccount(){
   if(!ACC.on){renderAccount();return}
   try{ACC.config=await Backend.getConfig()}catch(e){}
@@ -2141,7 +2147,7 @@ async function initAccount(){
     if(event==='PASSWORD_RECOVERY'&&!AU.recovering){openDlg('reset');}
     const changed=(user&&user.id)!==(ACC.user&&ACC.user.id);ACC.user=user;
     authChanged(user?user.id:null,event);
-    if(user&&changed&&event==='SIGNED_IN')setTimeout(()=>logAct('sign_in',navigator.language||''),0);
+    if(user&&changed&&event==='SIGNED_IN'&&signInFirst(user.id))setTimeout(()=>logAct('sign_in',navigator.language||''),0);
     else if(user&&changed){try{const k='chordroom.visit.'+user.id,d=new Date().toDateString();if(sessionStorage.getItem(k)!==d){sessionStorage.setItem(k,d);setTimeout(()=>logAct('visit',location.hash.slice(1).replace(/[^\w-]/g,'').slice(0,20)||'tool'),1500)}}catch(e){}}
     if(!user){ACC.profile=null;ACC.admin=false;ACC.owner=false;ACC.panel=false;ACC.perms=new Set();ACC.lib=null;ACC.cred=null;renderAccount();applyConfig();renderCredits();if(changed)renderLib();return}
     if(changed||event==='USER_UPDATED'||event==='INITIAL'){await loadProfile(true);loadCloudLib()}
@@ -3155,18 +3161,26 @@ const PP_PLAN=/^P-[A-Z0-9]{10,40}$/;
 async function paypalCheckout(planId){
   if(PAY.busy)return;PAY.busy=true;
   const bs=[...document.querySelectorAll('[data-sub]')].filter(b=>b.dataset.sub===planId&&!b.disabled);bs.forEach(b=>{b.disabled=true;b.setAttribute('aria-busy','true')});
-  let w=null;try{w=window.open('','_blank');if(w)w.opener=null}catch(e){}   // opened now (the click), filled after the request
-  const fail=k=>{PAY.opened=0;try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else if(k==='sandbox_tester')toast(t('paySandbox'));else toast(t('payErr'))};
+  // checkout opens in THIS tab (PayPal returns to ?paid=1 → payReturn): a blank popup filled after the request often never
+  // showed in Chrome — the page's Cross-Origin-Opener-Policy: same-origin cuts the popup off when it goes to paypal.com
+  const fail=k=>{PAY.opened=0;if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else if(k==='sandbox_tester')toast(t('paySandbox'));else toast(t('payErr'))};
   try{
     const tok=Backend.accessToken?await Backend.accessToken():null;if(!tok)return fail();
     const r=await fetch('/api/pay/paypal-subscribe',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body:JSON.stringify({plan:planId}),credentials:'omit',cache:'no-store'});
     const o=await r.json().catch(()=>({}));
     if(!r.ok||!o.url||!/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(o.url))return fail(o.error);
-    if(w)w.location.href=o.url;else location.href=o.url;               // popup blocked → same tab (PayPal returns to ?paid=1#pricing)
+    location.assign(o.url);
   }catch(e){fail()}
   finally{PAY.busy=false;bs.forEach(b=>{b.disabled=false;b.removeAttribute('aria-busy')})}
 }
 const PAY={opened:0,polling:false,focusAt:0,busy:false};
+window.addEventListener('pageshow',e=>{if(e.persisted)PAY.opened=0});   // Back from PayPal (page from the bfcache) → the buttons work again
+// PayPal adds its own params to our return URL (?paid=1#pricing): in the query (?subscription_id=I-…&ba_token=…, hash dropped) or glued
+// onto the hash (#pricing&subscription_id=…) → read both places
+function payParams(){const q=new URLSearchParams(location.search),hs=location.hash.slice(1),i=hs.search(/[?&]/);
+  if(i>=0)new URLSearchParams(hs.slice(i+1)).forEach((v,k)=>{if(!q.has(k))q.set(k,v)});return q}
+const PAY_KEYS=['paid','subscription_id','ba_token','token'];
+const payBack=()=>{const q=payParams();return q.get('paid')==='1'||/^I-[A-Z0-9]{6,40}$/.test(q.get('subscription_id')||'')};
 const PAY_LIVE=['active','on_trial','past_due','paused'];
 // the contact from the settings: an e-mail address (→ mailto:) or an https:// link only — never javascript:/data:
 function contactHref(c){c=String(c||'').trim();if(/^[^\s@:\/]+@[^\s@\/]+\.[^\s@\/]+$/.test(c))return 'mailto:'+c;try{const u=new URL(c);if(u.protocol==='https:')return u.href}catch(e){}return null}
@@ -3196,11 +3210,11 @@ function renderPayLine(c){
 async function recentPayment(){try{const r=(await Backend.ledger(1))||[];return !!(r[0]&&r[0].reason==='payment'&&r[0].delta>0&&Date.now()-Date.parse(r[0].created_at)<15*60000)}catch(e){return false}}
 function payReturn(){
   // PayPal may replace our return query with its own (?subscription_id=I-…&ba_token=…) and drop #pricing → accept both
-  const pp=/[?&]subscription_id=I-[A-Z0-9]{6,40}(&|$)/.test(location.search);
-  if(PAY.polling||!ACC.user||!ACC.cred||!(pp||/[?&]paid=1(&|$)/.test(location.search)))return;
-  const u=new URL(location.href);for(const k of ['paid','subscription_id','ba_token','token'])u.searchParams.delete(k);
-  if(pp&&!u.hash)u.hash='#pricing';history.replaceState(history.state,'',u.pathname+u.search+u.hash);
-  if(pp)try{showView('pricing')}catch(e){}
+  if(PAY.polling||!ACC.user||!ACC.cred||!payBack())return;
+  const u=new URL(location.href);for(const k of PAY_KEYS)u.searchParams.delete(k);
+  const head=location.hash.slice(1).split(/[?&]/)[0];u.hash='#'+(head||'pricing');
+  history.replaceState(history.state,'',u.pathname+u.search+u.hash);RT.href=location.href;
+  if((head||'pricing')==='pricing'&&GATE.v!=='pricing')try{showView('pricing')}catch(e){}
   PAY.polling=true;const c0={...ACC.cred},t0=Date.now();
   toast(t('payWait'));
   const done=()=>{PAY.polling=false;const c=ACC.cred||{};toast(t('payDone',{p:planName(c.plan||'free'),n:(c.credits||0).toLocaleString('en-US')}));
@@ -3790,9 +3804,10 @@ $('#legalView').addEventListener('click',e=>{
 });
 // the About page is the home page (no hash); the tool lives at #tool
 /* growth: no hash → the path (/pricing …); #about-a11y (old links) → the accessibility statement page */
-const viewOfHash=()=>{const h=location.hash.slice(1).split('#')[0];if(!h)return pathView()||'about';return h==='about-a11y'?'accessibility':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
+const hashHead=()=>location.hash.slice(1).split(/[#?&]/)[0];   /* PayPal glues its params onto our #pricing → '#pricing&subscription_id=…' */
+const viewOfHash=()=>{const h=hashHead();if(!h)return pathView()||(payBack()?'pricing':'about');return h==='about-a11y'?'accessibility':VIEWS[h]?h:'about'}; /* qw: '#tool#cpu' style flags after a second # are ignored */
 const routeHash=f=>{if(f!==true&&location.href===RT.href)return;   // popstate + hashchange of one Back step: route once
-  const h=location.hash.slice(1).split('#')[0];const v=viewOfHash();
+  const h=hashHead();const v=viewOfHash();
   const badPath=!h&&!pathView()&&pathSeg()&&!/^index\.html?$/.test(pathSeg());   /* before showView: it rewrites the URL */
   showView(v,null);
   if((h&&v==='about'&&h!=='about')||badPath)setTimeout(()=>toast(t('notFound')),300)}; /* qw: unknown hash → home + a notice */
