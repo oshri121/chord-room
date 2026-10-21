@@ -25,7 +25,7 @@ export async function edgeNote(env, request, kind, path) {
     const origin = new URL(request.url).origin;
     if (!(await edgeFirst(origin, kind))) return 'throttled';
     const body = JSON.stringify({ t: Math.floor(Date.now() / 1000), kind, n: 1, path: String(path || '').replace(/[^A-Za-z0-9/._%-]/g, '').slice(0, 80) });
-    const sig = await hmacHex(String(env.NOTIFY_SECRET), body);
+    const sig = await hmacHex(String(env.NOTIFY_SECRET).trim(), body);
     const key = sbKey(env), headers = { 'content-type': 'application/json', apikey: key };
     if (/^eyJ/.test(key)) headers.authorization = `Bearer ${key}`;
     const r = await withTimeout(8000, signal => fetch(`${sbUrl(env)}/rest/v1/rpc/notify_edge`, {

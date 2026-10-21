@@ -37,7 +37,7 @@ export async function onRequest({ request, env }) {
   try { o = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(buf)); } catch (e) { return json({ error: 'bad body' }, 400); }
   const t = String(o && o.t || ''), id = String(o && o.id || ''), msg = typeof (o && o.msg) === 'string' ? o.msg : '';
   if (!/^[0-9]{9,11}$/.test(t) || !/^[0-9]{1,18}$/.test(id) || !msg || msg.length > 400) return json({ error: 'bad body' }, 400);
-  if (!sameHex(sig, await hmacHex(String(env.NOTIFY_SECRET), t + '\n' + id + '\n' + msg))) return json({ error: 'bad signature' }, 401);
+  if (!sameHex(sig, await hmacHex(String(env.NOTIFY_SECRET).trim(), t + '\n' + id + '\n' + msg))) return json({ error: 'bad signature' }, 401);
   if (Math.abs(Date.now() / 1000 - +t) > 900) return json({ error: 'stale' }, 401);
   const to = phones(env);
   if (!to.length) return json({ error: 'no phone (NOTIFY_TO)' }, 503);

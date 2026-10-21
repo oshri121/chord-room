@@ -59,7 +59,7 @@ export async function onRequest(ctx) {
 
   // 2) relay to the database, signed with the secret only it and this Function know
   const penv = ppEnv(env);
-  const sig = await hmacHex(String(env.PAYPAL_RELAY_SECRET), penv + '\n' + body);
+  const sig = await hmacHex(String(env.PAYPAL_RELAY_SECRET).trim(), penv + '\n' + body);   // trimmed: a space or line break pasted with the secret broke every payment
   const key = sbKey(env);
   const headers = { 'content-type': 'application/json', apikey: key };
   if (/^eyJ/.test(key)) headers.authorization = `Bearer ${key}`;
