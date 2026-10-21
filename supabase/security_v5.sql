@@ -266,8 +266,10 @@ begin
     update public.profiles set plan = 'free', plan_until = null where id = me.id;   -- expired; points stay
     return me.credits;
   end if;
-  -- a live paid subscription gets its points only from payment events, never from here
-  if me.pay_sub_id is not null and coalesce(me.pay_status, '') not in ('expired', 'unpaid') then
+  -- an account with a PayPal subscription (live OR ended: expired / unpaid / cancelled) gets plan points only from
+  -- payment events, never from here: an ended subscription keeps its plan until plan_until, and last_refill is never set by
+  -- payments, so this used to hand out a free month of points (bug 2026-10: "points come back by themselves")
+  if me.pay_sub_id is not null or coalesce(me.pay_provider, '') <> '' then
     return me.credits;
   end if;
   if me.last_refill is null or me.last_refill <= now() - interval '1 month' then

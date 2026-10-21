@@ -75,14 +75,15 @@ def set_billing(**kw):
     b = json.loads(json.dumps(b0)); b.update(kw)
     sql(f"update public.site_config set billing=$j${json.dumps(b)}$j$ where id=1")
 
-D.section('supabase/security_v5.sql = a block of schema.sql (only [referral-v6] after it), verbatim')
+D.section('supabase/security_v5.sql = a block of schema.sql (only [referral-v6] + [notify-v7] after it), verbatim')
 src = open(pg.SCHEMA, encoding='utf-8').read()
 v5 = open(V5, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Security v5 .*?-- \[security-v5:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [security-v5] block', 'found' if m else 'missing', 'found')
 # only the later [referral-v6] block may follow it
 later = re.sub(r'(?s)-- =+\n-- Referral v6 .*?-- \[referral-v6:end\]\n-- =+\n', '', src[m.end():]) if m else src
-check('the block is the last thing in schema.sql (only [referral-v6] after it)', 'yes' if m and later.strip() == '' else 'no', 'yes')
+later = re.sub(r'(?s)-- \[notify-v7:begin\].*?-- \[notify-v7:end\]', '', later)   # notify v7 adds only its own objects
+check('the block is the last thing in schema.sql (only [referral-v6] + [notify-v7] after it)', 'yes' if m and later.strip() == '' else 'no', 'yes')
 check('…after [paypal]', 'yes' if m and src.index('[paypal:end]') < m.start() else 'no', 'yes')
 check('security_v5.sql = header comment + the block', 'yes' if m and v5.endswith(m.group(1)) and all(l.startswith('--') or not l.strip() for l in v5[:v5.index(m.group(1))].splitlines()) else 'no', 'yes')
 blk = m.group(1) if m else ''
@@ -274,7 +275,7 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list (unchanged)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,pay_webhook_paypal,reviews_public,username_available')
+      lambda o: o.strip() == 'catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('private.refund_calls / referral_claims / referrals / referral_ips: no privileges for API roles',

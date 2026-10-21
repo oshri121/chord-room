@@ -11,6 +11,8 @@
 //     (WhatsApp, Facebook, X: they don't run JS) and search engines see the right page. The page keeps the static headers
 //     from _headers; if a response ever arrives without them, PAGE_HEADERS (a copy of the `/*` block, checked by
 //     tools/tests/node/growth.test.mjs) is applied instead.
+import { edgeNote } from './api/notify-lib.js';   // notify v7: owner SMS alerts for rate limits / probes (NOTIFY.md)
+
 const HIDDEN = /^\/(?:supabase|tools|functions|\.git|\.claude)(?:\/|$)|^\/(?:[^\/]*\/)*[^\/]*\.md$|^\/\.git[a-z]*$|^\/_routes\.json$/i;
 
 const API_HEADERS = {
@@ -128,16 +130,22 @@ async function pageResponse(res, p) {
   return new Response(html, { status: 200, headers });
 }
 
+// notify v7: report to the owner's alert log in the background (throttled per kind; nothing when NOTIFY_SECRET isn't set)
+function note(ctx, kind, path) {
+  if (!ctx.env || !ctx.env.NOTIFY_SECRET || typeof ctx.waitUntil !== 'function') return;
+  try { ctx.waitUntil(edgeNote(ctx.env, ctx.request, kind, path)); } catch (e) {}
+}
+
 export async function onRequest(ctx) {
   const { request, next } = ctx;
   const path = new URL(request.url).pathname;
-  if (isHidden(path)) return notFound();
+  if (isHidden(path)) { note(ctx, 'probe', path); return notFound(); }
   if (/^\/api\//i.test(path)) {                                                       /* acct */
     if (+(request.headers.get('content-length') || 0) > MAX_API_BODY) {
       return new Response('{"error":"too large"}', { status: 413, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...API_HEADERS } });
     }
     const limited = await rateLimit(request, path, typeof ctx.waitUntil === 'function' ? p => ctx.waitUntil(p) : null);
-    if (limited) return limited;
+    if (limited) { note(ctx, 'rate', path); return limited; }
   }
   let res;
   try { res = await next(); }

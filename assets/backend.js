@@ -483,6 +483,11 @@
       return data;
     },
 
+    // notify v7 (supabase/notify_v7.sql): the owner's SMS alerts — status + log, settings, test SMS / summary now. Owner only (server-checked).
+    async notifyStatus() { const { data, error } = await sb.rpc('owner_notify_status'); if (error) throw error; return data; },
+    async notifySave(prefs) { const { data, error } = await sb.rpc('owner_notify_save', { p: prefs }); if (error) throw error; return data; },
+    async notifySend(what) { const { data, error } = await sb.rpc('owner_notify_send', { p_what: what }); if (error) throw error; return data; },
+
     // shared catalog of analysed songs (Discover page). Explicit columns: analyzed_by / full_by are not readable
     // by the API roles (security v5 [V5-8]) and a select('*') would fail; the app (rowFromCatalog) reads only these.
     async catalogGet(ids) {

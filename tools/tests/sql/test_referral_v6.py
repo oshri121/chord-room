@@ -47,7 +47,9 @@ src = open(pg.SCHEMA, encoding='utf-8').read()
 v6 = open(V6, encoding='utf-8').read()
 m = re.search(r'\n(-- =+\n-- Referral v6 .*?-- \[referral-v6:end\]\n-- =+\n)', src, re.S)
 check('schema.sql has the [referral-v6] block', 'found' if m else 'missing', 'found')
-check('the block is the LAST thing in schema.sql', 'yes' if m and src.endswith(m.group(1)) else 'no', 'yes')
+# notify v7 (owner SMS alerts) comes after it: it only adds its own objects, nothing of v6 is redefined
+src_nv7 = re.sub(r'(?s)\n*-- \[notify-v7:begin\].*?-- \[notify-v7:end\]\n*$', '\n', src)
+check('the block is the LAST thing in schema.sql (only [notify-v7] after it)', 'yes' if m and src_nv7.endswith(m.group(1)) else 'no', 'yes')
 check('…after [security-v5]', 'yes' if m and src.index('[security-v5:end]') < m.start() else 'no', 'yes')
 check('referral_v6.sql = the block', 'yes' if m and v6.endswith(m.group(1)) and all(l.startswith('--') or not l.strip() for l in v6[:v6.index(m.group(1))].splitlines()) else 'no', 'yes')
 check('referral_v6.sql run 3 (idempotent)', str(pg.errs(D.file(V6))), '[]')
@@ -176,7 +178,7 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list (unchanged)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,pay_webhook_paypal,reviews_public,username_available')
+      lambda o: o.strip() == 'catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('private.referrals / referral_ips: no privileges for API roles',

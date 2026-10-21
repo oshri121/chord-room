@@ -13,6 +13,10 @@
   const now = () => new Date().toISOString();
   const me = () => { const p = profiles.find(p => p.id === cur.id); if (p && p.credits == null) { p.credits = 50; p.plan = p.plan || 'free'; } return p; };
   const ledger = [], charged = new Set(), reviews = [];
+  let ntPrefs = { on: true, cats: { pay: 2, payfail: 2, refund: 3, payissue: 3, security: 3, staff_login: 2, admin: 2, signup: 1, review: 1, delete: 1, edge: 2, probe: 1, anomaly: 2, test: 3 },
+    quiet: { on: true, from: 23, to: 7 }, digest: { on: true, hour: 9 }, cap_day: 25, cap_hour: 8, url: 'https://chord-room.com/api/notify' };
+  const ntLog = [{ id: 1, at: now(), cat: 'signup', lvl: 1, msg: 'נרשם/ה: dana', state: 'digest' }, { id: 2, at: now(), cat: 'pay', lvl: 2, msg: 'תשלום התקבל: 29.00 ILS · dana · paid, plan pro, +150', state: 'sent' },
+    { id: 3, at: now(), cat: 'security', lvl: 3, msg: 'אימות דו-שלבי הוסר מחשבון ניהול: admin', state: 'ok' }];
   const DEF_COSTS = { song: 1, sep: 5, stems: 2, usb: 1, mashup: 3, extended: 3, convert: 1 }, DEF_DISC = { basic: 0, pro: 10, studio: 25 };
   function price(p, kind, qty) {
     const b = cfg.billing || {}, costs = { ...DEF_COSTS, ...(b.costs || {}) };
@@ -140,6 +144,13 @@
     },
     async reviewDelete() { const i = reviews.findIndex(x => cur && x.user_id === cur.id); if (i >= 0) reviews.splice(i, 1); },
     async adminReviews(status) { return reviews.filter(r => !status || r.status === status).map(r => { const p = profiles.find(x => x.id === r.user_id) || {}; return { ...r, username: p.username, display_name: p.display_name }; }); },
+    // notify v7 (owner SMS alerts): same shape as owner_notify_status / _save / _send; owner only
+    async notifyStatus() { const p = me(); if (!p || !p.owner) fail('not allowed');
+      return { prefs: JSON.parse(JSON.stringify(ntPrefs)), ready: { net: true, cron: false, secret: true }, today: { sent: ntLog.filter(x => x.state === 'sent').length, ok: 0, held: ntLog.filter(x => x.state === 'quiet' || x.state === 'capped').length },
+               last_ok: null, last_fail: null, log: ntLog.slice().reverse() }; },
+    async notifySave(p) { const o = me(); if (!o || !o.owner) fail('not allowed'); ntPrefs = { ...ntPrefs, ...p, cats: { ...ntPrefs.cats, ...(p.cats || {}) } }; return ntPrefs; },
+    async notifySend(what) { const o = me(); if (!o || !o.owner) fail('not allowed'); if (!['test', 'digest'].includes(what)) fail('bad what');
+      const r = { id: ntLog.length + 1, at: now(), cat: what, lvl: 3, msg: what === 'test' ? 'בדיקה: התראות Chord Room מגיעות לטלפון ✓' : 'סיכום Chord Room\nנרשמו 3 · פעילים 12', state: 'sent' }; ntLog.push(r); return { id: r.id, state: 'sent', msg: r.msg }; },
     async adminReviewSet(id, status, featured) { const r = reviews.find(x => x.id === id); if (!r) return 'missing'; r.status = status; r.featured = status === 'approved' && !!featured; return 'ok'; },
     // assistant
     async accessToken() { return B.user ? 'tok-' + B.user.id : null; },

@@ -384,11 +384,11 @@ es:{refTitle:'Invita a tus amigos y gana puntos',refText:'Cuando un amigo que in
 for(const k in IREF)Object.assign(I[k],IREF[k]);
 /* growth: admin tabs (assets/reviews.js, assets/ab.js) + footer links (accessibility statement, licenses, cookie settings) */
 const IGROW={
-he:{admReviews:'ביקורות',admGrowth:'צמיחה',auA11y:'הצהרת נגישות',auLicenses:'רישיונות וקרדיטים',auCookies:'הגדרות עוגיות',act_ab_assign:'שיבוץ לניסוי'},
-en:{admReviews:'Reviews',admGrowth:'Growth',auA11y:'Accessibility statement',auLicenses:'Licenses & credits',auCookies:'Cookie settings',act_ab_assign:'Experiment assignment'},
-ar:{admReviews:'المراجعات',admGrowth:'النمو',auA11y:'بيان إمكانية الوصول',auLicenses:'التراخيص والشكر',auCookies:'إعدادات ملفات تعريف الارتباط',act_ab_assign:'تعيين في تجربة'},
-ru:{admReviews:'Отзывы',admGrowth:'Рост',auA11y:'Заявление о доступности',auLicenses:'Лицензии и благодарности',auCookies:'Настройки cookie',act_ab_assign:'Назначение в эксперимент'},
-es:{admReviews:'Reseñas',admGrowth:'Crecimiento',auA11y:'Declaración de accesibilidad',auLicenses:'Licencias y créditos',auCookies:'Configuración de cookies',act_ab_assign:'Asignación a experimento'}};
+he:{admNotify:'התראות',admReviews:'ביקורות',admGrowth:'צמיחה',auA11y:'הצהרת נגישות',auLicenses:'רישיונות וקרדיטים',auCookies:'הגדרות עוגיות',act_ab_assign:'שיבוץ לניסוי'},
+en:{admNotify:'Alerts',admReviews:'Reviews',admGrowth:'Growth',auA11y:'Accessibility statement',auLicenses:'Licenses & credits',auCookies:'Cookie settings',act_ab_assign:'Experiment assignment'},
+ar:{admNotify:'التنبيهات',admReviews:'المراجعات',admGrowth:'النمو',auA11y:'بيان إمكانية الوصول',auLicenses:'التراخيص والشكر',auCookies:'إعدادات ملفات تعريف الارتباط',act_ab_assign:'تعيين في تجربة'},
+ru:{admNotify:'Уведомления',admReviews:'Отзывы',admGrowth:'Рост',auA11y:'Заявление о доступности',auLicenses:'Лицензии и благодарности',auCookies:'Настройки cookie',act_ab_assign:'Назначение в эксперимент'},
+es:{admNotify:'Alertas',admReviews:'Reseñas',admGrowth:'Crecimiento',auA11y:'Declaración de accesibilidad',auLicenses:'Licencias y créditos',auCookies:'Configuración de cookies',act_ab_assign:'Asignación a experimento'}};
 for(const k in IGROW)Object.assign(I[k],IGROW[k]);
 const IACT={
 he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
@@ -1598,11 +1598,20 @@ const lowMem=()=>(navigator.deviceMemory&&navigator.deviceMemory<=4)||/iPhone|iP
 /* if the browser kills the page during separation (out of memory on phones), the points were already charged:
    remember the charge, and on the next boot refund it and explain (refund_credits allows own 'sep' charges ≤ 20 min) */
 const SEP_K='chordroom.sep.inflight';
-const sepMark=pay=>{try{localStorage.setItem(SEP_K,JSON.stringify({id:pay&&pay.id||null,uid:AUTH.uid,name:S.name,t:Date.now()}))}catch(e){}};
-const sepUnmark=()=>{try{localStorage.removeItem(SEP_K)}catch(e){}};
+/* the mark is shared by every tab: while a separation runs, its tab holds the Web Lock 'crsep:<id>', so a reload or a second tab
+   never refunds a separation that is still running elsewhere (that gave the points back while the stems were still delivered) */
+const SEPL={rel:null};
+const sepMark=pay=>{try{localStorage.setItem(SEP_K,JSON.stringify({id:pay&&pay.id||null,uid:AUTH.uid,name:S.name,t:Date.now()}))}catch(e){}
+  if(SEPL.rel){SEPL.rel();SEPL.rel=null}
+  try{if(pay&&pay.id&&navigator.locks)navigator.locks.request('crsep:'+pay.id,()=>new Promise(ok=>{SEPL.rel=ok})).catch(()=>{})}catch(e){}};
+const sepUnmark=()=>{try{localStorage.removeItem(SEP_K)}catch(e){}if(SEPL.rel){SEPL.rel();SEPL.rel=null}};
 async function sepCrashCheck(){
   let m=null;try{m=JSON.parse(localStorage.getItem(SEP_K)||'null')}catch(e){}
-  if(!m)return;sepUnmark();
+  if(!m)return;
+  if(AI.busy||AI.ext)return;   // this tab is separating right now
+  if(m.id){try{if(!navigator.locks||!navigator.locks.query)return;   // can't tell whether another tab still runs it → no refund
+    const q=await navigator.locks.query();if([...(q.held||[]),...(q.pending||[])].some(l=>l.name==='crsep:'+m.id))return}catch(e){return}}
+  sepUnmark();
   if(m.id&&m.uid&&m.uid===AUTH.uid&&Date.now()-m.t<19*60000)await refund({id:m.id});
   showNotice(t('aiCrash'));const n=$('#snote');n.textContent=t('aiCrash');n.classList.add('err');
 }
@@ -2582,6 +2591,8 @@ function renderAdmin(){
   $('#admSettings').hidden=!!ACC.admUser||ACC.admView!=='settings';$('#admRolesSec').hidden=!!ACC.admUser||ACC.admView!=='roles';$('#admSongs').hidden=ACC.admView!=='songs'||!!ACC.admUser;$('#admUser').hidden=!ACC.admUser;
   /* growth: module tabs (#admin .asec[data-ext] — assets/reviews.js, assets/ab.js render on 'cr-admin') */
   document.querySelectorAll('#admin .asec[data-ext]').forEach(s=>{s.hidden=!!ACC.admUser||ACC.admView!==s.dataset.ext});
+  /* notify v7: the owner's "Alerts" tab is a lazy module (assets/notify.js); load it first, then render */
+  if(!ACC.admUser&&ACC.admView==='notify'&&window.CRLOAD&&!CRLOAD.has('notify')){needMod('notify').then(()=>renderAdmin()).catch(e=>console.warn(e));return}
   if(!ACC.admUser&&ACC.admView&&$('#admin .asec[data-ext="'+ACC.admView+'"]')){try{document.dispatchEvent(new CustomEvent('cr-admin',{detail:{view:ACC.admView}}))}catch(e){}return}
   renderPayEvents();
   if(ACC.admUser){renderAdminUser();return}
@@ -2629,9 +2640,9 @@ function wireSongRows(tbody,list){
 async function loadAdminSongs(){try{ACC.songsAll=await Backend.adminSongs()}catch(e){ACC.songsAll=[]}renderAdmin()}
 /* ---------- owner, roles & permissions (schema.sql "Owner & roles") ---------- */
 const ALL_PERMS=['users','block','credits','songs','activity','settings','payments','catalog'];
-const ADM_TABS=['users','songs','activity','settings','roles',/* growth */'reviews','growth'];
+const ADM_TABS=['users','songs','activity','settings','roles',/* growth */'reviews','growth',/* notify v7: owner SMS alerts */'notify'];
 const TAB_PERM={users:'users',songs:'songs',activity:'activity',settings:'settings',/* growth: reviews = content moderation, growth = settings */reviews:'catalog',growth:'settings'};
-function tabOk(v){if(v==='roles')return !!ACC.owner;const p=TAB_PERM[v];return !!p&&!!ACC.perms&&ACC.perms.has(p)}
+function tabOk(v){if(v==='roles'||v==='notify')return !!ACC.owner;const p=TAB_PERM[v];return !!p&&!!ACC.perms&&ACC.perms.has(p)}
 ACC.roles=[];
 function roleName(id){if(!id||id==='user')return t('roleUser');if(id==='admin')return t('roleAdmin');const r=(ACC.roles||[]).find(x=>x.id===id);return r?r.name:id}
 async function loadRoles(withPw){

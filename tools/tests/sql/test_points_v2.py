@@ -23,10 +23,12 @@ U4 = '00000000-0000-0000-0000-0000000000d4'
 U5 = '00000000-0000-0000-0000-0000000000d5'   # refund caps (security v5): batches
 U6 = '00000000-0000-0000-0000-0000000000d6'   # refund caps: a call that gives back 0 points
 U7 = '00000000-0000-0000-0000-0000000000d7'   # refund caps: single exports
+U8 = '00000000-0000-0000-0000-0000000000d8'   # monthly refill: subscriptions (live or ended) never refill
+U9 = '00000000-0000-0000-0000-0000000000d9'   # monthly refill: a plan set by an admin (no subscription)
 X = '00000000-0000-0000-0000-0000000000e0'    # blocked
 for uid, mail, un in [(O, 'o@x', 'owner'), (A, 'a@x', 'adminA'), (U1, 'u1@x', 'userone'), (U2, 'u2@x', 'usertwo'),
                       (U3, 'u3@x', 'userthree'), (U4, 'u4@x', 'userfour'), (U5, 'u5@x', 'userfive'), (U6, 'u6@x', 'usersix'),
-                      (U7, 'u7@x', 'userseven'), (X, 'x@x', 'blocky')]:
+                      (U7, 'u7@x', 'userseven'), (U8, 'u8@x', 'usereight'), (U9, 'u9@x', 'usernine'), (X, 'x@x', 'blocky')]:
     D.user(uid, mail, un)
 sql(f"update public.profiles set role='admin' where id='{A}'")
 sql(f"update public.profiles set blocked=true where id='{X}'")
@@ -203,7 +205,7 @@ check('user edits ledger refunded column', as_(U4, "update public.credit_ledger 
 check('user calls private.cost_of', as_(U4, "select private.cost_of('{}'::jsonb, 'usb')"), 'permission denied')
 check('anon-callable definer fns = allow-list (unchanged)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
+      lambda o: o.strip() == 'catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
 check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 
@@ -302,6 +304,30 @@ check('a 3rd single-export refund the same day → refund limit', rn(U7, m4, 1),
 m5 = j(spend(U7, 'mashup', 2)).get('id')
 check('part of an export row → not refundable (whole row only)', rn(U7, m5, 1), 'not refundable')
 check('calls counted for U7 = the 2 refunds that went through', calls(U7), '2')
+
+D.section('monthly refill (refill_credits) after spending to 0')
+# bug 2026-10 "points come back by themselves": an ended PayPal subscription (expired / unpaid) keeps its plan until
+# plan_until and payments never set last_refill → every sign-in fell through to the monthly refill (a free month)
+Z = lambda o: o.strip() == '0'   # exact (check() alone matches a substring: '150' contains '0')
+def signin(u): return as_(u, "select public.refill_credits()")
+for st in ('active', 'cancelled', 'expired', 'unpaid', 'past_due', 'paused'):
+    sql(f"update public.profiles set credits=5, plan='pro', plan_until=now() + interval '20 days', last_refill=null, "
+        f"pay_provider='paypal', pay_sub_id='I-TESTSUB{st.upper()}', pay_status='{st}' where id='{U8}'")
+    spend(U8, 'sep', 1)
+    check(f'sub {st}: spent to 0', bal(U8), Z)
+    check(f'sub {st}: sign-in → still 0', signin(U8), Z)
+    check(f'sub {st}: second sign-in → still 0', signin(U8), Z)
+sql(f"update public.profiles set last_refill=now() - interval '2 months' where id='{U8}'")
+check('ended sub, last_refill 2 months ago → still 0', signin(U8), Z)
+check('no refill rows in the ledger for a subscriber', sql(f"select count(*) from public.credit_ledger where user_id='{U8}' and reason='refill'"), Z)
+pts = sql("select public.plan_points('pro')")
+sql(f"update public.profiles set credits=5, plan='pro', plan_until=now() + interval '20 days', last_refill=now() - interval '3 days' where id='{U9}'")
+spend(U9, 'sep', 1)
+check('admin plan, refilled 3 days ago: spent to 0', bal(U9), Z)
+check('… sign-in → still 0 (refill once a month, not when empty)', signin(U9), Z)
+sql(f"update public.profiles set last_refill=now() - interval '32 days' where id='{U9}'")
+check('… a month later → the plan\'s monthly points', signin(U9), lambda o: o.strip() == pts)
+check('… and only once', signin(U9), lambda o: o.strip() == pts)
 
 D.section('settings guard (admin saves billing)')
 def save(u, patch):

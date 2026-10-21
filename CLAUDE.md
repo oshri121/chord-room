@@ -217,7 +217,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
   FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]`, `[paypal]`, `[security-v5]` and `[referral-v6]` (the last block;
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]`, `[paypal]`, `[security-v5]`, `[referral-v6]` and `[notify-v7]` (the last block, owner SMS alerts;
   owner runs `accounts_v4.sql` before `growth_v4.sql`, and `referral_v6.sql` after `security_v5.sql` — re-run v6 whenever v5 is re-run) (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
   adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
@@ -289,6 +289,19 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `private.referral_ips`) → `why:'device'`; the browser also remembers used codes (`chordroom.refdone.v1`) and shows `refDevice`.
   SQL block `[referral-v6:begin…end]` = last block of schema.sql = `supabase/referral_v6.sql` (test `sql/test_referral_v6.py`).
   `my_referral()` → {code, invited/joined, paid, pending, earned}; the invite box sits in the points box and under the plans on the pricing page (`renderRef`).
+- Owner SMS alerts (notify v7, owner guide `NOTIFY.md`): SQL block `[notify-v7:begin…end]` = the LAST block of schema.sql = `supabase/notify_v7.sql`
+  (run after referral_v6.sql; only adds its own objects, so re-running earlier blocks never clobbers it). One log `private.notify_log`
+  (cat, lvl, msg, state new|sent|ok|fail|off|digest|quiet|capped|nonet), fed by triggers (activity adm_* + staff `sign_in`, pay_events result,
+  profiles insert / role|owner changed with no auth.uid(), reviews, account_deletions, role_pw_fail 3/5, auth.users password/e-mail/phone of
+  staff, auth.mfa_factors) and `public.notify_edge(p_body,p_sig)` (anon, HMAC with `private.settings 'notify_secret'`, kinds rate|probe|paysig|relay,
+  1 per kind per 30 min). `private.notify(cat,msg,force)` never throws: level per category from `notify_prefs` (0 off / 1 summary / 2 now /
+  3 now even in quiet hours), quiet hours + caps (cap_day/cap_hour, hard 60/day) in Israel time, then `notify_post` → pg_net POST {t,id,msg} +
+  `x-cr-sig` HMAC(t\nid\nmsg) → `functions/api/notify.js` (sig, ≤15 min, once per id after success) → Twilio to `NOTIFY_TO` (Cloudflare env only).
+  `private.notify_tick()` hourly (pg_cron job `cr-notify-hourly`, else lazily from notify()): pg_net responses → ok / one retry / fail,
+  anomalies once a day (30 sign-ups/h, 300 actions/h by one account, 20 refunds/day, assistant ≥80 % of its ceiling), the daily summary.
+  Owner RPCs `owner_notify_status/save/send('test'|'digest')`; admin tab "התראות" (`#admNotify`, owner only: `tabOk`) = lazy module `assets/notify.js/css`
+  (strings inside). Edge reports: `functions/api/notify-lib.js` `edgeNote` from `_middleware.js` (429, hidden paths) and `api/pay/paypal.js`.
+  Messages show usernames without '@' (it flips in Hebrew), never e-mails. Tests: `sql/test_notify_v7.py`, `node/notify.test.mjs`.
 - Discover "Israeli": Top Israel chart + an Israeli-hits playlist, filtered to Israeli artists (`israeliFilter`: Hebrew text,
   artists learned from Hebrew tracks, `IL_ARTISTS` list).
 - Pages: `assets/pages.js` (+css) renders `#pricingView` / `#aboutView` (`#about-a11y` = accessibility statement from
