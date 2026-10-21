@@ -383,7 +383,8 @@
         <div class="row2"><input type="number" id="udPts" value="20" step="1" aria-label="points"><input type="text" id="udNote" maxlength="120" data-ip="grantNote"><button class="btn solid" type="button" id="udGrant" data-i="grantBtn"></button></div>
         <div class="row2"><select id="udPlan" aria-label="plan"></select><select id="udMonths" aria-label="months"><option value="1">1</option><option value="3">3</option><option value="6">6</option><option value="12">12</option></select><button class="btn ghost" type="button" id="udPlanBtn" data-i="setPlanBtn"></button></div>
         <span class="snote" id="udCredMsg"></span>
-        <details class="ptslog"><summary data-i="creditsHist"></summary><ul id="udLog"></ul></details></div>
+        <details class="ptslog"><summary data-i="creditsHist"></summary><ul id="udLog"></ul></details>
+        <div class="udtest" id="udTest" hidden><h3 data-i="ptT"></h3><p class="snote" id="udTestSt"></p><div class="row2"><button class="btn ghost" type="button" id="udTestOn" data-i="ptOn7"></button><button class="btn ghost" type="button" id="udTestOff" data-i="ptStop"></button><span class="snote" id="udTestMsg"></span></div></div></div>
       <div class="bhead"><h3 data-i="userSongs"></h3><div class="row2"><button class="btn solid" type="button" id="udAll" data-i="dlUserAll"></button><span class="snote" id="udMsg"></span></div></div>
       <div class="tblw"><table class="ut st"><thead><tr><th data-i="songCol"></th><th data-i="genre"></th><th>BPM</th><th data-i="key"></th><th data-i="length"></th><th data-i="size"></th><th data-i="joinedSong"></th><th></th></tr></thead><tbody id="udSongs"></tbody></table></div>
       <div class="bhead" style="margin-top:22px"><h3 data-i="userDownloads"></h3></div>
@@ -441,8 +442,8 @@
      data-mod = the modules that need the file (a shared file loads once). -->
 <script src="config.js?v=1" defer></script>
 <script src="vendor/supabase.js" defer></script>
-<script src="assets/backend.js?v=18" defer></script>
-<script src="assets/app.js?v=50" defer></script>
+<script src="assets/backend.js?v=19" defer></script>
+<script src="assets/app.js?v=51" defer></script>
 <script src="assets/dj-i18n.js?v=5" defer></script>
 <script src="assets/pages.js?v=21" defer></script>
 <script src="assets/shell.js?v=9" defer></script>

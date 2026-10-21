@@ -2,7 +2,9 @@
 // POST {plan:'pro'} with Authorization: Bearer <Supabase access token>  →  {url: PayPal approve link}
 // The PayPal plan id comes from site_config.billing.plans[].variant (P-…), never from the browser, and custom_id is
 // the user id checked with Supabase Auth, so the webhook (pay_webhook_paypal) knows whose account to fill.
-import { ppBase, ppToken, sbUrl, sbKey, json, withTimeout, readCapped } from './paypal-lib.js';
+// Sandbox (PAYPAL_ENV != live): only admins, the owner and accounts the owner marked as testers (profiles.pay_test_until,
+// referral v6 [R6-6]) may start one — the webhook ignores everyone else's sandbox payments, so they'd pay fake money for nothing.
+import { ppEnv, ppBase, ppToken, sbUrl, sbKey, json, withTimeout, readCapped } from './paypal-lib.js';
 
 const PLAN_RE = /^P-[A-Z0-9]{10,40}$/;
 const LIVE = ['active', 'on_trial', 'past_due', 'paused'];
@@ -33,10 +35,12 @@ export async function onRequest({ request, env }) {
     if (!r.ok) return json({ error: 'auth_unavailable' }, FAIL);
     user = await r.json();
     if (!user || typeof user.id !== 'string' || !user.id) return json({ error: 'auth' }, 401);
-    const [rc, rp] = await Promise.all([
+    const sandbox = ppEnv(env) !== 'live', base = `/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=pay_status,pay_provider,blocked`;
+    let [rc, rp] = await Promise.all([
       sb('/rest/v1/site_config?id=eq.1&select=billing'),
-      sb(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=pay_status,pay_provider,blocked`)
+      sb(base + (sandbox ? ',role,owner,pay_test_until' : ''))
     ]);
+    if (sandbox && !rp.ok) rp = await sb(base + ',role,owner');            // [R6-6] not installed yet: admins / owner only
     if (!rc.ok || !rp.ok) return json({ error: 'db_unavailable' }, FAIL);
     const cfg = (await rc.json())[0];
     prof = (await rp.json())[0] || {};
@@ -45,6 +49,9 @@ export async function onRequest({ request, env }) {
   } catch (e) { return json({ error: 'db_unavailable' }, FAIL); }
   if (!plan || !PLAN_RE.test(String(plan.variant || ''))) return json({ error: 'bad_plan' }, 400);
   if (prof.blocked) return json({ error: 'blocked' }, 403);
+  if (ppEnv(env) !== 'live' && !(prof.owner === true || prof.role === 'admin' || (prof.pay_test_until && Date.parse(prof.pay_test_until) > Date.now()))) {
+    return json({ error: 'sandbox_tester' }, 403);
+  }
   if (LIVE.includes(prof.pay_status)) return json({ error: 'have_sub' }, 409);
 
   const origin = new URL(request.url).origin;

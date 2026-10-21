@@ -248,13 +248,14 @@ create or replace function private.notify_on_activity() returns trigger
 language plpgsql security definer set search_path = public as $$
 declare d text := coalesce(new.detail, ''); who text; actor text; pr public.profiles;
 begin
-  if new.action not in ('adm_role', 'adm_owner', 'adm_delete_user', 'adm_block', 'adm_credits', 'adm_plan', 'adm_words', 'adm_config', 'sign_in') then return null; end if;
+  if new.action not in ('adm_tester', 'adm_role', 'adm_owner', 'adm_delete_user', 'adm_block', 'adm_credits', 'adm_plan', 'adm_words', 'adm_config', 'sign_in') then return null; end if;
   who := private.notify_who(new.user_id);
   actor := substring(d from '^by ([0-9a-f-]{36})');
   if actor is not null then d := private.notify_who(actor::uuid) || substring(d from 40); end if;
   case new.action
     when 'adm_role' then perform private.notify('security', 'שינוי תפקיד ל-' || who || ': ' || d);
     when 'adm_owner' then perform private.notify('security', 'שינוי בעלות בחשבון ' || who || ': ' || d);
+    when 'adm_tester' then perform private.notify('security', 'חשבון בדיקה ל-PayPal Sandbox: ' || who || ': ' || d);
     when 'adm_delete_user' then perform private.notify('security', 'משתמש נמחק ע"י ' || d);
     when 'adm_block' then perform private.notify('admin', 'חסימה/שחרור ' || who || ': ' || d);
     when 'adm_credits' then perform private.notify('admin', 'נקודות ל-' || who || ': ' || d);

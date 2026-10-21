@@ -390,6 +390,14 @@ ar:{admNotify:'التنبيهات',admReviews:'المراجعات',admGrowth:'ا
 ru:{admNotify:'Уведомления',admReviews:'Отзывы',admGrowth:'Рост',auA11y:'Заявление о доступности',auLicenses:'Лицензии и благодарности',auCookies:'Настройки cookie',act_ab_assign:'Назначение в эксперимент'},
 es:{admNotify:'Alertas',admReviews:'Reseñas',admGrowth:'Crecimiento',auA11y:'Declaración de accesibilidad',auLicenses:'Licencias y créditos',auCookies:'Configuración de cookies',act_ab_assign:'Asignación a experimento'}};
 for(const k in IGROW)Object.assign(I[k],IGROW[k]);
+/* [R6-6] PayPal sandbox test accounts (owner marks a user for ≤ 30 days; admin panel → user details) */
+const IPTEST={
+he:{ptT:'חשבון בדיקה ל-PayPal Sandbox',ptOn:'פעיל עד {d}: תשלומי בדיקה של החשבון הזה מפעילים מסלול ונקודות.',ptOff:'כבוי: תשלומי בדיקה (Sandbox) של החשבון הזה לא מפעילים כלום.',ptOn7:'הפעלה ל-7 ימים',ptStop:'כיבוי',ptFail:'הפעולה נכשלה',paySandbox:'האתר במצב בדיקה של PayPal: רק חשבונות שהבעלים אישר לבדיקה יכולים להירשם למסלול עכשיו.'},
+en:{ptT:'PayPal Sandbox test account',ptOn:'On until {d}: this account\'s test payments activate a plan and points.',ptOff:'Off: this account\'s test (Sandbox) payments activate nothing.',ptOn7:'Turn on for 7 days',ptStop:'Turn off',ptFail:'Action failed',paySandbox:'The site is in PayPal test mode: only accounts the owner approved for testing can subscribe right now.'},
+ar:{ptT:'حساب اختبار لـ PayPal Sandbox',ptOn:'مفعّل حتى {d}: مدفوعات الاختبار لهذا الحساب تفعّل خطة ونقاطًا.',ptOff:'متوقف: مدفوعات الاختبار (Sandbox) لهذا الحساب لا تفعّل شيئًا.',ptOn7:'تفعيل لمدة 7 أيام',ptStop:'إيقاف',ptFail:'فشل الإجراء',paySandbox:'الموقع في وضع اختبار PayPal: فقط الحسابات التي وافق عليها المالك للاختبار يمكنها الاشتراك الآن.'},
+ru:{ptT:'Тестовый аккаунт PayPal Sandbox',ptOn:'Включено до {d}: тестовые платежи этого аккаунта включают план и баллы.',ptOff:'Выключено: тестовые платежи (Sandbox) этого аккаунта ничего не включают.',ptOn7:'Включить на 7 дней',ptStop:'Выключить',ptFail:'Действие не удалось',paySandbox:'Сайт в тестовом режиме PayPal: оформить подписку сейчас могут только аккаунты, одобренные владельцем для тестов.'},
+es:{ptT:'Cuenta de prueba de PayPal Sandbox',ptOn:'Activa hasta {d}: los pagos de prueba de esta cuenta activan un plan y puntos.',ptOff:'Desactivada: los pagos de prueba (Sandbox) de esta cuenta no activan nada.',ptOn7:'Activar 7 días',ptStop:'Desactivar',ptFail:'La acción falló',paySandbox:'El sitio está en modo de prueba de PayPal: ahora solo pueden suscribirse las cuentas que el propietario aprobó para pruebas.'}};
+for(const k in IPTEST)Object.assign(I[k],IPTEST[k]);
 const IACT={
 he:{admActivity:'פעילות',actAll:'כל הפעולות',actNone:'עדיין אין פעילות.',actMissing:'יומן הפעילות עוד לא הותקן: צריך להריץ את קוד ה־SQL של "Activity log" ב־Supabase.',actRefresh:'רענון',actSearch:'חיפוש משתמש או פרט',actWhat:'פעולה',actDetail:'פרטים',userActivity:'פעילות אחרונה',
   act_visit:'כניסה לאתר',act_sign_in:'התחברות',act_view:'מעבר לעמוד',act_song_upload:'העלאת שיר',act_song_open:'פתיחת שיר',act_discover_open:'שיר מהגלה',act_separate:'הפרדת ערוצים',act_export:'הורדה מהכלי',act_dj_load:'שיר במיקס חי',act_crate_analyze:'ניתוח ספרייה',act_crate_export:'ייצוא ספרייה',act_subscribe_click:'לחיצה על מנוי',act_invite_copy:'העתקת קישור הזמנה',act_mashup_export:'ייצוא מאשאפ',act_voice_test:'בדיקת טווח קול',act_convert:'המרת קבצים',act_extended_export:'ייצוא אקסטנדד'},
@@ -2747,6 +2755,9 @@ function renderAdminUser(){
   $('#udFacts').innerHTML=facts.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
   const ps=$('#udPlan');ps.innerHTML=['free',...BILL().plans.map(p=>p.id)].map(id=>`<option value="${esc(id)}">${esc(planName(id))}</option>`).join('');ps.value=m.plan||'free';
   [...$('#udMonths').options].forEach(o=>o.textContent=`${o.value} ${t('months')}`);
+  /* [R6-6] owner only: PayPal sandbox test account (≤ 30 days; the server checks is_owner) */
+  {const w=$('#udTest');if(w){w.hidden=!ACC.owner||!('pay_test_until' in m);const on=m.pay_test_until&&new Date(m.pay_test_until).getTime()>Date.now();
+    $('#udTestSt').textContent=on?t('ptOn',{d:fmtDate(m.pay_test_until)}):t('ptOff');$('#udTestOff').hidden=!on}}
   $('#udBio').textContent=m.bio||'';$('#udBio').hidden=!m.bio;
   const tb=$('#udSongs');tb.innerHTML=songRows(songs,false);wireSongRows(tb,songs);
   $('#udDls').innerHTML=dls.length?dls.map(d=>`<tr><td class="sn2"></td><td class="mono">${Array.isArray(d.files)?d.files.length:0}</td><td class="mono">${mbCell(d.size)}</td><td>${esc(fmtDate(d.created_at))}</td></tr>`).join(''):`<tr><td colspan="4" class="snote">${esc(t('noDownloads'))}</td></tr>`;
@@ -3145,7 +3156,7 @@ async function paypalCheckout(planId){
   if(PAY.busy)return;PAY.busy=true;
   const bs=[...document.querySelectorAll('[data-sub]')].filter(b=>b.dataset.sub===planId&&!b.disabled);bs.forEach(b=>{b.disabled=true;b.setAttribute('aria-busy','true')});
   let w=null;try{w=window.open('','_blank');if(w)w.opener=null}catch(e){}   // opened now (the click), filled after the request
-  const fail=k=>{PAY.opened=0;try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else toast(t('payErr'))};
+  const fail=k=>{PAY.opened=0;try{if(w)w.close()}catch(e){}if(k==='have_sub')toast(t('payHaveSub'),portalUrl(ACC.cred)?[[t('payManage'),openPortal]]:[]);else if(k==='sandbox_tester')toast(t('paySandbox'));else toast(t('payErr'))};
   try{
     const tok=Backend.accessToken?await Backend.accessToken():null;if(!tok)return fail();
     const r=await fetch('/api/pay/paypal-subscribe',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+tok},body:JSON.stringify({plan:planId}),credentials:'omit',cache:'no-store'});
@@ -3208,6 +3219,10 @@ async function refreshAdmUser(){const m=ACC.admUser;if(!m)return;try{const u=(aw
   if($('#udCred details').open){try{renderLedger($('#udLog'),await Backend.adminLedger(m.id,50))}catch(e){}}}
 $('#udGrant').onclick=()=>busyBtn($('#udGrant'),async()=>{const m=ACC.admUser,n=parseInt($('#udPts').value,10);if(!m||!n)return;
   try{const b=await Backend.adminGrantCredits(m.id,n,$('#udNote').value.trim());setMsg($('#udCredMsg'),t('grantDone',{b}));$('#udNote').value='';if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
+const setTester=days=>async()=>{const m=ACC.admUser;if(!m)return;
+  try{m.pay_test_until=await Backend.ownerSetPayTester(m.id,days);setMsg($('#udTestMsg'),'')}catch(e){setMsg($('#udTestMsg'),t('ptFail'),true)}renderAdminUser()};
+$('#udTestOn').onclick=()=>busyBtn($('#udTestOn'),setTester(7));
+$('#udTestOff').onclick=()=>busyBtn($('#udTestOff'),setTester(0));
 $('#udPlanBtn').onclick=()=>busyBtn($('#udPlanBtn'),async()=>{const m=ACC.admUser;if(!m)return;
   try{await Backend.adminSetPlan(m.id,$('#udPlan').value,+$('#udMonths').value);setMsg($('#udCredMsg'),t('planDone'));if(ACC.user&&m.id===ACC.user.id)loadCredits(false);await refreshAdmUser()}catch(e){setMsg($('#udCredMsg'),t('saveFail'),true)}});
 $('#udCred details').addEventListener('toggle',async e=>{if(e.target.open&&ACC.admUser){try{renderLedger($('#udLog'),await Backend.adminLedger(ACC.admUser.id,50))}catch(x){}}});

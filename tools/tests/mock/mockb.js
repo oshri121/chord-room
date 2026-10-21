@@ -145,6 +145,8 @@
     async reviewDelete() { const i = reviews.findIndex(x => cur && x.user_id === cur.id); if (i >= 0) reviews.splice(i, 1); },
     async adminReviews(status) { return reviews.filter(r => !status || r.status === status).map(r => { const p = profiles.find(x => x.id === r.user_id) || {}; return { ...r, username: p.username, display_name: p.display_name }; }); },
     // notify v7 (owner SMS alerts): same shape as owner_notify_status / _save / _send; owner only
+    async ownerSetPayTester(id, days) { const o = me(); if (!o || !o.owner) fail('not allowed'); if (!(days >= 0 && days <= 30)) fail('bad days');
+      const p = profiles.find(x => x.id === id); if (!p) fail('no user'); p.pay_test_until = days ? new Date(Date.now() + days * 864e5).toISOString() : null; return p.pay_test_until; },
     async notifyStatus() { const p = me(); if (!p || !p.owner) fail('not allowed');
       return { prefs: JSON.parse(JSON.stringify(ntPrefs)), ready: { net: true, cron: false, secret: true }, today: { sent: ntLog.filter(x => x.state === 'sent').length, ok: 0, held: ntLog.filter(x => x.state === 'quiet' || x.state === 'capped').length },
                last_ok: null, last_fail: null, log: ntLog.slice().reverse() }; },

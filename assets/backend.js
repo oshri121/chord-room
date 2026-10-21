@@ -484,6 +484,8 @@
     },
 
     // notify v7 (supabase/notify_v7.sql): the owner's SMS alerts — status + log, settings, test SMS / summary now. Owner only (server-checked).
+    // [R6-6] owner only: mark a user as a PayPal sandbox tester for p_days (0 = off, ≤ 30) → pay_test_until (or null)
+    async ownerSetPayTester(id, days) { const { data, error } = await sb.rpc('owner_set_pay_tester', { p_target: id, p_days: days }); if (error) throw error; return data; },
     async notifyStatus() { const { data, error } = await sb.rpc('owner_notify_status'); if (error) throw error; return data; },
     async notifySave(prefs) { const { data, error } = await sb.rpc('owner_notify_save', { p: prefs }); if (error) throw error; return data; },
     async notifySend(what) { const { data, error } = await sb.rpc('owner_notify_send', { p_what: what }); if (error) throw error; return data; },

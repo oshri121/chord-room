@@ -71,7 +71,7 @@ insert into private.settings (key, value) values ('paypal_relay_secret', 'YOUR-R
 
 1. `PAYPAL_ENV` = `sandbox`, מזהי התוכניות של ה-Sandbox באתר.
 2. ב-developer.paypal.com ← **Testing Tools** ← **Sandbox Accounts** יש חשבון "Personal" לבדיקה (אימייל + סיסמה שם).
-3. מתחברים לאתר **עם חשבון מנהל** (תשלומי Sandbox נספרים רק למנהלים, כדי שאף אחד לא יקבל נקודות בחינם), לוחצים "הצטרפות", ומשלמים עם חשבון ה-Personal של ה-Sandbox.
+3. מתחברים לאתר **עם חשבון מנהל**, או עם חשבון בדיקה שסימנת: ניהול האתר ← המשתמש ← "חשבון בדיקה ל-PayPal Sandbox" ← "הפעלה ל-7 ימים" (רק הבעלים רואה את זה). תשלומי Sandbox נספרים רק למנהלים ולחשבונות האלה, כדי שאף אחד לא יקבל נקודות בחינם. לוחצים "הצטרפות" ומשלמים עם חשבון ה-Personal של ה-Sandbox. בסוף הבדיקה לוחצים "כיבוי".
 4. חוזרים לאתר: מופיעה הודעה שהמסלול הופעל והנקודות נכנסו. ב**ניהול ← נקודות ותשלומים ← תשלומים אחרונים** רואים כל אירוע ואת התוצאה שלו (מסומן "בדיקה").
 5. ב-PayPal Developer ← **Webhooks Events** אפשר לראות כל משלוח ולשלוח שוב.
 
@@ -99,7 +99,7 @@ insert into private.settings (key, value) values ('paypal_relay_secret', 'YOUR-R
 
 - **בטבלת "תשלומים אחרונים" אין כלום**: ב-PayPal Developer ← Webhooks Events בודקים את קוד התשובה. 500 "not configured" = חסר משתנה ב-Cloudflare או שלא הייתה פריסה מחדש. 401 = ה-`PAYPAL_WEBHOOK_ID` לא תואם ל-webhook או לסביבה. 500 "relay secret mismatch" = הסוד ב-Cloudflare שונה מזה שב-Supabase.
 - **"unknown plan"**: מזהה התוכנית באתר לא תואם לתוכנית שנקנתה (או של Sandbox מול Live).
-- **"test mode: ignored"**: תשלום Sandbox מחשבון שאינו מנהל. זה מכוון.
+- **"test mode: ignored"**: תשלום Sandbox מחשבון שאינו מנהל ולא סומן כחשבון בדיקה (או שהסימון פג). זה מכוון. מסמנים את החשבון ומשלמים שוב.
 - **"no user"**: PayPal לא זיהה את המשתמש. אפשר להפעיל מסלול ידנית מפרטי המשתמש בניהול.
 - **"לא הצלחנו לפתוח את התשלום ב-PayPal"**: חסרים `PAYPAL_CLIENT_ID`/`PAYPAL_CLIENT_SECRET` ב-Cloudflare, או שה-Client ID של Sandbox משמש עם `PAYPAL_ENV=live` (או הפוך).
 

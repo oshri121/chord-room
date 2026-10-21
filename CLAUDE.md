@@ -81,7 +81,9 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   schema.sql = `supabase/paypal.sql`; its newest `pay_webhook_paypal` body now lives in `[referral-v6]`, edit it there). Once per PayPal event id in `pay_events` (`pp:<id>`); user = custom_id → `pay_sub_id` → unique
   confirmed email; SUBSCRIPTION.* sets `pay_*` (provider 'paypal', portal = paypal.com/myaccount/autopay) and the plan until next
   billing + 3 days; points only from `PAYMENT.SALE.COMPLETED` (ledger ref `ls:pp:sale:<id>`, sales that arrived before ACTIVATED
-  are granted on ACTIVATED), full REFUNDED/REVERSED takes them back; sandbox counts only for admins. Env (Cloudflare): `PAYPAL_ENV`,
+  are granted on ACTIVATED), full REFUNDED/REVERSED takes them back; sandbox counts only for admins, the owner and owner-marked testers
+  (`[R6-6]` in `[referral-v6]`: `profiles.pay_test_until`, `owner_set_pay_tester(target, days 0…30)`, admin user details `#udTest`; `paypal-subscribe`
+  answers 403 `sandbox_tester` to everyone else while PAYPAL_ENV ≠ live; sandbox sales never reward an inviter). Test `node/paytest.test.mjs`. Env (Cloudflare): `PAYPAL_ENV`,
   `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`, `PAYPAL_RELAY_SECRET` (shared helpers `paypal-lib.js`). Product,
   plans (ILS, monthly, from the site's prices) and webhook: `python3 tools/paypal/setup.py [--live]` (owner runs it; prints the ids).
   `refill_credits` skips live subscriptions (points only from payments) but still expires `plan_until`. `admin_set_plan` still works.

@@ -211,7 +211,34 @@ revoke all on function private.ref_reward(uuid, text, boolean), private.ref_take
   from public, anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────────────────────────
--- [R6-2] [R6-3] pay_webhook_paypal: body as in [paypal] + the inviter's reward / take-back
+-- [R6-6] sandbox test accounts: a PayPal SANDBOX payment (fake money) activates a plan + points only for admins, the owner,
+-- and accounts the OWNER marked as testers for a limited time (profiles.pay_test_until, ≤ 30 days; admin panel → user →
+-- "PayPal Sandbox test account"). Everyone else's sandbox events stay 'test mode: ignored'. Sandbox payments never reward
+-- an inviter (referral points are real points). /api/pay/paypal-subscribe refuses non-testers while PAYPAL_ENV=sandbox.
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+alter table public.profiles add column if not exists pay_test_until timestamptz;
+revoke update (pay_test_until) on public.profiles from authenticated, anon, public;
+
+create or replace function public.owner_set_pay_tester(p_target uuid, p_days integer) returns timestamptz
+language plpgsql security definer set search_path = public as $$
+declare until timestamptz;
+begin
+  if not public.is_owner() then raise exception 'not allowed' using errcode = '42501'; end if;
+  perform private.need_aal();
+  if p_days is null or p_days < 0 or p_days > 30 then raise exception 'bad days'; end if;
+  if not exists (select 1 from public.profiles where id = p_target) then raise exception 'no user'; end if;
+  until := case when p_days = 0 then null else now() + make_interval(days => p_days) end;
+  update public.profiles set pay_test_until = until where id = p_target;
+  insert into public.activity (user_id, action, detail)
+    values (p_target, 'adm_tester', left('by ' || auth.uid()::text || ': ' || case when until is null then 'sandbox tester off'
+                                          else 'sandbox tester until ' || to_char(until, 'YYYY-MM-DD') end, 300));
+  return until;
+end $$;
+revoke execute on function public.owner_set_pay_tester(uuid, integer) from public, anon;
+grant execute on function public.owner_set_pay_tester(uuid, integer) to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────────────────────
+-- [R6-2] [R6-3] pay_webhook_paypal: body as in [paypal] + the inviter's reward / take-back + [R6-6] sandbox testers
 -- ─────────────────────────────────────────────────────────────────────────────────────────────
 create or replace function public.pay_webhook_paypal(p_body text, p_env text, p_sig text) returns text
 language plpgsql security definer set search_path = public, extensions as $$
@@ -277,8 +304,8 @@ begin
   end if;
   select * into me from public.profiles where id = uid for update;
   update public.pay_events set user_id = uid where id = eid;
-  if is_test and me.role <> 'admin' then
-    update public.pay_events set result = 'test mode: ignored (only admin accounts can test)' where id = eid;
+  if is_test and not (me.role = 'admin' or me.owner or coalesce(me.pay_test_until > now(), false)) then
+    update public.pay_events set result = 'test mode: ignored (only admins and sandbox test accounts can test)' where id = eid;
     return 'test ignored';
   end if;
   portal := case when is_test then 'https://www.sandbox.paypal.com/myaccount/autopay/' else 'https://www.paypal.com/myaccount/autopay/' end;
@@ -319,7 +346,7 @@ begin
             res := res || ', late payment +' || got;
             -- [R6-2] the friend's first real payment rewards the inviter
             tot := ev2.s->'amount'->>'total';
-            if (case when coalesce(tot, '') ~ '^[0-9]{1,9}(\.[0-9]{1,4})?$' then tot::numeric else 0 end) > 0 then
+            if (case when coalesce(tot, '') ~ '^[0-9]{1,9}(\.[0-9]{1,4})?$' then tot::numeric else 0 end) > 0 and not is_test then
               rg := private.ref_reward(uid, 'pp:sale:' || (ev2.s->>'id'), is_test);
               if rg is not null then res := res || ', referral +' || rg; end if;
             end if;
@@ -350,7 +377,7 @@ begin
          where id = uid;
         -- [R6-2] the friend's first real payment rewards the inviter
         tot := r->'amount'->>'total';
-        if (case when coalesce(tot, '') ~ '^[0-9]{1,9}(\.[0-9]{1,4})?$' then tot::numeric else 0 end) > 0 then
+        if (case when coalesce(tot, '') ~ '^[0-9]{1,9}(\.[0-9]{1,4})?$' then tot::numeric else 0 end) > 0 and not is_test then
           rg := private.ref_reward(uid, 'pp:sale:' || (r->>'id'), is_test);
           if rg is not null then res := res || ', referral +' || rg; end if;
         end if;
