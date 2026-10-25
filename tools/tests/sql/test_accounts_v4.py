@@ -270,7 +270,7 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list (unchanged)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
+      lambda o: o.strip() == 'catalog_play,is_admin,login_email,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('no table in public without RLS', sql("select coalesce(string_agg(c.relname, ','), 'none') from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity"), 'none')
@@ -287,6 +287,7 @@ check('schema.sql has the [accounts-v4] block', 'found' if m else 'missing', 'fo
 # only later blocks ([growth-v4], [paypal], [security-v5], [referral-v6]) may follow it
 later = re.sub(r'(?s)-- =+\n-- (?:Growth v4|Security v5|Referral v6) .*?-- \[(?:growth-v4|security-v5|referral-v6):end\]\n-- =+\n', '', src[m.end():]) if m else src
 later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', later)
+later = re.sub(r'(?s)-- \[(notify-v7|login-v8):begin\].*?-- \[\1:end\]', '', later)   # notify v7 + login v8 add only their own objects
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('…after [security-v3]', 'yes' if m and src.index('[security-v3:end]') < m.start() else 'no', 'yes')
 check('accounts_v4.sql contains the block verbatim', 'yes' if m and m.group(1) in v4 else 'no', 'yes')

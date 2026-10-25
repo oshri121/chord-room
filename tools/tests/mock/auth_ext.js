@@ -24,7 +24,11 @@
   B.verifySignup = async (email, tok) => { await new Promise(r => setTimeout(r, 200)); if (window.__codes[email] !== tok) fail('otp'); unconf.delete(email); const u = M.users.find(x => x.email === email); await B.signIn({ email, password: u.password }); };
   B.resendSignup = async email => { window.__resends++; window.__codes[email] = '222222'; };
   const origIn = B.signIn;
-  B.signIn = async a => { if (unconf.has(a.email)) { const u = M.users.find(x => x.email === a.email && x.password === a.password); if (u) fail('confirm'); } return origIn(a); };
+  B.signIn = async a => {
+    const em = a.email || await B.loginEmail(a.login, a.password);   // login v8: a username signs in too
+    if (unconf.has(em)) { const u = M.users.find(x => x.email === em && x.password === a.password); if (u) { const e = new Error('confirm'); e.code = 'confirm'; e.email = em; throw e; } }
+    return origIn({ ...a, email: em });
+  };
   B.sendRecoveryCode = async email => { window.__rec = email; };
   B.verifyRecovery = async (email, tok) => { if (tok !== '654321') fail('otp'); const u = M.users.find(x => x.email === email); await origIn({ email, password: u.password }); window.__cb('PASSWORD_RECOVERY', u); };
   const origSet = B.setPassword; B.setPassword = async p => { if (p === 'password1') fail('same'); return origSet(p); };

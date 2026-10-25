@@ -1,7 +1,8 @@
 // Accounts v4, assets/backend.js against a fake Supabase client (the UI tests use the mock backend, which replaces this
 // file): Turnstile tokens reach every Auth call that needs one, a 2FA session at aal1 is held back from the app
 // (MFA_REQUIRED + 'cr-mfa') until the code is verified, re-authentication keeps the user, sign-out scopes, the delete
-// flow (Storage list/remove in chunks with backoff on 429, then the RPC, then a local sign-out), error mapping.
+// flow (Storage list/remove in chunks with backoff on 429, then the RPC, then a local sign-out), error mapping, sign-in with the
+// username (login v8: login_email first, the password grant only with the e-mail it returns).
 import { REPO } from './repo.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -49,7 +50,10 @@ function fake() {
           return { data: (F.files[bucket] || []).slice(0, o.limit).map(n => ({ id: 'id-' + n, name: n })), error: null }; },
         async remove(paths) { F.calls.push(['remove', bucket, paths.length]); F.files[bucket] = (F.files[bucket] || []).filter(n => !paths.includes(prefixOf(paths[0]) + n)); return { data: [], error: null }; }
       }) },
-      async rpc(name, args) { F.calls.push(['rpc', name, args]); return { data: name === 'delete_my_account' ? F.rpcResult : true, error: null }; }
+      async rpc(name, args) { F.calls.push(['rpc', name, args]);
+        // login v8: the username → e-mail lookup (only with the right password)
+        if (name === 'login_email') return F.loginRpc ? F.loginRpc(args) : { data: args.p_user.toLowerCase() === 'user_one' && args.p_password === 'pw' ? { ok: true, email: 'u1@x' } : { ok: false, why: 'no' }, error: null };
+        return { data: name === 'delete_my_account' ? F.rpcResult : true, error: null }; }
     };
     return self;
   };
@@ -145,6 +149,27 @@ r = await B.adminDeleteUser('u7', 'userseven');
 check('admin delete: target folders listed, RPC with target', F.calls.some(c => c[0] === 'list' && c[2] === 'u7') && F.calls.some(c => c[0] === 'rpc' && c[1] === 'admin_delete_user' && c[2].target === 'u7'));
 const enr = await B.mfaEnroll('oshri');
 check('mfaEnroll → id, qr (data:), secret', enr.id === 'f9' && enr.qr.startsWith('data:image/svg+xml') && enr.secret === 'ABC');
+
+console.log('== sign-in with the username (login v8)');
+F = fake();
+({ B, events } = await load(F)); seen.length = 0; await B.init((ev, u) => seen.push([ev, u && u.id]));
+const lr = await B.signIn({ login: '@User_One', password: 'pw' });
+check('username → login_email, then the password grant with that e-mail', lr && lr.email === 'u1@x' && F.calls.some(c => c[0] === 'rpc' && c[1] === 'login_email' && c[2].p_user === 'User_One')
+  && F.calls.find(c => c[0] === 'signInWithPassword')[1].email === 'u1@x');
+await B.signOut(); F.calls.length = 0;
+err = null; try { await B.signIn({ login: 'user_one', password: 'nope' }); } catch (e) { err = e; }
+check('wrong password → login, and no password grant at all', err && err.code === 'login' && !F.calls.some(c => c[0] === 'signInWithPassword'), err && err.code);
+F.calls.length = 0; await B.signIn({ login: 'u1@x', password: 'pw' }).catch(() => {});
+check('a login with @ is an e-mail (no lookup)', !F.calls.some(c => c[1] === 'login_email') && F.calls.find(c => c[0] === 'signInWithPassword')[1].email === 'u1@x');
+await B.signOut();
+for (const why of ['locked', 'busy']) {
+  F.loginRpc = () => ({ data: { ok: false, why }, error: null });
+  err = null; try { await B.signIn({ login: 'user_one', password: 'pw' }); } catch (e) { err = e; }
+  check(`why ${why} → userlock`, err && err.code === 'userlock', err && err.code);
+}
+F.loginRpc = () => ({ data: null, error: { code: 'PGRST202', message: 'Could not find the function public.login_email(p_password, p_user) in the schema cache' } });
+err = null; try { await B.signIn({ login: 'user_one', password: 'pw' }); } catch (e) { err = e; }
+check('login_v8.sql not run yet → userlogin', err && err.code === 'userlogin', err && err.code);
 
 console.log(`\nbackend_v4: ${ok} ok, ${bad.length} failed` + (bad.length ? ' → ' + JSON.stringify(bad) : ''));
 process.exit(bad.length ? 1 : 0);

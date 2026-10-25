@@ -204,13 +204,18 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   worked in `chordroom.otplen`, auto-submits at that length or on paste/autofill; TOTP stays 6) (`verifyOtp type signup`, resend with cooldown) → welcome. Forgot password by code
   (`type recovery`); the reset link still works. Legal pages `#terms` / `#privacy` from `assets/legal.js` (`LEGAL.version`,
   owner fills `OPERATOR`). Branded email templates in `supabase/email/*.html` + owner guide `EMAIL.md` (needs custom SMTP).
-- Sign-in methods (auth dialog, modes `in` / `otp`+`otpcode` / `sms`+`smscode`): password; a one-time code by email
+- Sign-in methods (auth dialog, modes `in` / `otp`+`otpcode` / `sms`+`smscode`): password, with the e-mail OR the username in `#inEmail`
+  (login v8: no '@' → `Backend.signIn({login})` → `loginEmail` = RPC `login_email(p_user,p_password)` → the account's e-mail ONLY when the password
+  is right (bcrypt vs auth.users), then the usual password grant; 5 wrong per account / 15 min → 'locked', 20 per network or 300 site-wide → 'busy'
+  (both = code 'userlock'), RPC missing → 'userlogin' "use your e-mail"; failures in `private.login_fail`, 1 day; SQL block `[login-v8:begin…end]` =
+  the LAST block of schema.sql = `supabase/login_v8.sql`, run after notify_v7.sql; test `sql/test_login_v8.py`; the code/forgot forms stay e-mail only
+  and never receive a typed username); a one-time code by email
   (`Backend.sendLoginCode` = `signInWithOtp` shouldCreateUser:false, `verifyLogin` type 'email'; the Magic Link template must show
   `{{ .Token }}` = custom SMTP, otherwise the email's link signs in); SMS code to a number verified on the account (`sendPhoneCode` /
   `verifyPhone` type 'sms'), shown only with `billing.phone_login` (admin Settings → Security, acct.js) and an SMS provider in Supabase.
   The account panel (acct.js `acPhWrap`) adds/changes the number: `setPhone` (updateUser) → `verifyPhoneChange` (type 'phone_change').
   `normPhone` (app.js, `CR.normPhone`): 05x… → +972…, else international. Errors 'nouser' / 'sms' / 'phone' / 'phone_taken' (`smsError`).
-  Mock: email code 135790, SMS sign-in 135790, new number 246810. Local preview with a test user: `.claude/preview/` (index.html = index.html + mock + seed.js; rebuild it after index.html changes).
+  Mock: email code 135790, SMS sign-in 135790, new number 246810, username sign-in via `loginEmail` (`window.__noLoginRpc` = SQL not run). Local preview with a test user: `.claude/preview/` (index.html = index.html + mock + seed.js; rebuild it after index.html changes).
 - Client hardening (`/* sec */`): every ZIP entry goes through `zipName` (app.js `zip()`, also `CR.zipName`; no `..`/absolute/drive
   paths, control/bidi characters, Windows device names or reserved characters; duplicates → ` (2)`) and every download name through
   `safeSeg` (`saveBlob`); Crate M3U8 fields are one line each (`m3l`) and point at the sanitised ZIP names; Deezer API data is
@@ -219,7 +224,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `ui/test_bughunt.py` (every view × 5 languages × widths: console errors, horizontal scroll, raw i18n keys, English leftovers,
   FAB overlap, dialog focus, memory; static i18n check `tools/tests/i18n_static.py`).
 - Security: `supabase/schema.sql` ends with the hardening blocks [S-1…S-16] (keep them LAST; S-16 is commented out until the
-  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]`, `[paypal]`, `[security-v5]`, `[referral-v6]` and `[notify-v7]` (the last block, owner SMS alerts;
+  client stops selecting `pay_portal`) and then the "Security v3" block `[security-v3:begin…end]` = [S-17…S-23], then `[accounts-v4]`, `[growth-v4]`, `[paypal]`, `[security-v5]`, `[referral-v6]`, `[notify-v7]` (owner SMS alerts) and `[login-v8]` (the last block, username sign-in;
   owner runs `accounts_v4.sql` before `growth_v4.sql`, and `referral_v6.sql` after `security_v5.sql` — re-run v6 whenever v5 is re-run) (server audit
   2026-10, `SECURITY-AUDIT.md`): anon `catalog_play` only for existing ids, per-day caps (activity 1500, downloads 1500, catalog
   adds 1500, free `charged_songs` rows 3000), My Songs `data` ≤ 50 MB per account, a new catalog row's link = its own track,
@@ -291,7 +296,7 @@ The owner (Oshri) writes in Hebrew. Answer in Hebrew unless asked otherwise.
   `private.referral_ips`) → `why:'device'`; the browser also remembers used codes (`chordroom.refdone.v1`) and shows `refDevice`.
   SQL block `[referral-v6:begin…end]` = last block of schema.sql = `supabase/referral_v6.sql` (test `sql/test_referral_v6.py`).
   `my_referral()` → {code, invited/joined, paid, pending, earned}; the invite box sits in the points box and under the plans on the pricing page (`renderRef`).
-- Owner SMS alerts (notify v7, owner guide `NOTIFY.md`): SQL block `[notify-v7:begin…end]` = the LAST block of schema.sql = `supabase/notify_v7.sql`
+- Owner SMS alerts (notify v7, owner guide `NOTIFY.md`): SQL block `[notify-v7:begin…end]` = the block before `[login-v8]` in schema.sql = `supabase/notify_v7.sql`
   (run after referral_v6.sql; only adds its own objects, so re-running earlier blocks never clobbers it). One log `private.notify_log`
   (cat, lvl, msg, state new|sent|ok|fail|off|digest|quiet|capped|nonet), fed by triggers (activity adm_* + staff `sign_in`, pay_events result,
   profiles insert / role|owner changed with no auth.uid(), reviews, account_deletions, role_pw_fail 3/5, auth.users password/e-mail/phone of

@@ -30,7 +30,7 @@
     async signUp({ username, email, password }) { const u = { id: 'u' + (users.length + 1), email, password, created_at: now() }; users.push(u);
       profiles.push({ id: u.id, username, email, display_name: username, bio: '', avatar_url: '', lang: 'he', role: 'user', blocked: false, songs: 0, seps: 0, created_at: now(), last_seen: now() });
       cur = u; B.user = u; cb('SIGNED_IN', u); return { needsConfirm: false }; },
-    async signIn({ email, password }) { const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); },
+    async signIn({ email, login, password }) { if (!email) { const p = profiles.find(x => x.username.toLowerCase() === String(login || '').toLowerCase()); email = p && p.email; } const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); },
     async signOut() { cur = null; B.user = null; cb('SIGNED_OUT', null); },
     async sendReset() {}, async setPassword() {}, async changePassword() {}, async changeEmail() {},
     async getProfile() { return { ...profiles.find(p => p.id === cur.id) }; },

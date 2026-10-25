@@ -23,7 +23,8 @@ D.section('files')
 sch = open(pg.SCHEMA, encoding='utf-8').read(); v7 = open(V7, encoding='utf-8').read()
 b = sch.index('-- [notify-v7:begin]'); e = sch.index('-- [notify-v7:end]') + len('-- [notify-v7:end]')
 check('notify_v7.sql = the [notify-v7] block of schema.sql', str(sch[b:e].strip() == v7.strip()), 'True')
-check('it is the last block of schema.sql', str(sch[e:].strip() == ''), 'True')
+# login v8 comes after it: it only adds its own objects (supabase/login_v8.sql)
+check('it is the last block of schema.sql (only [login-v8] after it)', str(sch[e:].strip() == '' or (sch[e:].strip().startswith('-- [login-v8:begin]') and sch.rstrip().endswith('-- [login-v8:end]'))), 'True')
 for i in range(2):
     check(f'notify_v7.sql runs again ({i + 1})', str(pg.errs(D.file(V7))), '[]')
 
@@ -178,7 +179,7 @@ check('another kind → ok', edge(json.dumps({'t': now, 'kind': 'relay'})), Z('o
 check('… relay mismatch = edge (sent now, or held by today\'s cap used up above)', last('edge'), lambda o: o.split(' |')[0] in ('sent', 'capped') and '[relay]' in o)
 check('anon-callable definer fns = allow-list (+ notify_edge)',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      Z('catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available'))
+      Z('catalog_play,is_admin,login_email,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available'))
 
 D.section('hourly tick: deliveries, anomalies')
 sql("insert into net._http_response (id, status_code) select req, 200 from private.notify_log where state='sent' and cat='staff_login' on conflict do nothing")

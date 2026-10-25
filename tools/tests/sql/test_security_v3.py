@@ -187,7 +187,7 @@ check('every SECURITY DEFINER fn pins search_path',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('public','private') and p.prosecdef and (p.proconfig is null or not exists (select 1 from unnest(p.proconfig) c where c like 'search_path=%'))"), '0')
 check('anon-callable definer fns = allow-list',
       sql("select string_agg(p.proname, ',' order by p.proname) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')"),
-      lambda o: o.strip() == 'catalog_play,is_admin,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
+      lambda o: o.strip() == 'catalog_play,is_admin,login_email,notify_edge,pay_webhook,pay_webhook_paypal,reviews_public,username_available')   # growth: reviews_public = approved reviews only
 check('no private.* function executable by API roles',
       sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute'))"), '0')
 check('API roles have no USAGE on schema private', sql("select has_schema_privilege('anon','private','usage') or has_schema_privilege('authenticated','private','usage')"), 'f')
@@ -204,6 +204,7 @@ check('schema.sql has the [security-v3] block', 'found' if m else 'missing', 'fo
 later = re.sub(r'(?s)-- =+\n-- (?:Accounts v4|Growth v4|Security v5|Referral v6) .*?-- \[(?:accounts-v4|growth-v4|security-v5|referral-v6):end\]\n-- =+\n', '', src[m.end():]) if m else src
 later = re.sub(r'(?s)-- \[paypal:begin\].*?-- \[paypal:end\]\n', '', later)
 later = re.sub(r'(?s)-- \[notify-v7:begin\].*?-- \[notify-v7:end\]', '', later)   # notify v7 (owner SMS alerts)
+later = re.sub(r'(?s)-- \[login-v8:begin\].*?-- \[login-v8:end\]', '', later)   # login v8 (username sign-in) adds only its own objects
 check('the block is the LAST thing in schema.sql (only later blocks after it)', 'last' if m and later.strip() == '' else 'not last', lambda o: o == 'last')
 check('security_v3.sql contains the block verbatim', 'yes' if m and m.group(1) in v3 else 'no', 'yes')
 check('security_v3.sql ends with assistant.sql verbatim', 'yes' if v3.endswith(asql) else 'no', 'yes')

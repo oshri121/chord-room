@@ -1,5 +1,6 @@
 """Sign-in dialog (mock backend with codes): keyboard open + focus, inline e-mail error, wrong password, focus trap,
-Esc returns focus, sign in/out, forgot password by code (wrong code, new password saved), an unconfirmed account is
+Esc returns focus, sign in/out, sign in with the username (any case / leading @; a bad value, server not updated yet,
+5 wrong tries lock the username but not the e-mail; a username is never copied into the e-mail-only forms), forgot password by code (wrong code, new password saved), an unconfirmed account is
 sent to the code step with an automatic resend, the reset-link flow (PASSWORD_RECOVERY), and sign-up closed by the
 admin (allow_signup:false) hides every sign-up entry point."""
 import os, sys, time
@@ -26,6 +27,31 @@ def test(t, srv, b):
     t.check('signed in', pg.is_hidden('#authDlg') and pg.is_visible('#accBtn'))
     lib.sign_out(pg)
     t.check('signed out → buttons back', pg.is_visible('#signUpBtn'))
+
+    t.section('sign in with the username (login v8)')
+    pg.click('#signInBtn'); time.sleep(0.4)
+    t.eq('the field takes a username too', pg.evaluate("[document.getElementById('inEmail').type, document.getElementById('inEmail').autocomplete]"), ['text', 'username'])
+    pg.fill('#inEmail', 'dana beats'); pg.fill('#inPass', 'password1'); pg.click('#fIn .au-cta'); time.sleep(0.3)
+    t.check('neither an e-mail nor a username → inline error', 'שם משתמש' in pg.inner_text('#inEmailE'), pg.inner_text('#inEmailE'))
+    pg.fill('#inEmail', 'dana_beats'); pg.fill('#inPass', 'wrongpass'); pg.click('#fIn .au-cta'); time.sleep(0.6)
+    t.check('username + wrong password → the usual message', 'שגויים' in pg.inner_text('#auMsg'), pg.inner_text('#auMsg'))
+    pg.fill('#inEmail', '@Dana_Beats'); pg.fill('#inPass', 'password1'); pg.click('#fIn .au-cta'); time.sleep(1)
+    t.check('username (any case, leading @) signs in', pg.is_hidden('#authDlg') and pg.is_visible('#accBtn'))
+    t.eq('…as that account', pg.evaluate('Backend.user.email'), 'dana@example.com')
+    lib.sign_out(pg)
+    pg.click('#signInBtn'); time.sleep(0.4); pg.fill('#inEmail', 'dana_beats'); pg.click('#toForgot'); time.sleep(0.3)
+    t.eq('a username is not copied into the e-mail-only forms', pg.input_value('#fgEmail'), '')
+    pg.keyboard.press('Escape'); time.sleep(0.3)
+    pg.evaluate('window.__noLoginRpc = true')
+    pg.click('#signInBtn'); time.sleep(0.4); pg.fill('#inEmail', 'dana_beats'); pg.fill('#inPass', 'password1'); pg.click('#fIn .au-cta'); time.sleep(0.6)
+    t.check('server not updated yet → "use your e-mail"', 'רק עם האימייל' in pg.inner_text('#auMsg') and pg.evaluate('document.activeElement.id') == 'inEmail', pg.inner_text('#auMsg'))
+    pg.evaluate('window.__noLoginRpc = false')
+    pg.evaluate("(async()=>{for(let i=0;i<5;i++){try{await Backend.loginEmail('dana_beats','nope')}catch(e){}}})()"); time.sleep(0.3)
+    pg.fill('#inPass', 'password1'); pg.click('#fIn .au-cta'); time.sleep(0.6)
+    t.check('5 wrong tries → locked, even with the right password', '15' in pg.inner_text('#auMsg') and not pg.evaluate('!!Backend.user'), pg.inner_text('#auMsg'))
+    pg.fill('#inEmail', 'dana@example.com'); pg.fill('#inPass', 'password1'); pg.click('#fIn .au-cta'); time.sleep(1)
+    t.check('…the e-mail still signs in', pg.is_hidden('#authDlg') and pg.evaluate('!!Backend.user'))
+    lib.sign_out(pg)
 
     t.section('forgot password by code')
     pg.click('#signInBtn'); time.sleep(0.4); pg.fill('#inEmail', 'dana@example.com'); pg.click('#toForgot'); time.sleep(0.3)

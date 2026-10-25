@@ -189,13 +189,30 @@
       if (error) mapAuthError(error);
       if (data && data.user) B.user = data.user;
     },
-    async signIn({ email, password }) {
+    // login v8: the sign-in box takes the e-mail OR the username. A username becomes the account's e-mail through
+    // login_email (supabase/login_v8.sql), which answers only when the password is right; then the usual sign-in.
+    async loginEmail(user, password) {
+      const { data, error } = await sb.rpc('login_email', { p_user: user, p_password: password });
+      if (error) {
+        const m = String(error.message || ''), c = String(error.code || '');
+        if (c === 'PGRST202' || c === '42883' || /could not find the function|function .*does not exist/i.test(m)) fail('userlogin', m);   // login_v8.sql not run yet
+        mapAuthError(error);
+      }
+      const r = data || {};
+      if (r.ok && r.email) return r.email;
+      fail(r.why === 'locked' || r.why === 'busy' ? 'userlock' : 'login');
+    },
+    // → { email } (the address that signed in; errors carry it as err.email, e.g. for the "confirm your e-mail" step)
+    async signIn({ email, login, password }) {
+      let addr = email;
+      if (!addr) { const l = String(login || '').trim().replace(/^@/, ''); addr = l.includes('@') ? l : await B.loginEmail(l, password); }
       const captchaToken = await cap('signin');
-      const { data, error } = await sb.auth.signInWithPassword({ email, password, options: { captchaToken } });
-      if (error) mapAuthError(error);
+      const { data, error } = await sb.auth.signInWithPassword({ email: addr, password, options: { captchaToken } });
+      if (error) { try { mapAuthError(error); } catch (e) { e.email = addr; throw e; } }
       // acct: the account has 2FA → the TOTP step follows (the 'cr-mfa' event opens it; the auth dialog closes)
       const st = mfaState(data && data.session);
       if (st && st.need) { B.mfaPending = { user: data.session.user, factors: st.factors }; B.user = null; setTimeout(mfaEvent, 0); fail('mfa'); }   // the dialog ignores a second event
+      return { email: addr };
     },
     // acct: this browser only (the account menu); signOutAll ends every session of the account (all devices)
     async signOut() { B.mfaPending = null; await sb.auth.signOut({ scope: 'local' }); },

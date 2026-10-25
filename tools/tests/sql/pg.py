@@ -31,7 +31,7 @@ end $$;
 grant usage on schema public to anon, authenticated;
 create schema auth; grant usage on schema auth to anon, authenticated;
 create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb default '{}',
-  created_at timestamptz not null default now(), email_confirmed_at timestamptz default now());
+  created_at timestamptz not null default now(), email_confirmed_at timestamptz default now(), encrypted_password text);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true),'')::uuid $$;
 grant execute on function auth.uid() to anon, authenticated;
 -- acct: Supabase's auth.jwt() (claims of the request: aal, amr…) and the MFA factors table (accounts v4)

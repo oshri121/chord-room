@@ -3,6 +3,7 @@
 // In-memory users/profiles/songs; window.__mock exposes them to tests. A second account is pre-seeded:
 //   dana@example.com / password1  (username dana_beats, plain user, profile language en)
 // Signing up with the username "oshri" makes an admin (like the first real account).
+// Sign-in with the username instead of the e-mail (login v8): loginEmail = the login_email RPC (5 wrong tries per username → 'userlock').
 // Sign-in by email code: any existing account, code 135790. Phone: verify a new number with 246810, SMS sign-in with 135790.
 // Per-test additions go AFTER this file (lib.mock_js(extra)) and may override any method.
 (() => {
@@ -12,7 +13,7 @@
   const fail = c => { const e = new Error(c); e.code = c; throw e; };
   const now = () => new Date().toISOString();
   const me = () => { const p = profiles.find(p => p.id === cur.id); if (p && p.credits == null) { p.credits = 50; p.plan = p.plan || 'free'; } return p; };
-  const ledger = [], charged = new Set(), reviews = [];
+  const ledger = [], charged = new Set(), reviews = [], loginFail = {};
   let ntPrefs = { on: true, cats: { pay: 2, payfail: 2, refund: 3, payissue: 3, security: 3, staff_login: 2, admin: 2, signup: 1, review: 1, delete: 1, edge: 2, probe: 1, anomaly: 2, test: 3 },
     quiet: { on: true, from: 23, to: 7 }, digest: { on: true, hour: 9 }, cap_day: 25, cap_hour: 8, url: 'https://chord-room.com/api/notify' };
   const ntLog = [{ id: 1, at: now(), cat: 'signup', lvl: 1, msg: 'נרשם/ה: dana', state: 'digest' }, { id: 2, at: now(), cat: 'pay', lvl: 2, msg: 'תשלום התקבל: 29.00 ILS · dana · paid, plan pro, +150', state: 'sent' },
@@ -41,7 +42,15 @@
         blocked: false, songs: 0, seps: 0, credits: 50, plan: 'free', plan_until: null, created_at: now(), last_seen: now(), terms_version: terms && terms.version, terms_at: terms && terms.at });
       cur = u; B.user = u; cb('SIGNED_IN', u); return { needsConfirm: false };
     },
-    async signIn({ email, password }) { const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); },
+    // login v8: username → the account's e-mail only with the right password (window.__loginTries counts the calls)
+    async loginEmail(user, password) {
+      window.__loginTries = (window.__loginTries || 0) + 1; if (window.__noLoginRpc) fail('userlogin');
+      const n = String(user || '').replace(/^@/, '').toLowerCase(), p = profiles.find(x => x.username.toLowerCase() === n), k = 'fail:' + n;
+      if (p && (loginFail[k] || 0) >= 5) fail('userlock');
+      const u = p && users.find(x => x.id === p.id && x.password === password); if (u) { delete loginFail[k]; return u.email; }
+      loginFail[k] = (loginFail[k] || 0) + 1; fail('login');
+    },
+    async signIn({ email, login, password }) { email = email || await B.loginEmail(login, password); const u = users.find(x => x.email === email && x.password === password); if (!u) fail('login'); cur = u; B.user = u; cb('SIGNED_IN', u); return { email }; },
     // sign-in by email code: the code is always 135790 (window.__loginCodes counts the sends)
     async sendLoginCode(email) { if (!users.some(x => x.email === email)) fail('nouser'); window.__loginCodes = (window.__loginCodes || 0) + 1; },
     // phone: setPhone → code 246810 to verify (verifyPhoneChange); sign-in by SMS to a verified number: code 135790
@@ -180,6 +189,7 @@
     captcha: null, mfaPending: null,
     async signUp(a) { await capTok('signup'); window.__signupMeta = { age: a.age || null, terms: a.terms || null }; if (off(a.username)) fail('taken'); return _signUp(a); },
     async signIn(a) {
+      if (!a.email) a = { ...a, email: await B.loginEmail(a.login, a.password) };
       await capTok('signin');
       const u = users.find(x => x.email === a.email && x.password === a.password); if (!u) fail('login');
       if (verified(u.id)) { pending = { user: u }; B.mfaPending = pending; cur = null; B.user = null; aal = 'aal1';
